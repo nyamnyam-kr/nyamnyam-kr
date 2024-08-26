@@ -12,4 +12,6 @@ public class ReplyModel {
 
     private Long restaurantId;
     private Long postId;
+    private Long userId;
+    private String nickname;
 }

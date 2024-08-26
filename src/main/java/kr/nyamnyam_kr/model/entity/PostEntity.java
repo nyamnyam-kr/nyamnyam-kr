@@ -28,16 +28,16 @@ public class PostEntity {
     @Column(name="modify_date")
     private Date modifyDate;
 
-    @OneToMany(mappedBy = "reply")
+    @OneToMany(mappedBy = "post")
     private List<ReplyEntity> replyEntityList;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurantEntity;
+    private RestaurantEntity restaurant;
 
 
 

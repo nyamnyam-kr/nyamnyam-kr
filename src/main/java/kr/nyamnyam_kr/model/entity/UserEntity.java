@@ -18,7 +18,7 @@ public class UserEntity {
     @Column(name="username")
     private String username;
 
-    @Column(name="id")
+    @Column(name="password")
     private String password;
 
     @Column(name="nickname")
@@ -30,8 +30,8 @@ public class UserEntity {
     @Column(name="grade")
     private Long grade;
 
-    @Column(name="role")
-    private Long role;
+    @Column(name="role")        //role 시큐리티때문에[ 바꿈
+    private String role;
 
     @Column(name="tel")
     private Long tel;
@@ -42,10 +42,10 @@ public class UserEntity {
     @Column(name="enabled")
     private Long enabled;
 
-    @OneToMany(mappedBy="review")
-    private List<ReviewEntity> reviewEntityList;
+    @OneToMany(mappedBy="user")
+    private List<ReplyEntity> replyEntityList;
 
-    @OneToMany(mappedBy="post")
+    @OneToMany(mappedBy="user")
     private List<PostEntity> postEntityList;
 
 

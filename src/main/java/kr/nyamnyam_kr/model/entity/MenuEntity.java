@@ -20,7 +20,9 @@ public class MenuEntity {
 
     @ManyToOne
     @JoinColumn(name="restaurant_id")
-    private RestuarantEntity restuarantEntity;
+    private RestaurantEntity restaurant;
 
-
+    @OneToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity categoryEntity;
 }

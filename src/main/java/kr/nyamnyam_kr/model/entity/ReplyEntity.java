@@ -17,9 +17,14 @@ public class ReplyEntity {
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurantEntity;
+    private RestaurantEntity restaurant;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private PostEntity postEntity;
+    private PostEntity post;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
 }
