@@ -1,38 +1,41 @@
 package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @Table(name = "restaurant")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class RestaurantEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "address")
     private String address;
-    @Column(name = "tel")
+
     private Long tel;
-    @Column(name = "operate_Time")
+
     private String operateTime;
-    @Column(name = "entry_date")
+
     private Date entryDate;
-    @Column(name = "modify_date")
+
     private Date modifyDate;
-    @Column(name = "toilet")
+
     private Long toilet;
 
     // !!! 은서 : zone이랑 Join 확인 부탁드려요
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_id", referencedColumnName = "id")
     private ZoneEntity zone;
 

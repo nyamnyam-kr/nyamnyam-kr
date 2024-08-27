@@ -1,41 +1,45 @@
 package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @Table(name = "post")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name="content")
+
     private String content;
 
-    @Column(name="rating")  // 친절도,맛,청결
+      // 친절도,맛,청결 나눠야함
     private float rating;
 
-    @Column(name="entry_date")
+
     private Date entryDate;
 
-    @Column(name="modify_date")
+
     private Date modifyDate;
 
     @OneToMany(mappedBy = "post")
     private List<ReplyEntity> replyEntityList;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
 

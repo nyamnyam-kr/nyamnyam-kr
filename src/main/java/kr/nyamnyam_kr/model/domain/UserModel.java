@@ -1,8 +1,7 @@
 package kr.nyamnyam_kr.model.domain;
 
 import kr.nyamnyam_kr.service.UserService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,8 +11,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Component
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class UserModel {
 
 

@@ -17,7 +17,9 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public ZoneEntity save(ZoneModel ZoneModel) {
-        ZoneEntity zoneEntity = new ZoneEntity();
+        ZoneEntity zoneEntity = ZoneEntity.builder()
+                .name(ZoneModel.getName())
+                .build();
         return zoneRepository.save(zoneEntity);
     }
 

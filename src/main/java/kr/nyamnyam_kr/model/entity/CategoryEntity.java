@@ -1,19 +1,26 @@
 package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
 @Table(name = "category")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)//Args 는 이거냐 레이지냐 => 얘는 생성자가 실행될때 작동한다. 상속할때 부모꺼 까지 가능
+@AllArgsConstructor
 public class CategoryEntity {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
+
     private String name;
 
     @OneToOne(mappedBy = "categoryEntity")

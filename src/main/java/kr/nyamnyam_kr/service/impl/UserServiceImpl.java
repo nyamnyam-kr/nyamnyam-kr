@@ -7,7 +7,9 @@ import kr.nyamnyam_kr.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,7 +21,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity save(UserModel userModel) {
-        UserEntity userEntity = new UserEntity();
+        UserEntity userEntity = UserEntity.builder()
+                .username(userModel.getUsername())
+                .password(userModel.getPassword())
+                .nickname(userModel.getNickname())
+                .name(userModel.getName())
+                .grade(userModel.getGrade())
+                .role(userModel.getRole())
+                .tel(userModel.getTel())
+                .gender(userModel.getGender())
+                .enabled(userModel.getEnabled())
+                .build();
         return userRepository.save(userEntity);
     }
 
@@ -46,6 +58,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public long count() {
         return userRepository.count();
+    }
+
+    @Override
+    public Map<?, ?> login(UserModel model) {
+        Map<?,?> map = userRepository.login(model);
+
+        return map;
     }
 
     /*public UserModel  findByUsername(String username) {

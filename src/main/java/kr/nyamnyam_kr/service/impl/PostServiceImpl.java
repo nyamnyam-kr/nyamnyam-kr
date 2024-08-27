@@ -17,7 +17,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostEntity save(PostModel postModel) {
-        PostEntity postEntity = new PostEntity();
+        PostEntity postEntity = PostEntity.builder()
+                .content(postModel.getContent())
+                .rating(postModel.getRating())
+                .entryDate(postModel.getEntryDate())
+                .modifyDate(postModel.getModifyDate())
+                .build();
         return postRepository.save(postEntity);
     }
 
