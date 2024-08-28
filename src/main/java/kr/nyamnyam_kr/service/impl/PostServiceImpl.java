@@ -7,8 +7,10 @@ import kr.nyamnyam_kr.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostEntity> findAll() {
         return postRepository.findAll();
+    }
+
+    public List<PostModel> selectAll() {
+        List<PostEntity> postEntityList = postRepository.findAll();
+        List<PostModel> postModelList = postEntityList.stream()
+                .map(postEntity -> PostModel.builder()
+                        .content(postEntity.getContent())
+                        .rating(postEntity.getRating())
+                        .entryDate(postEntity.getEntryDate())
+                        .modifyDate(postEntity.getModifyDate())
+                        .build())
+                .collect(Collectors.toList());
+        return postModelList;
     }
 
     @Override

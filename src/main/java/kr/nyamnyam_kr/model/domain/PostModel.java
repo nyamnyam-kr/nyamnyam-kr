@@ -1,12 +1,18 @@
 package kr.nyamnyam_kr.model.domain;
 
-import lombok.Data;
+import jakarta.persistence.Entity;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PostModel {
 
     private Long id;

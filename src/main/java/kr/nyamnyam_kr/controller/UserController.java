@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,30 +19,19 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
+
 
     @PostMapping("join")
-    public Object join(@RequestBody UserEntity entity) {
+    public Object join(@RequestBody UserModel model) {
 
-      return userRepository.save(entity.builder()
-                      .username(entity.getUsername())
-                      .password(entity.getPassword())
-                      . nickname(entity.getNickname())
-                      .name(entity.getName())
-                      .gender(entity.getGender())
-                      .role(entity.getRole())
-                      .tel(entity.getTel())
-                      .gender(entity.getGender())
-                      .enabled(entity.getEnabled())
-              .build());
+      return userService.save(model);
 
     }
 
     @PostMapping("login")
-    public Object login(@RequestBody UserModel model) {
-        Map<?,?> map= userService.login(model);
+    public UserModel login(@RequestBody UserModel model) {
 
-        return null;
+        return userService.findByUsernameAndPassword(model.getUsername(), model.getPassword());
     }
 
     @PostMapping("save")

@@ -20,7 +20,9 @@ public interface UserService {
 
     long count();
 
-    Map<?,?> login(UserModel model);
+    //Map<?,?> login(UserModel model);
 
-//    UserModel findByUsername(String username);
+    UserModel findByUsernameAndPassword(String username,String password);
+
+    Map<?, ?> login(UserModel model);
 }
