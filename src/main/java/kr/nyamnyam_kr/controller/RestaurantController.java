@@ -7,16 +7,18 @@ import kr.nyamnyam_kr.model.entity.RestaurantEntity;
 import kr.nyamnyam_kr.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/restaurant/")
+@RequestMapping("/restaurant")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -50,4 +52,12 @@ public class RestaurantController {
     public long count() {
         return restaurantService.count();
     }
+
+    @RequestMapping("/")
+    public String hello(Model model) {
+        model.addAttribute("hello", "dfgdfg");
+        return "index";
+    }
+
+
 }
