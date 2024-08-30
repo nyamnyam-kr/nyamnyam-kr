@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 @ToString
-@Table(name = "menu")
+@Table(name = "menus")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MenuEntity {

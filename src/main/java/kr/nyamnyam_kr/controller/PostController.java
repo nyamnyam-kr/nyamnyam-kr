@@ -21,6 +21,7 @@ public class PostController {
 
     @PostMapping("save")
     public PostEntity save(PostModel postModel) {
+
         return postService.save(postModel);
     }
 

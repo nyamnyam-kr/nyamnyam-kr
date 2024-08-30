@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("login")
     public UserModel login(@RequestBody UserModel model) {
 
-        return userService.findByUsernameAndPassword(model.getUsername(), model.getPassword());
+        return userService.login(model.getUsername(), model.getPassword());
     }
 
     @PostMapping("save")

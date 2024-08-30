@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 @ToString
-@Table(name = "category")
+@Table(name = "categories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)//Args 는 이거냐 레이지냐 => 얘는 생성자가 실행될때 작동한다. 상속할때 부모꺼 까지 가능
 @AllArgsConstructor
 public class CategoryEntity {

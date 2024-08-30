@@ -13,8 +13,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    @Query("SELECT u FROM UserEntity u WHERE u.username = :#{#userModel.username} AND u.password = :#{#userModel.password}")
-    Map<String, Object> login(@Param("userModel") UserModel userModel);
 
-    UserModel findByUsernameAndPassword(String username, String password);
+    UserEntity findByUsername(String username, String password);
 }

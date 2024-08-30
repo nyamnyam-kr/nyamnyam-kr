@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 @ToString
-@Table(name="reply")
+@Table(name="replys")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ReplyEntity {

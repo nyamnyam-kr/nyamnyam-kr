@@ -60,27 +60,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel findByUsernameAndPassword(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+    public UserModel login(String username, String password) {
+
+        return null;
     }
-
-
-    @Override
-    public Map<?, ?> login(UserModel model) {
-        Map<?,?> map = userRepository.login(model);
-
-        return map;
-    }
-
-    /*public UserModel  findByUsername(String username) {
-        Optional<UserEntity> byUserEmail = userRepository.findByUsername(username);
-        System.out.println(byUserEmail);
-        UserModel userModel = new UserModel();
-        if (!byUserEmail.isPresent()) {
-            return null;
-        } else {
-            return userModel;
-        }
-    }*/
 
 }

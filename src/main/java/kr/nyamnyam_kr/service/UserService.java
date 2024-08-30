@@ -22,7 +22,7 @@ public interface UserService {
 
     //Map<?,?> login(UserModel model);
 
-    UserModel findByUsernameAndPassword(String username,String password);
+    UserModel login(String username,String password);
 
-    Map<?, ?> login(UserModel model);
+    /*Map<?, ?> login(UserModel model);*/
 }

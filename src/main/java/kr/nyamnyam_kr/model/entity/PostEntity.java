@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-@Table(name = "post")
+@Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class PostEntity {

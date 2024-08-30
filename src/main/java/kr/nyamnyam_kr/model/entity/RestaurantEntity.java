@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-@Table(name = "restaurant")
+@Table(name = "restaurants")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class RestaurantEntity {
@@ -47,5 +47,8 @@ public class RestaurantEntity {
 
     @OneToMany(mappedBy = "restaurant")
     private List<MenuEntity> menuEntityList;
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<GroupEntity> groupEntityList;
 
 }

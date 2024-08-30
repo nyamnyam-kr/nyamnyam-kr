@@ -8,17 +8,18 @@ import lombok.*;
 @Setter
 @Builder
 @ToString
-@Table(name="zones")
+@Table(name = "group_replies")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ZoneEntity {
+public class GroupReplyEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String content;
 
-
-    @OneToOne(mappedBy = "zone")
-    private RestaurantEntity restaurant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }

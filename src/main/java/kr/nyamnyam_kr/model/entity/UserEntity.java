@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-@Table(name = "user")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UserEntity {
@@ -43,5 +43,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<PostEntity> postEntityList;
 
+    @OneToMany(mappedBy = "user")
+    private List<GroupEntity> groupEntityList;
+
+    @OneToMany(mappedBy = "user")
+    private List<AttendEntity> attendEntityList;
 
 }
