@@ -1,7 +1,7 @@
 package kr.nyamnyam_kr.config;
 
 
-import kr.nyamnyam_kr.service.impl.UserDetailsServiceImpl;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
