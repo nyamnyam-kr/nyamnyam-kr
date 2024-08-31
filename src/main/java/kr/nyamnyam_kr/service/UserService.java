@@ -4,6 +4,7 @@ import kr.nyamnyam_kr.model.domain.UserModel;
 import kr.nyamnyam_kr.model.entity.UserEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -19,5 +20,9 @@ public interface UserService {
 
     long count();
 
-//    UserModel findByUsername(String username);
+    //Map<?,?> login(UserModel model);
+
+    UserModel login(String username,String password);
+
+    /*Map<?, ?> login(UserModel model);*/
 }

@@ -1,29 +1,33 @@
 package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
-@Table(name="reply")
+@Getter
+@Setter
+@Builder
+@ToString
+@Table(name="replys")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ReplyEntity {
     @Id
     @GeneratedValue()
-    @Column(name="id")
     private Long id;
 
-    @Column(name="content")
+
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

@@ -1,6 +1,5 @@
 package kr.nyamnyam_kr.model.domain;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +12,20 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PostModel {
+public class GroupModel {
 
     private Long id;
+    private String name;
     private String content;
-    private float rating;   // 친절도,맛,청결
     private Date entryDate;
     private Date modifyDate;
-
+    private Date dDay;
+    private Long people;
     private Long userId;
     private Long restaurantId;
+
+    //유저 닉네임
+    private String nickname;
+    //식당 이름
+    private String restaurantName;
 }

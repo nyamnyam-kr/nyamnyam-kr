@@ -10,8 +10,13 @@ import org.springframework.stereotype.Component;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategoryModel {
+public class AttendModel {
 
     private Long id;
-    private String name;
+    private Long userId;
+    private Long groupId;
+
+    private String userNickname;
+    private String groupName;
+
 }

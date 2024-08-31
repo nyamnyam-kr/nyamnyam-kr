@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategoryModel {
+public class GroupReplyModel {
 
     private Long id;
-    private String name;
+    private String content;
+    private Long userId;
+
+    private String nickname;
+
 }

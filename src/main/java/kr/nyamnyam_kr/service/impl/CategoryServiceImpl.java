@@ -1,5 +1,6 @@
 package kr.nyamnyam_kr.service.impl;
 
+import jakarta.transaction.Transactional;
 import kr.nyamnyam_kr.model.domain.CategoryModel;
 import kr.nyamnyam_kr.model.entity.CategoryEntity;
 import kr.nyamnyam_kr.model.repository.CategoryRepository;
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
+@Service//팩토리다.
+@RequiredArgsConstructor//싱글턴 프로토타입은 함수에서 사용
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
     public CategoryEntity save(CategoryModel categoryModel) {
-        CategoryEntity categoryEntity = new CategoryEntity();
+        CategoryEntity categoryEntity = CategoryEntity.builder()
+                .name(categoryModel.getName())
+                .build();
         return categoryRepository.save(categoryEntity);
     }
+
 
     @Override
     public List<CategoryEntity> findAll() {

@@ -2,29 +2,31 @@ package kr.nyamnyam_kr.controller;
 
 import kr.nyamnyam_kr.model.domain.ZoneModel;
 import kr.nyamnyam_kr.model.entity.ZoneEntity;
+import kr.nyamnyam_kr.model.repository.ZoneRepository;
 import kr.nyamnyam_kr.service.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/zone/")
 public class ZoneController {
     private final ZoneService zoneService;
 
+
     @PostMapping("save")
-    public ZoneEntity save(ZoneModel ZoneModel) {
-        return zoneService.save(ZoneModel);
+    public ZoneEntity save(@RequestBody ZoneModel model) {
+
+        return zoneService.save(model);
     }
 
     @GetMapping("findAll")
     public List<ZoneEntity> findAll() {
+
         return zoneService.findAll();
     }
 

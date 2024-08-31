@@ -1,10 +1,15 @@
 package kr.nyamnyam_kr.model.domain;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 @Component
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ReplyModel {
 
     private Long id;

@@ -17,7 +17,9 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public ReplyEntity save(ReplyModel replyModel) {
-        ReplyEntity replyEntity = new ReplyEntity();
+        ReplyEntity replyEntity = ReplyEntity.builder()
+                .content(replyModel.getContent())
+                .build();
         return replyRepository.save(replyEntity);
     }
 

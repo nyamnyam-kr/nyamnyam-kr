@@ -2,26 +2,29 @@ package kr.nyamnyam_kr.controller;
 
 import kr.nyamnyam_kr.model.domain.CategoryModel;
 import kr.nyamnyam_kr.model.entity.CategoryEntity;
+import kr.nyamnyam_kr.model.repository.CategoryRepository;
 import kr.nyamnyam_kr.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/category/")
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @PostMapping("save")
-    public CategoryEntity save(CategoryModel categoryModel) {
-        return categoryService.save(categoryModel);
+    public CategoryEntity save(@RequestBody CategoryEntity entity) {
+
+        return categoryRepository.save(entity.builder()
+                        .name(entity.getName())
+                .build());
     }
 
     @GetMapping("findAll")

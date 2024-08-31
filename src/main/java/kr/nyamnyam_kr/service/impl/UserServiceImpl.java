@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,7 +20,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity save(UserModel userModel) {
-        UserEntity userEntity = new UserEntity();
+        UserEntity userEntity = UserEntity.builder()
+                .username(userModel.getUsername())
+                .password(userModel.getPassword())
+                .nickname(userModel.getNickname())
+                .name(userModel.getName())
+                .grade(userModel.getGrade())
+                .role(userModel.getRole())
+                .tel(userModel.getTel())
+                .gender(userModel.getGender())
+                .enabled(userModel.getEnabled())
+                .build();
         return userRepository.save(userEntity);
     }
 
@@ -48,15 +59,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
-    /*public UserModel  findByUsername(String username) {
-        Optional<UserEntity> byUserEmail = userRepository.findByUsername(username);
-        System.out.println(byUserEmail);
-        UserModel userModel = new UserModel();
-        if (!byUserEmail.isPresent()) {
-            return null;
-        } else {
-            return userModel;
-        }
-    }*/
+    @Override
+    public UserModel login(String username, String password) {
+
+        return null;
+    }
 
 }

@@ -1,12 +1,17 @@
 package kr.nyamnyam_kr.model.domain;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class RestaurantModel {
 
     private Long id;

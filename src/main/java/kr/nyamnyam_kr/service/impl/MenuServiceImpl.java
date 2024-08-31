@@ -1,6 +1,7 @@
 package kr.nyamnyam_kr.service.impl;
 
 import kr.nyamnyam_kr.model.domain.MenuModel;
+import kr.nyamnyam_kr.model.entity.CategoryEntity;
 import kr.nyamnyam_kr.model.entity.MenuEntity;
 import kr.nyamnyam_kr.model.repository.MenuRepository;
 import kr.nyamnyam_kr.service.MenuService;
@@ -17,7 +18,10 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuEntity save(MenuModel menuModel) {
-        MenuEntity menuEntity = new MenuEntity();
+        MenuEntity menuEntity = MenuEntity.builder()
+                .price(menuModel.getPrice())
+                .menuName(menuModel.getMenuName())
+                .build();
         return menuRepository.save(menuEntity);
     }
 
