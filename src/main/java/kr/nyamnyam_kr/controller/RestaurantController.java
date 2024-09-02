@@ -56,7 +56,7 @@ public class RestaurantController {
     @RequestMapping("/")
     public String hello(Model model) {
         model.addAttribute("hello", "dfgdfg");
-        return "index";
+        return "/index";
     }
 
 
