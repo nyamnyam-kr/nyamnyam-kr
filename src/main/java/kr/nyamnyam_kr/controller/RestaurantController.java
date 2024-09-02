@@ -6,12 +6,10 @@ import kr.nyamnyam_kr.model.entity.ReplyEntity;
 import kr.nyamnyam_kr.model.entity.RestaurantEntity;
 import kr.nyamnyam_kr.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,19 +21,31 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @PostMapping("/save")
-    public RestaurantEntity save(RestaurantModel restaurantModel) {
-        return restaurantService.save(restaurantModel);
+
+    @GetMapping("/save")
+    public String save() {
+        return "restaurants/saveRestaurant";
+    }
+
+    @PutMapping("/save/{id}")
+    public String save(RestaurantModel restaurantModel, @PathVariable long id) {
+        RestaurantEntity save = restaurantService.save(restaurantModel);
+        save.setId(id);
+        return "redirect:/restaurant/findOne/{id}";
     }
 
     @GetMapping("/findAll")
-    public List<RestaurantEntity> findAll() {
-        return restaurantService.findAll();
+    public String findAll(Model model) {
+        List<RestaurantEntity> all = restaurantService.findAll();
+        model.addAttribute("list", all);
+        return "restaurants/showRestaurants";
     }
 
-    @GetMapping("/findById")
-    public Optional<RestaurantEntity> findById(Long id) {
-        return restaurantService.findById(id);
+    @GetMapping("/findOne/{id}")
+    public String findById(@PathVariable Long id, Model model) {
+        Optional<RestaurantEntity> restaurantOpt = restaurantService.findById(id);
+            model.addAttribute("restaurant", restaurantOpt.get());
+        return "restaurants/restaurantOne";
     }
 
     @GetMapping("deleteById")

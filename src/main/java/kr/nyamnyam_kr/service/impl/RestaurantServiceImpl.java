@@ -17,8 +17,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantEntity save(RestaurantModel restaurantModel) {
-        RestaurantEntity restaurantEntity = new RestaurantEntity();
-        return restaurantRepository.save(restaurantEntity);
+        return restaurantRepository.save(RestaurantEntity.toRestaurantEntity(restaurantModel));
     }
 
     @Override
