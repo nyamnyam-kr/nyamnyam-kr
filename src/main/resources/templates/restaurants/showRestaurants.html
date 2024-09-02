@@ -6,5 +6,15 @@
 </head>
 <body>
 <p th:text="${hello}">message</p>
+<table>
+    <tr>
+        <td>이름</td>
+        <td>전화번호</td>
+    </tr>
+    <tr th:each="b: ${list}" th:object="${b}">
+        <td><a th:text="${b.name}" th:href="@{/restaurant/findOne/{id}(id=${b.id})}"/></td>
+        <td th:text="${b.tel}"></td>
+    </tr>
+</table>
 </body>
 </html>

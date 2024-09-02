@@ -1,6 +1,7 @@
 package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
+import kr.nyamnyam_kr.model.domain.RestaurantModel;
 import lombok.Data;
 
 import java.util.Date;
@@ -20,14 +21,19 @@ public class RestaurantEntity {
 
     @Column(name = "address")
     private String address;
+
     @Column(name = "tel")
     private Long tel;
+
     @Column(name = "operate_Time")
     private String operateTime;
+
     @Column(name = "entry_date")
     private Date entryDate;
+
     @Column(name = "modify_date")
     private Date modifyDate;
+
     @Column(name = "toilet")
     private Long toilet;
 
@@ -44,5 +50,15 @@ public class RestaurantEntity {
 
     @OneToMany(mappedBy = "restaurant")
     private List<MenuEntity> menuEntityList;
+
+    public static RestaurantEntity toRestaurantEntity(RestaurantModel restaurantModel) {
+        RestaurantEntity restaurantEntity = new RestaurantEntity();
+        restaurantEntity.setName(restaurantModel.getName());
+        restaurantEntity.setAddress(restaurantModel.getAddress());
+        restaurantEntity.setTel(restaurantModel.getTel());
+        restaurantEntity.setOperateTime(restaurantModel.getOperateTime());
+        restaurantEntity.setToilet(restaurantModel.getToilet());
+        return restaurantEntity;
+    }
 
 }
