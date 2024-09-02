@@ -4,6 +4,8 @@ import kr.nyamnyam_kr.model.domain.GroupReplyModel;
 import kr.nyamnyam_kr.model.entity.GroupReplyEntity;
 import kr.nyamnyam_kr.model.repository.GroupReplyRepository;
 import kr.nyamnyam_kr.service.GroupReplyService;
+import kr.nyamnyam_kr.service.GroupService;
+import kr.nyamnyam_kr.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,23 +18,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GroupReplyServiceImpl implements GroupReplyService {
     private final GroupReplyRepository groupReplyRepository;
-
+    private final GroupService groupService;
+    private final UserService userService;
 
     @Override
-    public GroupReplyEntity save(GroupReplyModel groupReplyModel) {
+    public GroupReplyEntity save(Long userId, GroupReplyModel groupReplyModel,Long groupId) {
         GroupReplyEntity groupReplyEntity=GroupReplyEntity.builder()
                 .content(groupReplyModel.getContent())
+                .user(userService.findById(userId).get())
+                .group(groupService.findById(groupId).get())
                 .build();
         return groupReplyRepository.save(groupReplyEntity);
     }
 
     @Override
-    public List<GroupReplyEntity> findAll() {
-        return List.of();
+    public List<GroupReplyEntity> findAll(Long groupId) {
+
+        return groupReplyRepository.findAllByGroupId(groupId);
     }
 
     @Override
-    public Optional<GroupReplyEntity> findById(Long id) {
+    public Optional<GroupReplyEntity> findById(git id) {
         return Optional.empty();
     }
 
