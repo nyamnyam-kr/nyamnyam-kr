@@ -35,10 +35,9 @@ public class RestaurantController {
     }
 
     @GetMapping("/findAll")
-    public String findAll(Model model) {
+    public ResponseEntity<List<?>> findAll(Model model) {
         List<RestaurantEntity> all = restaurantService.findAll();
-        model.addAttribute("list", all);
-        return "restaurants/showRestaurants";
+        return ResponseEntity.ok(all);
     }
 
     @GetMapping("/findOne/{id}")
