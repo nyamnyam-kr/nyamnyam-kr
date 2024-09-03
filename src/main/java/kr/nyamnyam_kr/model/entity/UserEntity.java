@@ -49,4 +49,11 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<AttendEntity> attendEntityList;
 
+    @OneToMany(mappedBy = "user")
+    private List<GroupReplyEntity> groupReplyEntityList;
+
+
+
+
+
 }

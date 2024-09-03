@@ -15,36 +15,36 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/group_reply")
+@RequestMapping("/group_replies")
 public class GroupReplyController {
     private final GroupReplyService groupReplyService;
 
-    @PostMapping("save")
+    @PostMapping("/save")
     public GroupReplyEntity save(GroupReplyModel groupReplyModel) {
         return groupReplyService.save(groupReplyModel);
     }
 
-    @GetMapping("findAll")
+    @GetMapping("/findAll")
     public List<GroupReplyEntity> findAll() {
         return groupReplyService.findAll();
     }
 
-    @GetMapping("findById")
+    @GetMapping("/findById")
     public Optional<GroupReplyEntity> findById(Long id) {
         return groupReplyService.findById(id);
     }
 
-    @GetMapping("deleteById")
+    @GetMapping("/deleteById")
     public void deleteById(Long id) {
         groupReplyService.deleteById(id);
     }
 
-    @GetMapping("existsById")
+    @GetMapping("/existsById")
     public boolean existsById(Long id) {
         return groupReplyService.existsById(id);
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public long count() {
         return groupReplyService.count();
     }

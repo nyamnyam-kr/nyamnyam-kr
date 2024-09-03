@@ -18,6 +18,10 @@ public interface UserService {
 
     boolean existsById(Long id);
 
+    boolean existsByUsername(String username);
+
+    boolean existsByNickname(String nickname);
+
     long count();
 
     //Map<?,?> login(UserModel model);
@@ -25,4 +29,8 @@ public interface UserService {
     UserModel login(String username,String password);
 
     /*Map<?, ?> login(UserModel model);*/
+
+    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+
+
 }

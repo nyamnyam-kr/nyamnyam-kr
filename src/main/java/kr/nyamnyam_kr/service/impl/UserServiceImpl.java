@@ -55,14 +55,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+    @Override
     public long count() {
         return userRepository.count();
     }
 
     @Override
     public UserModel login(String username, String password) {
-
+        userRepository.findByUsernameAndPassword(username, password);
         return null;
+    }
+
+    @Override
+    public Optional<UserEntity> findByUsernameAndPassword(String username, String password) {
+
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
 }

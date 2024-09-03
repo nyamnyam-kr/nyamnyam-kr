@@ -79,6 +79,10 @@ clean {
 	delete file(generated)
 }
 
+bootJar{
+	jar.enabled=true
+	archiveFileName="${rootProject.name}.jar"
+}
 
 tasks.named('test') {
 	useJUnitPlatform()

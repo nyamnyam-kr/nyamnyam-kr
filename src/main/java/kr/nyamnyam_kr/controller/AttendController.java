@@ -16,37 +16,37 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/attend/")
+@RequestMapping("/attends")
 public class AttendController {
     
     private final AttendService attendService;
 
-    @PostMapping("save")
+    @PostMapping("/save")
     public ResponseEntity<AttendEntity> save(AttendModel attendModel) {
         return ResponseEntity.ok(attendService.save(attendModel));
     }
 
-    @GetMapping("findAll")
+    @GetMapping("/findAll")
     public ResponseEntity<List<AttendEntity>> findAll() {
         return ResponseEntity.ok(attendService.findAll());
     }
 
-    @GetMapping("findById")
+    @GetMapping("/findById")
     public ResponseEntity<AttendEntity> findById(Long id) {
         return ResponseEntity.ok(attendService.findById(id).get());
     }
 
-    @GetMapping("deleteById")
+    @GetMapping("/deleteById")
     public void deleteById(Long id) {
         attendService.deleteById(id);
     }
 
-    @GetMapping("existsById")
+    @GetMapping("/existsById")
     public boolean existsById(Long id) {
         return attendService.existsById(id);
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public long count() {
         return attendService.count();
     }

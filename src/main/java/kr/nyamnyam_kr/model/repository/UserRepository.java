@@ -14,5 +14,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 
-    UserEntity findByUsername(String username, String password);
+    Optional<UserEntity> findByUsernameAndPassword(String username, String password);
+    boolean existsByUsername(String username);
+    boolean existsByNickname(String nickname);
 }

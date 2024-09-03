@@ -4,12 +4,16 @@ import kr.nyamnyam_kr.model.domain.GroupModel;
 import kr.nyamnyam_kr.model.entity.GroupEntity;
 import kr.nyamnyam_kr.service.GroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+// put=업데이트,pathvariable patch=> 일부만 수정 post=입력(겟+insert)=>requestbody를 써야함 get=찾아주는,Requestparam delete,
+
+
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/groups")
 public class GroupController {
@@ -20,7 +24,12 @@ public class GroupController {
         return groupService.save(groupModel);
     }
 
-    @PutMapping("update/{id}")
+    @GetMapping("/showGroupOne")
+    public String showGroupOne() {
+        return "group/write";
+    }
+
+    @PutMapping("/update/{id}")
     public GroupEntity update(GroupModel groupModel, @PathVariable Long id) {
         return groupService.save(groupModel);
     }
@@ -40,12 +49,12 @@ public class GroupController {
         groupService.deleteById(id);
     }
 
-    @GetMapping("existsById")
+    @GetMapping("/existsById")
     public boolean existsById(Long id) {
         return groupService.existsById(id);
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public long count() {
         return groupService.count();
     }

@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-@Table(name = "groups")
+@Table(name = "user_groups")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class GroupEntity {
@@ -45,5 +45,6 @@ public class GroupEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
+
 
 }
