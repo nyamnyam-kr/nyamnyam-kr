@@ -13,7 +13,7 @@ public interface RestaurantService {
 
     Optional<RestaurantEntity> findById(Long id);
 
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 
     boolean existsById(Long id);
 
