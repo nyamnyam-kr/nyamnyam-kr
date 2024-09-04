@@ -1,9 +1,8 @@
-/*
 package kr.nyamnyam_kr.service.impl;
 
 import kr.nyamnyam_kr.model.domain.UserModel;
+import kr.nyamnyam_kr.model.entity.UserEntity;
 import kr.nyamnyam_kr.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,23 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserService USER_SERVICE;
 
-    @Autowired
+    private final UserService userService;
+
     public UserDetailsServiceImpl(UserService userService) {
-        USER_SERVICE = userService;
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Email: " + username);
-        UserModel userModel = USER_SERVICE.findByUsername(username);
-        System.out.println(userModel);
-        if (userModel == null) {
-            throw new UsernameNotFoundException(username + "is not a valid username");
-        }
+        UserEntity userEntity = userService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        return  userModel;
+        return org.springframework.security.core.userdetails.User
+                .withUsername(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .roles(userEntity.getRole())
+                .build();
     }
 }
-*/

@@ -16,10 +16,18 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public UserEntity save(UserModel userModel) {
         UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(userModel.getUsername());
+        userEntity.setPassword(userModel.getPassword());
+        userEntity.setNickname(userModel.getNickname());
+        userEntity.setName(userModel.getName());
+        userEntity.setGrade(userModel.getGrade());
+        userEntity.setRole(userModel.getRole());
+        userEntity.setTel(userModel.getTel());
+        userEntity.setGender(userModel.getGender());
+        userEntity.setEnabled(userModel.isEnabled());
         return userRepository.save(userEntity);
     }
 
@@ -48,15 +56,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
-    /*public UserModel  findByUsername(String username) {
-        Optional<UserEntity> byUserEmail = userRepository.findByUsername(username);
-        System.out.println(byUserEmail);
-        UserModel userModel = new UserModel();
-        if (!byUserEmail.isPresent()) {
-            return null;
-        } else {
-            return userModel;
-        }
-    }*/
-
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

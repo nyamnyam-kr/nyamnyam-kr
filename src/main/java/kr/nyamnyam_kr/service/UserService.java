@@ -19,5 +19,5 @@ public interface UserService {
 
     long count();
 
-//    UserModel findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 }
