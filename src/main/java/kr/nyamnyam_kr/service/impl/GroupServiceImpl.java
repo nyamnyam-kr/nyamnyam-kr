@@ -17,8 +17,8 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
 
     @Override
-    public GroupEntity save(GroupModel groupModel) {
-        GroupEntity groupEntity=GroupEntity.builder()
+    public Boolean save(GroupModel groupModel) {
+        GroupEntity groupEntity = GroupEntity.builder()
                 .name(groupModel.getName())
                 .content(groupModel.getContent())
                 .entryDate(groupModel.getEntryDate())
@@ -26,7 +26,22 @@ public class GroupServiceImpl implements GroupService {
                 .dDay(groupModel.getDDay())
                 .people(groupModel.getPeople())
                 .build();
-        return groupRepository.save(groupEntity);
+        System.out.println("Converted GroupEntity: " + groupEntity);
+        GroupEntity savedGroupEntity = groupRepository.save(groupEntity);
+        return savedGroupEntity != null && savedGroupEntity.getId() != null;
+    }
+
+    @Override
+    public Boolean update(GroupModel groupModel) {
+        GroupEntity groupEntity = GroupEntity.builder()
+                .name(groupModel.getName())
+                .content(groupModel.getContent())
+                .modifiyDate(groupModel.getModifyDate())
+                .dDay(groupModel.getDDay())
+                .people(groupModel.getPeople())
+                .build();
+        GroupEntity savedGroupEntity = groupRepository.save(groupEntity);
+        return savedGroupEntity != null && savedGroupEntity.getId() != null;
     }
 
     @Override

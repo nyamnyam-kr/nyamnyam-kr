@@ -4,6 +4,7 @@ import kr.nyamnyam_kr.model.domain.GroupModel;
 import kr.nyamnyam_kr.model.entity.GroupEntity;
 import kr.nyamnyam_kr.service.GroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,25 +14,26 @@ import java.util.Optional;
 // put=업데이트,pathvariable patch=> 일부만 수정 post=입력(겟+insert)=>requestbody를 써야함 get=찾아주는,Requestparam delete,
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/groups")
 public class GroupController {
     private final GroupService groupService;
 
     @PostMapping("/save")
-    public GroupEntity save(GroupModel groupModel) {
+    public Boolean save(@RequestBody GroupModel groupModel) {
         return groupService.save(groupModel);
     }
 
-    @GetMapping("/showGroupOne")
-    public String showGroupOne() {
-        return "group/write";
+    @GetMapping("/showGroupOne/{id}")
+    public ResponseEntity<?> showGroupOne(@PathVariable Long id) {
+
+        return ResponseEntity.ok(groupService.findById(id));
     }
 
     @PutMapping("/update/{id}")
-    public GroupEntity update(GroupModel groupModel, @PathVariable Long id) {
-        return groupService.save(groupModel);
+    public Boolean update(GroupModel groupModel, @PathVariable Long id) {
+        return groupService.update(groupModel);
     }
 
     @GetMapping("/findAll")

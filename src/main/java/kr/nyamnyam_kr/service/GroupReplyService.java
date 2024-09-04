@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupReplyService {
-    GroupReplyEntity save(Long userId, GroupReplyModel groupReplyModel,Long groupId);
+    GroupReplyEntity save(Long userId,GroupReplyModel groupReplyModel,Long groupId);
 
     List<GroupReplyEntity> findAll(Long groupId);
 

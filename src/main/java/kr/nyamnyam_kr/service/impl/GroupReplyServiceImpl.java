@@ -38,7 +38,7 @@ public class GroupReplyServiceImpl implements GroupReplyService {
     }
 
     @Override
-    public Optional<GroupReplyEntity> findById(git id) {
+    public Optional<GroupReplyEntity> findById(Long id) {
         return Optional.empty();
     }
 

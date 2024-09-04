@@ -20,13 +20,13 @@ public class GroupReplyController {
     private final GroupReplyService groupReplyService;
 
     @PostMapping("/save")
-    public GroupReplyEntity save(GroupReplyModel groupReplyModel) {
-        return groupReplyService.save(groupReplyModel);
+    public GroupReplyEntity save(Long userId,GroupReplyModel groupReplyModel) {
+        return groupReplyService.save(userId, groupReplyModel, groupReplyModel.getId());
     }
 
     @GetMapping("/findAll")
-    public List<GroupReplyEntity> findAll() {
-        return groupReplyService.findAll();
+    public List<GroupReplyEntity> findAll(Long groupId) {
+        return groupReplyService.findAll(groupId);
     }
 
     @GetMapping("/findById")

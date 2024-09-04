@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupService {
-    GroupEntity save(GroupModel groupModel);
+    Boolean save(GroupModel groupModel);
+
+    Boolean update(GroupModel groupModel);
 
     List<GroupEntity> findAll();
 
