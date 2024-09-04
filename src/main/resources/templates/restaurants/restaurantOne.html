@@ -12,5 +12,8 @@
 <h1 th:text="${restaurant.operateTime}"></h1>
 <h1 th:text="${restaurant.toilet}"></h1>
 
+<a th:href="@{/restaurants/save/{id}(id = ${restaurant.id})}"><button>레스토랑 수정</button></a>
+<a th:href="@{/restaurants/delete/{id}(id = ${restaurant.id})}" ><button type="submit" id="delete">레스토랑 삭제</button></a>
 </body>
+
 </html>

@@ -12,9 +12,13 @@
         <td>전화번호</td>
     </tr>
     <tr th:each="b: ${list}" th:object="${b}">
-        <td><a th:text="${b.name}" th:href="@{/restaurant/findOne/{id}(id=${b.id})}"/></td>
+        <td><a th:text="${b.name}" th:href="@{/restaurants/findOne/{id}(id=${b.id})}"/></td>
         <td th:text="${b.tel}"></td>
     </tr>
 </table>
+
+<div>
+    <a th:href="@{/restaurants/save}"><button type="submit">새로운 레스토랑 등록</button></a>
+</div>
 </body>
 </html>

@@ -7,20 +7,22 @@
 <body>
 
 
-<h2>새로운 레스토랑 입력</h2>
+<h2>레스토랑 수정</h2>
 <div>
-    <form th:action="@{/restaurants/save}" th:object="${restaurantModel}" method="post">
+    <form th:action="@{/restaurant/save/{id}(id=${restaurant.id})}" th:object="${restaurantModel}" method="post">
+        <input type="hidden" name="method" value="put"/>
+        <input type="hidden" th:value="${restaurant.id}" id="id">
         <div>
             <div>레스토랑 이름</div>
-            <input id="name" type="text" name="name"/>
+            <input id="name" type="text" name="name" th:value="${restaurant.name}"/>
         </div>
         <div>
             <div>레스토랑 주소</div>
-            <input id="address" type="text" name="address"/>
+            <input id="address" type="text" name="address" th:value="${restaurant.address}"/>
         </div>
         <div>
             <div>레스토랑 전화번호</div>
-            <input id="tel" type="text" name="tel"/>
+            <input id="tel" type="text" name="tel" th:value="${restaurant.tel}"/>
         </div>
         <div>
             <div>레스토랑 지역</div>
