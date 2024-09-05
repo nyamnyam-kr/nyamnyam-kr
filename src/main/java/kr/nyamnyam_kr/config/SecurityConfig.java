@@ -1,5 +1,6 @@
 package kr.nyamnyam_kr.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,10 +31,13 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .formLogin((form) ->
                         form
-                                .loginPage("/user/login")
                                 .loginProcessingUrl("/user/login")
-                                .successForwardUrl("/user/login/success")
-                                .failureForwardUrl("/user/login/failure"))
+                                .successHandler((request, response, authentication) -> {
+                                    response.setStatus(HttpServletResponse.SC_OK);
+                                })
+                                .failureHandler((request, response, exception) -> {
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                }))
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/user/logOut")
