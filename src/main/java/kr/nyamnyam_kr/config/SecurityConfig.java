@@ -28,14 +28,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/user/**", "/login", "/register").permitAll()
+                                .requestMatchers("/user/**", "/user/join", "/login").permitAll()
                                 .anyRequest().authenticated())
                 .formLogin((form) ->
                         form
                                 .loginPage("/login")
-                                .loginProcessingUrl("/user/auth")
-                                .successForwardUrl("/user/authOk")
-                                .failureForwardUrl("/user/authFail"))
+                                .loginProcessingUrl("/user/login")
+                                .successForwardUrl("/user/login/success")
+                                .failureForwardUrl("/user/login/failure"))
                 .logout((logout) ->
                         logout
                                 .logoutUrl("/user/logOut")

@@ -13,11 +13,18 @@ java {
 	}
 }
 
+bootJar {
+	jar.enabled = false
+	archiveFileName = "${rootProject.name}.jar"
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
 }
+
+
 
 repositories {
 	mavenCentral()
