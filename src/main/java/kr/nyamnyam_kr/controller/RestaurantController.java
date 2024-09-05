@@ -25,6 +25,11 @@ public class RestaurantController {
 
     private final ZoneService zoneService;
 
+    @GetMapping("findAll")
+    public ResponseEntity<List<?>> findAll() {
+        return ResponseEntity.ok(restaurantService.findAll());
+    }
+
 
     @PostMapping("/save")
     public ResponseEntity<RestaurantEntity> save(@RequestBody RestaurantModel restaurantModel) {
