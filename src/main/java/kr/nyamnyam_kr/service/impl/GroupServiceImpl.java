@@ -1,5 +1,6 @@
 package kr.nyamnyam_kr.service.impl;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam_kr.model.domain.GroupModel;
 import kr.nyamnyam_kr.model.entity.GroupEntity;
 import kr.nyamnyam_kr.model.repository.GroupRepository;
@@ -15,14 +16,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
+    private JPAQueryFactory queryFactory;
 
     @Override
     public Boolean save(GroupModel groupModel) {
         GroupEntity groupEntity = GroupEntity.builder()
                 .name(groupModel.getName())
                 .content(groupModel.getContent())
-                .entryDate(groupModel.getEntryDate())
-                .modifiyDate(groupModel.getModifyDate())
                 .dDay(groupModel.getDDay())
                 .people(groupModel.getPeople())
                 .build();
@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity groupEntity = GroupEntity.builder()
                 .name(groupModel.getName())
                 .content(groupModel.getContent())
-                .modifiyDate(groupModel.getModifyDate())
+                .entryDate(groupModel.getEntryDate())
                 .dDay(groupModel.getDDay())
                 .people(groupModel.getPeople())
                 .build();

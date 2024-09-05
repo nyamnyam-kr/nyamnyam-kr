@@ -2,10 +2,11 @@ package kr.nyamnyam_kr.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
+
 
 @Component
 @Getter
@@ -20,13 +21,13 @@ public class GroupModel {
     private String name;
     private String content;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date entryDate;
+    private LocalDateTime entryDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date modifyDate;
+    private LocalDateTime modifyDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date dDay;
+    private LocalDateTime dDay;
 
     private Long people;
     private Long userId;
