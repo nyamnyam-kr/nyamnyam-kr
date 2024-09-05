@@ -1,22 +1,20 @@
 package kr.nyamnyam_kr.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDateTime;
 
 
-@Component
-@Getter
-@Setter
-@Builder
-@ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class GroupEntity {
-
+@Entity
+@Data
+@Table(name = "band")
+public class BandEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     private String name;
