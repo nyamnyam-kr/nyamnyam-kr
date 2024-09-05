@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostService {
-    PostEntity save(PostModel postModel);
 
-    List<PostEntity> findAll();
+    List<?> findAll(Long restId);
 
-    Optional<PostEntity> findById(Long id);
+    PostEntity findById(Long id);
 
-    void deleteById(Long id);
+    Boolean deleteById(Long id);
 
-    boolean existsById(Long id);
 
-    long count();
+    Boolean existsById(Long id);
+
+    Long count();
 }
+

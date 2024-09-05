@@ -3,15 +3,14 @@ package kr.nyamnyam_kr.model.domain;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 @Data
 public class ReplyModel {
-
     private Long id;
     private String content;
-
-    private Long restaurantId;
-    private Long postId;
-    private Long userId;
-    private String nickname;
+    private Date entryDate;
+    private Date modifyDate;
 }
+

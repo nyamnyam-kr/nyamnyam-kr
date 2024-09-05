@@ -31,18 +31,4 @@ public class RestaurantEntity {
     @Column(name = "toilet")
     private Long toilet;
 
-    // !!! 은서 : zone이랑 Join 확인 부탁드려요
-    @OneToOne
-    @JoinColumn(name = "zone_id", referencedColumnName = "id")
-    private ZoneEntity zone;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<PostEntity> postEntityList;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<ReplyEntity> replyEntityList;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<MenuEntity> menuEntityList;
-
 }

@@ -1,6 +1,5 @@
 package kr.nyamnyam_kr.service.impl;
 
-import kr.nyamnyam_kr.model.domain.PostModel;
 import kr.nyamnyam_kr.model.entity.PostEntity;
 import kr.nyamnyam_kr.model.repository.PostRepository;
 import kr.nyamnyam_kr.service.PostService;
@@ -8,41 +7,37 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final PostRepository postRepository;
+    private final PostRepository repository;
 
     @Override
-    public PostEntity save(PostModel postModel) {
-        PostEntity postEntity = new PostEntity();
-        return postRepository.save(postEntity);
+    public List<?> findAll(Long restId) {
+        return repository.findAll();
     }
 
     @Override
-    public List<PostEntity> findAll() {
-        return postRepository.findAll();
+    public PostEntity findById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override
-    public Optional<PostEntity> findById(Long id) {
-        return postRepository.findById(id);
+    public Boolean deleteById(Long id) {
+        if(repository.existsById(id)) {
+            repository.deleteById(id);
+        }
+        return false;
     }
 
     @Override
-    public void deleteById(Long id) {
-        postRepository.deleteById(id);
+    public Boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return postRepository.existsById(id);
-    }
-
-    @Override
-    public long count() {
-        return postRepository.count();
+    public Long count() {
+        return repository.count();
     }
 }

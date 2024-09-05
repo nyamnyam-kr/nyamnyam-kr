@@ -8,13 +8,11 @@ import java.util.Date;
 @Component
 @Data
 public class PostModel {
-
     private Long id;
     private String content;
-    private float rating;   // 친절도,맛,청결
+    private Long taste;
+    private Long clean;
+    private Long service;
     private Date entryDate;
     private Date modifyDate;
-
-    private Long userId;
-    private Long restaurantId;
 }

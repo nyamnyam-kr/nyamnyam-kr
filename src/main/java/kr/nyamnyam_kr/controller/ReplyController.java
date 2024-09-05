@@ -1,50 +1,51 @@
 package kr.nyamnyam_kr.controller;
 
-import kr.nyamnyam_kr.model.domain.ReplyModel;
 import kr.nyamnyam_kr.model.entity.ReplyEntity;
+import kr.nyamnyam_kr.model.repository.ReplyRepository;
 import kr.nyamnyam_kr.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/reply/")
-public class ReplyController  {
-    private final ReplyService replyService;
+@RequestMapping("/api//replies")
+public class ReplyController {
+    private final ReplyService service;
+    private final ReplyRepository repository;
 
-    @PostMapping("save")
-    public ReplyEntity save(ReplyModel replyModel) {
-        return replyService.save(replyModel);
+    @PostMapping("/write")
+    public ReplyEntity write(@RequestBody ReplyEntity replyEntity) {
+        return repository.save(ReplyEntity.builder()
+                .content(replyEntity.getContent())
+                .entryDate(replyEntity.getEntryDate())
+                .modifyDate(replyEntity.getModifyDate())
+                .build());
+    }
+    // post별 리스트
+    @PostMapping("/{postId}")
+    public ResponseEntity<List<?>> findAll(@PathVariable Long postId) {
+        return ResponseEntity.ok(service.findAll(postId));
     }
 
-    @GetMapping("findAll")
-    public List<ReplyEntity> findAll() {
-        return replyService.findAll();
+    @PostMapping("")
+    public ResponseEntity<ReplyEntity> findById(@RequestBody Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("findById")
-    public Optional<ReplyEntity> findById(Long id) {
-        return replyService.findById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.existsById(id));
     }
 
-    @GetMapping("deleteById")
-    public void deleteById(Long id) {
-        replyService.deleteById(id);
-    }
-
-    @GetMapping("existsById")
-    public boolean existsById(Long id) {
-        return replyService.existsById(id);
-    }
-
-    @GetMapping("count")
-    public long count() {
-        return replyService.count();
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
     }
 }

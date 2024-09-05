@@ -7,16 +7,17 @@ import kr.nyamnyam_kr.model.entity.ReplyEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReplyService {
-    ReplyEntity save(ReplyModel replyModel);
+public interface ReplyService{
 
-    List<ReplyEntity> findAll();
+    List<?> findAll(Long postId);
 
-    Optional<ReplyEntity> findById(Long id);
+    ReplyEntity findById(Long id);
 
-    void deleteById(Long id);
+    Boolean deleteById(Long id);
 
-    boolean existsById(Long id);
+    Boolean existsById(Long id);
 
-    long count();
+    Long count();
+
 }
+
