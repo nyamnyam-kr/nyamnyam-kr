@@ -10,7 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +30,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .formLogin((form) ->
                         form
-                                .loginPage("/login")
+                                .loginPage("/user/login")
                                 .loginProcessingUrl("/user/login")
                                 .successForwardUrl("/user/login/success")
                                 .failureForwardUrl("/user/login/failure"))
