@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.session.web.http.HttpSessionIdResolver;
+import org.springframework.session.web.http.CookieHttpSessionIdResolver;
 
 @Configuration
 @EnableWebSecurity
@@ -41,5 +44,18 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService);
 
         return httpSecurity.build();
+    }
+
+    // SameSite=None 설정 추가
+    @Bean
+    public HttpSessionIdResolver httpSessionIdResolver() {
+        CookieHttpSessionIdResolver resolver = new CookieHttpSessionIdResolver();
+        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+
+        cookieSerializer.setSameSite("None");  // SameSite=None 설정
+        cookieSerializer.setUseSecureCookie(true); // HTTPS에서만 쿠키 사용
+        resolver.setCookieSerializer(cookieSerializer);
+
+        return resolver;
     }
 }
