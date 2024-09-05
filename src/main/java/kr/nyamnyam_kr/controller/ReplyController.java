@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/api//replies")
+@RequestMapping("/api/replies")
 public class ReplyController {
     private final ReplyService service;
     private final ReplyRepository repository;
