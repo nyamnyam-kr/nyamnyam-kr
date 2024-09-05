@@ -12,6 +12,16 @@ java {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
+bootJar{
+	jar.enabled = false
+	archiveFileName = 'myapp.jar'
+}
+
+jar{
+	manifest {
+		attributes 'Main-Class': 'kr.nyamnyam.helloworld.HelloWorldApplication'
+	}
+}
 
 configurations {
 	compileOnly {
