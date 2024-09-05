@@ -1,16 +1,15 @@
 package kr.nyamnyam_kr.config;
 
-import kr.nyamnyam_kr.service.impl.UserDetailsServiceImpl;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.session.web.http.DefaultCookieSerializer;
-import org.springframework.session.web.http.HttpSessionIdResolver;
-import org.springframework.session.web.http.CookieHttpSessionIdResolver;
+
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +21,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, UserDetailsServiceImpl userDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
@@ -41,21 +40,9 @@ public class SecurityConfig {
                                 .logoutSuccessUrl("/user/logOutSuccess")
                                 .clearAuthentication(true)
                                 .deleteCookies("JSESSIONID"))
-                .userDetailsService(userDetailsService);
+                .sessionManagement((session) ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         return httpSecurity.build();
-    }
-
-    // SameSite=None 설정 추가
-    @Bean
-    public HttpSessionIdResolver httpSessionIdResolver() {
-        CookieHttpSessionIdResolver resolver = new CookieHttpSessionIdResolver();
-        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
-
-        cookieSerializer.setSameSite("None");  // SameSite=None 설정
-        cookieSerializer.setUseSecureCookie(true); // HTTPS에서만 쿠키 사용
-        resolver.setCookieSerializer(cookieSerializer);
-
-        return resolver;
     }
 }
