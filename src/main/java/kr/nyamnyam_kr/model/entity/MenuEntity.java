@@ -15,7 +15,7 @@ public class MenuEntity {
 
     private String name;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurantEntity;
 
