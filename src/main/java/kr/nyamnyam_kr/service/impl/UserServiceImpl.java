@@ -5,6 +5,7 @@ import kr.nyamnyam_kr.model.entity.UserEntity;
 import kr.nyamnyam_kr.model.repository.UserRepository;
 import kr.nyamnyam_kr.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +16,20 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final BCryptPasswordEncoder passwordEncoder; // 추가
 
     @Override
     public UserEntity save(UserModel userModel) {
         UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(userModel.getUsername());
+        userEntity.setPassword(passwordEncoder.encode(userModel.getPassword())); // 비밀번호 암호화
+        userEntity.setNickname(userModel.getNickname());
+        userEntity.setName(userModel.getName());
+        userEntity.setGrade(userModel.getGrade());
+        userEntity.setRole(userModel.getRole());
+        userEntity.setTel(userModel.getTel());
+        userEntity.setGender(userModel.getGender());
+        userEntity.setEnabled(userModel.isEnabled());
         return userRepository.save(userEntity);
     }
 
@@ -48,15 +58,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
-    /*public UserModel  findByUsername(String username) {
-        Optional<UserEntity> byUserEmail = userRepository.findByUsername(username);
-        System.out.println(byUserEmail);
-        UserModel userModel = new UserModel();
-        if (!byUserEmail.isPresent()) {
-            return null;
-        } else {
-            return userModel;
-        }
-    }*/
-
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
