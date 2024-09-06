@@ -1,14 +1,7 @@
 package kr.nyamnyam_kr.model.domain;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import kr.nyamnyam_kr.model.entity.CategoryEntity;
-import kr.nyamnyam_kr.model.entity.RestaurantEntity;
-import kr.nyamnyam_kr.model.entity.WishListEntity;
 import lombok.Data;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 @Data

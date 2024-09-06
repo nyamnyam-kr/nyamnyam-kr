@@ -1,7 +1,6 @@
 package kr.nyamnyam_kr.service.impl;
 
 import kr.nyamnyam_kr.model.domain.CategoryModel;
-import kr.nyamnyam_kr.model.entity.CategoryEntity;
 import kr.nyamnyam_kr.model.repository.CategoryRepository;
 import kr.nyamnyam_kr.service.CategoryService;
 import lombok.RequiredArgsConstructor;

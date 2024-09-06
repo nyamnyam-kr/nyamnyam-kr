@@ -1,7 +1,6 @@
 package kr.nyamnyam_kr.controller;
 
 import kr.nyamnyam_kr.model.domain.CategoryModel;
-import kr.nyamnyam_kr.model.entity.CategoryEntity;
 import kr.nyamnyam_kr.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
