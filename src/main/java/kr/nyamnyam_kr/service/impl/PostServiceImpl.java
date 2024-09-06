@@ -14,7 +14,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository repository;
 
     @Override
-    public List<?> findAll(Long restId) {
+    public List<PostEntity> findAll(Long restId) {
         return repository.findAll();
     }
 

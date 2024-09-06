@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PostService {
 
-    List<?> findAll(Long restId);
+    List<PostEntity> findAll(Long restId);
 
     PostEntity findById(Long id);
 

@@ -31,7 +31,7 @@ public class Postcontroller {
 
     // 식당별 findAll
     @GetMapping("/group")
-    public ResponseEntity<List<?>> findAll(@RequestParam Long restId, @RequestParam PostEntity postEntity) {
+    public ResponseEntity<List<PostEntity>> findAll(@RequestParam Long restId) {
         return ResponseEntity.ok(service.findAll(restId));
     }
 
