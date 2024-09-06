@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -30,6 +31,8 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
     public final DateTimePath<java.util.Date> modifyDate = createDateTime("modifyDate", java.util.Date.class);
 
     public final NumberPath<Long> service = createNumber("service", Long.class);
+
+    public final ListPath<TagEntity, QTagEntity> tagEntityList = this.<TagEntity, QTagEntity>createList("tagEntityList", TagEntity.class, QTagEntity.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> taste = createNumber("taste", Long.class);
 

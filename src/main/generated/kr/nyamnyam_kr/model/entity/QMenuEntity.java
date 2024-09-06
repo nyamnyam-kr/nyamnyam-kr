@@ -22,15 +22,13 @@ public class QMenuEntity extends EntityPathBase<MenuEntity> {
 
     public static final QMenuEntity menuEntity = new QMenuEntity("menuEntity");
 
-    public final QCategoryEntity categoryEntity;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath menuName = createString("menuName");
+    public final StringPath name = createString("name");
 
     public final NumberPath<Long> price = createNumber("price", Long.class);
 
-    public final QRestaurantEntity restaurant;
+    public final QRestaurantEntity restaurantEntity;
 
     public QMenuEntity(String variable) {
         this(MenuEntity.class, forVariable(variable), INITS);
@@ -50,8 +48,7 @@ public class QMenuEntity extends EntityPathBase<MenuEntity> {
 
     public QMenuEntity(Class<? extends MenuEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.categoryEntity = inits.isInitialized("categoryEntity") ? new QCategoryEntity(forProperty("categoryEntity"), inits.get("categoryEntity")) : null;
-        this.restaurant = inits.isInitialized("restaurant") ? new QRestaurantEntity(forProperty("restaurant")) : null;
+        this.restaurantEntity = inits.isInitialized("restaurantEntity") ? new QRestaurantEntity(forProperty("restaurantEntity"), inits.get("restaurantEntity")) : null;
     }
 
 }

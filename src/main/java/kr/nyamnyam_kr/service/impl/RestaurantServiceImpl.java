@@ -15,10 +15,7 @@ import java.util.Optional;
 public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
-    @Override
-    public RestaurantEntity save(RestaurantModel restaurantModel) {
-        return restaurantRepository.save(RestaurantEntity.toRestaurantEntity(restaurantModel));
-    }
+
 
     @Override
     public List<RestaurantEntity> findAll() {

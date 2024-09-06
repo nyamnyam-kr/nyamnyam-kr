@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 public class TagModel {
     private Long id;
     private String name;
+    private Long postId;
 }

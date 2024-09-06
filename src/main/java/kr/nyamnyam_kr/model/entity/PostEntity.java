@@ -24,5 +24,6 @@ public class PostEntity {
     private Date entryDate;
     private Date modifyDate;
 
-
+    @OneToMany(mappedBy = "postEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TagEntity> tagEntityList;
 }

@@ -15,4 +15,8 @@ public class TagEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private PostEntity postEntity;
 }

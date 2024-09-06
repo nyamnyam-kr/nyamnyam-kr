@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,22 +18,35 @@ public class QTagEntity extends EntityPathBase<TagEntity> {
 
     private static final long serialVersionUID = -999622636L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QTagEntity tagEntity = new QTagEntity("tagEntity");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name = createString("name");
 
+    public final QPostEntity postEntity;
+
     public QTagEntity(String variable) {
-        super(TagEntity.class, forVariable(variable));
+        this(TagEntity.class, forVariable(variable), INITS);
     }
 
     public QTagEntity(Path<? extends TagEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QTagEntity(PathMetadata metadata) {
-        super(TagEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QTagEntity(PathMetadata metadata, PathInits inits) {
+        this(TagEntity.class, metadata, inits);
+    }
+
+    public QTagEntity(Class<? extends TagEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.postEntity = inits.isInitialized("postEntity") ? new QPostEntity(forProperty("postEntity")) : null;
     }
 
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class ZoneModel {
+public class WishListModel {
 
     private Long id;
     private String name;

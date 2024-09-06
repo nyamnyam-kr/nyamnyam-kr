@@ -36,8 +36,6 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final ListPath<PostEntity, QPostEntity> postEntityList = this.<PostEntity, QPostEntity>createList("postEntityList", PostEntity.class, QPostEntity.class, PathInits.DIRECT2);
 
-    public final ListPath<ReplyEntity, QReplyEntity> replyEntityList = this.<ReplyEntity, QReplyEntity>createList("replyEntityList", ReplyEntity.class, QReplyEntity.class, PathInits.DIRECT2);
-
     public final StringPath role = createString("role");
 
     public final StringPath tel = createString("tel");

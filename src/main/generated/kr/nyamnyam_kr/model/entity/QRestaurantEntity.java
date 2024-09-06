@@ -18,40 +18,54 @@ public class QRestaurantEntity extends EntityPathBase<RestaurantEntity> {
 
     private static final long serialVersionUID = 1512825257L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QRestaurantEntity restaurantEntity = new QRestaurantEntity("restaurantEntity");
 
     public final StringPath address = createString("address");
 
-    public final DateTimePath<java.util.Date> entryDate = createDateTime("entryDate", java.util.Date.class);
+    public final QCategoryEntity categoryEntity;
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final ListPath<MenuEntity, QMenuEntity> menuEntityList = this.<MenuEntity, QMenuEntity>createList("menuEntityList", MenuEntity.class, QMenuEntity.class, PathInits.DIRECT2);
-
-    public final DateTimePath<java.util.Date> modifyDate = createDateTime("modifyDate", java.util.Date.class);
+    public final StringPath langCodeId = createString("langCodeId");
 
     public final StringPath name = createString("name");
 
-    public final StringPath operateTime = createString("operateTime");
+    public final StringPath phoneNumber = createString("phoneNumber");
 
-    public final ListPath<PostEntity, QPostEntity> postEntityList = this.<PostEntity, QPostEntity>createList("postEntityList", PostEntity.class, QPostEntity.class, PathInits.DIRECT2);
+    public final NumberPath<Long> postId = createNumber("postId", Long.class);
 
-    public final ListPath<ReplyEntity, QReplyEntity> replyEntityList = this.<ReplyEntity, QReplyEntity>createList("replyEntityList", ReplyEntity.class, QReplyEntity.class, PathInits.DIRECT2);
+    public final StringPath postUrl = createString("postUrl");
 
-    public final NumberPath<Long> tel = createNumber("tel", Long.class);
+    public final StringPath representativeMenu = createString("representativeMenu");
 
-    public final NumberPath<Long> toilet = createNumber("toilet", Long.class);
+    public final StringPath subwayInfo = createString("subwayInfo");
+
+    public final StringPath useTime = createString("useTime");
+
+    public final StringPath websiteUrl = createString("websiteUrl");
+
+    public final QWishListEntity wishListEntity;
 
     public QRestaurantEntity(String variable) {
-        super(RestaurantEntity.class, forVariable(variable));
+        this(RestaurantEntity.class, forVariable(variable), INITS);
     }
 
     public QRestaurantEntity(Path<? extends RestaurantEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QRestaurantEntity(PathMetadata metadata) {
-        super(RestaurantEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QRestaurantEntity(PathMetadata metadata, PathInits inits) {
+        this(RestaurantEntity.class, metadata, inits);
+    }
+
+    public QRestaurantEntity(Class<? extends RestaurantEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.categoryEntity = inits.isInitialized("categoryEntity") ? new QCategoryEntity(forProperty("categoryEntity"), inits.get("categoryEntity")) : null;
+        this.wishListEntity = inits.isInitialized("wishListEntity") ? new QWishListEntity(forProperty("wishListEntity")) : null;
     }
 
 }
