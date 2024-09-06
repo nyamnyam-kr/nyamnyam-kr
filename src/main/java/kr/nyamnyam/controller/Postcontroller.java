@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 public class Postcontroller {
     private final PostService service;
     private final PostRepository repository;
@@ -22,8 +22,8 @@ public class Postcontroller {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("")
-    public ResponseEntity<PostEntity> findById(@RequestBody Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<PostEntity> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -41,8 +41,8 @@ public class Postcontroller {
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
-    @PutMapping("")
-    public ResponseEntity<PostEntity> update(@RequestBody PostEntity entity) {
+    @PutMapping("/{id}")
+    public ResponseEntity<PostEntity> update(@PathVariable Long id,@RequestBody PostEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
     @PostMapping("")
