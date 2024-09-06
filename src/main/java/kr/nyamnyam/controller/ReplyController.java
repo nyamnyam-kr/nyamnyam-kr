@@ -13,26 +13,22 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/api/replies")
+@RequestMapping("/replies")
 public class ReplyController {
     private final ReplyService service;
     private final ReplyRepository repository;
 
-    @PostMapping("/{postId}")
-    public ResponseEntity<List<?>> findAll(@PathVariable Long postId) {
-        return ResponseEntity.ok(service.findAll(postId));
+    @GetMapping("/group")
+    public ResponseEntity<List<ReplyEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("")
-    public ResponseEntity<ReplyEntity> findById(@RequestBody Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ReplyEntity> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteById(id));
-    }
-    @GetMapping("/{id}")
+    @GetMapping("/exist/{id}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
         return ResponseEntity.ok(service.existsById(id));
     }
@@ -41,12 +37,16 @@ public class ReplyController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
-    @PutMapping("")
-    public ResponseEntity<ReplyEntity> update(@RequestBody ReplyEntity entity) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ReplyEntity> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 
-    @PostMapping("/write")
+    @PostMapping("")
     public ResponseEntity<ReplyEntity> write(@RequestBody ReplyEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }

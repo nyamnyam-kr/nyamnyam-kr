@@ -1,6 +1,5 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.model.entity.UpvoteEntity;
 import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +26,6 @@ public class UpvoteController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteById(id));
-    }
-
     @GetMapping("/exists/{id}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
         return ResponseEntity.ok(service.existsById(id));
@@ -40,6 +34,11 @@ public class UpvoteController {
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
     }
 
     @PutMapping("")

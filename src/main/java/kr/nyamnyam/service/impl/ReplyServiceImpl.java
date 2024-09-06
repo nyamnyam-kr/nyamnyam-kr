@@ -14,7 +14,7 @@ public class ReplyServiceImpl implements ReplyService {
     private final ReplyRepository repository;
 
     @Override
-    public List<?> findAll(Long postId) {
+    public List<ReplyEntity> findAll() {
         return repository.findAll();
     }
 

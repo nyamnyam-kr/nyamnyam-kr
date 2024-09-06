@@ -21,15 +21,10 @@ public class ImageController {
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteById(id));
     }
     @GetMapping("/exists/{id}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
@@ -39,7 +34,10 @@ public class ImageController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
     @PutMapping("")
     public ResponseEntity<ImageEntity> update(@RequestBody ImageEntity entity) {
         return ResponseEntity.ok(service.save(entity));

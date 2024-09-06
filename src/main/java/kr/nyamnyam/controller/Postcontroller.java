@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/posts")
 public class Postcontroller {
     private final PostService service;
-    private final PostRepository repository;
 
     @GetMapping("/group")
     public ResponseEntity<List<PostEntity>> findAll() {
@@ -27,8 +26,8 @@ public class Postcontroller {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("/exist")
-    public ResponseEntity<Boolean> existsById(@RequestParam Long id) {
+    @GetMapping("/exist/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
         return ResponseEntity.ok(service.existsById(id));
     }
 
@@ -42,7 +41,7 @@ public class Postcontroller {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<PostEntity> update(@PathVariable Long id,@RequestBody PostEntity entity) {
+    public ResponseEntity<PostEntity> update(@PathVariable Long id, @RequestBody PostEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
     @PostMapping("")

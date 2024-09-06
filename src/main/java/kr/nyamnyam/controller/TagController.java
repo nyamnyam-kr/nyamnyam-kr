@@ -27,11 +27,6 @@ public class TagController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteById(id));
-    }
-
     @GetMapping("/exists/{id}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
         return ResponseEntity.ok(service.existsById(id));
@@ -41,9 +36,13 @@ public class TagController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
 
-    @PutMapping("")
-    public ResponseEntity<TagEntity> update(@RequestBody TagEntity entity) {
+    @PutMapping("/{id}")
+    public ResponseEntity<TagEntity> update(@PathVariable Long id, @RequestBody TagEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 

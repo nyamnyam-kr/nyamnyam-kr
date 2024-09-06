@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ReplyService{
 
-    List<?> findAll(Long postId);
+    List<ReplyEntity> findAll();
 
     ReplyEntity findById(Long id);
 
