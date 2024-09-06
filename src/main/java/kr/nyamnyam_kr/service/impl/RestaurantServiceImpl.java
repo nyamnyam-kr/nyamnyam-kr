@@ -52,5 +52,10 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantRepository.count();
     }
 
+    public List<RestaurantEntity> findByName(String name) {
+        return restaurantRepository.findByName(name);
+    };
+
+
 
 }
