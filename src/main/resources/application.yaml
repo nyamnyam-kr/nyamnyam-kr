@@ -1,9 +1,10 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/nyamnyamdb
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    mongodb:
+      uri: mongodb://root:1234@211.188.50.33:27017/test
+      auto-index-creation: true
+
+
   jpa:
     hibernate:
       ddl-auto: update

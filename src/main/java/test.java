@@ -1,4 +1,4 @@
-import kr.nyamnyam_kr.NyamnyamKrApplication;
+import kr.nyamnyam.NyamnyamKrApplication;
 import org.springframework.boot.SpringApplication;
 
 
