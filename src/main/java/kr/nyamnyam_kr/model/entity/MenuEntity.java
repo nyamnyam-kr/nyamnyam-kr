@@ -9,20 +9,14 @@ import lombok.Data;
 public class MenuEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "price")
     private Long price;
 
-    @Column(name = "menu_name")
-    private String menuName;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name="restaurant_id")
-    private RestaurantEntity restaurant;
+    private RestaurantEntity restaurantEntity;
 
-    @OneToOne
-    @JoinColumn(name = "category_id")
-    private CategoryEntity categoryEntity;
 }

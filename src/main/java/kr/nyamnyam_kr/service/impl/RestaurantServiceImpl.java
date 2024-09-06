@@ -54,4 +54,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     public long count() {
         return restaurantRepository.count();
     }
+
+
 }

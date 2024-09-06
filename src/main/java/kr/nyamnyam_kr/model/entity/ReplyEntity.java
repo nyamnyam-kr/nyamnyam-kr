@@ -9,11 +9,10 @@ import lombok.Data;
 public class ReplyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id;
 
-    @Column(name="content")
     private String content;
+
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")

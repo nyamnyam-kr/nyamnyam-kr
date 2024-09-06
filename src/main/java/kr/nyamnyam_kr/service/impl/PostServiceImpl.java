@@ -17,8 +17,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostEntity save(PostModel postModel) {
-        PostEntity postEntity = new PostEntity();
-        return postRepository.save(postEntity);
+        return null;
     }
 
     @Override

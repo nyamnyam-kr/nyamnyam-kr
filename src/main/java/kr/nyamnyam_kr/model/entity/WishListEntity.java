@@ -5,22 +5,17 @@ import lombok.Data;
 
 import java.util.List;
 
-@Entity
 @Data
-@Table(name = "category")
-public class CategoryEntity {
+@Entity
+@Table(name = "wishList")
+public class WishListEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "categoryEntity")
-    private MenuEntity menuEntity;
-
-    @OneToMany(mappedBy = "categoryEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "wishListEntity",fetch = FetchType.LAZY,cascade = CascadeType.ALL )
     private List<RestaurantEntity> restaurantEntityList;
 }

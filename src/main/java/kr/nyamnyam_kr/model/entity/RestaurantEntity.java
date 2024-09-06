@@ -11,54 +11,26 @@ import java.util.List;
 @Data
 @Table(name = "restaurant")
 public class RestaurantEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Long postId; // 고유번호 (POST_SN)
+    private String langCodeId; // 언어
+    private String name; // 상호명
+    private String postUrl; // 콘텐츠URL
+    private String address; // 주소
+    private String phoneNumber; // 전화번호
+    private String websiteUrl; // 웹사이트
+    private String useTime; // 운영시간
+    private String subwayInfo; // 교통정보
+    private String representativeMenu; // 대표메뉴
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "wishlist_id")
+    private WishListEntity wishListEntity;
 
-    @Column(name = "address")
-    private String address;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity categoryEntity;
 
-    @Column(name = "tel")
-    private Long tel;
-
-    @Column(name = "operate_Time")
-    private String operateTime;
-
-    @Column(name = "entry_date")
-    private Date entryDate;
-
-    @Column(name = "modify_date")
-    private Date modifyDate;
-
-    @Column(name = "toilet")
-    private Long toilet;
-
-    @Column(name = "zone_id")
-    private Long zoneId;
-
-    // !!! 은서 : zone이랑 Join 확인 부탁드려요
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<PostEntity> postEntityList;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<ReplyEntity> replyEntityList;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<MenuEntity> menuEntityList;
-
-    public static RestaurantEntity toRestaurantEntity(RestaurantModel restaurantModel) {
-        RestaurantEntity restaurantEntity = new RestaurantEntity();
-        restaurantEntity.setName(restaurantModel.getName());
-        restaurantEntity.setAddress(restaurantModel.getAddress());
-        restaurantEntity.setTel(restaurantModel.getTel());
-        restaurantEntity.setOperateTime(restaurantModel.getOperateTime());
-        restaurantEntity.setToilet(restaurantModel.getToilet());
-        return restaurantEntity;
-    }
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RestaurantService {
+
     RestaurantEntity save(RestaurantModel restaurantModel);
 
     List<RestaurantEntity> findAll();
@@ -18,4 +19,5 @@ public interface RestaurantService {
     boolean existsById(Long id);
 
     long count();
+
 }
