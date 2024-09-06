@@ -20,4 +20,7 @@ public class RestaurantModel {
     private String subwayInfo; // 교통정보
     private String representativeMenu; // 대표메뉴
 
+    private String category;
+    private String ImageUrl;
+
 }

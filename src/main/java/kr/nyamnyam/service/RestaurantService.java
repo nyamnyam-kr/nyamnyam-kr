@@ -8,4 +8,6 @@ public interface RestaurantService {
     boolean saveRestaurantFromApi(List<RestaurantEntity> restaurantList);
 
     boolean existsByNameAndAddress(String name, String address);
+
+  /*  void updateRestaurantWithImage(RestaurantEntity restaurant);*/
 }

@@ -2,6 +2,8 @@ package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.service.ApiService;
+import kr.nyamnyam.service.CategoryService;
+import kr.nyamnyam.service.RestImgService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,11 @@ import java.util.List;
 public class ApiServiceImpl implements ApiService {
     private final String API_URL = "http://openapi.seoul.go.kr:8088/6752776d616f796a38324674447771/xml/TbVwRestaurants/1/500/";
     private final RestaurantService restaurantService;
+    private final CategoryService categoryService;
+    private final RestImgService restImgService;
 
     @Override
-    public boolean getRestaurants() {
+    public List<RestaurantEntity> getRestaurants() {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.getForObject(API_URL, String.class);
@@ -49,7 +53,7 @@ public class ApiServiceImpl implements ApiService {
             for (int i = 0; i < nameList.getLength(); i++) {
                 // 한국어만 추출
                 String langCode = langCodeList.item(i).getTextContent();
-                if("ko".equals(langCode)) {
+                if ("ko".equals(langCode)) {
                     RestaurantEntity restaurant = new RestaurantEntity();
                     restaurant.setPostId(Long.valueOf(idList.item(i).getTextContent()));
                     restaurant.setLangCodeId(doc.getElementsByTagName("LANG_CODE_ID").item(i).getTextContent());
@@ -62,17 +66,27 @@ public class ApiServiceImpl implements ApiService {
                     restaurant.setSubwayInfo(subwayInfoList.item(i).getTextContent());
                     restaurant.setRepresentativeMenu(representativeMenuList.item(i).getTextContent());
 
+
+                    String representativeMenu = restaurant.getRepresentativeMenu();
+                    restaurant.setCategory(categoryService.extractCategory(representativeMenu));
+
+                   /* String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
+                    restaurant.setImageUrl(imageUrl);*/
+
                     if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())) {
                         restaurantList.add(restaurant);
                     }
                 }
             }
 
+            restaurantService.saveRestaurantFromApi(restaurantList);
+            return restaurantList;
 
-            return restaurantService.saveRestaurantFromApi(restaurantList);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return List.of();
     }
+
+
 }

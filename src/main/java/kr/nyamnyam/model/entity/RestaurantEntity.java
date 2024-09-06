@@ -20,4 +20,7 @@ public class RestaurantEntity {
     private String useTime; // 운영시간
     private String subwayInfo; // 교통정보
     private String representativeMenu; // 대표메뉴
+    private String category;
+    private String ImageUrl;
+
 }
