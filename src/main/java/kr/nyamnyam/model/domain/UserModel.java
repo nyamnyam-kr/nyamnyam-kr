@@ -11,6 +11,7 @@ public class UserModel {
     private String nickname;
     private String name;
     private Long grade;
+    private Long age;
     private String role;
     private String tel;
     private String gender;
