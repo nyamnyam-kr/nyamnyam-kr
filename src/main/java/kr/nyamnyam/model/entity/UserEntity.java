@@ -20,7 +20,6 @@ public class UserEntity {
     private String password;
     private String nickname;
     private String name;
-    private Long grade;
     private Long age;
     private String role;
     private String tel;
