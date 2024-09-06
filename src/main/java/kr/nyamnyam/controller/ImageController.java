@@ -1,6 +1,7 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.entity.ImageEntity;
+import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,12 @@ public class ImageController {
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
+    
     @GetMapping("/{id}")
     public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
-    @PostMapping("")
-    public ResponseEntity<ImageEntity> save(@RequestBody ImageEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
-    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));
@@ -39,5 +38,15 @@ public class ImageController {
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
+    }
+
+    @PutMapping("")
+    public ResponseEntity<ImageEntity> update(@RequestBody ImageEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ImageEntity> save(@RequestBody ImageEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
 }

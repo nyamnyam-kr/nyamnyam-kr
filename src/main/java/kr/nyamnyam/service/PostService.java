@@ -7,15 +7,17 @@ import java.util.List;
 
 public interface PostService {
 
-    List<PostEntity> findAll(Long restId);
+    List<PostEntity> findAll();
 
     PostEntity findById(Long id);
-
-    Boolean deleteById(Long id);
-
 
     Boolean existsById(Long id);
 
     Long count();
+
+    Boolean deleteById(Long id);
+
+    PostEntity save(PostEntity entity);
+
 }
 

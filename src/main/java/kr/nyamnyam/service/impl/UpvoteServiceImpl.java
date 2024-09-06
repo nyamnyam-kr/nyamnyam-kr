@@ -25,8 +25,13 @@ public class UpvoteServiceImpl implements UpvoteService {
     }
 
     @Override
-    public UpvoteEntity save(UpvoteEntity entity) {
-        return repository.save(entity);
+    public Boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
+    public Long count() {
+        return repository.count();
     }
 
     @Override
@@ -40,12 +45,7 @@ public class UpvoteServiceImpl implements UpvoteService {
     }
 
     @Override
-    public Boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Override
-    public Long count() {
-        return repository.count();
+    public UpvoteEntity save(UpvoteEntity entity) {
+        return repository.save(entity);
     }
 }

@@ -17,35 +17,17 @@ public class Postcontroller {
     private final PostService service;
     private final PostRepository repository;
 
-    @PostMapping("/write")
-    public PostEntity write(@RequestBody PostEntity postEntity) {
-        return repository.save(PostEntity.builder()
-                .content(postEntity.getContent())
-                .taste(postEntity.getTaste())
-                .clean(postEntity.getClean())
-                .service(postEntity.getService())
-                .entryDate(postEntity.getEntryDate())
-                .modifyDate(postEntity.getModifyDate())
-                .build());
-    }
-
-    // 식당별 findAll
     @GetMapping("/group")
-    public ResponseEntity<List<PostEntity>> findAll(@RequestParam Long restId) {
-        return ResponseEntity.ok(service.findAll(restId));
+    public ResponseEntity<List<PostEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @PostMapping("")
+    @GetMapping("")
     public ResponseEntity<PostEntity> findById(@RequestBody Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.deleteById(id));
-    }
-
-    @GetMapping("")
+    @GetMapping("/exist")
     public ResponseEntity<Boolean> existsById(@RequestParam Long id) {
         return ResponseEntity.ok(service.existsById(id));
     }
@@ -53,5 +35,18 @@ public class Postcontroller {
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+    @PutMapping("")
+    public ResponseEntity<PostEntity> update(@RequestBody PostEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
+    }
+    @PostMapping("")
+    public ResponseEntity<PostEntity> write(@RequestBody PostEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
 }

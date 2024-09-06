@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "upVote")
+@Table(name = "upvote")
 public class UpvoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

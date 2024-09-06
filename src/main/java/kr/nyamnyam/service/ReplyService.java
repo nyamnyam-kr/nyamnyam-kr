@@ -11,11 +11,12 @@ public interface ReplyService{
 
     ReplyEntity findById(Long id);
 
-    Boolean deleteById(Long id);
-
     Boolean existsById(Long id);
 
     Long count();
 
+    Boolean deleteById(Long id);
+
+    ReplyEntity save(ReplyEntity entity);
 }
 

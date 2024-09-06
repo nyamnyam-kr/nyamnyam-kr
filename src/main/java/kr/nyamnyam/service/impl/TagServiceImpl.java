@@ -25,8 +25,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagEntity save(TagEntity entity) {
-        return repository.save(entity);
+    public Boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
+    public Long count() {
+        return repository.count();
     }
 
     @Override
@@ -38,14 +43,8 @@ public class TagServiceImpl implements TagService {
             return false;
         }
     }
-
     @Override
-    public Boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Override
-    public Long count() {
-        return repository.count();
+    public TagEntity save(TagEntity entity) {
+        return repository.save(entity);
     }
 }

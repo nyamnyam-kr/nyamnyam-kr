@@ -24,6 +24,16 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
+    public Boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
+    public Long count() {
+        return repository.count();
+    }
+
+    @Override
     public Boolean deleteById(Long id) {
         if(repository.existsById(id)) {
             repository.deleteById(id);
@@ -33,12 +43,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public Boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Override
-    public Long count() {
-        return repository.count();
+    public ReplyEntity save(ReplyEntity entity) {
+        return repository.save(entity);
     }
 }
