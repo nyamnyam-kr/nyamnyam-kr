@@ -7,15 +7,17 @@ import lombok.Data;
 @Data
 @Table(name = "restaurant")
 public class RestaurantEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postId; // 고유번호 (POST_SN)
 
-    private String name; // 음식점 이름 (POST_SJ)
-    private String address; // 주소 (ADDRESS)
-    private String newAddress; // 새 주소 (NEW_ADDRESS)
-    private String phoneNumber; // 전화번호 (CMMN_TELNO)
-    private String subwayInfo; // 지하철 정보 (SUBWAY_INFO)
-    private String menu; // 대표 메뉴 (FD_REPRSNT_MENU)
-
+    private String langCodeId; // 언어
+    private String name; // 상호명
+    private String postUrl; // 콘텐츠URL
+    private String address; // 주소
+    private String phoneNumber; // 전화번호
+    private String websiteUrl; // 웹사이트
+    private String useTime; // 운영시간
+    private String subwayInfo; // 교통정보
+    private String representativeMenu; // 대표메뉴
 }

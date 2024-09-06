@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/restaurant")
 public class RestaurantController {
     private final ApiService apiService;
     private final RestaurantService restaurantService;
@@ -17,10 +17,13 @@ public class RestaurantController {
 
 
 
-    @GetMapping("/restaurants")
+    @GetMapping("/api")
     public boolean getRestaurants() {
         return apiService.getRestaurants();
     }
 
+   /* @GetMapping("/showPosts")
+    public
+*/
 
 }

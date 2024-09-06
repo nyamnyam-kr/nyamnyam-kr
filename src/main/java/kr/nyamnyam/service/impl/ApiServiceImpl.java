@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ApiServiceImpl implements ApiService {
-    private final String API_URL = "http://openapi.seoul.go.kr:8088/6752776d616f796a38324674447771/xml/TbVwRestaurants/1/1000/";
+    private final String API_URL = "http://openapi.seoul.go.kr:8088/6752776d616f796a38324674447771/xml/TbVwRestaurants/1/500/";
     private final RestaurantService restaurantService;
 
     @Override
@@ -28,33 +28,47 @@ public class ApiServiceImpl implements ApiService {
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.getForObject(API_URL, String.class);
 
-            //xml 파싱
+            // XML 파싱
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(response)));
 
 
-            // 필요한 데이터 추출
+            NodeList idList = doc.getElementsByTagName("POST_SN");
+            NodeList langCodeList = doc.getElementsByTagName("LANG_CODE_ID");
             NodeList nameList = doc.getElementsByTagName("POST_SJ");
-            NodeList addressList = doc.getElementsByTagName("ADDRESS");
-            NodeList newAddressList = doc.getElementsByTagName("NEW_ADDRESS");
+            NodeList addressList = doc.getElementsByTagName("NEW_ADDRESS");
             NodeList phoneNumberList = doc.getElementsByTagName("CMMN_TELNO");
+            NodeList websiteUrlList = doc.getElementsByTagName("CMMN_HMPG_URL");
+            NodeList useTimeList = doc.getElementsByTagName("CMMN_USE_TIME");
             NodeList subwayInfoList = doc.getElementsByTagName("SUBWAY_INFO");
+            NodeList representativeMenuList = doc.getElementsByTagName("FD_REPRSNT_MENU");
 
             List<RestaurantEntity> restaurantList = new ArrayList<>();
 
             for (int i = 0; i < nameList.getLength(); i++) {
-                RestaurantEntity restaurant = new RestaurantEntity();
-                restaurant.setName(nameList.item(i).getTextContent());
-                restaurant.setAddress(addressList.item(i).getTextContent());
-                restaurant.setNewAddress(newAddressList.item(i).getTextContent());
-                restaurant.setPhoneNumber(phoneNumberList.item(i).getTextContent());
-                restaurant.setSubwayInfo(subwayInfoList.item(i).getTextContent());
+                // 한국어만 추출
+                String langCode = langCodeList.item(i).getTextContent();
+                if("ko".equals(langCode)) {
+                    RestaurantEntity restaurant = new RestaurantEntity();
+                    restaurant.setPostId(Long.valueOf(idList.item(i).getTextContent()));
+                    restaurant.setLangCodeId(doc.getElementsByTagName("LANG_CODE_ID").item(i).getTextContent());
+                    restaurant.setName(nameList.item(i).getTextContent());
+                    restaurant.setPostUrl(doc.getElementsByTagName("POST_URL").item(i).getTextContent());
+                    restaurant.setAddress(addressList.item(i).getTextContent());
+                    restaurant.setPhoneNumber(phoneNumberList.item(i).getTextContent());
+                    restaurant.setWebsiteUrl(websiteUrlList.item(i).getTextContent());
+                    restaurant.setUseTime(useTimeList.item(i).getTextContent());
+                    restaurant.setSubwayInfo(subwayInfoList.item(i).getTextContent());
+                    restaurant.setRepresentativeMenu(representativeMenuList.item(i).getTextContent());
 
-                restaurantList.add(restaurant);
+                    if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())) {
+                        restaurantList.add(restaurant);
+                    }
+                }
             }
 
-            // DB에 저장하고 성공 여부 반환
+
             return restaurantService.saveRestaurantFromApi(restaurantList);
         } catch (Exception e) {
             e.printStackTrace();

@@ -24,4 +24,15 @@ public class RestaurantServiceImpl implements RestaurantService {
             return false;
         }
     }
+
+    @Override
+    public boolean existsByNameAndAddress(String name, String address) {
+        try {
+            restaurantRepository.existsByNameAndAddress(name, address);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
