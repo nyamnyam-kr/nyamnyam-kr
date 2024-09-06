@@ -34,10 +34,6 @@ public class UserEntity {
 
     private Boolean enabled;
 
-//    @OneToMany(mappedBy="user")
-//    private List<ReplyEntity> replyEntityList;
 
-    @OneToMany(mappedBy="user")
-    private List<PostEntity> postEntityList;
 
 }
