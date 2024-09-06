@@ -1,37 +1,43 @@
 package kr.nyamnyam_kr.controller;
 
 import kr.nyamnyam_kr.model.entity.UpvoteEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import kr.nyamnyam_kr.service.UpvoteService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@CrossOrigin
+@RequiredArgsConstructor
 @RequestMapping("/upvote")
 public class UpvoteController {
-    
-    public List<UpvoteEntity> findAll() {
-        return List.of();
-    }
+    private final UpvoteService service;
 
-    public UpvoteEntity findById(Long id) {
-        return null;
+    @PostMapping("/group")
+    public ResponseEntity<List<UpvoteEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
-
-    public Boolean save(UpvoteEntity entity) {
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<UpvoteEntity>> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
-
-    public Boolean deleteById(Long id) {
-        return null;
+    @PostMapping("")
+    public ResponseEntity<UpvoteEntity> save(@RequestBody UpvoteEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
-    
-    public Boolean existsById(Long id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
     }
-
-    
-    public long count() {
-        return 0;
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.existsById(id));
+    }
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
     }
 }

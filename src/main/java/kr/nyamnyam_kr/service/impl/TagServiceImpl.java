@@ -1,40 +1,51 @@
 package kr.nyamnyam_kr.service.impl;
 
 import kr.nyamnyam_kr.model.entity.TagEntity;
+import kr.nyamnyam_kr.model.repository.TagRepository;
 import kr.nyamnyam_kr.service.TagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
+    private final TagRepository repository;
+
     @Override
     public List<TagEntity> findAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
-    public TagEntity findById(Long id) {
-        return null;
+    public Optional<TagEntity> findById(Long id) {
+        return repository.findById(id);
     }
 
     @Override
-    public Boolean save(TagEntity entity) {
-        return null;
+    public TagEntity save(TagEntity entity) {
+        return repository.save(entity);
     }
 
     @Override
     public Boolean deleteById(Long id) {
-        return null;
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public Boolean existsById(Long id) {
-        return null;
+        return repository.existsById(id);
     }
 
     @Override
-    public long count() {
-        return 0;
+    public Long count() {
+        return repository.count();
     }
 }

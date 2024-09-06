@@ -1,20 +1,22 @@
 package kr.nyamnyam_kr.service;
 
-import kr.nyamnyam_kr.model.entity.PostEntity;
 import kr.nyamnyam_kr.model.entity.UpvoteEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UpvoteService {
+
     List<UpvoteEntity> findAll();
 
-    UpvoteEntity findById(Long id);
+    Optional<UpvoteEntity> findById(Long id);
 
-    Boolean save(UpvoteEntity entity);
+    UpvoteEntity save(UpvoteEntity entity);
 
     Boolean deleteById(Long id);
 
     Boolean existsById(Long id);
 
-    long count();
+    Long count();
+
 }

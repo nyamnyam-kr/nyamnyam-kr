@@ -1,37 +1,43 @@
 package kr.nyamnyam_kr.controller;
 
 import kr.nyamnyam_kr.model.entity.ImageEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import kr.nyamnyam_kr.service.ImageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/tags")
+@CrossOrigin
+@RequiredArgsConstructor
+@RequestMapping("/upvote")
 public class ImageController {
-    
-    public List<ImageEntity> findAll() {
-        return List.of();
-    }
+    private final ImageService service;
 
-    public ImageEntity findById(Long id) {
-        return null;
+    @PostMapping("/group")
+    public ResponseEntity<List<ImageEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
-
-    public Boolean save(ImageEntity entity) {
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
-
-    public Boolean deleteById(Long id) {
-        return null;
+    @PostMapping("")
+    public ResponseEntity<ImageEntity> save(@RequestBody ImageEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
-    
-    public Boolean existsById(Long id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
     }
-
-    
-    public long count() {
-        return 0;
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.existsById(id));
+    }
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
     }
 }
