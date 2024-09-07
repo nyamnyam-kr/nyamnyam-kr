@@ -25,8 +25,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageEntity save(ImageEntity entity) {
-        return repository.save(entity);
+    public Boolean existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    @Override
+    public Long count() {
+        return repository.count();
     }
 
     @Override
@@ -40,12 +45,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Override
-    public Long count() {
-        return repository.count();
+    public Boolean save(ImageEntity entity) {
+        return repository.save(entity) != null;
     }
 }

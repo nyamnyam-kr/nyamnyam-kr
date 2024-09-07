@@ -1,6 +1,5 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequestMapping("/replies")
 public class ReplyController {
     private final ReplyService service;
-    private final ReplyRepository repository;
 
     @GetMapping("/group")
     public ResponseEntity<List<ReplyEntity>> findAll() {
@@ -42,12 +40,12 @@ public class ReplyController {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReplyEntity> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 
     @PostMapping("")
-    public ResponseEntity<ReplyEntity> write(@RequestBody ReplyEntity entity) {
+    public ResponseEntity<Boolean> write(@RequestBody ReplyEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 }

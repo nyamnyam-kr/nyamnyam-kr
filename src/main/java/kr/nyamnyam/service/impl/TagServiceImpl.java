@@ -43,8 +43,9 @@ public class TagServiceImpl implements TagService {
             return false;
         }
     }
+
     @Override
-    public TagEntity save(TagEntity entity) {
-        return repository.save(entity);
+    public Boolean save(TagEntity entity) {
+        return repository.save(entity) != null;
     }
 }

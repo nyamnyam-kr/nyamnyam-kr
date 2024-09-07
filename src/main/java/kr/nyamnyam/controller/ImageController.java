@@ -1,7 +1,6 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.entity.ImageEntity;
-import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,12 +38,12 @@ public class ImageController {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("")
-    public ResponseEntity<ImageEntity> update(@RequestBody ImageEntity entity) {
+    public ResponseEntity<Boolean> update(@RequestBody ImageEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 
     @PostMapping("")
-    public ResponseEntity<ImageEntity> save(@RequestBody ImageEntity entity) {
+    public ResponseEntity<Boolean> save(@RequestBody ImageEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 }

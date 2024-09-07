@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity save(PostEntity entity) {
-        return repository.save(entity);
+    public Boolean save(PostEntity entity) {
+        return repository.save(entity) != null;
     }
 }

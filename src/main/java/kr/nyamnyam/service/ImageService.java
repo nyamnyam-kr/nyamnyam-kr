@@ -11,12 +11,11 @@ public interface ImageService {
 
     Optional<ImageEntity> findById(Long id);
 
-    ImageEntity save(ImageEntity entity);
-
-    Boolean deleteById(Long id);
-
     Boolean existsById(Long id);
 
     Long count();
 
+    Boolean deleteById(Long id);
+
+    Boolean save(ImageEntity entity);
 }

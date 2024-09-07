@@ -17,6 +17,6 @@ public interface ReplyService{
 
     Boolean deleteById(Long id);
 
-    ReplyEntity save(ReplyEntity entity);
+    Boolean save(ReplyEntity entity);
 }
 

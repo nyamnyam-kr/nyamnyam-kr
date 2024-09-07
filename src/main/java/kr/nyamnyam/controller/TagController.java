@@ -1,6 +1,5 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.Optional;
 public class TagController {
     private final TagService service;
 
-    @PostMapping("/group")
+    @GetMapping("/group")
     public ResponseEntity<List<TagEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
@@ -42,12 +41,12 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TagEntity> update(@PathVariable Long id, @RequestBody TagEntity entity) {
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody TagEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 
     @PostMapping("")
-    public ResponseEntity<TagEntity> save(@RequestBody TagEntity entity) {
+    public ResponseEntity<Boolean> save(@RequestBody TagEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 }

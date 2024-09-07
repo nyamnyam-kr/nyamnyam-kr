@@ -42,12 +42,12 @@ public class UpvoteController {
     }
 
     @PutMapping("")
-    public ResponseEntity<UpvoteEntity> update(@RequestBody UpvoteEntity entity) {
+    public ResponseEntity<Boolean> update(@RequestBody UpvoteEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 
     @PostMapping("")
-    public ResponseEntity<UpvoteEntity> save(@RequestBody UpvoteEntity entity) {
+    public ResponseEntity<Boolean> save(@RequestBody UpvoteEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 }

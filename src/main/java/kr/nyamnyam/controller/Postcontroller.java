@@ -41,11 +41,11 @@ public class Postcontroller {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<PostEntity> update(@PathVariable Long id, @RequestBody PostEntity entity) {
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody PostEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
     @PostMapping("")
-    public ResponseEntity<PostEntity> write(@RequestBody PostEntity entity) {
+    public ResponseEntity<Boolean> write(@RequestBody PostEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
 }

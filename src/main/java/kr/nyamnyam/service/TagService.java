@@ -11,12 +11,11 @@ public interface TagService {
 
     Optional<TagEntity> findById(Long id);
 
-    TagEntity save(TagEntity entity);
-
-    Boolean deleteById(Long id);
-
     Boolean existsById(Long id);
 
     Long count();
 
+    Boolean deleteById(Long id);
+
+    Boolean save(TagEntity entity);
 }

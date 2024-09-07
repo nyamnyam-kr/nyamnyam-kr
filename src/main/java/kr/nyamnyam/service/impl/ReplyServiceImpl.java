@@ -43,7 +43,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public ReplyEntity save(ReplyEntity entity) {
-        return repository.save(entity);
+    public Boolean save(ReplyEntity entity) {
+        return repository.save(entity) != null;
     }
 }

@@ -16,7 +16,6 @@ public interface PostService {
 
     Boolean deleteById(Long id);
 
-    PostEntity save(PostEntity entity);
-
+    Boolean save(PostEntity entity);
 }
 
