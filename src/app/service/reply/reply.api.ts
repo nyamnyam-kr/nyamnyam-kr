@@ -1,15 +1,12 @@
-export async function insertPost(post: PostModel): Promise<any | {status: number}> {
+export async function insertReply(reply: ReplyModel): Promise<any | {status: number}> {
   try {
     const body = {
-        id: post.id, 
-        content: post.content,
-        taste: post.taste,
-        clean: post.clean,
-        service: post.service,
-        entryDate: post.entryDate,
-        modifyDate: post.modifyDate
+        id: reply.id, 
+        content: reply.content,
+        entryDate: reply.entryDate,
+        modifyDate: reply.modifyDate
     }
-    const response = await fetch('http://localhost:8080/posts', {
+    const response = await fetch('http://localhost:8080/replies', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +24,7 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
       throw new Error(`Server returned non-JSON response: ${errorMessage}`);
     }
   } catch (error) {
-    console.error('Error occurred while inserting post:', error);
+    console.error('Error occurred while inserting reply:', error);
     return {status: 500};
   }
 }

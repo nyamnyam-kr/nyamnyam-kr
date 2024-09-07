@@ -60,7 +60,7 @@ export default function Home() {
                 fetch(`http://localhost:8080/posts/${id}`, { method: 'DELETE' })
             ))
                 .then(() => {
-                    alert("선택한 게시글이 삭제되었습니다.");
+                    alert("게시글이 삭제되었습니다.");
                     setSelectPosts([]);
                     fetchPosts();
                 })

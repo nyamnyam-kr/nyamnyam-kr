@@ -36,12 +36,12 @@ export default function PostDetail() {
     <h1 className="text-2xl font-bold mb-6">게시글 상세화면</h1>
     <div className="bg-white shadow-md rounded p-6 w-full max-w-2xl">
       <div className="space-y-4">
-        <p><strong>ID:</strong> {posts?.id}</p>
-        <p><strong>맛:</strong> {posts?.taste}</p>
-        <p><strong>청결:</strong> {posts?.clean}</p>
-        <p><strong>서비스:</strong> {posts?.service}</p>
-        <p><strong>내용:</strong> {posts?.content}</p>
-        <p><strong>작성일:</strong> {posts?.entryDate}</p>
+        <p><strong>NO: </strong> {posts?.id}</p>
+        <p><strong>맛: </strong> {posts?.taste}</p>
+        <p><strong>청결: </strong> {posts?.clean}</p>
+        <p><strong>서비스: </strong> {posts?.service}</p>
+        <p><strong>내용: </strong> {posts?.content}</p>
+        <p><strong>작성일: </strong> {posts?.entryDate}</p>
       </div>
     </div>
     <div className="mt-4">

@@ -1,9 +1,8 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
-import { createContext, FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 export default function PostUpdate() {
-  const [posts, setPosts] =useState();
   const router = useRouter();
   const {id} = useParams();
 
@@ -16,6 +15,25 @@ export default function PostUpdate() {
     entryDate: '',
     modifyDate: ''
   });
+
+  useEffect(()=> {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/posts/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch post');
+        }
+        const data: PostModel = await response.json();
+        setFormData(data);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
+    };
+
+    if (id) {
+      fetchPost();
+    }
+  },[id]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -45,26 +63,6 @@ export default function PostUpdate() {
       [name]: value
     }));
   };
-
-  useEffect(()=> {
-    const fetchPost = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/posts/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch post');
-        }
-        const data: PostModel = await response.json();
-        setFormData(data);
-      } catch (error) {
-        console.error('Error fetching post:', error);
-      }
-    };
-
-    if (id) {
-      fetchPost();
-    }
-  },[id]);
-
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -111,7 +109,7 @@ export default function PostUpdate() {
             value={formData.content}
             onChange={handleChange}
             className="w-full p-2 border rounded"
-            rows={4}
+            rows={1}
           />
         </div>
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">

@@ -32,6 +32,12 @@ export default function RootLayout({
             <li>
               <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">POST</Link>
             </li>
+            <li>
+              <Link href="/reply/replies" className="hover:bg-blue-600 px-3 py-2 rounded">Reply</Link>
+            </li>
+            <li>
+              <Link href="/tag/tags" className="hover:bg-blue-600 px-3 py-2 rounded">Tag</Link>
+            </li>
           </ul>
         </div>
       </nav>
