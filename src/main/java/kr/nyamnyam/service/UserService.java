@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface UserService {
 
+    List<UserEntity> crawling(int pageNum, int pageSize);
+
     boolean existsById(Long id);
 
     Optional<UserEntity> findByUsername(String username);

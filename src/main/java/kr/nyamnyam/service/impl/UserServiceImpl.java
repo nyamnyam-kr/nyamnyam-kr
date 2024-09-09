@@ -1,20 +1,92 @@
 package kr.nyamnyam.service.impl;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UserEntity;
 import kr.nyamnyam.model.repository.UserRepository;
+import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    private Pagination pagination;
+
     private final UserRepository userRepository;
+
+    @Override
+    public List<UserEntity> crawling(int pageNum, int pageSize) {
+        System.out.println("크롤링 확인");
+
+        // WebDriver 설정
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless")); // Headless 모드
+
+        List<UserEntity> allUserEntities = new ArrayList<>();
+
+        try {
+            // 접속할 URL (크롤링할 웹 페이지)
+            String url = "https://namu.wiki/w/%EB%B0%B0%EC%9A%B0/%ED%95%9C%EA%B5%AD"; // 실제 URL로 변경
+            driver.get(url);
+
+            // 데이터 크롤링 로직
+            List<WebElement> elements = driver.findElements(By.cssSelector("div.hbU9WWgP a.QfLdZcbX")); // CSS 선택자 사용
+            for (WebElement element : elements) {
+                // 링크 텍스트를 username으로 사용
+                String username = element.getText().trim();
+
+                // href 속성 값을 nickname으로 사용
+                String nickname = element.getAttribute("href");
+
+                // " " (빈 문자열 또는 공백만 있는 경우) 를 제외
+                if (username.isEmpty() || username.equals(" ")) {
+                    continue;
+                }
+
+                // UserEntity 객체 생성
+                UserEntity userEntity = UserEntity.builder()
+                        .username(username)
+                        .nickname(nickname)
+                        .build();
+
+                allUserEntities.add(userEntity);
+            }
+
+        } finally {
+            // 브라우저 종료
+            driver.quit();
+        }
+
+        // Pagination 객체 생성
+        pagination = new Pagination(allUserEntities.size(), pageNum);
+
+        // 페이지 범위에 맞게 데이터 자르기
+        List<UserEntity> paginatedEntities = allUserEntities.stream()
+                .skip(pagination.getStartRow())
+                .limit(pageSize)
+                .collect(Collectors.toList());
+
+        // 데이터베이스에 저장
+        userRepository.saveAll(paginatedEntities);
+
+        return paginatedEntities;
+    }
+
 
     @Override
     public boolean existsById(Long id) {

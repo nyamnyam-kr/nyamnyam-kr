@@ -3,6 +3,8 @@ package kr.nyamnyam.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -25,5 +27,8 @@ public class UserEntity {
     private String tel;
     private String gender;
     private Boolean enabled;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserThumbnailEntity> thumbnails;
 }
 

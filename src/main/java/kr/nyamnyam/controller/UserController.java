@@ -4,6 +4,7 @@ import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UserEntity;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,14 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/crawling")
+    public ResponseEntity<List<UserEntity>> findCrawling(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(userService.crawling(pageNum, pageSize));
+    }
 
     @GetMapping("/existsById")
     public boolean existsById(@RequestParam Long id) {
