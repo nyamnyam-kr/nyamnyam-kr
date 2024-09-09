@@ -6,7 +6,7 @@ export async function insertReply(reply: ReplyModel): Promise<any | {status: num
         entryDate: reply.entryDate,
         modifyDate: reply.modifyDate
     }
-    const response = await fetch('http://localhost:8080/replies', {
+    const response = await fetch('http://localhost:8080/api/replies', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

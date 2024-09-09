@@ -13,7 +13,7 @@ export default function ReplyList() {
     }, []);
 
     const fetchReply = () => {
-        fetch('http://localhost:8080/replies/group')
+        fetch('http://localhost:8080/api/replies/group')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -47,7 +47,7 @@ export default function ReplyList() {
         }
         if (window.confirm("선택한 댓글을 삭제하시겠습니까?")) {
             Promise.all(selectReplies.map(id =>
-                fetch(`http://localhost:8080/replies/${id}`,
+                fetch(`http://localhost:8080/api/replies/${id}`,
                     { method: 'DELETE' })
             ))
                 .then(() => {

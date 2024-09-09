@@ -14,7 +14,7 @@ export default function TagUpdate() {
   useEffect(() => {
     const fetchTag = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/tags/${id}`)
+        const response = await fetch(`http://localhost:8080/api/tags/${id}`)
         if (!response.ok) {
           throw new Error('Failed to fetch tag');
         }
@@ -32,7 +32,7 @@ export default function TagUpdate() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/tags/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/tags/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

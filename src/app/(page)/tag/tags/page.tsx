@@ -14,7 +14,7 @@ export default function TagList() {
   },[]);
   
   const fetchTag = () => {
-    fetch('http://localhost:8080/tags/group')
+    fetch('http://localhost:8080/api/tags/group')
         .then((response) => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -48,7 +48,7 @@ const handleDelete = () => {
     }
     if(window.confirm("선택한 태그를 삭제하시겠습니까?")){
       Promise.all(selectTags.map(id =>
-        fetch(`http://localhost:8080/tags/${id}`,
+        fetch(`http://localhost:8080/api/tags/${id}`,
           {method: 'DELETE'})
       ))
         .then(()=> {

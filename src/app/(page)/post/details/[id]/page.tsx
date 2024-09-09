@@ -10,7 +10,7 @@ export default function PostDetail() {
 
     useEffect(()=> {
         if(id){
-          fetch(`http://localhost:8080/posts/${id}`)
+          fetch(`http://localhost:8080/api/posts/${id}`)
           .then((response)=>{
             if(!response.ok){
               throw new Error("Failed to fetch group details");

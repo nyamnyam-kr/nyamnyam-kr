@@ -3,18 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
-interface PostModel {
-    id: number;
-    taste: number;
-    clean: number;
-    service: number;
-    content: string;
-    entryDate: string;
-}
-
 export default function Home() {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [selectPosts, setSelectPosts] = useState<number[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const router = useRouter();
 
     useEffect(() => {
@@ -22,7 +14,7 @@ export default function Home() {
     }, []);
 
     const fetchPosts = () => {
-        fetch('http://localhost:8080/posts/group')
+        fetch('http://localhost:8080/api/posts/group/1')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -57,7 +49,7 @@ export default function Home() {
 
         if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
             Promise.all(selectPosts.map(id =>
-                fetch(`http://localhost:8080/posts/${id}`, { method: 'DELETE' })
+                fetch(`http://localhost:8080/api/posts/${id}`, { method: 'DELETE' })
             ))
                 .then(() => {
                     alert("게시글이 삭제되었습니다.");
@@ -71,6 +63,42 @@ export default function Home() {
         }
     };
 
+    const handleCrawling = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/posts/crawling`, { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length > 0) {
+                    alert(`크롤링 결과를 받았습니다: ${data.length}개의 항목`);
+                } else {
+                    alert('크롤링 결과가 없습니다.');
+                }
+            } else {
+                throw new Error('응답 오류');
+            }
+        } catch (error: any) {
+            alert(`크롤링 오류 발생: ${error.message}`);
+        }
+    };
+
+    const handleNone = async () => {
+            alert('크롤링 막았놓았습니다.')
+    }
+
+    const handlePage = async (pageNo: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/posts/group/${pageNo}`, { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data);
+                setCurrentPage(pageNo);
+            } else {
+                throw new Error('응답 오류');
+            }
+        } catch (error: any) {
+            alert(`페이지 오류 발생: ${error.message}`);
+        }
+    };
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
@@ -120,17 +148,62 @@ export default function Home() {
                 </table>
                 <div className="mt-4">
                     <button
+                        className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded mr-2"
+                        onClick={handleNone}>
+                        크롤링
+                    </button>
+                    <button
                         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
                         onClick={() => router.push('post/register')}>
                         등록하기
                     </button>
                     <button
-                        className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+                        className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2"
                         onClick={handleDelete}>
                         삭제하기
                     </button>
+                    <button
+                         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                        onClick={()=>handlePage(1)}>
+                        첫 페이지
+                    </button>
                 </div>
             </div>
+            <nav aria-label="Page navigation example">
+  <ul className="flex items-center -space-x-px h-8 text-sm mt-4">
+    <li>
+      <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span className="sr-only">Previous</span>
+        <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
+      </a>
+    </li>
+    <li>
+      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+    </li>
+    <li>
+      <a href="#" onClick={()=>handlePage(2)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+    </li>
+    <li>
+      <a href="#" onClick={()=>handlePage(3)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
+    </li>
+    <li>
+      <a href="#" onClick={()=>handlePage(4)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
+    </li>
+    <li>
+      <a href="#" onClick={()=>handlePage(5)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+    </li>
+    <li>
+      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span className="sr-only">Next</span>
+        <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+      </a>
+    </li>
+  </ul>
+</nav>
         </main>
     );
 }

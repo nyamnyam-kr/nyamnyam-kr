@@ -19,7 +19,7 @@ export default function PostUpdate() {
   useEffect(()=> {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/posts/${id}`);
+        const response = await fetch(`http://localhost:8080/api/posts/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch post');
         }
@@ -38,7 +38,7 @@ export default function PostUpdate() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/posts/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

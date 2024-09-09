@@ -16,7 +16,7 @@ export default function ReplyUpdate() {
   useEffect (() => {
       const fetchReply = async () => {
         try{
-          const response = await fetch(`http://localhost:8080/replies/${id}`)
+          const response = await fetch(`http://localhost:8080/api/replies/${id}`)
           if(!response.ok){
             throw new Error('Failed to fetch reply');
           }
@@ -34,7 +34,7 @@ export default function ReplyUpdate() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/replies/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/replies/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

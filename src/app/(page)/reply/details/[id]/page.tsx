@@ -9,7 +9,7 @@ export default function ReplyDetail() {
 
   useEffect(()=> {
     if (id) {
-      fetch(`http://localhost:8080/replies/${id}`)
+      fetch(`http://localhost:8080/api/replies/${id}`)
       .then((response)=>{
         if(!response.ok){
           throw new Error("Failed to fetch reply details");
@@ -24,11 +24,11 @@ export default function ReplyDetail() {
 },[id]);
 
   const handleUpdate = () => {
-    router.push(`/reply/update/${id}`);
+    router.push(`/api/reply/update/${id}`);
   }
 
   const handleReplyList = () => {
-    router.push('/reply/replies');
+    router.push('/api/reply/replies');
   }
 
   return (

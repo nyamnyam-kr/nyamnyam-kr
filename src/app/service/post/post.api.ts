@@ -9,7 +9,7 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
         entryDate: post.entryDate,
         modifyDate: post.modifyDate
     }
-    const response = await fetch('http://localhost:8080/posts', {
+    const response = await fetch('http://localhost:8080/api/posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

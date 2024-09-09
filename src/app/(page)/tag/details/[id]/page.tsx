@@ -10,7 +10,7 @@ export default function TagDetail() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:8080/tags/${id}`)
+      fetch(`http://localhost:8080/api/tags/${id}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch tag details");
