@@ -1,62 +1,231 @@
 "use client";
-import React, { useEffect, useState } from "react";
 
-export default function Home2() {
-    const [data, setData] = useState({ hotelList: [] });
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-    useEffect(() => {
-        fetch('http://211.188.50.43:8080/restaurant/findAll')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setData({ hotelList: data });
-            })
-            .catch((error) => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
-    }, []);
 
-    const fcAlert = () => {
-        alert('Insert page로 이동합니다');
-        window.location.href = "/restaurant/register";
-    }
+export default function Home() {
+  const [channels, setChannels] = useState<ChannelModel[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [selectChannels, setSelectChannels] = useState<string[]>([]);
+  const router = useRouter();
 
-    return (
-        <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
-            <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
-                <button
-                    className="mb-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    onClick={fcAlert}
-                >
-                    Go Save
-                </button>
-                <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
-                    <thead>
-                        <tr className="bg-blue-600 text-white">
-                            <th className="py-3 px-4 border-b">Index</th>
-                            <th className="py-3 px-4 border-b">Name</th>
-                            <th className="py-3 px-4 border-b">Tel</th>
-                            <th className="py-3 px-4 border-b">Address</th>
-                            <th className="py-3 px-4 border-b">OperateDate</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.hotelList.map((h, index) => (
-                            <tr key={index} className="hover:bg-gray-100">
-                                <td className="py-3 px-4 border-b">{index}</td>
-                                <td className="py-3 px-4 border-b">{h.name}</td>
-                                <td className="py-3 px-4 border-b">{h.tel}</td>
-                                <td className="py-3 px-4 border-b">{h.address}</td>
-                                <td className="py-3 px-4 border-b">{h.operateTime}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </main>
+  // 기본 상태
+  useEffect(() => {
+    fetchChannels();
+  }, []);
+
+  // 페이지 네이션 적용
+  const fetchChannels = () => {
+    fetch('http://localhost:8080/api/channels/findAllPerPage/1')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setChannels(data);
+      })
+      .catch((error) => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+  };
+
+  // 디테일 원
+  const handleDetails = (id: string) => {
+    router.push('/post/details/${id}');
+  };
+
+  const handleCheck = (id: string) => {
+    setSelectChannels(prevSelected =>
+      prevSelected.includes(id)
+        ? prevSelected.filter(postId => postId !== id)
+        : [...prevSelected, id]
     );
+  };
+
+  const handleDelete = () => {
+    if (selectChannels.length === 0) {
+      alert("삭제할 게시글을 선택해주세요.");
+      return;
+    }
+    if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
+      Promise.all(selectChannels.map(id =>
+        fetch(`http://localhost:8080/api/channels/${id}`, { method: 'DELETE' })
+      ))
+        .then(() => {
+          alert("게시글이 삭제되었습니다.");
+          setSelectChannels([]);
+          fetchChannels();
+        })
+        .catch(error => {
+          console.error('Delete operation failed:', error);
+          alert("삭제 중 오류가 발생했습니다.");
+        });
+    }
+  };
+
+  const handleCrawling = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/channels/crawling`, { method: 'GET' });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          alert(`크롤링 결과를 받았습니다: ${data.length}개의 항목`);
+        } else {
+          alert('크롤링 결과가 없습니다.');
+        }
+      } else {
+        throw new Error('응답 오류');
+      }
+    } catch (error: any) {
+      alert(`크롤링 오류 발생: ${error.message}`);
+    }
+  };
+  const handleNone = async () => {
+    alert('크롤링 막았놓았습니다.')
+  }
+
+
+  const handlePage = async (pageNo: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/channels/findAllPerPage/${pageNo}`, { method: 'GET' });
+      if (response.ok) {
+        const data = await response.json();
+        setChannels(data);
+        setCurrentPage(pageNo);
+      } else {
+        throw new Error('응답 오류');
+      }
+    } catch (error: any) {
+      alert(`페이지 오류 발생: ${error.message}`);
+    }
+  };
+
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(currentPage - Math.floor(maxPagesToShow / 2), 1);
+    let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(endPage - maxPagesToShow + 1, 1);
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers;
+  };
+
+
+  return (
+    <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
+      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
+        <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-blue-600 text-white">
+              <th className="py-3 px-4 border-b"></th>
+              <th className="py-3 px-4 border-b">번호</th>
+              <th className="py-3 px-4 border-b">채널 이름</th>
+              <th className="py-3 px-4 border-b">참가자</th>
+            </tr>
+          </thead>
+          <tbody>
+            {channels.map((p) => (
+              <tr key={c.id} className="border border-indigo-600">
+                <td className="py-3 px-4 border-b">
+                  <input
+                    type="checkbox"
+                    checked={selectChannels.includes(c.id)}
+                    onChange={() => handleCheck(c.id)}
+                  />
+                </td>
+                <td className="py-3 px-4 border-b">
+                  <Link
+                    href={`/channel/details/${c.id}`}
+                    className="text-blue-600 hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDetails(c.id ?? null);
+                    }}
+                  >
+                    {p.id}
+                  </Link>
+                </td>
+                <td className="py-3 px-4 border-b">{p.taste}</td>
+                <td className="py-3 px-4 border-b">{p.clean}</td>
+                <td className="py-3 px-4 border-b">{p.service}</td>
+                <td className="py-3 px-4 border-b">{p.content}</td>
+                <td className="py-3 px-4 border-b">{p.entryDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="mt-4">
+          <button
+            className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded mr-2"
+            onClick={handleNone}>
+            크롤링
+          </button>
+          <button
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+            onClick={() => router.push('post/register')}>
+            등록하기
+          </button>
+          <button
+            className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2"
+            onClick={handleDelete}>
+            삭제하기
+          </button>
+          <button
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+            onClick={() => handlePage(1)}>
+            첫 페이지
+          </button>
+        </div>
+      </div>
+      <nav aria-label="Page navigation example">
+        <ul className="flex items-center -space-x-px h-8 text-sm">
+          <li>
+            <button
+              onClick={() => handlePage(currentPage - 1)}
+              className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+              disabled={currentPage <= 1}
+            >
+              <span className="sr-only">Previous</span>
+              <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+              </svg>
+            </button>
+          </li>
+          {getPageNumbers().map(page => (
+            <li key={page}>
+              <button
+                onClick={() => handlePage(page)}
+                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === page ? 'text-blue-600 border-blue-300 bg-blue-50' : 'text-gray-500 border-gray-300'} hover:bg-gray-100 hover:text-gray-700`}
+              >
+                {page}
+              </button>
+            </li>
+          ))}
+          <li>
+            <button
+              onClick={() => handlePage(currentPage + 1)}
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+              disabled={currentPage >= totalPages}
+            >
+              <span className="sr-only">Next</span>
+              <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </main>
+  );
+  )
+
 }
