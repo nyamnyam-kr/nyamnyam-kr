@@ -1,7 +1,6 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.entity.ReplyEntity;
-import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/replies")
+@RequestMapping("/api/replies")
 public class ReplyController {
     private final ReplyService service;
 

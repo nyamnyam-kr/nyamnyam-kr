@@ -12,7 +12,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/tags")
+@RequestMapping("/api/tags")
 public class TagController {
     private final TagService service;
 

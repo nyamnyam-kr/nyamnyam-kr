@@ -12,7 +12,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/images")
+@RequestMapping("/api/images")
 public class ImageController {
     private final ImageService service;
 

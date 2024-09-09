@@ -12,7 +12,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/upvote")
+@RequestMapping("/api/upvote")
 public class UpvoteController {
     private final UpvoteService service;
 

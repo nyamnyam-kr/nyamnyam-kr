@@ -17,5 +17,9 @@ public interface PostService {
     Boolean deleteById(Long id);
 
     Boolean save(PostEntity entity);
+
+    List<PostEntity> findAllPerPage(int page);
+
+    Boolean crawling();
 }
 
