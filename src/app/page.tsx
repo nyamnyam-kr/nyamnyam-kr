@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
-export default function Home() {
+export default function Home1() {
   const [channels, setChannels] = useState<ChannelModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectChannels, setSelectChannels] = useState<string[]>([]);
+  const [selectChannels, setSelectChannels] = useState<any[]>([]);
   const router = useRouter();
 
   // 기본 상태
@@ -35,14 +35,14 @@ export default function Home() {
   };
 
   // 디테일 원
-  const handleDetails = (id: string) => {
+  const handleDetails = (id: any) => {
     router.push('/post/details/${id}');
   };
 
-  const handleCheck = (id: string) => {
-    setSelectChannels(prevSelected =>
+  const handleCheck = (id: any) => {
+    setSelectChannels((prevSelected: string[]) =>
       prevSelected.includes(id)
-        ? prevSelected.filter(postId => postId !== id)
+        ? prevSelected.filter((channelId: string) => channelId !== id)
         : [...prevSelected, id]
     );
   };
@@ -53,7 +53,7 @@ export default function Home() {
       return;
     }
     if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
-      Promise.all(selectChannels.map(id =>
+      Promise.all(selectChannels.map((id: any) =>
         fetch(`http://localhost:8080/api/channels/${id}`, { method: 'DELETE' })
       ))
         .then(() => {
@@ -127,13 +127,13 @@ export default function Home() {
           <thead>
             <tr className="bg-blue-600 text-white">
               <th className="py-3 px-4 border-b"></th>
-              <th className="py-3 px-4 border-b">번호</th>
+              <th className="py-3 px-4 border-b">채널 아이디</th>
               <th className="py-3 px-4 border-b">채널 이름</th>
               <th className="py-3 px-4 border-b">참가자</th>
             </tr>
           </thead>
           <tbody>
-            {channels.map((p) => (
+            {channels.map((c) => (
               <tr key={c.id} className="border border-indigo-600">
                 <td className="py-3 px-4 border-b">
                   <input
@@ -151,14 +151,11 @@ export default function Home() {
                       handleDetails(c.id ?? null);
                     }}
                   >
-                    {p.id}
+                    {c.id}
                   </Link>
                 </td>
-                <td className="py-3 px-4 border-b">{p.taste}</td>
-                <td className="py-3 px-4 border-b">{p.clean}</td>
-                <td className="py-3 px-4 border-b">{p.service}</td>
-                <td className="py-3 px-4 border-b">{p.content}</td>
-                <td className="py-3 px-4 border-b">{p.entryDate}</td>
+                <td className="py-3 px-4 border-b">{c.name}</td>
+                <td className="py-3 px-4 border-b">{c.participants}</td>
               </tr>
             ))}
           </tbody>
@@ -226,6 +223,4 @@ export default function Home() {
       </nav>
     </main>
   );
-  )
-
 }
