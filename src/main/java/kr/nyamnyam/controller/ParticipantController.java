@@ -12,7 +12,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("/participants")
+@RequestMapping("/api/participants")
 public class ParticipantController {
     private final ParticipantService participantService;
 

@@ -10,10 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ChannelModel {
 
-    private String id;
-
-    private String channelId; // 채널 ID
-    private String senderId;  // 발신자 ID
-    private String content;   // 메시지 내용
-    private LocalDateTime timestamp; // 메시지 타임스탬프
+    private String id; // Channel ID (optional for update, auto-generated for new records)
+    private String name; // Channel name
+    private List<String> participants; // List of participant IDs
 }

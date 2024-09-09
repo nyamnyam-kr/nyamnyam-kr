@@ -13,7 +13,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("/messages")
+@RequestMapping("/api/messages")
 public class MessageController {
     private final MessageService messageService;
 
