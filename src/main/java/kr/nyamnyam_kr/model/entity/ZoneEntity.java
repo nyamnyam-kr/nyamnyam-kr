@@ -16,6 +16,5 @@ public class ZoneEntity {
     private String name;
 
 
-    @OneToOne(mappedBy = "zone")
-    private RestaurantEntity restaurant;
+
 }

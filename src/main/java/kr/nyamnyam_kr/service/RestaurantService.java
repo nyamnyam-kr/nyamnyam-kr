@@ -11,9 +11,9 @@ public interface RestaurantService {
 
     List<RestaurantEntity> findAll();
 
-    Optional<RestaurantEntity> findById(Long id);
+    RestaurantEntity findById(Long id);
 
-    void deleteById(Long id);
+    Boolean deleteById(Long id);
 
     boolean existsById(Long id);
 

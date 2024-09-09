@@ -6,47 +6,48 @@ import kr.nyamnyam_kr.model.entity.ReplyEntity;
 import kr.nyamnyam_kr.model.entity.RestaurantEntity;
 import kr.nyamnyam_kr.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("/restaurant/")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @PostMapping("/save")
-    public RestaurantEntity save(RestaurantModel restaurantModel) {
-        return restaurantService.save(restaurantModel);
+    @PostMapping("save")
+    public ResponseEntity<RestaurantEntity> save(@RequestBody RestaurantModel restaurantModel) {
+        System.out.println("restaurantModel = " + restaurantModel);
+        return ResponseEntity.ok(restaurantService.save(restaurantModel));
     }
 
-    @GetMapping("/findAll")
-    public List<RestaurantEntity> findAll() {
-        return restaurantService.findAll();
+    @GetMapping("findAll")
+    public ResponseEntity<List<?>> findAll() {
+        return ResponseEntity.ok(restaurantService.findAll());
     }
 
-    @GetMapping("/findById")
-    public Optional<RestaurantEntity> findById(Long id) {
-        return restaurantService.findById(id);
+    @GetMapping("findById")
+    public ResponseEntity<RestaurantEntity> findById(@RequestParam Long id) {
+        return ResponseEntity.ok(restaurantService.findById(id));
     }
 
     @GetMapping("deleteById")
-    public void deleteById(Long id) {
-        restaurantService.deleteById(id);
+    public ResponseEntity<Boolean> deleteById(@RequestParam Long id) {
+        return ResponseEntity.ok(restaurantService.deleteById(id));
     }
 
-    @GetMapping("/existsById")
+    @GetMapping("existsById")
     public boolean existsById(Long id) {
         return restaurantService.existsById(id);
     }
 
-    @GetMapping("/count")
+    @GetMapping("count")
     public long count() {
         return restaurantService.count();
     }

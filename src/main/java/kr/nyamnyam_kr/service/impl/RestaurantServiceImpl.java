@@ -1,5 +1,7 @@
 package kr.nyamnyam_kr.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import kr.nyamnyam_kr.model.domain.RestaurantModel;
 import kr.nyamnyam_kr.model.entity.RestaurantEntity;
 import kr.nyamnyam_kr.model.repository.RestaurantRepository;
@@ -17,7 +19,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantEntity save(RestaurantModel restaurantModel) {
-        RestaurantEntity restaurantEntity = new RestaurantEntity();
+        RestaurantEntity restaurantEntity = RestaurantEntity.toRestaurantEntity(restaurantModel);
         return restaurantRepository.save(restaurantEntity);
     }
 
@@ -27,14 +29,28 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Optional<RestaurantEntity> findById(Long id) {
-        return restaurantRepository.findById(id);
+    public RestaurantEntity findById(Long id) {
+        return restaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant not found with id " + id));
     }
 
+
     @Override
-    public void deleteById(Long id) {
-        restaurantRepository.deleteById(id);
+    public Boolean deleteById(Long id) {
+        if (restaurantRepository.existsById(id)) {
+            restaurantRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    @Transactional
+    public void deleteAll(List<Long> restaurantsIds) {
+        restaurantRepository.deleteAllByIds(restaurantsIds);
+    }
+
+
 
     @Override
     public boolean existsById(Long id) {
