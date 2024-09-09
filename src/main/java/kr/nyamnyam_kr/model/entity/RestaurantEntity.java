@@ -2,7 +2,10 @@ package kr.nyamnyam_kr.model.entity;
 
 import jakarta.persistence.*;
 import kr.nyamnyam_kr.model.domain.RestaurantModel;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 import java.util.List;

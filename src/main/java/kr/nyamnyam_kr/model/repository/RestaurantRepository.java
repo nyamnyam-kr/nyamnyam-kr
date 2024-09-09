@@ -1,6 +1,8 @@
 package kr.nyamnyam_kr.model.repository;
 
 import kr.nyamnyam_kr.model.entity.RestaurantEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +16,5 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity,Lon
     @Modifying
     @Query("delete from RestaurantEntity r where r.id in :ids")
     void deleteAllByIds(@Param("ids") List<Long> ids);
+
 }

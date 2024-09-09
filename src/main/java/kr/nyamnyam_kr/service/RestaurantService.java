@@ -2,6 +2,7 @@ package kr.nyamnyam_kr.service;
 
 import kr.nyamnyam_kr.model.domain.RestaurantModel;
 import kr.nyamnyam_kr.model.entity.RestaurantEntity;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,11 @@ public interface RestaurantService {
 
     boolean existsById(Long id);
 
-    long count();
+    Long count();
+
+    List<RestaurantEntity> findAllPage(int page);
+
+    void getNew();
+
+    void crawlingBot();
 }
