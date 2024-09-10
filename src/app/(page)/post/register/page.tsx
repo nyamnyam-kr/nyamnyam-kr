@@ -30,6 +30,9 @@ export default function PostRegister() {
     await insertPost(formData);
     router.push('/')
   };
+  const imageRegister = () => {
+    router.push('/image/register');
+   }
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
@@ -105,6 +108,11 @@ export default function PostRegister() {
           className="border rounded p-2 w-full"
         />
       </div>
+      <button
+         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+         onClick={imageRegister}>  
+         첨부파일
+    </button>
       <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
         등록하기
       </button>
