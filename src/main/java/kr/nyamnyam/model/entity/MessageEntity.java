@@ -16,9 +16,10 @@ public class MessageEntity {
     @Id
     private String id;
 
-    private String channelId; // 채널 ID
-    private String senderId;  // 발신자 ID
+    private String channelName; // 채널 ID
+    private String receiver;
+    private String sender;  // 발신자 ID
     private String content;   // 메시지 내용
     @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now(); // 자동으로 현재 시간 설정
+    private LocalDateTime CreatedAt = LocalDateTime.now(); // 자동으로 현재 시간 설정
 }

@@ -40,7 +40,7 @@ public class ChannelServiceImpl implements ChannelService {
     public List<ChannelEntity> findAllPerPage(int page) {
         List<ChannelEntity> list = channelRepository.findAll();
         int totalCount = (int) count();
-        Pagination p=new Pagination(page,totalCount);
+        Pagination p=new Pagination(totalCount,page);
         int startRow = p.getStartRow();
         int endRow = p.getEndRow();
         List<ChannelEntity> pageData = new ArrayList<>();

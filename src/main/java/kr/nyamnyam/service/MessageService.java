@@ -1,23 +1,12 @@
 package kr.nyamnyam.service;
 
 
-import kr.nyamnyam.model.domain.MessageModel;
 import kr.nyamnyam.model.entity.MessageEntity;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface MessageService {
+    Flux<MessageEntity> getMessagesBySenderAndReceiver(String sender, String receiver);
+    Mono<MessageEntity> saveMessage(MessageEntity message);
 
-    MessageEntity save(MessageEntity messageEntity);
-
-    List<MessageEntity> findAll();
-
-    Optional<MessageEntity> findById(String id);
-
-    boolean deleteById(String id);
-
-    boolean existsById(String id);
-
-    long count();
 }

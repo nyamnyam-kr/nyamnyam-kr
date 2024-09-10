@@ -1,62 +1,32 @@
 package kr.nyamnyam.controller;
 
+
 import kr.nyamnyam.model.entity.MessageEntity;
+import kr.nyamnyam.model.repository.MessageRepository;
 import kr.nyamnyam.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
-@RestController
 @RequiredArgsConstructor
-@CrossOrigin
-@RequestMapping("/api/messages")
+@RestController
 public class MessageController {
+
     private final MessageService messageService;
 
-    @PostMapping("")
-    public ResponseEntity<Boolean> save(@RequestBody MessageEntity messageEntity) {
-
-        if (messageEntity.getId() == null) {
-            messageService.save(messageEntity);
-            return ResponseEntity.ok(true);
-        }
-
-        return ResponseEntity.ok(false);
+    @GetMapping(value = "/sender/{sender}/receiver/{receiver}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<MessageEntity> getMessage(@PathVariable String sender, @PathVariable String receiver) {
+        return messageService.getMessagesBySenderAndReceiver(sender, receiver);
     }
 
-    @PutMapping("")
-    public ResponseEntity<MessageEntity> update(@RequestBody MessageEntity messageEntity) {
-        return ResponseEntity.ok(messageService.save(messageEntity));
+    @PostMapping("/chat")
+    public Mono<MessageEntity> setMessage(@RequestBody MessageEntity message) {
+        return messageService.saveMessage(message);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable String id) {
-
-        return ResponseEntity.ok(messageService.deleteById(id));
-    }
-
-    @GetMapping("")
-    public ResponseEntity<List<MessageEntity>> findAll() {
-        return ResponseEntity.ok(messageService.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<MessageEntity>> findById(String id) {
-        return ResponseEntity.ok(messageService.findById(id));
-    }
-
-
-    @GetMapping("/exists")
-    public ResponseEntity<Boolean> existsById(String id) {
-        return ResponseEntity.ok(messageService.existsById(id));
-    }
-
-    @GetMapping("/count")
-    public ResponseEntity<?> count() {
-        return ResponseEntity.ok(messageService.count());
-    }
 }
