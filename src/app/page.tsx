@@ -2,17 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-
 export default function Home() {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [selectPosts, setSelectPosts] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const router = useRouter();
-
     useEffect(() => {
         fetchPosts();
     }, []);
-
     const fetchPosts = () => {
         fetch('http://localhost:8080/api/posts/group/1')
             .then((response) => {
@@ -28,11 +26,9 @@ export default function Home() {
                 console.error('There has been a problem with your fetch operation:', error);
             });
     };
-
     const handleDetails = (id: number) => {
         router.push('/post/details/${id}');
     };
-
     const handleCheck = (id: number) => {
         setSelectPosts(prevSelected =>
             prevSelected.includes(id)
@@ -40,13 +36,11 @@ export default function Home() {
                 : [...prevSelected, id]
         );
     };
-
     const handleDelete = () => {
         if (selectPosts.length === 0) {
             alert("삭제할 게시글을 선택해주세요.");
             return;
         }
-
         if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
             Promise.all(selectPosts.map(id =>
                 fetch(`http://localhost:8080/api/posts/${id}`, { method: 'DELETE' })
@@ -62,7 +56,6 @@ export default function Home() {
                 });
         }
     };
-
     const handleCrawling = async () => {
         try {
             const response = await fetch(`http://localhost:8080/api/posts/crawling`, { method: 'GET' });
@@ -80,11 +73,9 @@ export default function Home() {
             alert(`크롤링 오류 발생: ${error.message}`);
         }
     };
-
-    const handleNone = async () => {
+    const CrawlingNone = async () => {
             alert('크롤링 막았놓았습니다.')
     }
-
     const handlePage = async (pageNo: number) => {
         try {
             const response = await fetch(`http://localhost:8080/api/posts/group/${pageNo}`, { method: 'GET' });
@@ -99,7 +90,19 @@ export default function Home() {
             alert(`페이지 오류 발생: ${error.message}`);
         }
     };
-
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        const maxPagesToShow = 5;
+        let startPage = Math.max(currentPage - Math.floor(maxPagesToShow / 2), 1);
+        let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+        if (endPage - startPage + 1 < maxPagesToShow) {
+            startPage = Math.max(endPage - maxPagesToShow + 1, 1);
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+        }
+        return pageNumbers;
+    };
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
@@ -149,7 +152,7 @@ export default function Home() {
                 <div className="mt-4">
                     <button
                         className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded mr-2"
-                        onClick={handleNone}>
+                        onClick={CrawlingNone}>
                         크롤링
                     </button>
                     <button
@@ -180,7 +183,7 @@ export default function Home() {
       </a>
     </li>
     <li>
-      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+      <a href="#" onClick={()=>handlePage(1)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
     </li>
     <li>
       <a href="#" onClick={()=>handlePage(2)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
@@ -207,3 +210,10 @@ export default function Home() {
         </main>
     );
 }
+
+
+
+
+
+
+
