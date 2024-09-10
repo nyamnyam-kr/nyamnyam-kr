@@ -17,9 +17,4 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity,Lon
     @Modifying
     @Query("delete from RestaurantEntity r where r.id in :ids")
     void deleteAllByIds(@Param("ids") List<Long> ids);
-
-
-
-
-
 }
