@@ -22,7 +22,7 @@ public class MenuEntity {
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurant;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
-    private CategoryEntity categoryEntity;
+    private CategoryEntity category;
 }

@@ -94,6 +94,11 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantEntities;
     }
 
+    @Override
+    public List<RestaurantEntity> findAllUserName(String username) {
+       return restaurantRepository.findByName(username);
+    }
+
 
     @Override
     public void getNew() {

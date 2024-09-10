@@ -3,6 +3,8 @@ package kr.nyamnyam_kr.model.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "category")
@@ -16,6 +18,6 @@ public class CategoryEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "categoryEntity")
-    private MenuEntity menuEntity;
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
+    private List<MenuEntity> menuEntity;
 }

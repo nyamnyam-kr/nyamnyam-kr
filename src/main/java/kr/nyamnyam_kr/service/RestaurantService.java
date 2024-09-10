@@ -22,6 +22,8 @@ public interface RestaurantService {
 
     List<RestaurantEntity> findAllPage(int page, int pageSize);
 
+    List<RestaurantEntity> findAllUserName(String username);
+
     void getNew();
 
     void crawlingBot();
