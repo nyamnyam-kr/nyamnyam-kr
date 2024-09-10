@@ -7,36 +7,62 @@ import { useEffect, useState } from "react";
 
 export default function Home1() {
   const [channels, setChannels] = useState<ChannelModel[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
+  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
+
   const [selectChannels, setSelectChannels] = useState<any[]>([]);
   const router = useRouter();
 
   // 기본 상태
   useEffect(() => {
-    fetchChannels();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]); // currentPage가 변경될 때마다 데이터 새로 고침
+
+  const fetchData = async (pageNo: number) => {
+    setLoading(true); // 로딩 상태 시작
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/channels/findAllPerPage/${pageNo}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setChannels(data);
+
+      const totalCountResponse = await fetch('http://localhost:8080/api/channels/count');
+      const totalCount = await totalCountResponse.json();
+      setTotalPages(Math.ceil(totalCount / 10));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false); // 로딩 상태 종료
+    }
+  };
+
 
   // 페이지 네이션 적용
-  const fetchChannels = () => {
-    fetch('http://localhost:8080/api/channels/findAllPerPage/1')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setChannels(data);
-      })
-      .catch((error) => {
-        console.error('There has been a problem with your fetch operation:', error);
-      });
-  };
+  // const fetchChannels = () => {
+  //   fetch('http://localhost:8080/api/channels/findAllPerPage/1')
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       setChannels(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('There has been a problem with your fetch operation:', error);
+  //     });
+  // };
 
   // 디테일 원
   const handleDetails = (id: any) => {
-    router.push('/post/details/${id}');
+    console.log(id)
+    router.push('/channel/details/${id}');
   };
 
   const handleCheck = (id: any) => {
@@ -59,7 +85,7 @@ export default function Home1() {
         .then(() => {
           alert("게시글이 삭제되었습니다.");
           setSelectChannels([]);
-          fetchChannels();
+          handlePage(1);
         })
         .catch(error => {
           console.error('Delete operation failed:', error);
@@ -90,32 +116,27 @@ export default function Home1() {
   }
 
 
-  const handlePage = async (pageNo: number) => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/channels/findAllPerPage/${pageNo}`, { method: 'GET' });
-      if (response.ok) {
-        const data = await response.json();
-        setChannels(data);
-        setCurrentPage(pageNo);
-      } else {
-        throw new Error('응답 오류');
-      }
-    } catch (error: any) {
-      alert(`페이지 오류 발생: ${error.message}`);
-    }
+  const handlePage = (pageNo: number) => {
+    if (pageNo < 1 || pageNo > totalPages) return; // 페이지 번호 유효성 검사
+    setCurrentPage(pageNo);
   };
+
 
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxPagesToShow = 5;
     let startPage = Math.max(currentPage - Math.floor(maxPagesToShow / 2), 1);
     let endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+    // Adjust the start page if there are not enough pages before the current page
     if (endPage - startPage + 1 < maxPagesToShow) {
       startPage = Math.max(endPage - maxPagesToShow + 1, 1);
     }
+
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
+
     return pageNumbers;
   };
 
@@ -221,6 +242,7 @@ export default function Home1() {
           </li>
         </ul>
       </nav>
+
     </main>
   );
 }

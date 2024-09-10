@@ -33,7 +33,12 @@ export default function ChannelDetail() {
       {channelData ? (
         <div>
           <p>Channel Name: {channelData.name}</p>
-          <p>Participants: {channelData.participants.join(", ")}</p>
+          <p>
+            Participants:{" "}
+            {channelData.participants && channelData.participants.length > 0
+              ? channelData.participants.join(", ")
+              : "No participants available"}
+          </p>
         </div>
       ) : (
         <p>Loading...</p>
