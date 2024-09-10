@@ -2,19 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
+
 export default function Home() {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [selectPosts, setSelectPosts] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
     const router = useRouter();
 
     useEffect(() => {
-        fetchPosts(currentPage);
-    }, [currentPage]);
+        fetchPosts();
+    }, []);
 
-    const fetchPosts = (pageNo:number) => {
-        fetch(`http://localhost:8080/api/posts/group/${pageNo}`)
+    const fetchPosts = () => {
+        fetch('http://localhost:8080/api/posts/group/1')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -46,6 +46,7 @@ export default function Home() {
             alert("삭제할 게시글을 선택해주세요.");
             return;
         }
+
         if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
             Promise.all(selectPosts.map(id =>
                 fetch(`http://localhost:8080/api/posts/${id}`, { method: 'DELETE' })
@@ -53,7 +54,7 @@ export default function Home() {
                 .then(() => {
                     alert("게시글이 삭제되었습니다.");
                     setSelectPosts([]);
-                    fetchPosts(currentPage);
+                    fetchPosts();
                 })
                 .catch(error => {
                     console.error('Delete operation failed:', error);
@@ -80,26 +81,23 @@ export default function Home() {
         }
     };
 
-    const CrawlingNone = async () => {
+    const handleNone = async () => {
             alert('크롤링 막았놓았습니다.')
     }
 
     const handlePage = async (pageNo: number) => {
-       setCurrentPage(pageNo);
-    };
-
-    const renderPage = () => {
-        return Array.from({length: totalPages}, (_, index) => index + 1)
-                    .map(page => (
-                        <li key={page}>
-                            <button
-                                onClick={() => handlePage(page)}
-                                className={`px-3 h-8 leading-tight ${currentPage === page ? 'bg-blue-500 text-white' : 'bg-white text-gray-500'} hover:bg-blue-100`}
-                            >
-                                {page}
-                            </button>
-                        </li>
-                    ));
+        try {
+            const response = await fetch(`http://localhost:8080/api/posts/group/${pageNo}`, { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data);
+                setCurrentPage(pageNo);
+            } else {
+                throw new Error('응답 오류');
+            }
+        } catch (error: any) {
+            alert(`페이지 오류 발생: ${error.message}`);
+        }
     };
 
     return (
@@ -150,6 +148,11 @@ export default function Home() {
                 </table>
                 <div className="mt-4">
                     <button
+                        className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded mr-2"
+                        onClick={handleNone}>
+                        크롤링
+                    </button>
+                    <button
                         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
                         onClick={() => router.push('post/register')}>
                         등록하기
@@ -164,16 +167,11 @@ export default function Home() {
                         onClick={()=>handlePage(1)}>
                         첫 페이지
                     </button>
-                    <button
-                        className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded mr-2"
-                        onClick={CrawlingNone}>
-                        크롤링
-                    </button>
                 </div>
             </div>
-           <nav aria-label="Page navigation example">
-               <ul className="flex items-center -space-x-px h-8 text-sm mt-4">
-               <li>
+            <nav aria-label="Page navigation example">
+  <ul className="flex items-center -space-x-px h-8 text-sm mt-4">
+    <li>
       <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span className="sr-only">Previous</span>
         <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -182,7 +180,7 @@ export default function Home() {
       </a>
     </li>
     <li>
-      <a href="#" onClick={()=>handlePage(1)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
     </li>
     <li>
       <a href="#" onClick={()=>handlePage(2)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
@@ -204,16 +202,8 @@ export default function Home() {
         </svg>
       </a>
     </li>
-
-                </ul>     
-           </nav>
+  </ul>
+</nav>
         </main>
     );
 }
-
-
-
-
-
-
-
