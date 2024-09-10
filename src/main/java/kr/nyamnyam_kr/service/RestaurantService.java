@@ -20,7 +20,7 @@ public interface RestaurantService {
 
     Long count();
 
-    List<RestaurantEntity> findAllPage(int page);
+    List<RestaurantEntity> findAllPage(int page, int pageSize);
 
     void getNew();
 

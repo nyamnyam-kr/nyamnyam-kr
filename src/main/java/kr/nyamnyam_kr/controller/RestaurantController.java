@@ -40,10 +40,10 @@ public class RestaurantController {
 
 
     @GetMapping("findPage/{pageNo}")
-    public ResponseEntity<?> findPage(@PathVariable int pageNo) {
+    public ResponseEntity<?> findPage(@PathVariable int pageNo, @RequestParam int pageSize) {
         // 특정 페이지의 리스트를 보여주는 메소드 호출
         System.out.println("pageNo = " + pageNo);
-        return ResponseEntity.ok(restaurantService.findAllPage(pageNo));
+        return ResponseEntity.ok(restaurantService.findAllPage(pageNo, pageSize));
 
     }
 

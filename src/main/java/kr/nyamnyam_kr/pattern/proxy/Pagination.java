@@ -5,8 +5,6 @@ import lombok.Data;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component("page")
 @Data
 @Lazy
@@ -29,17 +27,17 @@ public class Pagination {
 
     public Pagination() {}
 
-    private final int PAGE_SIZE = 10;
     private final int BLOCK_SIZE = 5;
 
-    public Pagination (int pageNum, int count) {
+    public Pagination (int pageNum, int count, int pageSize) {
         this.pageNum = pageNum;
         this.totalCount = count;
+        this.pageSize = pageSize;
 
-        this.pageCount = (totalCount % PAGE_SIZE == 0) ? totalCount / PAGE_SIZE : totalCount / PAGE_SIZE + 1;
+        this.pageCount = (totalCount % pageSize == 0) ? totalCount / pageSize : totalCount / pageSize + 1;
         this.blockCount = (pageCount % BLOCK_SIZE == 0) ? pageCount / BLOCK_SIZE : pageCount / BLOCK_SIZE + 1;
-        this.startRow = (pageNum - 1) * PAGE_SIZE;
-        this.endRow = pageNum * PAGE_SIZE - 1;
+        this.startRow = (pageNum - 1) * pageSize;
+        this.endRow = pageNum * pageSize - 1;
         this.blockNum = (pageNum - 1) * BLOCK_SIZE;
         this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
         this.endPage = (endPage == blockCount) ? blockCount : pageNum + 2;

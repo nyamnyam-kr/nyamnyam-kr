@@ -78,11 +78,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<RestaurantEntity> findAllPage(int page) {
+    public List<RestaurantEntity> findAllPage(int page, int pageSize) {
         List<RestaurantEntity> list = findAll();
         Long totalCount = count();
 
-        Pagination pagination = new Pagination(page, totalCount.intValue());
+        Pagination pagination = new Pagination(page, totalCount.intValue(), pageSize);
         int startRow = pagination.getStartRow();
         int endRow = pagination.getEndRow();
         List <RestaurantEntity> restaurantEntities = new ArrayList<>();
