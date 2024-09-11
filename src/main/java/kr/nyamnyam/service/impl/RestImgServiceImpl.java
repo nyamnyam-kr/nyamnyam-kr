@@ -1,3 +1,4 @@
+/*
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.service.RestImgService;
@@ -14,24 +15,32 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class RestImgServiceImpl implements RestImgService {
 
-    //jsoup이라는 라이브러리를 사용해 웹 크롤링으로 이미지 추출
+    @Override
     public String extractImageUrl(String postUrl) {
-        try {
 
+        if (postUrl == null || postUrl.trim().isEmpty()) {
+            return "https://example.com/path/to/default-image.jpg";
+        }
+
+        try {
             Document doc = Jsoup.connect(postUrl).get();
 
-            Elements metaTags = doc.getElementsByTag("meta");
-            for (Element metaTag : metaTags) {
-                if ("og:image".equals(metaTag.attr("property"))) {
-                    return metaTag.attr("content");
+            // 웹 페이지에서 이미지 요소를 찾습니다
+            Elements imgElements = doc.select("img");
+
+
+            for (Element img : imgElements) {
+                String imgUrl = img.absUrl("src");
+                if (imgUrl.contains("/comm/getImage?srvcId=MEDIA&parentSn=")) {
+                    return imgUrl;
                 }
             }
 
-            // 기본 이미지 URL 반환
-            return "https://example.com/default-image.jpg";
         } catch (IOException e) {
             e.printStackTrace();
-            return "https://example.com/default-image.jpg";
         }
+
+        return "https://example.com/path/to/default-image.jpg";
     }
 }
+*/

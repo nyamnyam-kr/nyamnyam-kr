@@ -2,7 +2,6 @@ package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.RestaurantRepository;
-import kr.nyamnyam.service.RestImgService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
-    private final RestImgService restImgService;
+
 
     @Override
     public boolean saveRestaurantFromApi(List<RestaurantEntity> restaurant) {
@@ -38,11 +37,5 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     }
 
-/*    @Override
-    public void updateRestaurantWithImage(RestaurantEntity restaurant) {
-        String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
 
-        restaurant.setImageUrl(imageUrl);
-        restaurantRepository.save(restaurant);
-    }*/
 }

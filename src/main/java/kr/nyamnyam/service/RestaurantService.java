@@ -9,5 +9,5 @@ public interface RestaurantService {
 
     boolean existsByNameAndAddress(String name, String address);
 
-  /*  void updateRestaurantWithImage(RestaurantEntity restaurant);*/
+
 }
