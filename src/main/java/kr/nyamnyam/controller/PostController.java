@@ -1,10 +1,12 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.service.ImageService;
 import kr.nyamnyam.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
     private final PostService service;
+    private final ImageService imageService;
 
     @GetMapping("/crawling")
     public ResponseEntity<Boolean> crawl() {
@@ -55,7 +58,9 @@ public class PostController {
         return ResponseEntity.ok(service.save(entity));
     }
     @PostMapping("")
-    public ResponseEntity<Boolean> write(@RequestBody PostEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    public ResponseEntity<Boolean> write(@RequestPart("post") PostEntity entity, @RequestPart("files") List<MultipartFile> files) {
+        service.save(entity);
+        imageService.saveImages(files,entity);
+        return ResponseEntity.ok(true);
     }
 }

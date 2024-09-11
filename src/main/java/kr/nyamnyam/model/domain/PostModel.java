@@ -2,6 +2,7 @@ package kr.nyamnyam.model.domain;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -15,4 +16,5 @@ public class PostModel {
     private Long service;
     private Date entryDate;
     private Date modifyDate;
+
 }

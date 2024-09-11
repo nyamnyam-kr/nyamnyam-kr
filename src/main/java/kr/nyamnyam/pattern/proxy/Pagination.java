@@ -30,7 +30,7 @@ public class Pagination {
         this.blockNum = (pageNum - 1) * BLOCK_SIZE;
         this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
         this.endPage = (endPage >= pageCount - 2) ? pageCount : pageNum + 2;
-        this.existPrev = (pageNum == 1) ? false : true;
+        this.existPrev = (pageNum <= 1) ? false : true;
         this.existNext = (pageNum == pageCount) ? false : true;
 
     }
