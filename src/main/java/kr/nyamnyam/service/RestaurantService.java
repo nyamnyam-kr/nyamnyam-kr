@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RestaurantService {
+    boolean saveRestaurantFromApi(List<RestaurantEntity> restaurantList);
     RestaurantEntity save(RestaurantModel restaurantModel);
 
     List<RestaurantEntity> findAll();
@@ -16,8 +17,10 @@ public interface RestaurantService {
 
     Boolean deleteById(Long id);
 
+    boolean existsByNameAndAddress(String name, String address);
     boolean existsById(Long id);
 
+  /*  void updateRestaurantWithImage(RestaurantEntity restaurant);*/
     Long count();
 
     List<RestaurantEntity> findAllPage(int page, int pageSize);

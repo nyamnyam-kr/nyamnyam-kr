@@ -1,6 +1,5 @@
 package kr.nyamnyam.pattern.proxy;
 
-
 import lombok.Data;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -47,10 +46,4 @@ public class Pagination {
         this.prevBlock = startPage - BLOCK_SIZE;
 
     }
-
-
-
-
-
-
 }

@@ -4,25 +4,26 @@ import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
+import kr.nyamnyam.service.ApiService;
 import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/restaurant/")
 public class RestaurantController {
-
+    private final ApiService apiService;
     private final RestaurantService restaurantService;
 
     @PostMapping("save")
@@ -37,6 +38,10 @@ public class RestaurantController {
     }
 
 
+    @GetMapping("api")
+    public ResponseEntity<List<RestaurantEntity>> getRestaurants() {
+        List<RestaurantEntity> restaurants = apiService.getRestaurants();
+        return ResponseEntity.ok(restaurants);
 
     @GetMapping("findPage/{pageNo}")
     public ResponseEntity<?> findPage(@PathVariable int pageNo, @RequestParam int pageSize) {

@@ -1,50 +1,50 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@RestController
+@CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/reply/")
-public class ReplyController  {
-    private final ReplyService replyService;
+@RequestMapping("/api/replies")
+public class ReplyController {
+    private final ReplyService service;
 
-    @PostMapping("save")
-    public ReplyEntity save(ReplyModel replyModel) {
-        return replyService.save(replyModel);
+    @GetMapping("/group")
+    public ResponseEntity<List<ReplyEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("findAll")
-    public List<ReplyEntity> findAll() {
-        return replyService.findAll();
+    @GetMapping("/{id}")
+    public ResponseEntity<ReplyEntity> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("findById")
-    public Optional<ReplyEntity> findById(Long id) {
-        return replyService.findById(id);
+    @GetMapping("/exist/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.existsById(id));
     }
 
-    @GetMapping("deleteById")
-    public void deleteById(Long id) {
-        replyService.deleteById(id);
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
 
-    @GetMapping("existsById")
-    public boolean existsById(Long id) {
-        return replyService.existsById(id);
-    }
-
-    @GetMapping("count")
-    public long count() {
-        return replyService.count();
+    @PostMapping("")
+    public ResponseEntity<Boolean> write(@RequestBody ReplyEntity entity) {
+        return ResponseEntity.ok(service.save(entity));
     }
 }

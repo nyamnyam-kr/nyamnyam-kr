@@ -1,30 +1,27 @@
 package kr.nyamnyam.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.util.Date;
 
 @Entity
-@Data
-@Table(name="reply")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "replies")
 public class ReplyEntity {
     @Id
-    @GeneratedValue()
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name="content")
     private String content;
+    private Date entryDate;
+    private Date modifyDate;
+    private Long upvoteId;
+    private Long userId;
+    private Long postId;
 
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurant;
-
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private PostEntity post;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
+    // users, posts, restaurants JOIN 필요
 }

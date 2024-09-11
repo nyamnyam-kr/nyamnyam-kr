@@ -19,4 +19,6 @@ public interface CategoryService {
     boolean existsById(Long id);
 
     long count();
+
+    String extractCategory(String menu);
 }

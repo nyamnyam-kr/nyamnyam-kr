@@ -1,22 +1,22 @@
 package kr.nyamnyam.service;
 
 
-import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ReplyService {
-    ReplyEntity save(ReplyModel replyModel);
+public interface ReplyService{
 
     List<ReplyEntity> findAll();
 
-    Optional<ReplyEntity> findById(Long id);
+    ReplyEntity findById(Long id);
 
-    void deleteById(Long id);
+    Boolean existsById(Long id);
 
-    boolean existsById(Long id);
+    Long count();
 
-    long count();
+    Boolean deleteById(Long id);
+
+    Boolean save(ReplyEntity entity);
 }
+

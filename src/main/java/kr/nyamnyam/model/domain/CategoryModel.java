@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class CategoryModel {
-
     private Long id;
-    private String name;
+
 }

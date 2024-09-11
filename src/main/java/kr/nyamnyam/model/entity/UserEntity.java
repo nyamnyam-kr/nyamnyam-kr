@@ -1,53 +1,36 @@
 package kr.nyamnyam.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name="user")
 public class UserEntity {
 
     @Id
-    @GeneratedValue()
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name="username")
     private String username;
-
-    @Column(name="password")
     private String password;
-
-    @Column(name="nickname")
     private String nickname;
-
-    @Column(name="name")
     private String name;
-
-    @Column(name="grade")
-    private Long grade;
-
-    @Column(name="role")        //role 시큐리티때문에[ 바꿈
+    private Long age;
     private String role;
-
-    @Column(name="tel")
-    private Long tel;
-
-    @Column(name="gender")
-    private Long gender;
-
-    @Column(name="enabled")
-    private Long enabled;
-
-    @OneToMany(mappedBy="user")
-    private List<ReplyEntity> replyEntityList;
-
-    @OneToMany(mappedBy="user")
-    private List<PostEntity> postEntityList;
+    private String tel;
+    private String gender;
+    private Boolean enabled;
+    private Long imgId;
 
 
-
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserThumbnailEntity> thumbnails;
 }
+

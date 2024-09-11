@@ -7,17 +7,23 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    UserEntity save(UserModel userModel);
 
-    List<UserEntity> findAll();
-
-    Optional<UserEntity> findById(Long id);
-
-    void deleteById(Long id);
+    List<UserEntity> crawling(int pageNum, int pageSize);
 
     boolean existsById(Long id);
 
+    Optional<UserEntity> findByUsername(String username);
+
+    Optional<UserEntity> findById(Long id);
+
+    List<UserEntity> findAll();
+
     long count();
 
-//    UserModel findByUsername(String username);
+    void deleteById(Long id);
+
+    UserEntity update(UserModel userModel);
+
+    UserEntity save(UserModel userModel);
+
 }

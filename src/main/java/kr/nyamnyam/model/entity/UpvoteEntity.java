@@ -20,6 +20,4 @@ public class UpvoteEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private PostEntity post;
-
-
 }

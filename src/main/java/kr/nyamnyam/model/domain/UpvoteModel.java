@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.domain;
 
-import kr.nyamnyam.model.entity.PostEntity;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -11,5 +10,4 @@ public class UpvoteModel {
     private Long giveId;
     private Long haveId;
     private Long postId;
-
 }
