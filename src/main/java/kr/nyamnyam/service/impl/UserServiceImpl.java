@@ -1,6 +1,6 @@
 package kr.nyamnyam.service.impl;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+
 import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UserEntity;
 import kr.nyamnyam.model.repository.UserRepository;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("크롤링 확인");
 
         // WebDriver 설정
-        WebDriverManager.chromedriver().setup();
+        //WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless")); // Headless 모드
 
         List<UserEntity> allUserEntities = new ArrayList<>();

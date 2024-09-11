@@ -1,3 +1,5 @@
+
+import kr.nyamnyam.NyamnyamKrApplication;
 import org.springframework.boot.SpringApplication;
 
 public class test {
