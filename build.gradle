@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'kr'
@@ -12,10 +13,15 @@ java {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
-
-bootJar {
+bootJar{
 	jar.enabled = false
-	archiveFileName = "${rootProject.name}.jar"
+	archiveFileName = 'myapp.jar'
+}
+
+jar{
+	manifest {
+		attributes 'Main-Class': 'kr.nyamnyam.helloworld.HelloWorldApplication'
+	}
 }
 
 configurations {
@@ -24,38 +30,43 @@ configurations {
 	}
 }
 
-
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+	// Spring Boot 스타터
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-
+	// Lombok (컴파일 타임 의존성)
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+
+	// Spring Boot DevTools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3' // junit 최종버전
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3' // JUnit Jupiter API
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3' // JUnit Jupiter Engine
+	// Swagger 설정을 위한 Springdoc OpenAPI
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+	// Jsoup & selenium
+	implementation 'org.jsoup:jsoup:1.15.4'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.12.1'
+
 }
 
 tasks.named('test') {
