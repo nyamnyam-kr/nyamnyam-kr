@@ -14,4 +14,10 @@ public class UpvoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long giveId;
+    private Long haveId;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private PostEntity post;
 }

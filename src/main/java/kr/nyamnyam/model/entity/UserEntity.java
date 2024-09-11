@@ -27,6 +27,8 @@ public class UserEntity {
     private String tel;
     private String gender;
     private Boolean enabled;
+    private Long imgId;
+
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserThumbnailEntity> thumbnails;

@@ -36,4 +36,6 @@ public class UserThumbnailEntity {
         this.imagePath = imagePath;
         this.createdAt = LocalDateTime.now();
     }
+
+
 }

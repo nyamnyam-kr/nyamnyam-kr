@@ -16,5 +16,6 @@ public class PostModel {
     private Long service;
     private Date entryDate;
     private Date modifyDate;
+    private Long imgId;
 
 }

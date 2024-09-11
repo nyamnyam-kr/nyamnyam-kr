@@ -15,6 +15,7 @@ public class UserModel {
     private String tel;
     private String gender;
     private Boolean enabled;
+    private Long imgId;
 
 
 }

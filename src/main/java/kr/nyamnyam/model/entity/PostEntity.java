@@ -24,6 +24,7 @@ public class PostEntity {
     private Long service;
     private Date entryDate;
     private Date modifyDate;
+    private Long imgId;
 
     /*@OneToMany(mappedBy = "posts",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> images = new ArrayList<>();*/

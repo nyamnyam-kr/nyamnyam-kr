@@ -12,5 +12,8 @@ public class ReplyModel {
     private String content;
     private Date entryDate;
     private Date modifyDate;
+    private Long upvoteId;
+    private Long userId;
+    private Long postId;
 }
 
