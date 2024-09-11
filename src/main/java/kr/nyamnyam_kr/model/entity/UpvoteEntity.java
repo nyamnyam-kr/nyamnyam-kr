@@ -18,7 +18,7 @@ public class UpvoteEntity {
     private Long haveId;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id")git
     private PostEntity post;
 
 
