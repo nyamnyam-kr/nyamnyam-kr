@@ -22,11 +22,16 @@ public class Pagination {
      */
 
     private String tableName;
-    private boolean existsPrev, existNext;
+    private boolean existPrev, existNext;
 
     public Pagination() {}
 
     private final int BLOCK_SIZE = 5;
+
+    public final int PAGE_SIZE = 10;
+
+
+
 
     public Pagination (int pageNum, int count, int pageSize) {
         this.pageNum = pageNum;
@@ -40,10 +45,25 @@ public class Pagination {
         this.blockNum = (pageNum - 1) * BLOCK_SIZE;
         this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
         this.endPage = (endPage == blockCount) ? blockCount : pageNum + 2;
-        this.existsPrev = (pageNum > 1);
+        this.existPrev = (pageNum > 1);
         this.existNext = (pageNum < pageCount);
         this.nextBlock = startPage + BLOCK_SIZE;
         this.prevBlock = startPage - BLOCK_SIZE;
+
+    }
+
+    public Pagination(int pageNum, int totalCount) {
+        this.pageNum = pageNum;
+        this.totalCount = totalCount;
+        this.pageCount = (totalCount % PAGE_SIZE == 0) ? totalCount / PAGE_SIZE : totalCount / PAGE_SIZE + 1;
+        this.blockCount = (pageCount + BLOCK_SIZE - 1) / BLOCK_SIZE;
+        this.startRow = (pageNum - 1) * PAGE_SIZE;
+        this.endRow = (pageNum * PAGE_SIZE) - 1;
+        this.blockNum = (pageNum - 1) * BLOCK_SIZE;
+        this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
+        this.endPage = (endPage >= pageCount - 2) ? pageCount : pageNum + 2;
+        this.existPrev = (pageNum <= 1) ? false : true;
+        this.existNext = (pageNum == pageCount) ? false : true;
 
     }
 }

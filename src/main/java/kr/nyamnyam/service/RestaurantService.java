@@ -9,23 +9,13 @@ import java.util.Optional;
 
 public interface RestaurantService {
     boolean saveRestaurantFromApi(List<RestaurantEntity> restaurantList);
-    RestaurantEntity save(RestaurantModel restaurantModel);
 
-    List<RestaurantEntity> findAll();
-
-    RestaurantEntity findById(Long id);
-
-    Boolean deleteById(Long id);
 
     boolean existsByNameAndAddress(String name, String address);
-    boolean existsById(Long id);
 
   /*  void updateRestaurantWithImage(RestaurantEntity restaurant);*/
-    Long count();
 
     List<RestaurantEntity> findAllPage(int page, int pageSize);
-
-    List<RestaurantEntity> findAllUserName(String username);
 
     void getNew();
 

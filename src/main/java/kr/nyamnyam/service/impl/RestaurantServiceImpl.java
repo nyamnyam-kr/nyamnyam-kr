@@ -117,12 +117,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     }
 
-
-
-
-
-
-
+    @Override
+    public List<RestaurantEntity> findAllPage(int page, int pageSize) {
+        return List.of();
+    }
 
 
 }
