@@ -2,6 +2,7 @@ package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.RestaurantRepository;
+import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.RestImgService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -119,8 +120,25 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<RestaurantEntity> findAllPage(int page, int pageSize) {
-        return List.of();
+        List<RestaurantEntity> list = restaurantRepository.findAll();
+        Long count = restaurantRepository.count();
+        Pagination pagination = new Pagination(page, count.intValue(), pageSize);
+        int startRow = pagination.getStartRow();
+        int endRow = pagination.getEndRow();
+
+        List <RestaurantEntity> restaurantEntities = new ArrayList<>();
+
+        for (int i = startRow; i <= endRow && i < list.size(); i++) {
+            restaurantEntities.add(list.get(i));
+        }
+
+        return restaurantEntities;
     }
+
+
+    public Long count() {
+        return restaurantRepository.count();
+    };
 
 
 }

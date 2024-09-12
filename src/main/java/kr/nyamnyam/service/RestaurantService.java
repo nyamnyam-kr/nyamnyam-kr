@@ -19,5 +19,7 @@ public interface RestaurantService {
 
     void getNew();
 
+    Long count();
+
     void crawlingBot();
 }

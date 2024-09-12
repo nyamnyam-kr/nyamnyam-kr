@@ -80,9 +80,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostEntity> findAll() {
-        var p1 = new HashMap<String, String>();
-         p1 = new HashMap<String, String>();
-
         return repository.findAll();
     }
 

@@ -44,6 +44,11 @@ public class RestaurantController {
 
     }
 
+    @GetMapping("count")
+    public ResponseEntity<?> count() {
+        return ResponseEntity.ok(restaurantService.count());
+    }
+
 
 
 

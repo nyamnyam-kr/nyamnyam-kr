@@ -6,4 +6,9 @@ import java.util.List;
 
 public interface PostRepositoryCustom {
 
+    List<String> postUpvote();
+
+    List<String> findNicknameFromUpvote();
+
+    List<String> findRestaurantFromUpvote();
 }

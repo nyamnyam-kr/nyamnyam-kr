@@ -18,9 +18,7 @@ public class MenuEntity {
     @Column(name = "menu_name")
     private String menuName;
 
-    @ManyToOne
-    @JoinColumn(name="restaurant_id")
-    private RestaurantEntity restaurant;
+    private Long restaurantId;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
