@@ -10,11 +10,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RestaurantServiceImpl implements RestaurantService {
+public class RestaurantServiceImpl {
     private final RestaurantRepository restaurantRepository;
 
 
-    @Override
+/*    @Override
     public boolean saveRestaurantFromApi(List<RestaurantEntity> restaurant) {
         try {
             restaurantRepository.saveAll(restaurant);
@@ -23,19 +23,9 @@ public class RestaurantServiceImpl implements RestaurantService {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
-    @Override
-    public boolean existsByNameAndAddress(String name, String address) {
-        try {
-            restaurantRepository.existsByNameAndAddress(name, address);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
 
-    }
 
 
 }

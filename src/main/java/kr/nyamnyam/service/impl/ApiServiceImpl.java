@@ -1,3 +1,4 @@
+/*
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.RestaurantEntity;
@@ -69,8 +70,10 @@ public class ApiServiceImpl implements ApiService {
                     String representativeMenu = restaurant.getRepresentativeMenu();
                     restaurant.setCategory(categoryService.extractCategory(representativeMenu));
 
-         /*           String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
-                    restaurant.setImageUrl(imageUrl);*/
+         */
+/*           String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
+                    restaurant.setImageUrl(imageUrl);*//*
+
 
                     if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())) {
                         restaurantList.add(restaurant);
@@ -88,4 +91,4 @@ public class ApiServiceImpl implements ApiService {
     }
 
 
-}
+}*/

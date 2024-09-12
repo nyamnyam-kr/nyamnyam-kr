@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component;
 @Data
 public class CrawlingInfo {
     private Long id;
-    private String title;
     private String name;
-    private String address;
-    private String postcode;
+    private String type;
+    private String roadAddress;
+
+
 
 
 }

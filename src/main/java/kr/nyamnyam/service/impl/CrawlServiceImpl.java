@@ -1,11 +1,12 @@
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.CrawlingInfo;
+import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.CrawlingRepository;
-import kr.nyamnyam.service.CrawlService;
+import kr.nyamnyam.model.repository.RestaurantRepository;
+import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,9 +20,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CrawlServiceImpl implements CrawlService {
+public class CrawlServiceImpl implements RestaurantService {
 
     private final CrawlingRepository crawlingRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public void crawlAndSaveInfos() {
@@ -29,7 +31,7 @@ public class CrawlServiceImpl implements CrawlService {
         WebDriver webDriver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
 
-        List<CrawlingInfo> crawledList = new ArrayList<>();
+        List<RestaurantEntity> crawledList = new ArrayList<>();
 
         try {
             webDriver.get("https://map.naver.com/v5/search/서울 맛집");
@@ -60,14 +62,11 @@ public class CrawlServiceImpl implements CrawlService {
                 WebElement nameElement = webDriver.findElement(By.cssSelector(".GHAhO"));
 
                 // CrawlingInfo 객체에 저장
-                CrawlingInfo crawlingInfo = new CrawlingInfo();
+                RestaurantEntity restaurant = new RestaurantEntity();
 
-                WebElement name2Element = webDriver.findElement(By.cssSelector(".lnJFt"));
+                // 음식 종류
+                WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
 
-
-                // 상세정보 프레임에서 주소 정보가 들어있는 곳으로 이동
-            /*    List<WebElement> addressContents = webDriver.findElements(By.cssSelector(".place_section_content"));
-                WebElement homeElement = addressContents.get(i);*/
 
                 // 주소 버튼 요소 찾아 클릭하기
                 WebElement addressButton = webDriver.findElement(By.cssSelector("._UCia"));
@@ -77,32 +76,27 @@ public class CrawlServiceImpl implements CrawlService {
                 WebElement addressDiv = webDriver.findElement(By.className("Y31Sf"));
                 List<WebElement> addressInfos = addressDiv.findElements(By.className("nQ7Lh"));
 
-                // span은 주소종류, 안의 text가 필요한 데이터
+                String roadAddress = "";
+
                 for (WebElement addressInfo : addressInfos) {
                     WebElement addressType = addressInfo.findElement(By.tagName("span"));
-                    String address = addressInfo.getText().replace(addressType.getText(), "").trim();
-                    System.out.println(addressType.getText() + " : " + address);
-                    crawlingInfo.setAddress(address);
+
+                    String addressDetail = addressInfo.getText().replace(addressType.getText(), "").trim();
+
+                    if (addressType.getText().equals("도로명")) {
+                        roadAddress = addressDetail.replace("복사", "").trim();
+                    }
                 }
 
-
                 String nameText = nameElement.getText();
-                String name2Text = name2Element.getText();
+                String typeText = typeElement.getText();
+
+                restaurant.setName(nameText);
+                restaurant.setType(typeText);
+                restaurant.setRoadAddress(roadAddress);
 
 
-
-                //String addressText = addressElement.getText();
-                //String postCodeText = postCodeElement.getText();
-
-                crawlingInfo.setTitle(nameText);
-                crawlingInfo.setName(name2Text);
-
-
-
-                //crawlingInfo.setAddress(addressText);
-                //crawlingInfo.setPostcode(postCodeText);
-
-                crawledList.add(crawlingInfo);
+                crawledList.add(restaurant);
 
                 // 클릭한 요소가 더 이상 유효하지 않을 수 있으므로, 새로 로드된 결과를 가져옴
                 webDriver.switchTo().defaultContent();
@@ -111,7 +105,7 @@ public class CrawlServiceImpl implements CrawlService {
             }
 
             // 크롤링 정보 저장
-            crawlingRepository.saveAll(crawledList);
+            restaurantRepository.saveAll(crawledList);
             System.out.println(crawledList);
             System.out.println("메서드 종료");
 
@@ -125,17 +119,14 @@ public class CrawlServiceImpl implements CrawlService {
     }
 
     @Override
-    public List<CrawlingInfo> getCrawlingInfos() {
-        return crawlingRepository.findAll();
+    public List<RestaurantEntity> getCrawlingInfos() {
+        return restaurantRepository.findAll();
     }
 
-    @Override
-    public List<CrawlingInfo> getCrawlingInfos(int startRow, int endRow) {
-        return crawlingRepository.findCrawlingInRange(startRow, endRow);
-    }
+
 
     @Override
     public int getTotalCount() {
-        return (int) crawlingRepository.count();
+        return (int) restaurantRepository.count();
     }
 }
