@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -16,10 +17,11 @@ public class MessageEntity {
     @Id
     private String id;
 
-    private String channelName; // 채널 ID
-    private String receiver;
-    private String sender;  // 발신자 ID
-    private String content;   // 메시지 내용
-    @Builder.Default
-    private LocalDateTime CreatedAt = LocalDateTime.now(); // 자동으로 현재 시간 설정
+    private String message; // 채팅 내용
+    private LocalDateTime CreatedAt;
+    private String sender;  // 발신자 nickname
+
+    private String channelId;   //채팅 방 번호
+    private String channelName ; //채팅방 이름
+
 }

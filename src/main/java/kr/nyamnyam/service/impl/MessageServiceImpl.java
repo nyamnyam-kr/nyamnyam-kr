@@ -17,8 +17,14 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
 
     @Override
-    public Flux<MessageEntity> getMessagesBySenderAndReceiver(String sender, String receiver) {
-        return messageRepository.mFindBySender(sender, receiver)
+    public Flux<MessageEntity> mFindBySender(String sender, String channerId) {
+        return messageRepository.mFindBySender(sender, channerId)
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Flux<MessageEntity> mFindByChannelId(String channelId) {
+        return messageRepository.mFindByChannelId(channelId)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

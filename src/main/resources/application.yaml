@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://root:1234@211.188.50.33:27017/test
+      uri: mongodb://root:1234@localhost:27017/test
       auto-index-creation: true
 
 

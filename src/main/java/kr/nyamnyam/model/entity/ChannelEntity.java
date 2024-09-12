@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,8 +21,11 @@ public class ChannelEntity {
     @Id
     private String id;
     private String name;
-    private List<String> participants; // List of participant IDs
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @DBRef
+    private List<ParticipantEntity> participants; //참가자 리스트
+
+    @DBRef
+    private List<MessageEntity> messages;
+
 }

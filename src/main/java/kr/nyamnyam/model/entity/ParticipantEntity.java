@@ -17,5 +17,7 @@ public class ParticipantEntity {
     private String id;
     private String nickname;
 
+    private String channelId;
+    private String channelName;
 
 }

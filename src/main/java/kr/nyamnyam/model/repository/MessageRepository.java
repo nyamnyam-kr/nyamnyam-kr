@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.repository;
 
+import kr.nyamnyam.model.entity.ChannelEntity;
 import kr.nyamnyam.model.entity.MessageEntity;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
@@ -11,6 +12,10 @@ import reactor.core.publisher.Flux;
 public interface MessageRepository extends ReactiveMongoRepository<MessageEntity, String> {
 
     @Tailable //커서를 안닫고 계속 유지한다.
-    @Query("{sender: ?0,receiver: ?1}")
-    Flux<MessageEntity> mFindBySender(String sender, String receiver);// Flux 흐름 response를 유지하면서 계속 흘려보내기
+    @Query("{sender: ?0,channelId: ?1}")
+    Flux<MessageEntity> mFindBySender(String sender, String channelId);// Flux 흐름 response를 유지하면서 계속 흘려보내기
+
+    @Tailable
+    @Query("{channelId: ?0}")
+    Flux<MessageEntity> mFindByChannelId(String channelId);
 }
