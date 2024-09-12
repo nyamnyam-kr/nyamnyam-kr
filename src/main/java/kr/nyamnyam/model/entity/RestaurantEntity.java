@@ -12,8 +12,11 @@ public class RestaurantEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String address;
     private String type;
-    private String roadAddress;
+    private Double rate;
+    private String operation;
+
 
 
 }

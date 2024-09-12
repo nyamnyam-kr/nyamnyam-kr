@@ -17,6 +17,8 @@ public class CrawlingInfo {
     private String name;
     private String type;
     private String roadAddress;
+    private Double rate;
+
 
 
 

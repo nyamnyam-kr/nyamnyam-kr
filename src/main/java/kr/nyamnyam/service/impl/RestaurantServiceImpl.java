@@ -10,22 +10,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RestaurantServiceImpl {
+public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
 
-/*    @Override
-    public boolean saveRestaurantFromApi(List<RestaurantEntity> restaurant) {
+    @Override
+    public List<RestaurantEntity> getCrawlingInfos() {
+        return List.of();
+    }
+
+    @Override
+    public boolean existsByNameAndAddress(String name, String address) {
         try {
-            restaurantRepository.saveAll(restaurant);
-            return true;
+            restaurantRepository.existsByNameAndAddress(name, address);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+
         }
-    }*/
 
-
-
-
+        return false;
+    }
 }

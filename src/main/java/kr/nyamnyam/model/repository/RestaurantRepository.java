@@ -9,9 +9,5 @@ import java.util.List;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity,Long> {
-
-
-
-
-
+    boolean existsByNameAndAddress(String name, String adress);
 }

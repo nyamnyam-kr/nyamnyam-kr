@@ -1,14 +1,11 @@
 package kr.nyamnyam.service.impl;
 
-import kr.nyamnyam.model.entity.CrawlingInfo;
 import kr.nyamnyam.model.entity.RestaurantEntity;
-import kr.nyamnyam.model.repository.CrawlingRepository;
 import kr.nyamnyam.model.repository.RestaurantRepository;
+import kr.nyamnyam.service.CrawlService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,13 +17,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CrawlServiceImpl implements RestaurantService {
+public class CrawlServiceImpl implements CrawlService {
 
-    private final CrawlingRepository crawlingRepository;
+    private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
+
 
     @Override
     public void crawlAndSaveInfos() {
+
 
         WebDriver webDriver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
@@ -67,16 +66,37 @@ public class CrawlServiceImpl implements RestaurantService {
                 // 음식 종류
                 WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
 
+                // 별점
 
-                // 주소 버튼 요소 찾아 클릭하기
+
+                try {
+                    Double rating = 0.0; // 별점 없는 식당정보들 기본값
+                    // 별점 요소의 가시성을 기다리기
+                    WebElement star = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".PXMot.LXIwF")));
+                    String starText = star.getText().replaceAll("[^0-9.]", "").trim();
+                    rating = starText.isEmpty() ? 0.0 : Double.parseDouble(starText);
+                    restaurant.setRate(rating);
+
+
+                } catch (TimeoutException e) {
+                    System.out.println("별점 정보를 찾을 수 없습니다: " + e.getMessage());
+                } catch (NoSuchElementException e) {
+                    System.out.println("별점 정보를 포함하는 요소를 찾을 수 없습니다: " + e.getMessage());
+                }
+
+
+
+
+                // (주소, 영업 시간 등의 상세보기) 버튼 요소 찾아 클릭하기
                 WebElement addressButton = webDriver.findElement(By.cssSelector("._UCia"));
                 addressButton.click();
+
 
                 // "도로명"과 "우편번호" 정보 들어있는  div로 이동
                 WebElement addressDiv = webDriver.findElement(By.className("Y31Sf"));
                 List<WebElement> addressInfos = addressDiv.findElements(By.className("nQ7Lh"));
 
-                String roadAddress = "";
+                String address = "";
 
                 for (WebElement addressInfo : addressInfos) {
                     WebElement addressType = addressInfo.findElement(By.tagName("span"));
@@ -84,16 +104,37 @@ public class CrawlServiceImpl implements RestaurantService {
                     String addressDetail = addressInfo.getText().replace(addressType.getText(), "").trim();
 
                     if (addressType.getText().equals("도로명")) {
-                        roadAddress = addressDetail.replace("복사", "").trim();
+                        address = addressDetail.replace("복사", "").trim();
                     }
                 }
+
+
+
+/*                try {
+                    // 운영시간 정보를 포함하는 div 요소를 찾기
+                    WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".H3ua4")));
+                    String operationText = operationDiv.getText().trim();
+
+                    // 불필요한 줄바꿈 제거 (필요한 경우)
+                    operationText = operationText.replace("\n", " ").trim();
+
+                    // 크롤링한 정보에 운영시간을 저장
+                    restaurant.setOperation(operationText);
+                } catch (TimeoutException e) {
+                    System.out.println("운영시간 정보를 찾을 수 없습니다: " + e.getMessage());
+                } catch (NoSuchElementException e) {
+                    System.out.println("운영시간 정보를 포함하는 div 요소를 찾을 수 없습니다: " + e.getMessage());
+                }*/
 
                 String nameText = nameElement.getText();
                 String typeText = typeElement.getText();
 
+
                 restaurant.setName(nameText);
                 restaurant.setType(typeText);
-                restaurant.setRoadAddress(roadAddress);
+                restaurant.setAddress(address);
+
+                //restaurant.setOperation(operationText);
 
 
                 crawledList.add(restaurant);
@@ -104,8 +145,12 @@ public class CrawlServiceImpl implements RestaurantService {
                 titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
             }
 
+            RestaurantEntity restaurant = new RestaurantEntity();
             // 크롤링 정보 저장
+            //if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())){
             restaurantRepository.saveAll(crawledList);
+            //}
+
             System.out.println(crawledList);
             System.out.println("메서드 종료");
 
@@ -118,15 +163,8 @@ public class CrawlServiceImpl implements RestaurantService {
         }
     }
 
-    @Override
-    public List<RestaurantEntity> getCrawlingInfos() {
-        return restaurantRepository.findAll();
-    }
 
-
-
-    @Override
-    public int getTotalCount() {
-        return (int) restaurantRepository.count();
-    }
 }
+
+
+

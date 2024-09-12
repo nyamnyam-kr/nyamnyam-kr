@@ -11,7 +11,9 @@ public class RestaurantModel {
 
     private Long id;
     private String name;
+    private String address;
     private String type;
-    private String roadAddress;
+    private Double rate;
+
 
 }

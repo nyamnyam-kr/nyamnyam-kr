@@ -3,7 +3,9 @@ package kr.nyamnyam.controller;
 import kr.nyamnyam.model.entity.CrawlingInfo;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.pattern.proxy.Pagination;
+import kr.nyamnyam.service.CrawlService;
 import kr.nyamnyam.service.RestaurantService;
+import kr.nyamnyam.service.impl.CrawlServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,7 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-
-
+    private final CrawlService crawlService;
 
 
     @GetMapping("/list")
@@ -35,7 +36,7 @@ public class RestaurantController {
     public void crawlRestaurants() {
         RestaurantEntity restaurant = new RestaurantEntity();
         System.out.println("이벤트 수신");
-        restaurantService.crawlAndSaveInfos();
+        crawlService.crawlAndSaveInfos();
     }
 
 
