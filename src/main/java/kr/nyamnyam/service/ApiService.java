@@ -1,3 +1,4 @@
+/*
 package kr.nyamnyam.service;
 
 
@@ -8,3 +9,4 @@ import java.util.List;
 public interface ApiService {
     List<RestaurantEntity> getRestaurants();
 }
+*/
