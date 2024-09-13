@@ -166,30 +166,6 @@ public class CrawlServiceImpl implements CrawlService {
                 }
 
 
-               /* // 메뉴 정보
-                StringBuilder combinedMenu = new StringBuilder();
-                try {
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MN48z")));
-                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".MN48z"));
-
-                    for (WebElement menuItem : menuItems) {
-                        WebElement menuName = menuItem.findElement(By.cssSelector(".VQvNX"));
-                        WebElement menuPrice = menuItem.findElement(By.cssSelector(".gl2cc>em"));
-                        String menuText = menuName.getText();
-                        String priceText = menuPrice.getText();
-
-                        combinedMenu.append(menuText).append(" - ").append(priceText).append(", ");
-                    }
-
-                    if (combinedMenu.length() > 0) {
-                        combinedMenu.setLength(combinedMenu.length() - 2); // 마지막 ", " 제거
-                    }
-
-                } catch (TimeoutException | NoSuchElementException e) {
-                    combinedMenu.append("메뉴 정보가 존재하지 않습니다.");
-                }
-*/
-
 
                 String nameText = nameElement.getText();
                 String typeText = typeElement.getText();
