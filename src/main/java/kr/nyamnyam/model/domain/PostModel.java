@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +16,17 @@ public class PostModel {
     private Long taste;
     private Long clean;
     private Long service;
-    private Date entryDate;
-    private Date modifyDate;
+    private LocalDateTime entryDate;
+    private LocalDateTime modifyDate;
+
+    // 추가 예정 private Long restId;
 
     private List<ImageModel> images;
 
+    private double averageRating;
+    private List<String> tags;
+
+    public double averageRating() {
+        return (this.taste + this.clean + this.service) / 3.0;
+    }
 }

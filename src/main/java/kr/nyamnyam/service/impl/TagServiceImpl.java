@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,8 @@ public class TagServiceImpl implements TagService {
     @Override
     public Map<String, List<TagEntity>> getTagsByCategory() {
         List<TagEntity> tags = repository.findAll();
-        return null; // 수업 듣고 다시하기 !!!!!
+        return tags.stream()
+                .collect(Collectors.groupingBy(tag -> tag.getTagCategory().getDisplayName()));
     }
 
     @Override

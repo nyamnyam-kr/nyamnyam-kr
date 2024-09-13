@@ -2,6 +2,8 @@ package kr.nyamnyam.model.entity;
 
 import jakarta.persistence.*;
 
+import java.nio.file.Path;
+
 @Entity
 @Table(name = "postTags")
 public class PostTagEntity {
@@ -16,4 +18,8 @@ public class PostTagEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_name", referencedColumnName = "name", nullable = false)
     private TagEntity tag;
+
+    public TagEntity getTag() {
+        return tag;
+    }
 }

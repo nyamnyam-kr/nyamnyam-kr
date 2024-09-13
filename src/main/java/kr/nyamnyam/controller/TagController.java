@@ -15,11 +15,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/tags")
 public class TagController {
-    private TagService service;
+    private final TagService service;
 
-    @GetMapping("/group")
+    @GetMapping("/category")
     public ResponseEntity<Map<String ,List<TagEntity>>> getTagsByCategory() {
         return ResponseEntity.ok(service.getTagsByCategory());
+    }
+    @GetMapping("/group")
+    public ResponseEntity<List<TagEntity>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
