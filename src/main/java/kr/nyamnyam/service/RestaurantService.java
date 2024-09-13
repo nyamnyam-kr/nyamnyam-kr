@@ -11,5 +11,4 @@ public interface RestaurantService {
 
     List<RestaurantEntity> getCrawlingInfos();
 
-    boolean existsByNameAndAddress(String name, String address);
 }

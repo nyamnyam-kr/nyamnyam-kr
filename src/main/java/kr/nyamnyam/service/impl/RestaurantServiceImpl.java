@@ -19,15 +19,5 @@ public class RestaurantServiceImpl implements RestaurantService {
         return List.of();
     }
 
-    @Override
-    public boolean existsByNameAndAddress(String name, String address) {
-        try {
-            restaurantRepository.existsByNameAndAddress(name, address);
-        } catch (Exception e) {
-            e.printStackTrace();
 
-        }
-
-        return false;
-    }
 }
