@@ -7,6 +7,7 @@ import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
@@ -26,74 +27,81 @@ public class CrawlServiceImpl implements CrawlService {
     @Override
     public void crawlAndSaveInfos() {
 
+        // 브라우저에 전시되지 않도록
+       /* ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless");
+        chromeOptions.addArguments("--no-sandbox");
+        */
 
         WebDriver webDriver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
 
         List<RestaurantEntity> crawledList = new ArrayList<>();
 
-        try {
-            webDriver.get("https://map.naver.com/v5/search/서울 맛집");
+        List<String> existingNames = restaurantRepository.findAllNames();
 
-            // 대기하여 검색 결과가 로드될 때까지 기다립니다
+        try {
+            webDriver.get("https://map.naver.com/v5/search/군포 맛집");
+
+            // 결과가 로드될 때까지 대기
             wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("searchIframe")));
             webDriver.switchTo().defaultContent();
             webDriver.switchTo().frame("searchIframe");
 
-            // 검색 결과의 타이틀을 가져와서 클릭
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
-            for (int i = 0; i < Math.min(titleElements.size(), 2); i++) {
+            for (int i = 0; i < Math.min(titleElements.size(), 3); i++) {
                 WebElement titleElement = titleElements.get(i);
-
                 // 검색 결과 클릭
                 titleElement.click();
-                Thread.sleep(3000); // 페이지가 로드되기를 기다리기 위해 잠시 대기
+                Thread.sleep(3000);
                 titleElements.get(i).click();
 
                 webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
 
-                // 정보가 포함된 iframe으로 전환
+                // 상세보기로 프레임으로 이동
                 webDriver.switchTo().defaultContent();
                 webDriver.switchTo().frame("entryIframe");
 
 
-                // 이름을 가져오기
                 WebElement nameElement = webDriver.findElement(By.cssSelector(".GHAhO"));
-
-                // CrawlingInfo 객체에 저장
-                RestaurantEntity restaurant = new RestaurantEntity();
-
-                // 음식 종류
                 WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
 
-                // 별점
+                // 가게번호
+                String telText;
+                try {
+                    WebElement telInfo = webDriver.findElement(By.cssSelector(".xlx7Q"));
+                    telText = telInfo.getText();
+                } catch (TimeoutException | NoSuchElementException e) {
+                    telText = "번호가 존재하지 않습니다.";
+                }
+
+                // 평점
                 Double rating;
                 try {
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".PXMot.LXIwF")));
                     WebElement star = webDriver.findElement(By.cssSelector(".PXMot.LXIwF"));
-
                     String starText = star.getText().replaceAll("[^0-9.]", "").trim();
                     rating = starText.isEmpty() ? 0.0 : Double.parseDouble(starText);
-                } catch (NoSuchElementException e) {
-                    rating = 0.0;
+                } catch (NoSuchElementException | TimeoutException e) {
+                    rating = null;
+                    System.out.println("평점 정보를 찾을 수 없어 기본값 0.0을 설정합니다.");
                 }
 
 
+                //  (주소, 영업 시간 등의 상세보기) 버튼 요소 찾아 클릭하기
+                WebElement addressButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("._UCia")));
+                //addressButton = webDriver.findElement(By.cssSelector("._UCia"));
+                // 팝업과 같은 장애물이 클릭요소를 가리는 경우가 많아 javaScript 로 강제 클릭
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", addressButton);
 
-                // (주소, 영업 시간 등의 상세보기) 버튼 요소 찾아 클릭하기
-                WebElement addressButton = webDriver.findElement(By.cssSelector("._UCia"));
-                addressButton.click();
+                // addressButton.click();
 
-
-                // "도로명"과 "우편번호" 정보 들어있는  div로 이동
                 WebElement addressDiv = webDriver.findElement(By.className("Y31Sf"));
                 List<WebElement> addressInfos = addressDiv.findElements(By.className("nQ7Lh"));
 
                 String address = "";
-
                 for (WebElement addressInfo : addressInfos) {
                     WebElement addressType = addressInfo.findElement(By.tagName("span"));
-
                     String addressDetail = addressInfo.getText().replace(addressType.getText(), "").trim();
 
                     if (addressType.getText().equals("도로명")) {
@@ -101,65 +109,112 @@ public class CrawlServiceImpl implements CrawlService {
                     }
                 }
 
+                webDriver.switchTo().defaultContent();
+                webDriver.switchTo().frame("entryIframe");
 
-
+                String combinedOperation = "운영시간 정보가 없습니다";
                 List<WebElement> detailButtons = webDriver.findElements(By.cssSelector("._UCia"));
-                if (detailButtons.size() >= 2) {
-                    // 두 번째 버튼 클릭
-                    WebElement operationButton = detailButtons.get(1);
-                    operationButton.click();
 
+                if (detailButtons.size() >= 2) {
+                    // 두번재 ._UCia 클릭
+                    WebElement operationButton = detailButtons.get(1);
+                    ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", operationButton);
+                    //operationButton.click();
                     try {
                         WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".A_cdD>.H3ua4")));
-                        WebElement operationDay = webDriver.findElement(By.cssSelector(".A_cdD>.i8cJw")); // cssSelector에서 .을 빼야 클래스 선택자
-
-                        // 운영시간과 운영요일 텍스트 추출
+                        WebElement operationDay = webDriver.findElement(By.cssSelector(".A_cdD>.i8cJw"));
                         String operationTime = operationDiv.getText().trim();
                         String operationDayText = operationDay.getText().trim();
                         operationTime = operationTime.replace("\n", " ").trim();
                         operationDayText = operationDayText.replace("\n", " ").trim();
 
-                        // 운영시간과 운영요일을 합쳐서 저장
-                        String combinedOperation =  operationDayText + " / " + operationTime;
-
-                        restaurant.setOperation(combinedOperation);
-
-                    } catch (TimeoutException e) {
-                        System.out.println("운영시간 정보를 찾을 수 없습니다: " + e.getMessage());
-                    } catch (NoSuchElementException e) {
-                        restaurant.setOperation("운영시간 정보가 없습니다");
+                        combinedOperation = operationDayText + " / " + operationTime;
+                    } catch (TimeoutException | NoSuchElementException e) {
+                        combinedOperation = "운영시간 정보가 존재하지 않습니다";
                     }
-                } else {
-                    System.out.println("운영시간 정보를 클릭할 버튼을 찾을 수 없습니다.");
                 }
+
+                webDriver.switchTo().defaultContent();
+                webDriver.switchTo().frame("entryIframe");
+
+                // 메뉴 이름과 가격을 동적으로 추출
+                StringBuilder combinedMenu = new StringBuilder();
+                try {
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".ipNNM")));
+                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".ipNNM"));
+
+                    for (int k = 0; k < menuItems.size(); k++) {
+
+                        String menuNameXPath = String.format("//ul/li[%d]/a/div[2]/div[1]/div/span", k + 1);
+                        String menuPriceXPath = String.format("//ul/li[%d]/a/div[2]/div[2]/div", k + 1);
+
+                        WebElement menuNameElement = webDriver.findElement(By.xpath(menuNameXPath));
+                        WebElement menuPriceElement = webDriver.findElement(By.xpath(menuPriceXPath));
+
+                        String menuName = menuNameElement.getText();
+                        String menuPrice = menuPriceElement.getText();
+
+                        combinedMenu.append(menuName).append("-").append(menuPrice).append(",");
+                    }
+
+                    // 마지막 ", " 제거
+                    if (combinedMenu.length() > 0) {
+                        combinedMenu.setLength(combinedMenu.length() - 2);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+               /* // 메뉴 정보
+                StringBuilder combinedMenu = new StringBuilder();
+                try {
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MN48z")));
+                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".MN48z"));
+
+                    for (WebElement menuItem : menuItems) {
+                        WebElement menuName = menuItem.findElement(By.cssSelector(".VQvNX"));
+                        WebElement menuPrice = menuItem.findElement(By.cssSelector(".gl2cc>em"));
+                        String menuText = menuName.getText();
+                        String priceText = menuPrice.getText();
+
+                        combinedMenu.append(menuText).append(" - ").append(priceText).append(", ");
+                    }
+
+                    if (combinedMenu.length() > 0) {
+                        combinedMenu.setLength(combinedMenu.length() - 2); // 마지막 ", " 제거
+                    }
+
+                } catch (TimeoutException | NoSuchElementException e) {
+                    combinedMenu.append("메뉴 정보가 존재하지 않습니다.");
+                }
+*/
+
 
                 String nameText = nameElement.getText();
                 String typeText = typeElement.getText();
 
+                if (!existingNames.contains(nameText)) {
+                    RestaurantEntity restaurant = RestaurantEntity.builder()
+                            .name(nameText)
+                            .type(typeText)
+                            .address(address)
+                            .rate(rating)
+                            .operation(combinedOperation)
+                            .tel(telText)
+                            .menu(combinedMenu.toString())
+                            .build();
 
-                restaurant.setName(nameText);
-                restaurant.setType(typeText);
-                restaurant.setAddress(address);
-                restaurant.setRate(rating);
-                //restaurant.setOperation(operationText);
+                    crawledList.add(restaurant);
+                }
 
-
-                crawledList.add(restaurant);
-
-                // 클릭한 요소가 더 이상 유효하지 않을 수 있으므로, 새로 로드된 결과를 가져옴
                 webDriver.switchTo().defaultContent();
                 webDriver.switchTo().frame("searchIframe");
                 titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
             }
 
-            RestaurantEntity restaurant = new RestaurantEntity();
-            // 크롤링 정보 저장
-            //if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())){
             restaurantRepository.saveAll(crawledList);
-            //}
-
-            System.out.println(crawledList);
-            System.out.println("메서드 종료");
+            System.out.println("크롤링된 정보: " + crawledList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,9 +224,8 @@ public class CrawlServiceImpl implements CrawlService {
             }
         }
     }
-
-
 }
+
 
 
 
