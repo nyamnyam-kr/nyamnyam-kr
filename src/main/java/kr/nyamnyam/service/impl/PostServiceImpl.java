@@ -102,8 +102,10 @@ public class PostServiceImpl implements PostService {
     public Boolean deleteById(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
