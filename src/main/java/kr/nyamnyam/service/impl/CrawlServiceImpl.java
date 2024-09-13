@@ -41,7 +41,7 @@ public class CrawlServiceImpl implements CrawlService {
         List<String> existingNames = restaurantRepository.findAllNames();
 
         try {
-            webDriver.get("https://map.naver.com/v5/search/군포 맛집");
+            webDriver.get("https://map.naver.com/v5/search/서울 맛집");
 
             // 결과가 로드될 때까지 대기
             wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("searchIframe")));
@@ -52,11 +52,9 @@ public class CrawlServiceImpl implements CrawlService {
             for (int i = 0; i < Math.min(titleElements.size(), 3); i++) {
                 WebElement titleElement = titleElements.get(i);
                 // 검색 결과 클릭
-                titleElement.click();
-                Thread.sleep(3000);
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", titleElement);
+                wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
                 titleElements.get(i).click();
-
-                webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
 
                 // 상세보기로 프레임으로 이동
                 webDriver.switchTo().defaultContent();
@@ -161,34 +159,9 @@ public class CrawlServiceImpl implements CrawlService {
                     if (combinedMenu.length() > 0) {
                         combinedMenu.setLength(combinedMenu.length() - 2);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-               /* // 메뉴 정보
-                StringBuilder combinedMenu = new StringBuilder();
-                try {
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MN48z")));
-                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".MN48z"));
-
-                    for (WebElement menuItem : menuItems) {
-                        WebElement menuName = menuItem.findElement(By.cssSelector(".VQvNX"));
-                        WebElement menuPrice = menuItem.findElement(By.cssSelector(".gl2cc>em"));
-                        String menuText = menuName.getText();
-                        String priceText = menuPrice.getText();
-
-                        combinedMenu.append(menuText).append(" - ").append(priceText).append(", ");
-                    }
-
-                    if (combinedMenu.length() > 0) {
-                        combinedMenu.setLength(combinedMenu.length() - 2); // 마지막 ", " 제거
-                    }
-
                 } catch (TimeoutException | NoSuchElementException e) {
-                    combinedMenu.append("메뉴 정보가 존재하지 않습니다.");
+                    combinedMenu.append("메뉴정보가 존재하지 않습니다");
                 }
-*/
 
 
                 String nameText = nameElement.getText();
