@@ -1,4 +1,4 @@
-package kr.nyamnyam.model.entity;
+package kr.nyamnyam.model.domain;
 
 
 import lombok.AllArgsConstructor;
@@ -11,13 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "participants")
 @AllArgsConstructor
 @Builder
-public class ParticipantEntity {
+public class Participant {
 
     @Id
     private String id;
     private String nickname;
-
-    private String channelId;
-    private String channelName;
-
 }

@@ -1,4 +1,4 @@
-package kr.nyamnyam.model.entity;
+package kr.nyamnyam.model.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +10,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Data
-@Document(collection = "messages")
+@Document(collection = "chats")
 @AllArgsConstructor
 @Builder
-public class MessageEntity {
+public class Chat {
     @Id
     private String id;
 
     private String message; // 채팅 내용
-    private LocalDateTime CreatedAt;
+    private LocalDateTime createdAt;
     private String sender;  // 발신자 nickname
 
-    private String channelId;   //채팅 방 번호
-    private String channelName ; //채팅방 이름
-
+    private String chatRoomId;
 }

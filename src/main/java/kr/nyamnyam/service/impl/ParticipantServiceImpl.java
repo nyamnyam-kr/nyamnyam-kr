@@ -1,7 +1,6 @@
 package kr.nyamnyam.service.impl;
 
-import kr.nyamnyam.model.domain.ParticipantModel;
-import kr.nyamnyam.model.entity.ParticipantEntity;
+import kr.nyamnyam.model.domain.Participant;
 import kr.nyamnyam.model.repository.ParticipantRepository;
 import kr.nyamnyam.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +15,17 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final ParticipantRepository participantRepository;
 
     @Override
-    public ParticipantEntity save(ParticipantEntity participantEntity) {
-        return participantRepository.save(participantEntity);
+    public Participant save(Participant participant) {
+        return participantRepository.save(participant);
     }
 
     @Override
-    public List<ParticipantEntity> findAll() {
+    public List<Participant> findAll() {
         return participantRepository.findAll();
     }
 
     @Override
-    public Optional<ParticipantEntity> findById(String id) {
+    public Optional<Participant> findById(String id) {
         return participantRepository.findById(id);
     }
 

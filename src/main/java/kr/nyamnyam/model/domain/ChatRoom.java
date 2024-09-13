@@ -1,4 +1,4 @@
-package kr.nyamnyam.model.entity;
+package kr.nyamnyam.model.domain;
 
 
 import lombok.AllArgsConstructor;
@@ -8,24 +8,21 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Document(collection = "channels")
+@Document(collection = "chatRooms")
 @AllArgsConstructor
 @Builder
-public class ChannelEntity {
+public class ChatRoom {
 
     @Id
     private String id;
     private String name;
 
-    @DBRef
-    private List<ParticipantEntity> participants; //참가자 리스트
+    // 내장된 참가자 리스트
+    private List<Participant> participants; //참가자 리스트
 
-    @DBRef
-    private List<MessageEntity> messages;
-
+    // 내장된 채팅 메시지 리스트
+    private List<Chat> messages;
 }

@@ -1,6 +1,6 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.entity.ParticipantEntity;
+import kr.nyamnyam.model.domain.Participant;
 import kr.nyamnyam.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +18,18 @@ public class ParticipantController {
 
 
     @PostMapping("")
-    public ResponseEntity<Boolean> save(@RequestBody ParticipantEntity participantEntity) {
+    public ResponseEntity<Boolean> save(@RequestBody Participant participant) {
 
-        if (participantEntity.getId() == null) {
-            participantService.save(participantEntity);
+        if (participant.getId() == null) {
+            participantService.save(participant);
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.ok(false);
     }
 
     @PutMapping("")
-    public ResponseEntity<ParticipantEntity> update(@RequestBody ParticipantEntity participantEntity) {
-        return ResponseEntity.ok(participantService.save(participantEntity));
+    public ResponseEntity<Participant> update(@RequestBody Participant participant) {
+        return ResponseEntity.ok(participantService.save(participant));
     }
 
     @DeleteMapping("/{id}")
@@ -39,12 +39,12 @@ public class ParticipantController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ParticipantEntity>> findAll() {
+    public ResponseEntity<List<Participant>> findAll() {
         return ResponseEntity.ok(participantService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<ParticipantEntity>> findById(@PathVariable String id) {
+    public ResponseEntity<Optional<Participant>> findById(@PathVariable String id) {
         return ResponseEntity.ok(participantService.findById(id));
     }
 
