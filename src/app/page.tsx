@@ -100,6 +100,14 @@ export default function Home() {
         }
     };
 
+    // const formatDate = (dateString) => {
+    //     if (!dateString) return '';
+
+    //     const date = new Date(dateString); 
+    //     const options = { year: '2-digit', month: '2-digit' };
+    //     return new Intl.DateTimeFormat('ko-KR', options).format(date);
+    // };
+
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
@@ -113,6 +121,8 @@ export default function Home() {
                             <th className="py-3 px-4 border-b">친절</th>
                             <th className="py-3 px-4 border-b">내용</th>
                             <th className="py-3 px-4 border-b">작성일</th>
+                            <th className="py-3 px-4 border-b">평균평점</th>
+                            <th className="py-3 px-4 border-b">태그</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,7 +151,9 @@ export default function Home() {
                                 <td className="py-3 px-4 border-b">{p.clean}</td>
                                 <td className="py-3 px-4 border-b">{p.service}</td>
                                 <td className="py-3 px-4 border-b">{p.content}</td>
-                                <td className="py-3 px-4 border-b">{p.entryDate}</td>
+                                <td className="py-3 px-4 border-b">{p.modifyDate}</td>
+                                <td className="py-3 px-4 border-b">{p.averageRating.toFixed(1)}</td>
+                                <td className="py-3 px-4 border-b">{p.tags && p.tags.length > 0 ? p.tags.join(", ") : "태그 없음"}</td>
                             </tr>
                         ))}
                     </tbody>

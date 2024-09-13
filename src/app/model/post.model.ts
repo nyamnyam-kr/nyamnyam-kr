@@ -6,5 +6,7 @@ interface PostModel {
   content: string;
   entryDate: string;
   modifyDate: string;
+  averageRating: number;
+  tags: string[]; 
 }
 

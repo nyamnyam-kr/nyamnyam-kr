@@ -1,4 +1,4 @@
 interface TagModel{
-    id:number;
     name:string;
+    tagCategory:string;
 }
