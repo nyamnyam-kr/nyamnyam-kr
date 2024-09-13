@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/chats")
 public class ChatController {
 
-    private final ChatService messageService;
+    private final ChatService chatService;
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -34,19 +34,20 @@ public class ChatController {
     }
 
     // 채팅 방에서 메세지를 보내면 저장하는 친구
+    @CrossOrigin
     @PostMapping("/{chatRoomId}")
     public Mono<Chat> setMessage(@RequestBody Chat chat, @PathVariable String chatRoomId) {
         chat.setCreatedAt(LocalDateTime.now());
-        chat.setSender(chatRoomId);
+        chat.setChatRoomId(chatRoomId);
 
-        return messageService.saveMessage(chat);
+        return chatService.saveMessage(chat);
     }
 
     //얘는 보낸 메세지를 바로 채널에다가  뿌려주는 친구
     @CrossOrigin
     @GetMapping(value = "/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId) {
-       return messageService.mFindByChannelId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
+       return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
 
 }

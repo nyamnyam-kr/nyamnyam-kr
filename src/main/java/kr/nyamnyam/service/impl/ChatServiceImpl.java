@@ -24,13 +24,13 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Flux<Chat> mFindByChannelId(String chatRoomId) {
+    public Flux<Chat> mFindByChatRoomId(String chatRoomId) {
         return chatRepository.mFindByChannelId(chatRoomId)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<Chat> saveMessage(Chat message) {
-        return chatRepository.save(message);
+    public Mono<Chat> saveMessage(Chat chat) {
+        return chatRepository.save(chat);
     }
 }

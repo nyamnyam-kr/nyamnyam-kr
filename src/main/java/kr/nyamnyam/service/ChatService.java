@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 public interface ChatService {
     Flux<Chat> mFindBySender(String sender, String chatRoomId);
 
-    Flux<Chat> mFindByChannelId(String chatRoomId);
+    Flux<Chat> mFindByChatRoomId(String chatRoomId);
 
-    Mono<Chat> saveMessage(Chat message);
+    Mono<Chat> saveMessage(Chat chat);
 
 }
