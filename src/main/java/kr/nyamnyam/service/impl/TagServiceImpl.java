@@ -7,12 +7,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository repository;
+
+    @Override
+    public Map<String, List<TagEntity>> getTagsByCategory() {
+        List<TagEntity> tags = repository.findAll();
+        return null; // 수업 듣고 다시하기 !!!!!
+    }
 
     @Override
     public List<TagEntity> findAll() {

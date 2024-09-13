@@ -5,7 +5,7 @@ import kr.nyamnyam.model.entity.ReplyEntity;
 
 import java.util.List;
 
-public interface ReplyService{
+public interface ReplyService {
 
     List<ReplyEntity> findAll();
 

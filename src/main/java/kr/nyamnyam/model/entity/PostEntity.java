@@ -25,6 +25,9 @@ public class PostEntity {
     private Date entryDate;
     private Date modifyDate;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostTagEntity> postTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> images = new ArrayList<>();
 }

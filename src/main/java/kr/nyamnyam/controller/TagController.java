@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -14,11 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/tags")
 public class TagController {
-    private final TagService service;
+    private TagService service;
 
     @GetMapping("/group")
-    public ResponseEntity<List<TagEntity>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Map<String ,List<TagEntity>>> getTagsByCategory() {
+        return ResponseEntity.ok(service.getTagsByCategory());
     }
 
     @GetMapping("/{id}")
@@ -35,6 +36,7 @@ public class TagController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));

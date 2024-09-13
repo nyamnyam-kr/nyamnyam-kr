@@ -25,7 +25,7 @@ public class PostController {
 
     @GetMapping("/group/{page}")
     public ResponseEntity<List<PostEntity>> group(@PathVariable int page) {
-        System.out.println("넘어온 페이지: "+ page);
+        System.out.println("넘어온 페이지: " + page);
         return ResponseEntity.ok(service.findAllPerPage(page));
     }
 
@@ -53,14 +53,16 @@ public class PostController {
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody PostEntity entity) {
         return ResponseEntity.ok(service.save(entity));
     }
+
     @PostMapping("")
     public ResponseEntity<Boolean> write(@RequestPart("post") PostEntity entity, @RequestPart("files") List<MultipartFile> files) {
         service.save(entity);
-        imageService.saveImages(files,entity);
+        imageService.saveImages(files, entity);
         return ResponseEntity.ok(true);
     }
 }

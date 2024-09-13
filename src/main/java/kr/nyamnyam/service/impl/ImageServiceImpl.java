@@ -31,10 +31,9 @@ public class ImageServiceImpl implements ImageService {
                     .post(entity)
                     .build();
 
-            // 이미지 엔티티를 저장
             repository.save(image);
         }
-        return true; // 성공 여부 반환
+        return true;
     }
 
     @Override

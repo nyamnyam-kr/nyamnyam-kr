@@ -43,6 +43,7 @@ public class UpvoteServiceImpl implements UpvoteService {
             return false;
         }
     }
+
     @Override
     public Boolean save(UpvoteEntity entity) {
         return repository.save(entity) != null;
