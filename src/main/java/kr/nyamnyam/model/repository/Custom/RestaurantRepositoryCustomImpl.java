@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
+
 @RequiredArgsConstructor
 public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCustom {
 
@@ -14,7 +16,8 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     @Override
     public List<RestaurantEntity> findByName(String name) {
-        QRestaurantEntity r = QRestaurantEntity.restaurantEntity;
-        return jpaQueryFactory.selectFrom(r).where(r.name.eq(name)).fetch();
+        return jpaQueryFactory.selectFrom(restaurantEntity)
+                .where(restaurantEntity.name.eq(name))
+                .fetch();
     }
 }

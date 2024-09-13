@@ -21,14 +21,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("/restaurant/")
+@RequestMapping("/restaurant")
 public class RestaurantController {
     private final ApiService apiService;
     private final RestaurantService restaurantService;
 
 
 
-    @GetMapping("api")
+    @GetMapping("/api")
     public ResponseEntity<List<RestaurantEntity>> getRestaurants() {
         List<RestaurantEntity> restaurants = apiService.getRestaurants();
         return ResponseEntity.ok(restaurants);
@@ -36,7 +36,7 @@ public class RestaurantController {
 
     }
 
-    @GetMapping("findPage/{pageNo}")
+    @GetMapping("/findPage/{pageNo}")
     public ResponseEntity<?> findPage(@PathVariable int pageNo, @RequestParam int pageSize) {
         // 특정 페이지의 리스트를 보여주는 메소드 호출
         System.out.println("pageNo = " + pageNo);
@@ -44,7 +44,7 @@ public class RestaurantController {
 
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public ResponseEntity<?> count() {
         return ResponseEntity.ok(restaurantService.count());
     }
