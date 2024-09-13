@@ -41,7 +41,7 @@ public class CrawlServiceImpl implements CrawlService {
         List<String> existingNames = restaurantRepository.findAllNames();
 
         try {
-            webDriver.get("https://map.naver.com/v5/search/군포 맛집");
+            webDriver.get("https://map.naver.com/v5/search/서울 맛집");
 
             // 결과가 로드될 때까지 대기
             wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("searchIframe")));
@@ -52,11 +52,9 @@ public class CrawlServiceImpl implements CrawlService {
             for (int i = 0; i < Math.min(titleElements.size(), 3); i++) {
                 WebElement titleElement = titleElements.get(i);
                 // 검색 결과 클릭
-                titleElement.click();
-                Thread.sleep(3000);
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", titleElement);
+                wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
                 titleElements.get(i).click();
-
-                webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
 
                 // 상세보기로 프레임으로 이동
                 webDriver.switchTo().defaultContent();
@@ -161,10 +159,9 @@ public class CrawlServiceImpl implements CrawlService {
                     if (combinedMenu.length() > 0) {
                         combinedMenu.setLength(combinedMenu.length() - 2);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (TimeoutException | NoSuchElementException e) {
+                    combinedMenu.append("메뉴정보가 존재하지 않습니다");
                 }
-
 
 
                 String nameText = nameElement.getText();
