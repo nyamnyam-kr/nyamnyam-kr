@@ -28,7 +28,7 @@ public class CrawlServiceImpl implements CrawlService {
 
 
         WebDriver webDriver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(20));
 
         List<RestaurantEntity> crawledList = new ArrayList<>();
 
@@ -67,23 +67,16 @@ public class CrawlServiceImpl implements CrawlService {
                 WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
 
                 // 별점
-
-
+                Double rating;
                 try {
-                    Double rating = 0.0; // 별점 없는 식당정보들 기본값
-                    // 별점 요소의 가시성을 기다리기
-                    WebElement star = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".PXMot.LXIwF")));
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".PXMot.LXIwF")));
+                    WebElement star = webDriver.findElement(By.cssSelector(".PXMot.LXIwF"));
+
                     String starText = star.getText().replaceAll("[^0-9.]", "").trim();
                     rating = starText.isEmpty() ? 0.0 : Double.parseDouble(starText);
-                    restaurant.setRate(rating);
-
-
-                } catch (TimeoutException e) {
-                    System.out.println("별점 정보를 찾을 수 없습니다: " + e.getMessage());
                 } catch (NoSuchElementException e) {
-                    System.out.println("별점 정보를 포함하는 요소를 찾을 수 없습니다: " + e.getMessage());
+                    rating = 0.0;
                 }
-
 
 
 
@@ -110,21 +103,35 @@ public class CrawlServiceImpl implements CrawlService {
 
 
 
-/*                try {
-                    // 운영시간 정보를 포함하는 div 요소를 찾기
-                    WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".H3ua4")));
-                    String operationText = operationDiv.getText().trim();
+                List<WebElement> detailButtons = webDriver.findElements(By.cssSelector("._UCia"));
+                if (detailButtons.size() >= 2) {
+                    // 두 번째 버튼 클릭
+                    WebElement operationButton = detailButtons.get(1);
+                    operationButton.click();
 
-                    // 불필요한 줄바꿈 제거 (필요한 경우)
-                    operationText = operationText.replace("\n", " ").trim();
+                    try {
+                        WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".A_cdD>.H3ua4")));
+                        WebElement operationDay = webDriver.findElement(By.cssSelector(".A_cdD>.i8cJw")); // cssSelector에서 .을 빼야 클래스 선택자
 
-                    // 크롤링한 정보에 운영시간을 저장
-                    restaurant.setOperation(operationText);
-                } catch (TimeoutException e) {
-                    System.out.println("운영시간 정보를 찾을 수 없습니다: " + e.getMessage());
-                } catch (NoSuchElementException e) {
-                    System.out.println("운영시간 정보를 포함하는 div 요소를 찾을 수 없습니다: " + e.getMessage());
-                }*/
+                        // 운영시간과 운영요일 텍스트 추출
+                        String operationTime = operationDiv.getText().trim();
+                        String operationDayText = operationDay.getText().trim();
+                        operationTime = operationTime.replace("\n", " ").trim();
+                        operationDayText = operationDayText.replace("\n", " ").trim();
+
+                        // 운영시간과 운영요일을 합쳐서 저장
+                        String combinedOperation =  operationDayText + " / " + operationTime;
+
+                        restaurant.setOperation(combinedOperation);
+
+                    } catch (TimeoutException e) {
+                        System.out.println("운영시간 정보를 찾을 수 없습니다: " + e.getMessage());
+                    } catch (NoSuchElementException e) {
+                        restaurant.setOperation("운영시간 정보가 없습니다");
+                    }
+                } else {
+                    System.out.println("운영시간 정보를 클릭할 버튼을 찾을 수 없습니다.");
+                }
 
                 String nameText = nameElement.getText();
                 String typeText = typeElement.getText();
@@ -133,7 +140,7 @@ public class CrawlServiceImpl implements CrawlService {
                 restaurant.setName(nameText);
                 restaurant.setType(typeText);
                 restaurant.setAddress(address);
-
+                restaurant.setRate(rating);
                 //restaurant.setOperation(operationText);
 
 
