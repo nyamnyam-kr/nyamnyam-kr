@@ -2,7 +2,6 @@ package kr.nyamnyam.controller;
 
 
 import kr.nyamnyam.model.domain.Chat;
-import kr.nyamnyam.model.domain.ChatRoom;
 import kr.nyamnyam.model.repository.ChatRepository;
 import kr.nyamnyam.model.repository.ChatRoomRepository;
 import kr.nyamnyam.service.ChatService;
@@ -22,7 +21,6 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ChatRepository chatRepository;
-    private final ChatRoomRepository chatRoomRepository;
 
 
     // 1대1??
@@ -30,7 +28,7 @@ public class ChatController {
     @GetMapping(value = "/sender/{sender}/chatroom/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Chat> getMessage(@PathVariable String sender, @PathVariable String chatRoomId) {
 
-        return chatRepository.mFindBySender(sender, chatRoomId).subscribeOn(Schedulers.boundedElastic());
+        return chatService.mFindBySender(sender, chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
 
     // 채팅 방에서 메세지를 보내면 저장하는 친구
