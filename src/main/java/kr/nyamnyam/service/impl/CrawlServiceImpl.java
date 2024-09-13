@@ -24,7 +24,6 @@ public class CrawlServiceImpl implements CrawlService {
     private final RestaurantRepository restaurantRepository;
 
 
-
     @Override
     public void crawlAndSaveInfos() {
 
@@ -42,7 +41,7 @@ public class CrawlServiceImpl implements CrawlService {
         List<String> existingNames = restaurantRepository.findAllNames();
 
         try {
-            webDriver.get("https://map.naver.com/v5/search/서울 맛집");
+            webDriver.get("https://map.naver.com/v5/search/군포 맛집");
 
             // 결과가 로드될 때까지 대기
             wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("searchIframe")));
@@ -50,7 +49,7 @@ public class CrawlServiceImpl implements CrawlService {
             webDriver.switchTo().frame("searchIframe");
 
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
-            for (int i = 0; i < Math.min(titleElements.size(), 5); i++) {
+            for (int i = 0; i < Math.min(titleElements.size(), 3); i++) {
                 WebElement titleElement = titleElements.get(i);
                 // 검색 결과 클릭
                 titleElement.click();
@@ -62,6 +61,7 @@ public class CrawlServiceImpl implements CrawlService {
                 // 상세보기로 프레임으로 이동
                 webDriver.switchTo().defaultContent();
                 webDriver.switchTo().frame("entryIframe");
+
 
                 WebElement nameElement = webDriver.findElement(By.cssSelector(".GHAhO"));
                 WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
@@ -87,33 +87,14 @@ public class CrawlServiceImpl implements CrawlService {
                     System.out.println("평점 정보를 찾을 수 없어 기본값 0.0을 설정합니다.");
                 }
 
-                // 메뉴 정보
-                StringBuilder combinedMenu = new StringBuilder();
-                try {
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MN48z")));
-                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".MN48z"));
-
-                    for (WebElement menuItem : menuItems) {
-                        WebElement menuName = menuItem.findElement(By.cssSelector(".MN48z>.VQvNX"));
-                        WebElement menuPrice = menuItem.findElement(By.cssSelector(".MN48z>.gl2cc> em"));
-                        String menuText = menuName.getText();
-                        String priceText = menuPrice.getText();
-
-                        combinedMenu.append(menuText).append(" - ").append(priceText).append(", ");
-                    }
-
-                    if (combinedMenu.length() > 0) {
-                        combinedMenu.setLength(combinedMenu.length() - 2); // 마지막 ", " 제거
-                    }
-
-                } catch (TimeoutException | NoSuchElementException e) {
-                    combinedMenu.append("메뉴 정보가 존재하지 않습니다.");
-                }
-
 
                 //  (주소, 영업 시간 등의 상세보기) 버튼 요소 찾아 클릭하기
-                WebElement addressButton = webDriver.findElement(By.cssSelector("._UCia"));
-                addressButton.click();
+                WebElement addressButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("._UCia")));
+                //addressButton = webDriver.findElement(By.cssSelector("._UCia"));
+                // 팝업과 같은 장애물이 클릭요소를 가리는 경우가 많아 javaScript 로 강제 클릭
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", addressButton);
+
+                // addressButton.click();
 
                 WebElement addressDiv = webDriver.findElement(By.className("Y31Sf"));
                 List<WebElement> addressInfos = addressDiv.findElements(By.className("nQ7Lh"));
@@ -128,12 +109,17 @@ public class CrawlServiceImpl implements CrawlService {
                     }
                 }
 
+                webDriver.switchTo().defaultContent();
+                webDriver.switchTo().frame("entryIframe");
+
                 String combinedOperation = "운영시간 정보가 없습니다";
                 List<WebElement> detailButtons = webDriver.findElements(By.cssSelector("._UCia"));
+
                 if (detailButtons.size() >= 2) {
                     // 두번재 ._UCia 클릭
                     WebElement operationButton = detailButtons.get(1);
-                    operationButton.click();
+                    ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", operationButton);
+                    //operationButton.click();
                     try {
                         WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".A_cdD>.H3ua4")));
                         WebElement operationDay = webDriver.findElement(By.cssSelector(".A_cdD>.i8cJw"));
@@ -147,6 +133,63 @@ public class CrawlServiceImpl implements CrawlService {
                         combinedOperation = "운영시간 정보가 존재하지 않습니다";
                     }
                 }
+
+                webDriver.switchTo().defaultContent();
+                webDriver.switchTo().frame("entryIframe");
+
+                // 메뉴 이름과 가격을 동적으로 추출
+                StringBuilder combinedMenu = new StringBuilder();
+                try {
+                    wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".ipNNM")));
+                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".ipNNM"));
+
+                    for (int k = 0; k < menuItems.size(); k++) {
+
+                        String menuNameXPath = String.format("//ul/li[%d]/a/div[2]/div[1]/div/span", k + 1);
+                        String menuPriceXPath = String.format("//ul/li[%d]/a/div[2]/div[2]/div", k + 1);
+
+                        WebElement menuNameElement = webDriver.findElement(By.xpath(menuNameXPath));
+                        WebElement menuPriceElement = webDriver.findElement(By.xpath(menuPriceXPath));
+
+                        String menuName = menuNameElement.getText();
+                        String menuPrice = menuPriceElement.getText();
+
+                        combinedMenu.append(menuName).append("-").append(menuPrice).append(",");
+                    }
+
+                    // 마지막 ", " 제거
+                    if (combinedMenu.length() > 0) {
+                        combinedMenu.setLength(combinedMenu.length() - 2);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+               /* // 메뉴 정보
+                StringBuilder combinedMenu = new StringBuilder();
+                try {
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".MN48z")));
+                    List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".MN48z"));
+
+                    for (WebElement menuItem : menuItems) {
+                        WebElement menuName = menuItem.findElement(By.cssSelector(".VQvNX"));
+                        WebElement menuPrice = menuItem.findElement(By.cssSelector(".gl2cc>em"));
+                        String menuText = menuName.getText();
+                        String priceText = menuPrice.getText();
+
+                        combinedMenu.append(menuText).append(" - ").append(priceText).append(", ");
+                    }
+
+                    if (combinedMenu.length() > 0) {
+                        combinedMenu.setLength(combinedMenu.length() - 2); // 마지막 ", " 제거
+                    }
+
+                } catch (TimeoutException | NoSuchElementException e) {
+                    combinedMenu.append("메뉴 정보가 존재하지 않습니다.");
+                }
+*/
+
 
                 String nameText = nameElement.getText();
                 String typeText = typeElement.getText();
