@@ -14,24 +14,32 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class RestImgServiceImpl implements RestImgService {
 
-    //jsoup이라는 라이브러리를 사용해 웹 크롤링으로 이미지 추출
+    @Override
     public String extractImageUrl(String postUrl) {
-        try {
+        // URL이 비어있거나 null인 경우 처리
+        if (postUrl == null || postUrl.trim().isEmpty()) {
+            return "https://example.com/path/to/default-image.jpg"; // 기본 이미지 URL
+        }
 
+        try {
+            // 웹 페이지를 가져옵니다
             Document doc = Jsoup.connect(postUrl).get();
 
-            Elements metaTags = doc.getElementsByTag("meta");
-            for (Element metaTag : metaTags) {
-                if ("og:image".equals(metaTag.attr("property"))) {
-                    return metaTag.attr("content");
+            // 웹 페이지에서 이미지 요소를 찾습니다
+            Elements imgElements = doc.select("img");
+
+            // 특정 도메인 또는 경로를 필터링할 수 있습니다. 필요에 따라 조정하십시오.
+            for (Element img : imgElements) {
+                String imgUrl = img.absUrl("src");
+                if (imgUrl.contains("korean.visitseoul.net/restaurants")) {
+                    return imgUrl;
                 }
             }
 
-            // 기본 이미지 URL 반환
-            return "https://example.com/default-image.jpg";
         } catch (IOException e) {
             e.printStackTrace();
-            return "https://example.com/default-image.jpg";
         }
+
+        return "https://example.com/path/to/default-image.jpg"; // 기본 이미지 URL
     }
 }
