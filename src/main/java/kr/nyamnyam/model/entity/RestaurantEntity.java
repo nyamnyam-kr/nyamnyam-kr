@@ -26,8 +26,11 @@ public class RestaurantEntity {
     private String operation;
     private String tel;
     private String menu;
+    @Column(length = 500)
     private String thumbnailImageUrl;
+    @Column(length = 500)
     private String subImageUrl;
+    private String region;
     
 
 
