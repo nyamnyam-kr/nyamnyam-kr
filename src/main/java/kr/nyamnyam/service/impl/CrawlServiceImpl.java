@@ -65,7 +65,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private List<String> getPageUrls() {
         List<String> urls = new ArrayList<>();
-        String[] regions = {"서초구", "은평구", "영등포구"};
+        String[] regions = {"강남", "강북"};
 
         for (String region : regions) {
             urls.add("https://map.naver.com/v5/search/" + region + " 맛집");
@@ -101,7 +101,7 @@ public class CrawlServiceImpl implements CrawlService {
 
                 // 상세보기로 프레임으로 이동
                 webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
-                wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("entryIframe")));
+              //  wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("entryIframe")));
                 webDriver.switchTo().defaultContent();
                 webDriver.switchTo().frame("entryIframe");
 
@@ -144,7 +144,7 @@ public class CrawlServiceImpl implements CrawlService {
                             .menu(combinedMenu)
                             .thumbnailImageUrl(thumbnailImageUrl)
                             .subImageUrl(secondaryImageUrl)
-                            .region("서초구")
+
                             .build();
 
                     crawledList.add(restaurant);
