@@ -80,9 +80,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostEntity> findAll() {
-        var p1 = new HashMap<String, String>();
-         p1 = new HashMap<String, String>();
-
         return repository.findAll();
     }
 
@@ -105,8 +102,10 @@ public class PostServiceImpl implements PostService {
     public Boolean deleteById(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -122,4 +121,6 @@ public class PostServiceImpl implements PostService {
 
         return repository.save(post) != null;
     }
+
+
 }
