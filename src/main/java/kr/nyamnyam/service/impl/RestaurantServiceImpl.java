@@ -19,5 +19,10 @@ public class RestaurantServiceImpl implements RestaurantService {
         return List.of();
     }
 
+    @Override
+    public List<RestaurantEntity> findAll() {
+        return restaurantRepository.findAll();
+    }
+
 
 }

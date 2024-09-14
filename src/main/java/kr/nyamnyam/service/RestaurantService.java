@@ -10,5 +10,6 @@ public interface RestaurantService {
 
 
     List<RestaurantEntity> getCrawlingInfos();
+    List<RestaurantEntity> findAll();
 
 }

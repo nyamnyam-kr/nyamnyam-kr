@@ -2,6 +2,7 @@ package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.entity.CrawlingInfo;
 import kr.nyamnyam.model.entity.RestaurantEntity;
+import kr.nyamnyam.model.repository.RestaurantRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.CrawlService;
 import kr.nyamnyam.service.RestaurantService;
@@ -37,6 +38,11 @@ public class RestaurantController {
         RestaurantEntity restaurant = new RestaurantEntity();
         System.out.println("이벤트 수신");
         crawlService.crawlAndSaveInfos();
+    }
+
+    @GetMapping("/restaurants")
+    public List<RestaurantEntity> getRestaurants() {
+        return restaurantService.findAll();
     }
 
 

@@ -69,7 +69,7 @@ public class CrawlServiceImpl implements CrawlService {
 
 
                 // 이미지
-                List<WebElement> imageElements = webDriver.findElements(By.cssSelector(".place_thumb.QX0J7"));
+                List<WebElement> imageElements = webDriver.findElements(By.cssSelector(".place_thumb.QX0J7 img"));
                 String thumbnailImageUrl = imageElements.size() > 0 ? imageElements.get(0).getAttribute("src") : null;
                 String secondaryImageUrl = imageElements.size() > 1 ? imageElements.get(1).getAttribute("src") : null;
 
