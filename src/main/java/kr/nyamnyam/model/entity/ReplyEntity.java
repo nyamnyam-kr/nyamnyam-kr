@@ -20,5 +20,4 @@ public class ReplyEntity {
     private Date entryDate;
     private Date modifyDate;
 
-    // users, posts, restaurants JOIN 필요
 }

@@ -14,4 +14,8 @@ public class UpvoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private Long postId;
+    private Long giveId;
+    private Long haveId;
 }

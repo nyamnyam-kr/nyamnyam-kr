@@ -1,14 +1,15 @@
 package kr.nyamnyam.service;
 
 
-import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.model.domain.PostModel;
+
 import java.util.List;
 
 public interface PostService {
 
-    List<PostEntity> findAll();
+    List<PostModel> findAll();
 
-    PostEntity findById(Long id);
+    PostModel findById(Long id);
 
     Boolean existsById(Long id);
 
@@ -16,9 +17,9 @@ public interface PostService {
 
     Boolean deleteById(Long id);
 
-    Boolean save(PostEntity entity);
+    Boolean save(PostModel model);
 
-    List<PostEntity> findAllPerPage(int page);
+    List<PostModel> findAllPerPage(int page);
 
     Boolean crawling();
 }

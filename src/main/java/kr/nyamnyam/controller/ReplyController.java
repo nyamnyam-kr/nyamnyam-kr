@@ -34,10 +34,12 @@ public class ReplyController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
         return ResponseEntity.ok(service.save(entity));

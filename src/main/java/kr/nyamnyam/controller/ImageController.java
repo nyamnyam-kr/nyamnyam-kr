@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ImageController {
     private final ImageService service;
 
-    @PostMapping("/group")
+    @GetMapping("/group")
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
