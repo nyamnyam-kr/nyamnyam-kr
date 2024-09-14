@@ -49,7 +49,7 @@ public class CrawlServiceImpl implements CrawlService {
             webDriver.switchTo().frame("searchIframe");
 
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
-            for (int i = 0; i < Math.min(titleElements.size(), 3); i++) {
+            for (int i = 0; i < Math.min(titleElements.size(), 4); i++) {
                 WebElement titleElement = titleElements.get(i);
                 // 검색 결과 클릭
                 ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", titleElement);
@@ -57,8 +57,13 @@ public class CrawlServiceImpl implements CrawlService {
                 titleElements.get(i).click();
 
                 // 상세보기로 프레임으로 이동
+                //wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.id("entryIframe")));
                 webDriver.switchTo().defaultContent();
+                webDriver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
+                // (4) 상세정보가 나오는 프레임으로 이동한다.
                 webDriver.switchTo().frame("entryIframe");
+
+
 
 
                 WebElement nameElement = webDriver.findElement(By.cssSelector(".GHAhO"));
@@ -114,23 +119,34 @@ public class CrawlServiceImpl implements CrawlService {
                 List<WebElement> detailButtons = webDriver.findElements(By.cssSelector("._UCia"));
 
                 if (detailButtons.size() >= 2) {
-                    // 두번재 ._UCia 클릭
                     WebElement operationButton = detailButtons.get(1);
                     ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", operationButton);
-                    //operationButton.click();
-                    try {
-                        WebElement operationDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".A_cdD>.H3ua4")));
-                        WebElement operationDay = webDriver.findElement(By.cssSelector(".A_cdD>.i8cJw"));
-                        String operationTime = operationDiv.getText().trim();
-                        String operationDayText = operationDay.getText().trim();
-                        operationTime = operationTime.replace("\n", " ").trim();
-                        operationDayText = operationDayText.replace("\n", " ").trim();
 
-                        combinedOperation = operationDayText + " / " + operationTime;
+                    try {
+                        // 요일별로 다수의 운영시간 정보를 찾아 처리
+                        List<WebElement> operationTimes = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".A_cdD>.H3ua4")));
+                        List<WebElement> operationDays = webDriver.findElements(By.cssSelector(".A_cdD>.i8cJw"));
+
+                        StringBuilder operationBuilder = new StringBuilder();
+                        for (int j = 0; j < operationDays.size(); j++) {
+                            String dayText = operationDays.get(j).getText().trim();
+                            String timeText = operationTimes.get(j).getText().replace("\n", " ").trim();
+
+                            operationBuilder.append(dayText).append(" / ").append(timeText).append("\n");
+                        }
+
+                        // 마지막 줄바꿈 제거
+                        if (operationBuilder.length() > 0) {
+                            operationBuilder.setLength(operationBuilder.length() - 1);
+                        }
+
+                        combinedOperation = operationBuilder.toString();
+
                     } catch (TimeoutException | NoSuchElementException e) {
                         combinedOperation = "운영시간 정보가 존재하지 않습니다";
                     }
                 }
+
 
                 webDriver.switchTo().defaultContent();
                 webDriver.switchTo().frame("entryIframe");

@@ -21,6 +21,8 @@ public class RestaurantEntity {
     private String address;
     private String type;
     private Double rate;
+
+    @Column(length = 500)
     private String operation;
     private String tel;
     private String menu;
