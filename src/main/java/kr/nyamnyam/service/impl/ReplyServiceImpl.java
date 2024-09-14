@@ -35,7 +35,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public Boolean deleteById(Long id) {
-        if(repository.existsById(id)) {
+        if (repository.existsById(id)) {
             repository.deleteById(id);
             return true;
         }

@@ -25,6 +25,22 @@ configurations {
     }
 }
 
+// QueryDSL 설정
+def generated = 'build/generated'
+
+// QueryDSL QClass 파일 생성 위치 지정
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(generated)
+}
+
+sourceSets {
+	main.java.srcDirs += [generated]
+}
+
+clean {
+	delete file(generated)
+}
+
 repositories {
     mavenCentral()
 }

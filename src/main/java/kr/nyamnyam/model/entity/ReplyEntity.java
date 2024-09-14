@@ -23,5 +23,4 @@ public class ReplyEntity {
     private Long userId;
     private Long postId;
 
-    // users, posts, restaurants JOIN 필요
 }

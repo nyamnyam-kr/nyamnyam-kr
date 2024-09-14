@@ -14,6 +14,12 @@ public class UpvoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
+
     private Long postId;
+    private Long giveId;
+    private Long haveId;
+
+    // admin에서 넘어온거 아마 userId랑 haveId 같은 의미?
+    private Long userId;
+
 }

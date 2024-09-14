@@ -1,8 +1,13 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.transaction.Transactional;
+import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.model.entity.PostTagEntity;
+import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.model.repository.PostRepository;
+import kr.nyamnyam.model.repository.PostTagRepository;
+import kr.nyamnyam.model.repository.TagRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -12,29 +17,29 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository repository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 
     @Override
-    public List<PostEntity> findAllPerPage(int page) {
-        List<PostEntity> ls = findAll();
+    public List<PostModel> findAllPerPage(int page) {
         Long totalCount = count();
         Pagination p = new Pagination(page, totalCount.intValue());
-        int startRow = p.getStartRow();
-        int endRow = p.getEndRow();
-
-        List<PostEntity> pageData = new ArrayList<>();
-
-        for (int i = startRow; i <= endRow && i < ls.size(); i++) {
-            pageData.add(ls.get(i));
-        }
-        return pageData;
+        return repository.findAll().stream()
+                .skip(p.getStartRow()) // 페이지의 시작 행부터 스킵
+                .limit(p.getEndRow() - p.getStartRow() + 1) // 페이지의 끝까지 제한
+                .map(this::convertToModel) // 엔티티를 모델로 변환
+                .collect(Collectors.toList()); // 리스트로 수집
     }
-
 
     @Transactional
     @Override
@@ -67,8 +72,6 @@ public class PostServiceImpl implements PostService {
                     .taste(Long.parseLong(movieRank)) // 맛을 순위로 대체, 예시로 사용
                     .clean(5L) // 예시 값
                     .service(5L) // 예시 값
-                    .entryDate(new Date())
-                    .modifyDate(new Date())
                     .build();
 
             posts.add(post);
@@ -79,13 +82,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostEntity> findAll() {
-        return repository.findAll();
+    public List<PostModel> findAll() {
+        return repository.findAll().stream()
+                .map(this::convertToModel)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public PostEntity findById(Long id) {
-        return repository.findById(id).orElse(null);
+    public PostModel findById(Long id) {
+        return repository.findById(id)
+                .map(this::convertToModel)
+                .orElse(null);
     }
 
     @Override
@@ -100,27 +107,64 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Boolean deleteById(Long id) {
-        if (repository.existsById(id)) {
+        if (existsById(id)) {
             repository.deleteById(id);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
-    public Boolean save(PostEntity entity) {
-        PostEntity post = PostEntity.builder()
-                .content("Some content")
-                .taste(10L) // 예제 값
-                .clean(10L) // 예제 값
-                .service(10L) // 예제 값
-                .entryDate(new Date())
-                .modifyDate(new Date())
-                .build();
+    public Boolean save(PostModel model) {
+        PostEntity entity = convertToEntity(model);
 
-        return repository.save(post) != null;
+        // PostEntity 먼저 저장
+        repository.save(entity);
+
+        if (model.getTags() != null && !model.getTags().isEmpty()) {
+            List<PostTagEntity> postTags = model.getTags().stream()
+                    .map(tagName -> {
+                        // 태그가 존재하는지 확인하고, 없으면 예외 처리
+                        TagEntity tag = tagRepository.findByName(tagName)
+                                .orElseThrow(() -> new RuntimeException("Tag not found: " + tagName));
+
+                        // PostTagEntity 생성
+                        return new PostTagEntity(entity, tag);
+                    })
+                    .collect(Collectors.toList());
+
+            // 생성된 PostTagEntity 리스트 저장
+            postTagRepository.saveAll(postTags);
+        }
+
+        return true;
     }
 
+    private PostModel convertToModel(PostEntity entity) {
+        PostModel model = new PostModel();
+        model.setId(entity.getId());
+        model.setContent(entity.getContent());
+        model.setTaste(entity.getTaste());
+        model.setClean(entity.getClean());
+        model.setService(entity.getService());
+        model.setEntryDate(entity.getEntryDate());
+        model.setModifyDate(entity.getModifyDate());
+        model.setAverageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0);
 
+        List<String> tags = postTagRepository.findByPostId(entity.getId()).stream()
+                .map(postTagEntity -> postTagEntity.getTag().getName())
+                .collect(Collectors.toList());
+        model.setTags(tags);
+
+        return model;
+    }
+
+    private PostEntity convertToEntity(PostModel model) {
+        return PostEntity.builder()
+                .content(model.getContent())
+                .taste(model.getTaste())
+                .clean(model.getClean())
+                .service(model.getService())
+                .build();
+    }
 }
