@@ -38,9 +38,20 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    public Boolean updateHits(Long id) {
+        if(noticeRepository.updateHits(id) != null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    @Override
     public Long count() {
         return noticeRepository.count();
     }
+
 
     @Override
     public Boolean deleteById(Long id) {

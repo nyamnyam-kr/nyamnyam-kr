@@ -34,7 +34,6 @@ public class UserThumbnailEntity {
     public UserThumbnailEntity(UserEntity userEntity, String imagePath) {
         this.userEntity = userEntity;
         this.imagePath = imagePath;
-        this.createdAt = LocalDateTime.now();
     }
 
 

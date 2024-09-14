@@ -13,6 +13,8 @@ public interface NoticeService {
 
     Boolean existsById(Long id);
 
+    Boolean updateHits(Long id);
+
     Long count();
 
     Boolean deleteById(Long id);

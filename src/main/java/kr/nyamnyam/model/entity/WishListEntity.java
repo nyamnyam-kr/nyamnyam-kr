@@ -17,5 +17,4 @@ public class WishListEntity {
     private Long userId;
     private Long postId;
 
-
 }

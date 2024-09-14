@@ -44,6 +44,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
 
+    // 가장 많은 추천을 받은 postlist
     @Override
     public List<String> postUpvote() {
 
@@ -59,6 +60,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+    // 가장 많은 추천을 받은 post의 nickname list
     @Override
     public List<String> findNicknameFromUpvote() {
 
@@ -76,6 +78,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+
+    // 가장 많은 추천을 받은 음식점 list
     @Override
     public List<String> findRestaurantFromUpvote() {
 
@@ -93,6 +97,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetch();
 
     }
+
+    
 
 
 }
