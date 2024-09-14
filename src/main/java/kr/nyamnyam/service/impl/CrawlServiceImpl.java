@@ -52,6 +52,10 @@ public class CrawlServiceImpl implements CrawlService {
             for (int i = 0; i < Math.min(titleElements.size(), 4); i++) {
                 WebElement titleElement = titleElements.get(i);
                 // 검색 결과 클릭
+
+                // 스크롤하여 요소가 화면에 보이도록 함
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView(true);", titleElement);
+
                 ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", titleElement);
                 wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
                 titleElements.get(i).click();
@@ -64,8 +68,12 @@ public class CrawlServiceImpl implements CrawlService {
                 webDriver.switchTo().frame("entryIframe");
 
 
+                // 이미지
+                List<WebElement> imageElements = webDriver.findElements(By.cssSelector(".place_thumb.QX0J7"));
+                String thumbnailImageUrl = imageElements.size() > 0 ? imageElements.get(0).getAttribute("src") : null;
+                String secondaryImageUrl = imageElements.size() > 1 ? imageElements.get(1).getAttribute("src") : null;
 
-
+                // 가게이름, 종류
                 WebElement nameElement = webDriver.findElement(By.cssSelector(".GHAhO"));
                 WebElement typeElement = webDriver.findElement(By.cssSelector(".lnJFt"));
 
@@ -95,10 +103,11 @@ public class CrawlServiceImpl implements CrawlService {
                 WebElement addressButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("._UCia")));
                 //addressButton = webDriver.findElement(By.cssSelector("._UCia"));
                 // 팝업과 같은 장애물이 클릭요소를 가리는 경우가 많아 javaScript 로 강제 클릭
+
+                // 스크롤하여 요소가 화면에 보이도록 함
+                ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView(true);", addressButton);
+
                 ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", addressButton);
-
-                // addressButton.click();
-
                 WebElement addressDiv = webDriver.findElement(By.className("Y31Sf"));
                 List<WebElement> addressInfos = addressDiv.findElements(By.className("nQ7Lh"));
 
@@ -157,6 +166,7 @@ public class CrawlServiceImpl implements CrawlService {
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".ipNNM")));
                     List<WebElement> menuItems = webDriver.findElements(By.cssSelector(".ipNNM"));
 
+
                     for (int k = 0; k < menuItems.size(); k++) {
 
                         String menuNameXPath = String.format("//ul/li[%d]/a/div[2]/div[1]/div/span", k + 1);
@@ -192,6 +202,8 @@ public class CrawlServiceImpl implements CrawlService {
                             .operation(combinedOperation)
                             .tel(telText)
                             .menu(combinedMenu.toString())
+                            .thumbnailImageUrl(thumbnailImageUrl)
+                            .subImageUrl(secondaryImageUrl)
                             .build();
 
                     crawledList.add(restaurant);

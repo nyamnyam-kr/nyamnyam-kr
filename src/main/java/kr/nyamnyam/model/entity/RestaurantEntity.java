@@ -26,6 +26,9 @@ public class RestaurantEntity {
     private String operation;
     private String tel;
     private String menu;
+    private String thumbnailImageUrl;
+    private String subImageUrl;
+    
 
 
 
