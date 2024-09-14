@@ -1,8 +1,8 @@
 export async function insertTag(tag: TagModel): Promise<any | { status: number }> {
     try {
         const body = {
-            id: tag.id,
-            name: tag.name
+            name: tag.name,
+            tagCategory: tag.tagCategory
         }
         const response = await fetch('http://localhost:8080/api/tags', {
             method: 'POST',

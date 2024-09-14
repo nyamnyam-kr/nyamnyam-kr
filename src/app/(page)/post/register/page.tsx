@@ -12,27 +12,33 @@ export default function PostRegister() {
     taste: 0,
     clean: 0,
     service: 0,
-    entryDate: '',
-    modifyDate: ''
+    entryDate: '', 
+    modifyDate: '', 
+    averageRating: 0, 
+    tags:[]
   });
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
   const [selectTags, setSelectTags] = useState<string[]>([]);
 
+  // 포스트 등록 페이지에서 항상 모든 태그를 불러옴
   useEffect(() => {
-    const fetchTagCategory = async () => {
-      const response = await fetch('http://localhost:8080/api/tags/category');
-      const data = await response.json();
-      setTagsCategory(data);
-    }
     fetchTagCategory();
-  }, [])
+  }, []);
+
+  const fetchTagCategory = async () => {
+    const response = await fetch('http://localhost:8080/api/tags/category');
+    const data = await response.json();
+    console.log("불러온 태그 데이터: ", data);  // 데이터를 콘솔에 출력
+    setTagsCategory(data); // 모든 태그 데이터를 설정
+    setSelectTags([]); // 태그 선택 상태를 초기화
+};
 
   const handleTagSelect = (tag: string) => {
     setSelectTags(prevSelected =>
       prevSelected.includes(tag)
-        ? prevSelected.filter(t => t !== tag)
-        : [...prevSelected, tag]
+          ? prevSelected.filter(t => t !== tag)
+          : [...prevSelected, tag]
     );
   };
 
@@ -55,8 +61,13 @@ export default function PostRegister() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const postData = { ...formData };
+    const postData = {
+      ...formData,
+      tags: selectTags
+    };
     await insertPost(postData);
+    setSelectTags([]); // 태그 선택 초기화
+    await fetchTagCategory(); // 모든 태그 목록 재로드
     router.push('/');
   };
 
@@ -99,7 +110,7 @@ export default function PostRegister() {
           {Object.keys(tagsByCategory).map(category => (
             <div key={category} className="mb-4">
               <h3>
-                {category === "방문 목적" && "◦ 이 식당은 어떤 방문목적에 적합한가요?"}
+                {category === "방문목적" && "◦ 이 식당은 어떤 방문목적에 적합한가요?"}
                 {category === "분위기" && "◦ 이 식당의 분위기를 선택해주세요."}
                 {category === "편의시설" && "◦ 이 식당은 어떤 편의시설이 있나요?"}
               </h3>

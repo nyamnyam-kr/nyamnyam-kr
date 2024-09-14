@@ -7,8 +7,8 @@ import { ChangeEvent, FormEvent, useState } from "react";
 export default function TagRegister() {
   const router = useRouter();
   const [formData, setFormData] = useState<TagModel>({
-    id: 0,
-    name: ''
+    name: '',
+    tagCategory: ''
   });
 
   const handleSubmit = async (e: FormEvent) => {

@@ -7,7 +7,8 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
         clean: post.clean,
         service: post.service,
         entryDate: post.entryDate,
-        modifyDate: post.modifyDate
+        modifyDate: post.modifyDate,
+        tags:post.tags
     }
     const response = await fetch('http://localhost:8080/api/posts', {
       method: 'POST',
