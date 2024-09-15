@@ -20,7 +20,7 @@ public class RestaurantModel {
     private String menu;
     private String thumbnailImageUrl;
     private String subImageUrl;
-    private String region;
+
 
 
 }
