@@ -15,6 +15,11 @@ import java.util.List;
 public class ReplyController {
     private final ReplyService service;
 
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<ReplyEntity>> getReplyByPostId(@PathVariable Long postId){
+        return ResponseEntity.ok(service.findByPostId(postId));
+    }
+
     @GetMapping("/group")
     public ResponseEntity<List<ReplyEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());

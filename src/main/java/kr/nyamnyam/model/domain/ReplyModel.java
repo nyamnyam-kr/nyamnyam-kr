@@ -3,6 +3,7 @@ package kr.nyamnyam.model.domain;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -11,10 +12,12 @@ public class ReplyModel {
     private Long id;
     private String content;
 
-    private Date entryDate;
-    private Date modifyDate;
+    private LocalDateTime entryDate;
+    private LocalDateTime modifyDate;
 
     private Long postId;
+
+    private Long userId;
 
 
     // 릴리즈 0.01에서 넘어온 부분

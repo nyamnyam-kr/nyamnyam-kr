@@ -5,13 +5,20 @@ import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ReplyServiceImpl implements ReplyService {
     private final ReplyRepository repository;
+
+    @Override
+    public List<ReplyEntity> findByPostId(Long postId) {
+        return repository.findByPostId(postId);
+    }
 
     @Override
     public List<ReplyEntity> findAll() {
@@ -44,6 +51,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public Boolean save(ReplyEntity entity) {
-        return repository.save(entity) != null;
+        repository.save(entity);
+        return true;
     }
 }

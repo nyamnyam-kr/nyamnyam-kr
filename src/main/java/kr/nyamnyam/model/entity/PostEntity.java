@@ -29,11 +29,9 @@ public class PostEntity {
     private LocalDateTime entryDate;
     private LocalDateTime modifyDate;
 
-
     // nyamnyam-admin부분에서 추가된 부분
     private Long userId;
     private Long restaurantId;
-
 
     @PrePersist
     protected void onCreate() {

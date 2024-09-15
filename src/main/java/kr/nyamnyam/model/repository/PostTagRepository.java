@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PostTagRepository extends JpaRepository<PostTagEntity, Long> {
     List<PostTagEntity> findByPostId(Long postId);
+    void deleteByPostId(Long postId);
 }

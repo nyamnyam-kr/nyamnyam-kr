@@ -18,5 +18,8 @@ public interface ReplyService {
     Boolean deleteById(Long id);
 
     Boolean save(ReplyEntity entity);
+
+    List<ReplyEntity> findByPostId(Long postId);
+
 }
 

@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -115,28 +116,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public Boolean save(PostModel model) {
-        PostEntity entity = convertToEntity(model);
+        PostEntity entity = repository.findById(model.getId())
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + model.getId()));
 
-        // PostEntity 먼저 저장
+        entity.setTaste(model.getTaste());
+        entity.setClean(model.getClean());
+        entity.setService(model.getService());
+        entity.setContent(model.getContent());
+        entity.setModifyDate(LocalDateTime.now());
+
         repository.save(entity);
+        postTagRepository.deleteByPostId(entity.getId());
 
         if (model.getTags() != null && !model.getTags().isEmpty()) {
+            postTagRepository.deleteById(entity.getId());
+
             List<PostTagEntity> postTags = model.getTags().stream()
                     .map(tagName -> {
-                        // 태그가 존재하는지 확인하고, 없으면 예외 처리
                         TagEntity tag = tagRepository.findByName(tagName)
                                 .orElseThrow(() -> new RuntimeException("Tag not found: " + tagName));
 
-                        // PostTagEntity 생성
                         return new PostTagEntity(entity, tag);
                     })
                     .collect(Collectors.toList());
 
-            // 생성된 PostTagEntity 리스트 저장
             postTagRepository.saveAll(postTags);
         }
-
         return true;
     }
 
