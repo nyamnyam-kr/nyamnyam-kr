@@ -29,4 +29,7 @@ public class TagEntity {
         this.name = name;
         this.tagCategory = tagCategory;
     }
+
+    // admin에서 온듯??
+    private Long postId;
 }

@@ -1,8 +1,7 @@
 package kr.nyamnyam.service.impl;
 
-import jakarta.transaction.Transactional;
-import kr.nyamnyam.model.entity.UserEntity;
-import kr.nyamnyam.model.entity.UserThumbnailEntity;
+import kr.nyamnyam.model.entity.UsersEntity;
+import kr.nyamnyam.model.entity.UsersThumbnailEntity;
 import kr.nyamnyam.model.repository.UserThumbnailRepository;
 import kr.nyamnyam.service.UserThumbnailService;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +13,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-//@Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class UserThumbnailServiceImpl implements UserThumbnailService {
+
     private final UserThumbnailRepository userThumbnailRepository;
 
     @Override
-    public void uploadThumbnail(UserEntity user, List<MultipartFile> images) {
+    public void uploadThumbnail(UsersEntity user, List<MultipartFile> images) {
         try {
             String uploadsDir = "src/main/resources/static/uploads/thumbnails/";
 
@@ -31,8 +30,8 @@ public class UserThumbnailServiceImpl implements UserThumbnailService {
                 image.transferTo(dest);
 
                 // 저장된 파일 경로를 UserThumbnailEntity로 저장
-                UserThumbnailEntity thumbnail = UserThumbnailEntity.builder()
-                        .userEntity(user)
+                UsersThumbnailEntity thumbnail = UsersThumbnailEntity.builder()
+                        .userId(user.getId())  // userId로 저장
                         .imagePath(filePath)
                         .createdAt(LocalDateTime.now())
                         .build();

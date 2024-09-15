@@ -1,29 +1,24 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.UserModel;
-import kr.nyamnyam.model.entity.UserEntity;
+import kr.nyamnyam.model.entity.UsersEntity;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Optional;
 
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
-
-    @GetMapping("/crawling")
-    public ResponseEntity<List<UserEntity>> findCrawling(
-            @RequestParam(defaultValue = "1") int pageNum,
-            @RequestParam(defaultValue = "10") int pageSize
-    ) {
-        return ResponseEntity.ok(userService.crawling(pageNum, pageSize));
-    }
 
     @GetMapping("/existsById")
     public boolean existsById(@RequestParam Long id) {
@@ -31,12 +26,12 @@ public class UserController {
     }
 
     @GetMapping("/findById")
-    public Optional<UserEntity> findById(@RequestParam Long id) {
+    public Optional<UsersEntity> findById(@RequestParam Long id) {
         return userService.findById(id);
     }
 
     @GetMapping("/findAll")
-    public List<UserEntity> findAll() {
+    public List<UsersEntity> findAll() {
         return userService.findAll();
     }
 
@@ -51,14 +46,15 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public UserEntity update(@RequestBody UserModel userModel) {
+    public UsersEntity update(@RequestBody UserModel userModel) {
         return userService.update(userModel);
     }
 
     @PostMapping("/join")
-    public UserEntity join(@RequestBody UserModel userModel) {
+    public UsersEntity join(@RequestBody UserModel userModel) {
         return userService.save(userModel);
     }
+
 
 
 }

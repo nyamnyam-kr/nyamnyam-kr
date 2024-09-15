@@ -3,7 +3,6 @@ package kr.nyamnyam.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Getter
@@ -13,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name="user")
-public class UserEntity {
+public class UsersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +26,7 @@ public class UserEntity {
     private String tel;
     private String gender;
     private Boolean enabled;
+    private Long imgId;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserThumbnailEntity> thumbnails;
 }
 

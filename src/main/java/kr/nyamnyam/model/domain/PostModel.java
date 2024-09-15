@@ -21,6 +21,7 @@ public class PostModel {
 
     // 추가 예정 private Long restId;
 
+
     private List<ImageModel> images;
 
     private double averageRating;
@@ -29,4 +30,7 @@ public class PostModel {
     public double averageRating() {
         return (this.taste + this.clean + this.service) / 3.0;
     }
+
+//    private Long imgId;   => 없어도 에러 x
+
 }

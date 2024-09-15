@@ -3,24 +3,19 @@ package kr.nyamnyam.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-
 @Entity
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "replies")
-public class ReplyEntity {
+@Table(name = "follow")
+public class FollowsEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
-    private Date entryDate;
-    private Date modifyDate;
-    private Long upvoteId;
-    private Long userId;
-    private Long postId;
-
+    private Long followerId;
+    private Long followingId;
 }

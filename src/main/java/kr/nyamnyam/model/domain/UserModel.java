@@ -1,7 +1,10 @@
 package kr.nyamnyam.model.domain;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
+
+@Component
 @Data
 public class UserModel {
 
@@ -15,6 +18,7 @@ public class UserModel {
     private String tel;
     private String gender;
     private Boolean enabled;
+    private Long imgId;
 
 
 }

@@ -8,9 +8,11 @@ import lombok.Data;
 @Table(name = "restaurant")
 public class RestaurantEntity {
 
-    @Id
-    private Long postId; // 고유번호 (POST_SN)
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private Long postId; // 고유번호 (POST_SN)
     private String langCodeId; // 언어
     private String name; // 상호명
     private String postUrl; // 콘텐츠URL
