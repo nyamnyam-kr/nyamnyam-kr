@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class PostTagEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_name", referencedColumnName = "name", nullable = false)
+    @JsonBackReference
     private TagEntity tag;
 
     public PostTagEntity(PostEntity entity, TagEntity tag) {

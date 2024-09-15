@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class TagEntity {
     private TagCategory tagCategory;
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<PostTagEntity> postTags = new ArrayList<>();
 
     public TagEntity(String name, TagCategory tagCategory) {
