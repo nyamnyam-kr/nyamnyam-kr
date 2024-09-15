@@ -39,3 +39,12 @@ body {
 .text-gray200{
   color: #8c8c8c;
 }
+
+.text-half-star{
+  position: relative;
+  color: #FFD700;
+  overflow: hidden;
+  width: 50%;
+  display: inline-block;
+  height: 100%;
+}

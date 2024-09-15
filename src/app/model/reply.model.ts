@@ -3,4 +3,6 @@ interface ReplyModel{
     content:string;
     entryDate: string;
     modifyDate: string;
+    postId: number;
+    userId: number
 }

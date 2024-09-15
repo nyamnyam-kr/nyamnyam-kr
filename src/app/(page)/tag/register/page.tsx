@@ -2,14 +2,22 @@
 
 import { insertTag } from "@/app/service/tag/tag.api";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function TagRegister() {
   const router = useRouter();
+  const [tagCategory, setTagCategory] = useState<string[]>([]);
+  
   const [formData, setFormData] = useState<TagModel>({
     name: '',
     tagCategory: ''
   });
+
+  useEffect(() => {
+    const fetchTagCategory = async () => {
+      
+    }
+  })
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

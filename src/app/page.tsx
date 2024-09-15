@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
+import Star from "./(page)/star/page";
 
 export default function Home() {
     const [posts, setPosts] = useState<PostModel[]>([]);
@@ -107,7 +108,7 @@ export default function Home() {
         const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit' };  
         const formattedDate = new Intl.DateTimeFormat('ko-KR', options).format(date);
         
-        const [year, month] = formattedDate.split('.').map(part => part.trim()); // '.' 기준으로 분리 후 양쪽 공백 제거
+        const [year, month] = formattedDate.split('.').map(part => part.trim());
         return `${year}년 ${month}월`;
     };
 
@@ -155,7 +156,7 @@ export default function Home() {
                                 <td className="py-3 px-4 border-b">{p.service}</td>
                                 <td className="py-3 px-4 border-b">{p.content}</td>
                                 <td className="py-3 px-4 border-b">{formatDate(p.entryDate)}</td>
-                                <td className="py-3 px-4 border-b">{p.averageRating.toFixed(1)}</td>
+                                <td className="py-3 px-4 border-b"><Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/></td>
                                 <td className="py-3 px-4 border-b">{p.tags && p.tags.length > 0 ? p.tags.join(", ") : "태그 없음"}</td>
                             </tr>
                         ))}
