@@ -13,10 +13,10 @@ public interface RestaurantService {
 
 
     List<RestaurantEntity> getCrawlingInfos();
-    List<RestaurantEntity> findAll();
-    List<RestaurantEntity> searchRestaurants(String keyword);
-    RestaurantEntity findById(Long id);
+    List<RestaurantModel> findAll();
+    List<RestaurantModel> searchRestaurants(String keyword);
+    RestaurantModel findById(Long id);
     Boolean existsById(Long id);
-    //ResponseEntity<RestaurantEntity> getOneRestaurant(@PathVariable Long id);
+    ResponseEntity<RestaurantModel> getOneRestaurant(@PathVariable Long id);
 
 }

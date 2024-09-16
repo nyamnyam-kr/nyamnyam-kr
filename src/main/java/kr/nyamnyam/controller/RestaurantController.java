@@ -1,12 +1,9 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.entity.CrawlingInfo;
+import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
-import kr.nyamnyam.model.repository.RestaurantRepository;
-import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.CrawlService;
 import kr.nyamnyam.service.RestaurantService;
-import kr.nyamnyam.service.impl.CrawlServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,26 +37,20 @@ public class RestaurantController {
 
     // 레스토랑 목록 불러오는 api
     @GetMapping("/restaurants")
-    public List<RestaurantEntity> getRestaurants() {
+    public List<RestaurantModel> getRestaurants() {
         return restaurantService.findAll();
     }
 
     // 맛집 검색(이름, 유형, 메뉴)
     @GetMapping("/search")
-    public List<RestaurantEntity> searchRestaurants(@RequestParam("q") String query) {
+    public List<RestaurantModel> searchRestaurants(@RequestParam("q") String query) {
         return restaurantService.searchRestaurants(query);
     }
 
     // 맛집 상세보기
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantEntity> getRestaurant(@PathVariable Long id) {
-        Optional<RestaurantEntity> restaurant = Optional.ofNullable(restaurantService.findById(id));
-
-        if (restaurant.isPresent()) {
-            return ResponseEntity.ok(restaurant.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<RestaurantModel> getRestaurant(@PathVariable Long id) {
+        ResponseEntity<RestaurantModel> restaurantOpt = restaurantService.getOneRestaurant(id);
+        return restaurantOpt;
     }
-
 }

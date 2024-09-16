@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,22 +26,28 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<RestaurantEntity> findAll() {
-        return restaurantRepository.findAll();
+    public List<RestaurantModel> findAll() {
+        List<RestaurantEntity> entities = restaurantRepository.findAll();
+        return entities.stream()
+                .map(RestaurantModel::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<RestaurantModel> searchRestaurants(String keyword) {
+        List<RestaurantEntity> entities = restaurantRepository.searchRestaurant(keyword);
+        return entities.stream()
+                .map(RestaurantModel::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<RestaurantEntity> searchRestaurants(String keyword) {
-        return restaurantRepository.searchRestaurant(keyword);
+    public RestaurantModel findById(Long id) {
+        Optional<RestaurantEntity> entity = restaurantRepository.findById(id);
+        return entity.map(RestaurantModel::toDto).orElse(null);
     }
 
-    @Override
-    public RestaurantEntity findById(Long id) {
-        if (existsById(id)) {
-            return restaurantRepository.findById(id).get();
-        }
-        return null;
-    }
 
     @Override
     public Boolean existsById(Long id) {
@@ -51,15 +58,17 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
 
-   /* public ResponseEntity<RestaurantEntity> getOneRestaurant(@PathVariable Long id) {
-        Optional<RestaurantEntity> restaurant = findById(id);
+    @Override
+    public ResponseEntity<RestaurantModel> getOneRestaurant(@PathVariable Long id) {
+        Optional<RestaurantEntity> restaurantEntityOpt = restaurantRepository.findById(id);
+        if (restaurantEntityOpt.isPresent()) {
+            RestaurantEntity restaurantEntity = restaurantEntityOpt.get();
+            RestaurantModel restaurantModel = RestaurantModel.toDto(restaurantEntity);
 
-        if (restaurant.isPresent()) {
-            return ResponseEntity.ok(restaurant.get()); // 200 OK 응답과 함께 RestaurantEntity 반환
+            return ResponseEntity.ok(restaurantModel);
         } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found 응답
+            return ResponseEntity.notFound().build();
         }
-    }*/
-
+    }
 
 }
