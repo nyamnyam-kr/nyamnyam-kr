@@ -28,7 +28,7 @@ public class NaverOcrApi {
     @Value("${naver.service.url}")
     private String url;
 
-    public  List<String> callApi(String filePath, String naver_secretKey, String ext) {
+    public  List<String> callApi(String filePath, String naver_secretKey, String extension) {
         String apiURL = url;
         String secretKey = naver_secretKey;
         String imageFile = filePath;
@@ -52,7 +52,7 @@ public class NaverOcrApi {
             json.put("requestId", UUID.randomUUID().toString());
             json.put("timestamp", System.currentTimeMillis());
             JSONObject image = new JSONObject();
-            image.put("format", ext);
+            image.put("format", extension);
             image.put("name", "demo");
             JSONArray images = new JSONArray();
             images.add(image);

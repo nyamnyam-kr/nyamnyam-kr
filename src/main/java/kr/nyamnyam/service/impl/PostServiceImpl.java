@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.transaction.Transactional;
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
@@ -11,7 +12,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Service

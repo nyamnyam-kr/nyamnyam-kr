@@ -1,5 +1,7 @@
 package kr.nyamnyam.ocr;
 
+import kr.nyamnyam.model.domain.ImageModel;
+import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +19,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/recipe")
-public class CheckController {
+public class OCRController {
 
     private final NaverOcrApi naverOcrApi;
+    private final ImageService imageService;
 
     @Value("${naver.service.secretKey}")
     private String secretKey;
 
-    private static final Logger log = LoggerFactory.getLogger(CheckController.class);
+    private static final Logger log = LoggerFactory.getLogger(OCRController.class);
 
     @GetMapping("/ocr")
     public ResponseEntity ocr() throws IOException {
@@ -43,4 +45,12 @@ public class CheckController {
 
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    @PostMapping("/insert")
+    public ResponseEntity<Boolean> insertRecipe(@RequestBody MultipartFile file) throws IOException {
+        return ResponseEntity.ok(imageService.insertRecipe(file));
+
+    }
+
+
 }
