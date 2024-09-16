@@ -184,7 +184,8 @@ public class CrawlServiceImpl implements CrawlService {
             return starText.isEmpty() ? 0.0 : Double.parseDouble(starText);
         } catch (NoSuchElementException | TimeoutException e) {
             System.out.println("평점 정보를 찾을 수 없어 기본값 0.0을 설정합니다.");
-            return 0.0;
+            return null;
+            // return 0.0; 중에 고민중
         }
     }
 
