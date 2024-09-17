@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.transaction.Transactional;
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.PostTagEntity;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +30,24 @@ public class PostServiceImpl implements PostService {
     private final PostRepository repository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+
+    @Override
+    public PostModel postWithImage(Long id){
+        PostEntity postEntity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+
+        List<ImageModel> imageModels = postEntity.getImages().stream()
+                .map(imageEntity -> ImageModel.builder()
+                        .originalFilename(imageEntity.getOriginalFileName())
+                        .storedFileName(imageEntity.getStoredFileName())
+                        .build())
+                .collect(Collectors.toList());
+
+        PostModel postModel = convertToModel(postEntity);
+        postModel.setImages(imageModels);
+
+        return postModel;
+    }
 
     @Override
     public PostEntity findEntityById(Long id) {

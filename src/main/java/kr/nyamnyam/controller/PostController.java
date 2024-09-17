@@ -41,7 +41,8 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostModel> getPostId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        PostModel postModel = service.postWithImage(id);
+        return ResponseEntity.ok(postModel);
     }
 
     @GetMapping("/exist/{id}")

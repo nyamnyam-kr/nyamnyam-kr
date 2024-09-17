@@ -28,10 +28,10 @@ public class ImageServiceImpl implements ImageService {
         for (MultipartFile file : files) {
             try {
                 String originalFilename = file.getOriginalFilename();
-                String storedFilename = UUID.randomUUID().toString();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String storedFilename = UUID.randomUUID().toString() + extension;
 
-                File destFile = new File(uploadDir + storedFilename);
+                File destFile = new File(uploadDir +"/" + storedFilename);
                 file.transferTo(destFile);
 
                 ImageEntity image = ImageEntity.builder()
