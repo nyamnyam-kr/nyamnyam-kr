@@ -4,6 +4,7 @@ import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;
 import kr.nyamnyam.service.PostService;
+import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,32 @@ import java.util.List;
 public class PostController {
     private final PostService service;
     private final ImageService imageService;
+    private final UpvoteService upvoteService;
+
+    // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam Long userId){
+        upvoteService.like(postId,userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{postId}/unlike")
+    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam Long userId){
+        upvoteService.unlike(postId,userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{postId}/hasLiked")
+    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam Long userId){
+        boolean hasLiked = upvoteService.hasLiked(postId, userId);
+        return ResponseEntity.ok(hasLiked);
+    }
+
+    @GetMapping("/{postId}/like-count")
+    public ResponseEntity<Integer> getLikeCount(@PathVariable Long postId){
+        int likeCount = upvoteService.getLikeCount(postId);
+        return ResponseEntity.ok(likeCount);
+    }
 
     @GetMapping("/crawling")
     public ResponseEntity<Boolean> crawl() {

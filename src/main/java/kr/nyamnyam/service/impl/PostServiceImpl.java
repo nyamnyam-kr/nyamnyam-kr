@@ -202,6 +202,18 @@ public class PostServiceImpl implements PostService {
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()
                         .map(postTagEntity -> postTagEntity.getTag().getName())
                         .collect(Collectors.toList()))
+                .images(entity.getImages().stream()
+                        .map(image -> {
+                            // 이 부분에서 ID 확인
+                            System.out.println("Image ID in Model Conversion: " + image.getId());
+                            return ImageModel.builder()
+                                    .id(image.getId().toString())
+                                    .originalFilename(image.getOriginalFileName())
+                                    .storedFileName(image.getStoredFileName())
+                                    .extension(image.getExtension())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
                 .build();
     }
 

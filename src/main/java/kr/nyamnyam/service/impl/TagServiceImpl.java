@@ -54,11 +54,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Long count() {
-        return repository.count();
-    }
-
-    @Override
     public Boolean deleteByName(String name) {
         try {
             repository.deleteById(name);

@@ -53,8 +53,8 @@ public class ImageController {
     public ResponseEntity<Long> count() {
         return ResponseEntity.ok(service.count());
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable UUID id) {
+    @DeleteMapping("")
+    public ResponseEntity<Boolean> deleteById(@RequestParam UUID id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("")

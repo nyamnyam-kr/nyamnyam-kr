@@ -13,8 +13,6 @@ public interface TagService {
 
     List<TagModel> findAll();
 
-    Long count();
-
     Boolean save(TagModel model);
 
     Optional<TagModel> findByName(String name);

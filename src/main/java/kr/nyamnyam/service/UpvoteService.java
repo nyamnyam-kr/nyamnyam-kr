@@ -6,16 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UpvoteService {
+    boolean like(Long postId, Long userId);
 
-    List<UpvoteEntity> findAll();
+    boolean unlike(Long postId, Long userId);
 
-    Optional<UpvoteEntity> findById(Long id);
+    boolean hasLiked(Long postId, Long userId);
 
-    Boolean existsById(Long id);
-
-    Long count();
-
-    Boolean deleteById(Long id);
-
-    Boolean save(UpvoteEntity entity);
+    int getLikeCount(Long postId);
 }

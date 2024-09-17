@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,7 +21,7 @@ public class ImageEntity {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", columnDefinition = "CHAR(36)")
     private UUID id;
     private String originalFileName;
     private String storedFileName;
@@ -29,7 +30,5 @@ public class ImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostEntity post;
-
-    // 은서 : user, restaurant 테이블 연결 예정
 
 }

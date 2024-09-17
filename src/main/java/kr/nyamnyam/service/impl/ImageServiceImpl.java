@@ -42,6 +42,7 @@ public class ImageServiceImpl implements ImageService {
                         .build();
 
                 repository.save(image);
+                System.out.println("Image ID after saving: " + image.getId());
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
