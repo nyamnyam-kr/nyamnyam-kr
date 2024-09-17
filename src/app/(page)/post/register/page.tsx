@@ -16,7 +16,8 @@ export default function PostRegister() {
     entryDate: '',
     modifyDate: '',
     averageRating: 0,
-    tags: []
+    tags: [],
+    images: []
   });
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
@@ -73,54 +74,57 @@ export default function PostRegister() {
     e.preventDefault();
 
     const data = {
-        content: formData.content,
-        taste: formData.taste.toString(),
-        clean: formData.clean.toString(),
-        service: formData.service.toString(),
-        tags: selectTags
+      content: formData.content,
+      taste: formData.taste.toString(),
+      clean: formData.clean.toString(),
+      service: formData.service.toString(),
+      tags: selectTags
     };
 
     const response = await fetch('http://localhost:8080/api/posts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     });
 
     if (response.ok) {
-        const postId = await response.json();
-        console.log("Post created with ID:", postId);
+      const postId = await response.json();
 
-        if (selectImages.length > 0) {
-            const imageData = new FormData();
-            selectImages.forEach((file) => {
-                imageData.append('files', file);
-            });
-            imageData.append('postId', postId);
+      if (selectImages.length > 0) {
+        const imageData = new FormData();
+        selectImages.forEach((file) => {
+          imageData.append('files', file);
+        });
+        imageData.append('postId', postId);
 
-            const imageResponse = await fetch('http://localhost:8080/api/images', {
-                method: 'POST',
-                body: imageData
-            });
+        const imageResponse = await fetch('http://localhost:8080/api/images', {
+          method: 'POST',
+          body: imageData
+        });
 
-            if (!imageResponse.ok) {
-                console.error('Image upload failed:', imageResponse.statusText);
-            }
+        if (!imageResponse.ok) {
+          console.error('Image upload failed:', imageResponse.statusText);
         }
-        await fetchTagCategory();
-        setSelectTags([]);
-        router.push('/');
+      }
+      await fetchTagCategory();
+      setSelectTags([]);
+      router.push('/');
     } else {
-        console.error('Post creation failed:', response.statusText);
+      console.error('Post creation failed:', response.statusText);
     }
-};
+  };
+
+  const handlePrev = () => {
+    router.push(`/`)
+  }
 
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h3 className="font-bold text-xl">[평가하기]</h3>
-      <form onSubmit={handleSubmit} className="space-y-4 p-4">
+      <form onSubmit={handleSubmit} className="space-y-4 p-4" encType="multipart/form-data">
         <div>
           <h2 className="font-bold">[항목별 평점]</h2>
         </div>
@@ -188,7 +192,6 @@ export default function PostRegister() {
           />
         </div>
         <div>
-          <form encType="multipart/form-data">
           <label className="font-bold">[이미지 첨부]</label>
           <input
             type="file"
@@ -197,12 +200,17 @@ export default function PostRegister() {
             onChange={uploadImage}
             className="border rounded p-2 w-full"
           />
-          </form>
         </div>
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-4">
           등록하기
+        </button>
+        <button
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          onClick={handlePrev}>
+          뒤로가기
         </button>
       </form>
     </main>
+
   );
 }

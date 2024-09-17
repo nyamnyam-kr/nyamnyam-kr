@@ -8,5 +8,6 @@ interface PostModel {
   modifyDate: string;
   averageRating: number;
   tags: string[]; 
+  images: ImageModel[];
 }
 

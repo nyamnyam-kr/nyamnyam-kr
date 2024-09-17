@@ -7,8 +7,9 @@ export default function TagUpdate() {
   const router = useRouter();
 
   const [formData, setFormData] = useState<TagModel>({
-    id: 0,
-    name: ''
+    tagCategory: '',
+    name: '',
+    postTags:[]
   });
 
   useEffect(() => {
@@ -61,6 +62,9 @@ export default function TagUpdate() {
   return (
     <main className="flex min-h-screen flex-col items-center">
       <h1 className="text-2xl font-bold mb-6">[Tag 수정]</h1>
+      <div>
+      <p><strong>Category: </strong>{formData?.tagCategory}</p>
+      </div>
       <form onSubmit={handleSubmit} className="w-full max-w-2xl">
         <div className="mb-4">
             <label htmlFor="name" className="block mb-2">Tag</label>

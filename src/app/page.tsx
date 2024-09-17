@@ -3,11 +3,18 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import Star from "./(page)/star/page";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import { getLikeCount, hasLikedPost, likePost, unLikePost } from "./(page)/upvote/page";
 
 export default function Home() {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [selectPosts, setSelectPosts] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [likedPost, setLikedPosts] = useState<number[]>([]);
+    const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
+    const currentUserId = 1; // 테스트로 1값 설정 
     const router = useRouter();
 
     useEffect(() => {
@@ -22,9 +29,28 @@ export default function Home() {
                 }
                 return response.json();
             })
-            .then((data) => {
-                console.log(data);
+            .then(async (data) => {
                 setPosts(data);
+
+                const likeStatus = data.map(async (post: PostModel) => {
+                    const liked = await checkLikedStatus(post.id);
+                    const count = await getLikeCount(post.id);
+                    return { postId: post.id, liked, count };
+                });
+
+                const result = await Promise.all(likeStatus)
+
+                const likedPostId = result
+                    .filter(result => result.liked)
+                    .map(result => result.postId);
+
+                const likeCountMap = result.reduce((acc, result) => {
+                    acc[result.postId] = result.count;
+                    return acc;
+                }, {} as { [key: number]: number });
+
+                setLikedPosts(likedPostId);
+                setLikeCounts(likeCountMap);
             })
             .catch((error) => {
                 console.error('There has been a problem with your fetch operation:', error);
@@ -113,6 +139,61 @@ export default function Home() {
         return `${year}년 ${month}월`;
     };
 
+    const checkLikedStatus = async (postId: number) => {
+        const upvote: UpvoteModel = {
+            id: 0,
+            giveId: currentUserId,
+            haveId: 0,
+            postId: postId
+        }
+        return await hasLikedPost(upvote) ? postId : null;
+    };
+    const fetchLikeCount = async (postId: number) => {
+        const count = await getLikeCount(postId);
+        return count;
+    };
+
+    const handleLike = async (postId: number) => {
+        const upvote: UpvoteModel = {
+            id: 0,
+            giveId: currentUserId,
+            haveId: 0,
+            postId: postId
+        };
+
+        if (likedPost.includes(postId)) {
+            setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
+            setLikeCounts(prevCounts => ({
+                ...prevCounts,
+                [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
+            }));
+
+            const success = await unLikePost(upvote);
+            if (!success) {
+                setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
+                setLikeCounts(prevCounts => ({
+                    ...prevCounts,
+                    [postId]: (prevCounts[postId] || 0) + 1
+                }));
+            }
+        } else {
+            setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
+            setLikeCounts(prevCounts => ({
+                ...prevCounts,
+                [postId]: (prevCounts[postId] || 0) + 1
+            }));
+
+            const success = await likePost(upvote);
+            if (!success) {
+                setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
+                setLikeCounts(prevCounts => ({
+                    ...prevCounts,
+                    [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
+                }));
+            }
+        }
+    };
+
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
@@ -128,6 +209,7 @@ export default function Home() {
                             <th className="py-3 px-4 border-b">작성일</th>
                             <th className="py-3 px-4 border-b">평균평점</th>
                             <th className="py-3 px-4 border-b">태그</th>
+                            <th className="py-3 px-4 border-b">좋아요</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,6 +241,15 @@ export default function Home() {
                                 <td className="py-3 px-4 border-b">{formatDate(p.entryDate)}</td>
                                 <td className="py-3 px-4 border-b"><Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} /></td>
                                 <td className="py-3 px-4 border-b">{p.tags && p.tags.length > 0 ? p.tags.join(", ") : "태그 없음"}</td>
+                                <td className="py-3 px-4 border-b">
+                                    <button onClick={() => handleLike(p.id)} style={{ display: 'flex', alignItems: 'center' }}>
+                                        <FontAwesomeIcon
+                                            icon={likeCount[p.id] > 0 ? solidHeart : regularHeart}
+                                            style={{ color: likeCount[p.id] > 0 ? 'pink' : 'gray', marginRight: '8px' }}
+                                        />
+                                        <span>{likeCount[p.id] || 0}</span>
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

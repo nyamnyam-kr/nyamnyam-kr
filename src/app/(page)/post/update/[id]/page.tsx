@@ -1,13 +1,17 @@
 "use client";
 import Star from '@/app/(page)/star/page';
+import { ST } from 'next/dist/shared/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
-import { FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
 export default function PostUpdate() {
   const router = useRouter();
   const { id } = useParams();
   const [allTags, setAllTags] = useState<{[category: string]: TagModel[]}>({});
   const [selectTags, setSelectTags] = useState<string[]>([]);
+  const [selectImages, setSelectImages] = useState<File[]>([]);
+  const [prevImages, setPrevImages] = useState<ImageModel[]>([]);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]); 
 
   const [formData, setFormData] = useState<PostModel>({
     id: 0,
@@ -18,7 +22,8 @@ export default function PostUpdate() {
     entryDate: '',
     modifyDate: '',
     averageRating: 0,
-    tags: []
+    tags: [],
+    images: []
   });
 
   useEffect(() => {
@@ -29,8 +34,11 @@ export default function PostUpdate() {
           throw new Error('Failed to fetch post');
         }
         const data: PostModel = await response.json();
+        console.log('Fetched post data:', data);
         setFormData(data);
         setSelectTags(data.tags);
+        setPrevImages(data.images);
+        console.log('Images in Post:', data.images);  // 로그 추가
       } catch (error) {
         console.error('Error fetching post:', error);
       }
@@ -43,16 +51,11 @@ export default function PostUpdate() {
           throw new Error('Failed to fetch tags');
         }
         const data = await response.json();
-        const arrayTags: TagModel[] = [];
-        for (const categoryTags of Object.values(data) as TagModel[][]) {
-          arrayTags.push(...categoryTags);
-        }
         setAllTags(data);
       } catch (error) {
         console.error('Error fetching tags:', error);
       }
     };
-
 
     if (id) {
       fetchPost();
@@ -79,6 +82,31 @@ export default function PostUpdate() {
 
       if (!response.ok) {
         throw new Error('Failed to update post');
+      }
+
+      if (imagesToDelete.length > 0) {
+        for (const imageId of imagesToDelete){
+          await fetch (`http://localhost:8080/api/images/${imageId}`,{
+            method:'DELETE',
+          });
+        }
+      }
+
+      if(selectImages.length > 0){
+        const imageData = new FormData();
+        selectImages.forEach((file) => {
+          imageData.append('files', file);
+        });
+        imageData.append('postId', String(id));
+
+        const imageResponse = await fetch(`http://localhost:8080/api/images`,{
+          method: 'POST',
+          body: imageData,
+        });
+
+        if(!imageResponse.ok){
+          throw new Error('Failed to upload images');
+        }
       }
 
       router.push(`/post/details/${id}`);
@@ -110,10 +138,27 @@ export default function PostUpdate() {
     }));
   };
 
+  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectImages(Array.from(e.target.files));
+    }
+  };
+
+  const handleDeleteImage = (imageId: string) => {
+    console.log("Image ID in handleDeleteImage:", imageId);
+    if (imageId === null || imageId === undefined) {
+      console.error('Invalid image ID:', imageId);
+      return;
+    }
+  
+    setImagesToDelete((prev) => [...prev, imageId]);
+    setPrevImages((prevImages) => prevImages.filter(img => img.id !== imageId));
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center">
       <h1 className="text-2xl font-bold mb-6">[게시글 수정]</h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl" encType="multipart/form-data">
         <div>
           <h2 className="font-bold">[항목별 평점]</h2>
         </div>
@@ -148,11 +193,7 @@ export default function PostUpdate() {
           <h2 className="font-bold">[음식점 키워드]</h2>
           {Object.keys(allTags).map(category => (
             <div key={category} className="mb-4">
-              <h3>
-                {category === "방문목적" && "◦ 이 식당은 어떤 방문목적에 적합한가요?"}
-                {category === "분위기" && "◦ 이 식당의 분위기를 선택해주세요."}
-                {category === "편의시설" && "◦ 이 식당은 어떤 편의시설이 있나요?"}
-              </h3>
+              <h3>{category}</h3>
               <div className="flex flex-wrap gap-4">
                 {(allTags[category] as TagModel[]).map(t => (
                   <div key={t.name} className="flex items-center">
@@ -163,7 +204,7 @@ export default function PostUpdate() {
                       checked={selectTags.includes(t.name)}
                       onChange={() => handleTagSelect(t.name)}
                     />
-                    <label htmlFor={t.name} className='ml-2'>{t.name}</label>
+                    <label htmlFor={t.name} className="ml-2">{t.name}</label>
                   </div>
                 ))}
               </div>
@@ -181,6 +222,36 @@ export default function PostUpdate() {
             rows={3}
           />
         </div>
+
+        <div>
+          <strong>[이미지]</strong>
+          <div className="flex flex-wrap gap-4">
+            {prevImages.length > 0 ? (
+              prevImages.map((image, index) => (
+                <div key={index}>
+                  <img 
+                     src={`http://localhost:8080/uploads/${image.storedFileName}`}
+                     alt={`이미지 ${index + 1}`}
+                     style={{ width: '200px', height: 'auto' }}
+                  />
+                  <button type="button" onClick={() => handleDeleteImage(image.id)} className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2">
+                    삭제
+                  </button>
+                </div>
+              ))
+            ) : (<p>이미지 없음</p>)}
+          </div>
+        </div>
+        <div>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={uploadImage}
+            className="border rounded p-2 w-full"
+          />
+        </div>
+
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
           수정
         </button>

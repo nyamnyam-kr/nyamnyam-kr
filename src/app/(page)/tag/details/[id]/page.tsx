@@ -37,7 +37,7 @@ export default function TagDetail() {
       <h1 className="text-2xl font-bold mb-6">Tag 상세화면</h1>
       <div className="bg-white shadow-md rounded p-6 w-full max-w-2xl">
         <div className="space-y-4">
-          <p><strong>NO: </strong>{tags?.id}</p>
+          <p><strong>Category: </strong>{tags?.tagCategory}</p>
           <p><strong>Tag: </strong>{tags?.name}</p>
         </div>
       </div>

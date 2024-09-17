@@ -48,7 +48,7 @@ export default function Reply() {
             }
         }
     };
-    
+
     const handleUpdate = (replyId: number) => {
         router.push(`/post/${id}/reply/${replyId}/update`)
     }
@@ -61,9 +61,11 @@ export default function Reply() {
                 {replies.length > 0 ? (
                     replies.map((r: ReplyModel) => (
                         <div key={r.id} className="border-b pb-4 mb-4">
-                            <p>{r.content}</p>
-                            <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
-                            <div className="mt-2 flex gap-4">
+                            <div className="flex justify-between items-center">
+                                <p>{r.content}</p>
+                                <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
+                            </div>
+                            <div className="mt-2 flex justify-end gap-4">
                                 <button
                                     className="text-blue-500 hover:text-blue-700"
                                     onClick={() => handleUpdate(r.id!)}>
