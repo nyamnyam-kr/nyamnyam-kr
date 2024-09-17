@@ -61,24 +61,17 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> updatePost(@PathVariable Long id, @RequestBody PostModel model) {
-        return ResponseEntity.ok(service.save(model));
+        return ResponseEntity.ok(service.updatePost(id, model));
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> createPost(@RequestBody PostModel model) {
-        System.out.println("POST DATA: " + model.getTags());
-        Boolean result = service.save(model);
-        if (result) {
-            return ResponseEntity.ok(true);
+    public ResponseEntity<Long> createPost(@RequestBody PostModel model) {
+        Long postId = service.createPost(model);
+        if (postId != null) {
+            return ResponseEntity.ok(postId);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
     }
 }
-
-    /*@PostMapping("")
-    public ResponseEntity<Boolean> write(@RequestPart("post") PostEntity entity, @RequestPart("files") List<MultipartFile> files) {
-        service.save(entity);
-        imageService.saveImages(files, entity);
-        return ResponseEntity.ok(true);
-    }*/
 

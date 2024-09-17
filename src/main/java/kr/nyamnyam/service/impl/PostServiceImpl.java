@@ -32,14 +32,20 @@ public class PostServiceImpl implements PostService {
     private final PostTagRepository postTagRepository;
 
     @Override
+    public PostEntity findEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    }
+
+    @Override
     public List<PostModel> findAllPerPage(int page) {
         Long totalCount = count();
         Pagination p = new Pagination(page, totalCount.intValue());
         return repository.findAll().stream()
-                .skip(p.getStartRow()) // 페이지의 시작 행부터 스킵
-                .limit(p.getEndRow() - p.getStartRow() + 1) // 페이지의 끝까지 제한
-                .map(this::convertToModel) // 엔티티를 모델로 변환
-                .collect(Collectors.toList()); // 리스트로 수집
+                .skip(p.getStartRow())
+                .limit(p.getEndRow() - p.getStartRow() + 1)
+                .map(this::convertToModel)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -109,6 +115,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Boolean deleteById(Long id) {
         if (existsById(id)) {
+            postTagRepository.deleteByPostId(id);
             repository.deleteById(id);
             return true;
         }
@@ -116,54 +123,68 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
-    public Boolean save(PostModel model) {
-        PostEntity entity = repository.findById(model.getId())
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + model.getId()));
-
-        entity.setTaste(model.getTaste());
-        entity.setClean(model.getClean());
-        entity.setService(model.getService());
-        entity.setContent(model.getContent());
-        entity.setModifyDate(LocalDateTime.now());
-
+    public Long createPost(PostModel model) {
+        PostEntity entity = convertToEntity(model);
+        entity.setEntryDate(LocalDateTime.now());
         repository.save(entity);
-        postTagRepository.deleteByPostId(entity.getId());
 
-        if (model.getTags() != null && !model.getTags().isEmpty()) {
-            postTagRepository.deleteById(entity.getId());
+        saveTags(model.getTags(), entity);
 
-            List<PostTagEntity> postTags = model.getTags().stream()
-                    .map(tagName -> {
-                        TagEntity tag = tagRepository.findByName(tagName)
-                                .orElseThrow(() -> new RuntimeException("Tag not found: " + tagName));
+        return entity.getId();
+    }
 
-                        return new PostTagEntity(entity, tag);
-                    })
-                    .collect(Collectors.toList());
+    @Override
+    public Boolean updatePost(Long id, PostModel model) {
+        PostEntity existingEntity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
 
-            postTagRepository.saveAll(postTags);
-        }
+        PostEntity updatedEntity = existingEntity.toBuilder()
+                .content(model.getContent())
+                .taste(model.getTaste())
+                .clean(model.getClean())
+                .service(model.getService())
+                .modifyDate(LocalDateTime.now())
+                .build();
+
+        repository.save(updatedEntity);
+        saveTags(model.getTags(), existingEntity);
+
         return true;
     }
 
+    // 태그 저장
+    private void saveTags(List<String> tags, PostEntity postEntity) {
+        if (tags != null && !tags.isEmpty()) {
+            List<PostTagEntity> postTags = tags.stream()
+                    .map(tagName -> {
+                        TagEntity tag = tagRepository.findByName(tagName)
+                                .orElseGet(() -> {
+                                    TagEntity newTag = new TagEntity();
+                                    newTag.setName(tagName);
+                                    tagRepository.save(newTag);
+                                    return newTag;
+                                });
+                        return new PostTagEntity(postEntity, tag);
+                    })
+                    .collect(Collectors.toList());
+            postTagRepository.saveAll(postTags);
+        }
+    }
+
     private PostModel convertToModel(PostEntity entity) {
-        PostModel model = new PostModel();
-        model.setId(entity.getId());
-        model.setContent(entity.getContent());
-        model.setTaste(entity.getTaste());
-        model.setClean(entity.getClean());
-        model.setService(entity.getService());
-        model.setEntryDate(entity.getEntryDate());
-        model.setModifyDate(entity.getModifyDate());
-        model.setAverageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0);
-
-        List<String> tags = postTagRepository.findByPostId(entity.getId()).stream()
-                .map(postTagEntity -> postTagEntity.getTag().getName())
-                .collect(Collectors.toList());
-        model.setTags(tags);
-
-        return model;
+        return PostModel.builder()
+                .id(entity.getId())
+                .content(entity.getContent())
+                .taste(entity.getTaste())
+                .clean(entity.getClean())
+                .service(entity.getService())
+                .entryDate(entity.getEntryDate())
+                .modifyDate(entity.getModifyDate())
+                .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
+                .tags(postTagRepository.findByPostId(entity.getId()).stream()
+                        .map(postTagEntity -> postTagEntity.getTag().getName())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private PostEntity convertToEntity(PostModel model) {

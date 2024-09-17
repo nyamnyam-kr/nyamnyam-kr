@@ -1,5 +1,6 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.TagModel;
 import kr.nyamnyam.model.entity.TagEntity;
 
 import java.util.List;
@@ -8,17 +9,19 @@ import java.util.Optional;
 
 public interface TagService {
 
-    Map<String, List<TagEntity>> getTagsByCategory();
+    Map<String, List<TagModel>> getTagsByCategory();
 
-    List<TagEntity> findAll();
+    List<TagModel> findAll();
 
     Long count();
 
-    Boolean save(TagEntity entity);
+    Boolean save(TagModel model);
 
-    Optional<TagEntity> findByName(String name);
+    Optional<TagModel> findByName(String name);
 
     Boolean existsByName(String name);
 
     Boolean deleteByName(String name);
+
+    List<String> getTagCategory();
 }

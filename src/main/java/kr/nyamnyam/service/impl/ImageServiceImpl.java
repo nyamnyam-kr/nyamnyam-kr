@@ -5,9 +5,12 @@ import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.ImageRepository;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,21 +20,32 @@ import java.util.UUID;
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
     @Override
     public Boolean saveImages(List<MultipartFile> files, PostEntity entity) {
         for (MultipartFile file : files) {
-            String originalFilename = file.getOriginalFilename();
-            String storedFilename = UUID.randomUUID().toString();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            try {
+                String originalFilename = file.getOriginalFilename();
+                String storedFilename = UUID.randomUUID().toString();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-            ImageEntity image = ImageEntity.builder()
-                    .originalFileName(originalFilename)
-                    .storedFileName(storedFilename)
-                    .extension(extension)
-                    .post(entity)
-                    .build();
+                File destFile = new File(uploadDir + storedFilename);
+                file.transferTo(destFile);
 
-            repository.save(image);
+                ImageEntity image = ImageEntity.builder()
+                        .originalFileName(originalFilename)
+                        .storedFileName(storedFilename)
+                        .extension(extension)
+                        .post(entity)
+                        .build();
+
+                repository.save(image);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return true;
     }
@@ -42,12 +56,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<ImageEntity> findById(Long id) {
+    public Optional<ImageEntity> findById(UUID id) {
         return repository.findById(id);
     }
 
     @Override
-    public Boolean existsById(Long id) {
+    public Boolean existsById(UUID id) {
         return repository.existsById(id);
     }
 
@@ -57,7 +71,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean deleteById(Long id) {
+    public Boolean deleteById(UUID id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
             return true;

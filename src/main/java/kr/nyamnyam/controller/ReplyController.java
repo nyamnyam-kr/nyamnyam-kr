@@ -1,8 +1,10 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +18,17 @@ public class ReplyController {
     private final ReplyService service;
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<ReplyEntity>> getReplyByPostId(@PathVariable Long postId){
+    public ResponseEntity<List<ReplyModel>> getReplyByPostId(@PathVariable Long postId){
         return ResponseEntity.ok(service.findByPostId(postId));
     }
 
     @GetMapping("/group")
-    public ResponseEntity<List<ReplyEntity>> findAll() {
+    public ResponseEntity<List<ReplyModel>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReplyEntity> findById(@PathVariable Long id) {
+    public ResponseEntity<ReplyModel> getReplyById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -46,12 +48,18 @@ public class ReplyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyModel model) {
+       boolean updated = service.update(id, model);
+       if(updated){
+           return ResponseEntity.ok(true);
+       } else {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+       }
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> write(@RequestBody ReplyEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    public ResponseEntity<Boolean> write(@RequestBody ReplyModel model) {
+        ReplyEntity entity = service.convertToEntity(model);
+        return ResponseEntity.ok(service.save(model));
     }
 }

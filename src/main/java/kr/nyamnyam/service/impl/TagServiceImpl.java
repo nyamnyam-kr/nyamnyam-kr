@@ -1,12 +1,15 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.nyamnyam.model.domain.TagModel;
+import kr.nyamnyam.model.entity.TagCategory;
 import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.model.repository.TagRepository;
 import kr.nyamnyam.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,20 +21,31 @@ public class TagServiceImpl implements TagService {
     private final TagRepository repository;
 
     @Override
-    public Map<String, List<TagEntity>> getTagsByCategory() {
+    public List<String> getTagCategory() {
+        return Arrays.stream(TagCategory.values())
+                .map(TagCategory::getDisplayName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, List<TagModel>> getTagsByCategory() {
         List<TagEntity> tags = repository.findAll();
         return tags.stream()
+                .map(this::convertToModel)
                 .collect(Collectors.groupingBy(tag -> tag.getTagCategory().getDisplayName()));
     }
 
     @Override
-    public List<TagEntity> findAll() {
-        return repository.findAll();
+    public List<TagModel> findAll() {
+        return repository.findAll().stream()
+                .map(this::convertToModel)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<TagEntity> findByName(String name) {
-        return repository.findByName(name);
+    public Optional<TagModel> findByName(String name) {
+        return repository.findByName(name)
+                .map(this::convertToModel);
     }
 
     @Override
@@ -55,7 +69,20 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Boolean save(TagEntity entity) {
+    public Boolean save(TagModel model) {
+        TagEntity entity = convertToEntity(model);
         return repository.save(entity) != null;
+    }
+
+    private TagModel convertToModel(TagEntity entity){
+        return TagModel.builder()
+                .id(null)
+                .name(entity.getName())
+                .tagCategory(entity.getTagCategory())
+                .build();
+    }
+
+    private TagEntity convertToEntity(TagModel model){
+        return new TagEntity(model.getName(), model.getTagCategory());
     }
 }

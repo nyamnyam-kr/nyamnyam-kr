@@ -10,8 +10,8 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(toBuilder = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "replies")
 public class ReplyEntity {
@@ -22,6 +22,7 @@ public class ReplyEntity {
     //private Long upvoteId;
     @Column(nullable = false)
     private Long userId;
+
     @Column(nullable = false)
     private Long postId;
 

@@ -17,7 +17,7 @@ public class UpvoteController {
     private final UpvoteService service;
 
     @PostMapping("/group")
-    public ResponseEntity<List<UpvoteEntity>> findAll() {
+    public ResponseEntity<List<UpvoteEntity>> getUpvoteList() {
         return ResponseEntity.ok(service.findAll());
     }
 
