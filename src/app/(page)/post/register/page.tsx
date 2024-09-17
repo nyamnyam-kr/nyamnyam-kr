@@ -3,6 +3,7 @@ import { insertPost } from "@/app/service/post/post.api";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../star/page";
+import { insertImage } from "@/app/service/image/image.api";
 
 export default function PostRegister() {
   const router = useRouter();
@@ -20,13 +21,14 @@ export default function PostRegister() {
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
   const [selectTags, setSelectTags] = useState<string[]>([]);
+  const [selectImages, setSelectImages] = useState<File[]>([]);
 
   const fetchTagCategory = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/tags/category');
       const data = await response.json();
       setTagsCategory(data);
-      setSelectTags([]); 
+      setSelectTags([]);
     } catch (error) {
       console.error("태그 목록을 불러오는데 실패했습니다.", error);
     }
@@ -61,23 +63,59 @@ export default function PostRegister() {
     });
   };
 
+  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectImages(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const postData = {
-      ...formData,
-      tags: selectTags
+    const data = {
+        content: formData.content,
+        taste: formData.taste.toString(),
+        clean: formData.clean.toString(),
+        service: formData.service.toString(),
+        tags: selectTags
     };
 
-    try {
-      await insertPost(postData);
-      await fetchTagCategory();   
-      setSelectTags([]);     
-      router.push('/');         
-    } catch (error) {
-      console.error("포스트를 저장하는데 실패했습니다.", error);
+    const response = await fetch('http://localhost:8080/api/posts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        const postId = await response.json();
+        console.log("Post created with ID:", postId);
+
+        if (selectImages.length > 0) {
+            const imageData = new FormData();
+            selectImages.forEach((file) => {
+                imageData.append('files', file);
+            });
+            imageData.append('postId', postId);
+
+            const imageResponse = await fetch('http://localhost:8080/api/images', {
+                method: 'POST',
+                body: imageData
+            });
+
+            if (!imageResponse.ok) {
+                console.error('Image upload failed:', imageResponse.statusText);
+            }
+        }
+        await fetchTagCategory();
+        setSelectTags([]);
+        router.push('/');
+    } else {
+        console.error('Post creation failed:', response.statusText);
     }
-  };
+};
+
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
@@ -148,6 +186,18 @@ export default function PostRegister() {
             onChange={handleChange}
             className="border rounded p-2 w-full"
           />
+        </div>
+        <div>
+          <form encType="multipart/form-data">
+          <label className="font-bold">[이미지 첨부]</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={uploadImage}
+            className="border rounded p-2 w-full"
+          />
+          </form>
         </div>
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
           등록하기

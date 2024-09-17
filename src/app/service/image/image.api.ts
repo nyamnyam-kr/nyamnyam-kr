@@ -1,17 +1,8 @@
-export async function insertImage(img: ImageModel): Promise<any | {status: number}> {
+export async function insertImage(formData: FormData): Promise<any | {status: number}> {
   try {
-    const body = {
-      id: img.id,
-      originalFilename: img.originalFilename,
-      storedFileName : img.storedFileName,
-      extension: img.extension  
-    }
     const response = await fetch('http://localhost:8080/api/images', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+      body: formData, 
     });
 
     const contentType = response.headers.get('content-type');
@@ -24,7 +15,7 @@ export async function insertImage(img: ImageModel): Promise<any | {status: numbe
       throw new Error(`Server returned non-JSON response: ${errorMessage}`);
     }
   } catch (error) {
-    console.error('Error occurred while inserting post:', error);
+    console.error('Error occurred while inserting image:', error);
     return {status: 500};
   }
 }

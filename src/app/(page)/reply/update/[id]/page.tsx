@@ -7,10 +7,9 @@ export default function ReplyUpdate() {
   const router = useRouter();
 
   const [formData, setFormData] = useState<ReplyModel>({
-    id: 0,
     content: '',
-    entryDate: '',
-    modifyDate:''
+    postId: 0,
+    userId: 1 // 강제값으로 수정 필요 
   });
 
   useEffect (() => {

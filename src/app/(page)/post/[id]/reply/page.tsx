@@ -33,16 +33,48 @@ export default function Reply() {
         router.push(`/post/details/${id}`);
     }
 
+    const handleDelete = async (replyId: number) => {
+        if (window.confirm("삭제하시겠습니까?")) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    setReplies(replies.filter(reply => reply.id !== replyId));
+                    alert("댓글이 삭제되었습니다.");
+                } else {
+                    alert("댓글 삭제에 실패했습니다.");
+                }
+            } catch {
+                alert("댓글 삭제 중 문제가 발생했습니다.");
+            }
+        }
+    };
+    
+    const handleUpdate = (replyId: number) => {
+        router.push(`/post/${id}/reply/${replyId}/update`)
+    }
+
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6">
             <h1 className="text-2xl font-bold mb-6">댓글</h1>
             <div className="bg-white shadow-md rounded p-6 w-full max-w-2xl space-y-4">
                 {replies.length > 0 ? (
-                    replies.map((r) => (
+                    replies.map((r: ReplyModel) => (
                         <div key={r.id} className="border-b pb-4 mb-4">
                             <p>{r.content}</p>
-                            <small>{formDate(r.entryDate)}</small>
+                            <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
+                            <div className="mt-2 flex gap-4">
+                                <button
+                                    className="text-blue-500 hover:text-blue-700"
+                                    onClick={() => handleUpdate(r.id!)}>
+                                    수정
+                                </button>
+                                <button
+                                    className="text-red-500 hover:text-red-700"
+                                    onClick={() => handleDelete(r.id!)}>
+                                    삭제
+                                </button>
+                            </div>
                         </div>
                     ))
                 ) : (

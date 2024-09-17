@@ -8,10 +8,7 @@ export default function ReplyRegister() {
     const router = useRouter();
     const { id } = useParams();
     const [formData, setFormData] = useState<ReplyModel>({
-        id: 0,
         content: '',
-        entryDate: '',
-        modifyDate: '',
         postId: 0,
         userId: 1 // 강제값으로 수정 필요!! 
     });
@@ -37,8 +34,12 @@ export default function ReplyRegister() {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log("데이터: ", formData);
-        await insertReply(formData);
+        const {content, postId, userId} = formData;
+        const replyData = {content, postId, userId};
+
+        console.log("db전송 데이터: ", replyData);
+
+        await insertReply(replyData);
         router.push(`/post/${id}/reply`)
     };
 

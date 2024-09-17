@@ -1,8 +1,8 @@
 interface ReplyModel{
-    id:number;
+    id?:number;
     content:string;
-    entryDate: string;
-    modifyDate: string;
     postId: number;
-    userId: number
+    userId: number;
+    entryDate?: string;
+    modifyDate?: string;
 }

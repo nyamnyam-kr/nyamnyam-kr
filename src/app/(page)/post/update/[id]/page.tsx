@@ -68,7 +68,6 @@ export default function PostUpdate() {
         id: formData.id,   
         tags: selectTags,
       };
-      console.log("서버로 보낼 데이터:", updatePost);
 
       const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
         method: 'PUT',

@@ -23,6 +23,7 @@ export default function Home() {
                 return response.json();
             })
             .then((data) => {
+                console.log(data);
                 setPosts(data);
             })
             .catch((error) => {
@@ -83,7 +84,7 @@ export default function Home() {
     };
 
     const handleNone = async () => {
-            alert('크롤링 막았놓았습니다.')
+        alert('크롤링 막았놓았습니다.')
     }
 
     const handlePage = async (pageNo: number) => {
@@ -102,12 +103,12 @@ export default function Home() {
     };
 
     const formatDate = (dateString: string) => {
-        if (!dateString) return ''; 
-        
-        const date = new Date(dateString);  
-        const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit' };  
+        if (!dateString) return '';
+
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit' };
         const formattedDate = new Intl.DateTimeFormat('ko-KR', options).format(date);
-        
+
         const [year, month] = formattedDate.split('.').map(part => part.trim());
         return `${year}년 ${month}월`;
     };
@@ -156,7 +157,7 @@ export default function Home() {
                                 <td className="py-3 px-4 border-b">{p.service}</td>
                                 <td className="py-3 px-4 border-b">{p.content}</td>
                                 <td className="py-3 px-4 border-b">{formatDate(p.entryDate)}</td>
-                                <td className="py-3 px-4 border-b"><Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/></td>
+                                <td className="py-3 px-4 border-b"><Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} /></td>
                                 <td className="py-3 px-4 border-b">{p.tags && p.tags.length > 0 ? p.tags.join(", ") : "태그 없음"}</td>
                             </tr>
                         ))}
@@ -179,47 +180,47 @@ export default function Home() {
                         삭제하기
                     </button>
                     <button
-                         className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                        onClick={()=>handlePage(1)}>
+                        className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                        onClick={() => handlePage(1)}>
                         첫 페이지
                     </button>
                 </div>
             </div>
             <nav aria-label="Page navigation example">
-  <ul className="flex items-center -space-x-px h-8 text-sm mt-4">
-    <li>
-      <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <span className="sr-only">Previous</span>
-        <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-        </svg>
-      </a>
-    </li>
-    <li>
-      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-    </li>
-    <li>
-      <a href="#" onClick={()=>handlePage(2)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-    </li>
-    <li>
-      <a href="#" onClick={()=>handlePage(3)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
-    </li>
-    <li>
-      <a href="#" onClick={()=>handlePage(4)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-    </li>
-    <li>
-      <a href="#" onClick={()=>handlePage(5)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-    </li>
-    <li>
-      <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <span className="sr-only">Next</span>
-        <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-        </svg>
-      </a>
-    </li>
-  </ul>
-</nav>
+                <ul className="flex items-center -space-x-px h-8 text-sm mt-4">
+                    <li>
+                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <span className="sr-only">Previous</span>
+                            <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={() => handlePage(2)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={() => handlePage(3)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">3</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={() => handlePage(4)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick={() => handlePage(5)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+                    </li>
+                    <li>
+                        <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <span className="sr-only">Next</span>
+                            <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </main>
     );
 }
