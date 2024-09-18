@@ -23,8 +23,13 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
     private final PostService service;
-    private final ImageService imageService;
     private final UpvoteService upvoteService;
+
+    @GetMapping("/{restaurantId}/allAverage")
+    public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
+        double averageRating = service.allAverageRating(restaurantId);
+        return ResponseEntity.ok(averageRating);
+    }
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")

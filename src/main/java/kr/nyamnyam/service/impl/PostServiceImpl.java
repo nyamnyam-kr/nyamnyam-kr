@@ -32,6 +32,19 @@ public class PostServiceImpl implements PostService {
     private final PostTagRepository postTagRepository;
 
     @Override
+    public double allAverageRating(Long restaurantId){
+        List<PostEntity> posts = repository.findByRestaurantId(restaurantId);
+
+        if(posts.isEmpty()){
+            return 0.0;
+        }
+        double totalRating = posts.stream()
+                .mapToDouble(post -> (post.getTaste() + post.getClean() + post.getService()) / 3.0)
+                .sum();
+        return totalRating / posts.size();
+    }
+
+    @Override
     public PostModel postWithImage(Long id){
         PostEntity postEntity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
@@ -223,6 +236,7 @@ public class PostServiceImpl implements PostService {
                 .taste(model.getTaste())
                 .clean(model.getClean())
                 .service(model.getService())
+                .restaurantId(model.getRestaurantId())
                 .build();
     }
 }

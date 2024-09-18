@@ -7,6 +7,8 @@ import kr.nyamnyam.model.entity.PostEntity;
 import java.util.List;
 
 public interface PostService {
+    double allAverageRating(Long restaurantId);
+
     PostModel postWithImage(Long id);
 
     PostEntity findEntityById(Long id);

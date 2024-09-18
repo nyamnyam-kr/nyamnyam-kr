@@ -18,6 +18,11 @@ import java.util.Optional;
 public class TagController {
     private final TagService service;
 
+    @GetMapping("/top5/{restaurantId}")
+    public ResponseEntity<List<String>> getTagRestaurant(@PathVariable Long restaurantId){
+        return ResponseEntity.ok(service.getTagRestaurant(restaurantId));
+    }
+
     @GetMapping("/tag-category")
     public ResponseEntity<List<String>> getTagCategory() {
         return ResponseEntity.ok(service.getTagCategory());

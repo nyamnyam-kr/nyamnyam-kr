@@ -21,5 +21,8 @@ public interface TagService {
 
     Boolean deleteByName(String name);
 
+    // 레스토랑 별 Top5 Tag
+    List<String> getTagRestaurant(Long restaurantId);
+
     List<String> getTagCategory();
 }
