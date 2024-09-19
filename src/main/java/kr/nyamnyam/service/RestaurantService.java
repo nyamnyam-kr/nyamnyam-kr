@@ -2,24 +2,21 @@ package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
-import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface RestaurantService {
-    boolean saveRestaurantFromApi(List<RestaurantEntity> restaurantList);
 
 
-    boolean existsByNameAndAddress(String name, String address);
+    List<RestaurantEntity> getCrawlingInfos();
+    List<RestaurantModel> findAll();
+    List<RestaurantModel> searchRestaurants(String keyword);
+    RestaurantModel findById(Long id);
+    Boolean existsById(Long id);
+    ResponseEntity<RestaurantModel> getOneRestaurant(@PathVariable Long id);
 
-  /*  void updateRestaurantWithImage(RestaurantEntity restaurant);*/
-
-    List<RestaurantEntity> findAllPage(int page, int pageSize);
-
-    void getNew();
-
-    Long count();
-
-    void crawlingBot();
 }
