@@ -12,9 +12,8 @@ import java.util.UUID;
 @Repository
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
-    Optional<ImageEntity> findById(UUID id);
+    Optional<ImageEntity> findById(Long id);
 
-    Boolean existsById(UUID id);
 
-    void deleteById(UUID id);
+    void deleteById(Long id);
 }

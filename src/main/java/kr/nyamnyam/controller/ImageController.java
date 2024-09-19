@@ -42,11 +42,11 @@ public class ImageController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable UUID id) {
+    public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
     @GetMapping("/exists/{id}")
-    public ResponseEntity<Boolean> existsById(@PathVariable UUID id) {
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
         return ResponseEntity.ok(service.existsById(id));
     }
     @GetMapping("/count")
@@ -54,7 +54,7 @@ public class ImageController {
         return ResponseEntity.ok(service.count());
     }
     @DeleteMapping("")
-    public ResponseEntity<Boolean> deleteById(@RequestParam UUID id) {
+    public ResponseEntity<Boolean> deleteById(@RequestParam Long id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
     @PutMapping("")

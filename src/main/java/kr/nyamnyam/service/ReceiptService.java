@@ -5,6 +5,6 @@ import kr.nyamnyam.model.entity.ReceiptEntity;
 
 public interface ReceiptService {
 
-    ReceiptModel save(ReceiptModel model);
+    Boolean save(ReceiptEntity receipt);
 
 }

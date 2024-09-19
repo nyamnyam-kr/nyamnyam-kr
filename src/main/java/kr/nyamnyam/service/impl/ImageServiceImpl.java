@@ -113,12 +113,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<ImageEntity> findById(UUID id) {
+    public Optional<ImageEntity> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public Boolean existsById(UUID id) {
+    public Boolean existsById(Long id) {
         return repository.existsById(id);
     }
 
@@ -128,7 +128,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean deleteById(UUID id) {
+    public Boolean deleteById(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
             return true;

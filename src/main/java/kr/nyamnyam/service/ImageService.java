@@ -15,13 +15,13 @@ public interface ImageService {
 
     List<ImageEntity> findAll();
 
-    Optional<ImageEntity> findById(UUID id);
+    Optional<ImageEntity> findById(Long id);
 
-    Boolean existsById(UUID id);
+    Boolean existsById(Long id);
 
     Long count();
 
-    Boolean deleteById(UUID id);
+    Boolean deleteById(Long id);
 
     Boolean save(ImageEntity entity);
 
