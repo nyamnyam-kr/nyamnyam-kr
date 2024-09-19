@@ -6,13 +6,13 @@ import { useEffect, useState } from "react";
 
 
 export default function Home1() {
-  const [channels, setChannels] = useState<ChannelModel[]>([]);
+  const [chatRooms, setChatRooms] = useState<ChatRoomModel[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
 
-  const [selectChannels, setSelectChannels] = useState<any[]>([]);
+  const [selectChatRooms, setSelectChatRooms] = useState<any[]>([]);
   const router = useRouter();
 
   // 기본 상태
@@ -24,14 +24,14 @@ export default function Home1() {
     setLoading(true); // 로딩 상태 시작
 
     try {
-      const response = await fetch(`http://localhost:8080/api/channels/findAllPerPage/${pageNo}`);
+      const response = await fetch(`http://localhost:8080/api/chatRoom/findAll`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setChannels(data);
+      setChatRooms(data);
 
-      const totalCountResponse = await fetch('http://localhost:8080/api/channels/count');
+      const totalCountResponse = await fetch('http://localhost:8080/api/chatRoom/count');
       const totalCount = await totalCountResponse.json();
       setTotalPages(Math.ceil(totalCount / 10));
     } catch (error) {
@@ -66,7 +66,7 @@ export default function Home1() {
   };
 
   const handleCheck = (id: any) => {
-    setSelectChannels((prevSelected: string[]) =>
+    setSelectChatRooms((prevSelected: string[]) =>
       prevSelected.includes(id)
         ? prevSelected.filter((channelId: string) => channelId !== id)
         : [...prevSelected, id]
@@ -74,17 +74,17 @@ export default function Home1() {
   };
 
   const handleDelete = () => {
-    if (selectChannels.length === 0) {
+    if (selectChatRooms.length === 0) {
       alert("삭제할 게시글을 선택해주세요.");
       return;
     }
     if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
-      Promise.all(selectChannels.map((id: any) =>
-        fetch(`http://localhost:8080/api/channels/${id}`, { method: 'DELETE' })
+      Promise.all(selectChatRooms.map((id: any) =>
+        fetch(`http://localhost:8080/api/chatRoom/${id}`, { method: 'DELETE' })
       ))
         .then(() => {
           alert("게시글이 삭제되었습니다.");
-          setSelectChannels([]);
+          setSelectChatRooms([]);
           handlePage(1);
         })
         .catch(error => {
@@ -96,7 +96,7 @@ export default function Home1() {
 
   const handleCrawling = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/channels/crawling`, { method: 'GET' });
+      const response = await fetch(`http://localhost:8080/api/chatRoom/crawling`, { method: 'GET' });
       if (response.ok) {
         const data = await response.json();
         if (data.length > 0) {
@@ -154,18 +154,18 @@ export default function Home1() {
             </tr>
           </thead>
           <tbody>
-            {channels.map((c) => (
+            {chatRooms.map((c) => (
               <tr key={c.id} className="border border-indigo-600">
                 <td className="py-3 px-4 border-b">
                   <input
                     type="checkbox"
-                    checked={selectChannels.includes(c.id)}
+                    checked={selectChatRooms.includes(c.id)}
                     onChange={() => handleCheck(c.id)}
                   />
                 </td>
                 <td className="py-3 px-4 border-b">
                   <Link
-                    href={`/channel/details/${c.id}`}
+                    href={`/chatRoom/details/${c.id}`}
                     className="text-blue-600 hover:underline"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -175,8 +175,8 @@ export default function Home1() {
                     {c.id}
                   </Link>
                 </td>
-                <td className="py-3 px-4 border-b">{c.name}</td>
-                <td className="py-3 px-4 border-b">{c.participants}</td>
+                <td className="py-3 px-4 border-b">{c.name ? c.name : "No Name"}</td>
+                <td className="py-3 px-4 border-b">{c.participants ? c.participants.nickname : "No Nickname"}</td>
               </tr>
             ))}
           </tbody>
