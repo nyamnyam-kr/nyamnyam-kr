@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from "next/link";
 import Star from "./(page)/star/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,13 +16,17 @@ export default function Home() {
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const currentUserId = 1; // giveId : 테스트로 1값 설정 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const restaurantId = searchParams.get('restaurantId'); 
 
     useEffect(() => {
-        fetchPosts();
-    }, []);
+        if(restaurantId){
+            fetchPosts();
+        }
+    }, [restaurantId]);
 
     const fetchPosts = () => {
-        fetch('http://localhost:8080/api/posts/group/1')
+        fetch(`http://localhost:8080/api/posts/${restaurantId}/group/1`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

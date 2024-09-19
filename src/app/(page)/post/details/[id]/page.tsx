@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 export default function PostDetail() {
   const [posts, setPosts] = useState<PostModel | null>(null);
   const { id } = useParams();
+  const bucketName = "nyamnyam.storage"
   const router = useRouter();
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function PostDetail() {
                 posts.images.map((image, index) => (
                   <img
                     key={index}
-                    src={`http://localhost:8080/uploads/${image.storedFileName}`}
+                    src={`https://kr.object.ncloudstorage.com/${bucketName}/${image.storedFileName}`}
                     alt={`이미지 ${index + 1}`}
                     style={{ width: "200px", height: "auto" }}
                   />

@@ -9,5 +9,6 @@ interface PostModel {
   averageRating: number;
   tags: string[]; 
   images: ImageModel[];
+  restaurantId: number;
 }
 

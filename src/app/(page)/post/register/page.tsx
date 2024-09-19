@@ -17,7 +17,8 @@ export default function PostRegister() {
     modifyDate: '',
     averageRating: 0,
     tags: [],
-    images: []
+    images: [],
+    restaurantId: 0
   });
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
@@ -91,6 +92,7 @@ export default function PostRegister() {
 
     if (response.ok) {
       const postId = await response.json();
+      console.log("Post ID:", postId); // 삭제 필요
 
       if (selectImages.length > 0) {
         const imageData = new FormData();
@@ -98,8 +100,9 @@ export default function PostRegister() {
           imageData.append('files', file);
         });
         imageData.append('postId', postId);
+        imageData.append('uploadPath','uploads/images')
 
-        const imageResponse = await fetch('http://localhost:8080/api/images', {
+        const imageResponse = await fetch('http://localhost:8080/api/images/upload', {
           method: 'POST',
           body: imageData
         });

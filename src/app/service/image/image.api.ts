@@ -1,6 +1,6 @@
 export async function insertImage(formData: FormData): Promise<any | {status: number}> {
   try {
-    const response = await fetch('http://localhost:8080/api/images', {
+    const response = await fetch('http://localhost:8080/api/images/upload', {
       method: 'POST',
       body: formData, 
     });
