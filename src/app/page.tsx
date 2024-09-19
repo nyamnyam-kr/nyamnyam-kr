@@ -14,7 +14,7 @@ export default function Home() {
     const [currentPage, setCurrentPage] = useState(1);
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
-    const currentUserId = 1; // 테스트로 1값 설정 
+    const currentUserId = 1; // giveId : 테스트로 1값 설정 
     const router = useRouter();
 
     useEffect(() => {
@@ -147,10 +147,6 @@ export default function Home() {
             postId: postId
         }
         return await hasLikedPost(upvote) ? postId : null;
-    };
-    const fetchLikeCount = async (postId: number) => {
-        const count = await getLikeCount(postId);
-        return count;
     };
 
     const handleLike = async (postId: number) => {
