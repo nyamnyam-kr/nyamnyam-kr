@@ -16,13 +16,8 @@ import java.util.UUID;
 @Table(name = "images")
 public class ImageEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(name = "id", columnDefinition = "CHAR(36)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String originalFileName;
     private String storedFileName;
     private String extension;

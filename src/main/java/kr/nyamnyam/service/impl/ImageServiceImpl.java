@@ -11,9 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.Long;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,44 @@ public class ImageServiceImpl implements ImageService {
 
     @Value("${file.upload-dir}") // 경로 변경 시 yaml & WebConfig 바꾸기
     private String uploadDir;
+
+
+    @Override
+    public Boolean insertReceipt(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 없습니다.");
+        }
+
+
+        Path uploadPath = Paths.get("src/main/resources/static/image");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        String extension = "";
+
+        if (originalFileName != null && originalFileName.contains(".")) {
+            extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        }
+
+        String storedFileName = System.currentTimeMillis() + "." + extension;
+
+        Path filePath = uploadPath.resolve(storedFileName);
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        ImageEntity img = ImageEntity.builder()
+                .originalFileName(originalFileName)
+                .storedFileName(storedFileName)
+                .extension(extension)
+                .build();
+
+        repository.save(img);
+
+        return true;
+    }
 
     @Override
     public Boolean saveImages(List<MultipartFile> files, PostEntity entity) {
@@ -34,7 +77,6 @@ public class ImageServiceImpl implements ImageService {
                 String originalFilename = file.getOriginalFilename();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String storedFilename = System.currentTimeMillis() + extension;
-                //String storedFilename = UUID.randomUUID().toString() + extension;
 
                 File destFile = new File(uploadDir +"/" + storedFilename);
                 file.transferTo(destFile);
@@ -62,12 +104,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<ImageEntity> findById(UUID id) {
+    public Optional<ImageEntity> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public Boolean existsById(UUID id) {
+    public Boolean existsById(Long id) {
         return repository.existsById(id);
     }
 
@@ -77,7 +119,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean deleteById(UUID id) {
+    public Boolean deleteById(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
             return true;

@@ -10,6 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ImageRepository extends JpaRepository<ImageEntity, UUID> {
+public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
 }

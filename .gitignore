@@ -19,6 +19,8 @@ bin/
 
 ### IntelliJ IDEA ###
 src/main/resources/application.yaml
+src/main/resources/ncloud.properties
+
 .idea
 *.iws
 *.iml

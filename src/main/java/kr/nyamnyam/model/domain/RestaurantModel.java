@@ -1,26 +1,72 @@
 package kr.nyamnyam.model.domain;
 
-import lombok.Data;
-import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import kr.nyamnyam.model.entity.RestaurantEntity;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Component
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class RestaurantModel {
 
-    private Long postId; // 고유번호
-    private String langCodeId; // 언어
-    private String name; // 상호명
-    private String postUrl; // 콘텐츠URL
-    private String address; // 주소
-    private String phoneNumber; // 전화번호
-    private String websiteUrl; // 웹사이트
-    private String useTime; // 운영시간
-    private String subwayInfo; // 교통정보
-    private String representativeMenu; // 대표메뉴
+    private Long id;
+    private String name;
+    private String address;
+    private String type;
+    private Double rate;
+    private String operation;
+    private String tel;
+    private String menu;
+    private String thumbnailImageUrl;
+    private String subImageUrl;
 
-    private String category;
-    private String ImageUrl;
+    // 생성자
+    @Builder
+    public RestaurantModel(Long id, String name, String address, String type, Double rate, String operation, String tel, String menu, String thumbnailImageUrl, String subImageUrl) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.type = type;
+        this.rate = rate;
+        this.operation = operation;
+        this.tel = tel;
+        this.menu = menu;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+        this.subImageUrl = subImageUrl;
+    }
 
+    // DTO를 엔티티로 변환하는 메서드
+    public RestaurantEntity toEntity() {
+        return RestaurantEntity.builder()
+                .id(id)
+                .name(name)
+                .address(address)
+                .type(type)
+                .rate(rate)
+                .operation(operation)
+                .tel(tel)
+                .menu(menu)
+                .thumbnailImageUrl(thumbnailImageUrl)
+                .subImageUrl(subImageUrl)
+                .build();
+    }
+
+    // 엔티티를 DTO로 변환하는 메서드
+    public static RestaurantModel toDto(RestaurantEntity entity) {
+        return RestaurantModel.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .address(entity.getAddress())
+                .type(entity.getType())
+                .rate(entity.getRate())
+                .operation(entity.getOperation())
+                .tel(entity.getTel())
+                .menu(entity.getMenu())
+                .thumbnailImageUrl(entity.getThumbnailImageUrl())
+                .subImageUrl(entity.getSubImageUrl())
+                .build();
+    }
 }
