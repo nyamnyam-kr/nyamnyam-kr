@@ -25,7 +25,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public Boolean insertRecipe(MultipartFile file) throws IOException {
+    public Boolean insertReceipt(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일이 없습니다.");
         }

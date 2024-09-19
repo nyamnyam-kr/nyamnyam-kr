@@ -18,11 +18,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/recipe")
+@RequestMapping("/api/receipt")
+@CrossOrigin(origins = "http://localhost:3000")
 public class OCRController {
 
     private final NaverOcrApi naverOcrApi;
     private final ImageService imageService;
+
 
     @Value("${naver.service.secretKey}")
     private String secretKey;
@@ -47,8 +49,11 @@ public class OCRController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<Boolean> insertRecipe(@RequestBody MultipartFile file) throws IOException {
-        return ResponseEntity.ok(imageService.insertRecipe(file));
+    public ResponseEntity<Boolean> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println("OCRController.insertReceipt");
+
+
+        return ResponseEntity.ok(imageService.insertReceipt(file));
 
     }
 

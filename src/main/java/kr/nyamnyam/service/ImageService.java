@@ -25,7 +25,7 @@ public interface ImageService {
 
     Boolean saveImages(List<MultipartFile> files, PostEntity post);
 
-    Boolean insertRecipe(MultipartFile file) throws IOException;
+    Boolean insertReceipt(MultipartFile file) throws IOException;
 
 
 }
