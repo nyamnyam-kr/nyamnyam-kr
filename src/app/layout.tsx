@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 "use client";
 import type { Metadata } from "next";
+=======
+
+>>>>>>> origin/nyamnyam-api
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/nyamnyam-api
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,6 +25,7 @@ export default function RootLayout({
         <title> 냠냠! </title>
       </head>
       <body className={inter.className}>
+<<<<<<< HEAD
       <nav className="bg-blue-500 text-white py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
           <Link href="/restaurant" className="text-xl font-bold">냠냠</Link>
@@ -37,6 +46,8 @@ export default function RootLayout({
         </div>
       </nav>
       <div className="container mx-auto p-4">
+=======
+>>>>>>> origin/nyamnyam-api
         {children}
       </div>
     </body>

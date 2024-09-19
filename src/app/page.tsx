@@ -1,4 +1,5 @@
 "use client";
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from "next/link";
@@ -116,6 +117,44 @@ export default function Home() {
     const handleNone = async () => {
         alert('크롤링 막았놓았습니다.')
     }
+=======
+import { useState, useEffect } from 'react';
+
+interface Restaurant {
+    postId: number;
+    name: string;
+    address: string;
+    phoneNumber: string;
+    websiteUrl: string;
+    useTime: string;
+    subwayInfo: string;
+    representativeMenu: string;
+    category: string;
+}
+
+const fetchRestaurants = async (): Promise<Restaurant[]> => {
+    const res = await fetch('http://localhost:8080/restaurant/api');
+    const data = await res.json();
+    return data;
+};
+
+export default function Home() {
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+    useEffect(() => {
+        const getRestaurants = async () => {
+            const data = await fetchRestaurants();
+            setRestaurants(data);
+        };
+        getRestaurants();
+    }, []);
+
+    // 필터링된 레스토랑 리스트
+    const filteredRestaurants = selectedCategory === 'All'
+        ? restaurants
+        : restaurants.filter(restaurant => restaurant.category === selectedCategory);
+>>>>>>> origin/nyamnyam-api
 
     const handlePage = async (pageNo: number) => {
         try {
@@ -195,6 +234,7 @@ export default function Home() {
     };
 
     return (
+<<<<<<< HEAD
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
                 <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
@@ -313,5 +353,35 @@ export default function Home() {
                 </ul>
             </nav>
         </main>
+=======
+        <div>
+            <h1>Restaurant List</h1>
+            <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
+                <option value="All">All</option>
+                <option value="중식">중식</option>
+                <option value="일식">일식</option>
+                <option value="한식">한식</option>
+                <option value="분식">분식</option>
+                <option value="경양식">경양식</option>
+                <option value="양식">양식</option>
+                <option value="카페">카페</option>
+                <option value="디저트">디저트</option>
+            </select>
+            <ul>
+                {filteredRestaurants.map((restaurant) => (
+                    <li key={restaurant.postId}>
+                        <h2>{restaurant.name}</h2>
+                        <p>Address: {restaurant.address}</p>
+                        <p>Phone: {restaurant.phoneNumber}</p>
+                        <p>Website: {restaurant.websiteUrl}</p>
+                        <p>Use Time: {restaurant.useTime}</p>
+                        <p>Subway Info: {restaurant.subwayInfo}</p>
+                        <p>Representative Menu: {restaurant.representativeMenu}</p>
+                        <p>Category: {restaurant.category}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+>>>>>>> origin/nyamnyam-api
     );
 }

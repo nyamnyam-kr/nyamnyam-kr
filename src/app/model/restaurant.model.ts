@@ -1,13 +1,13 @@
 interface RestaurantModel {
-    id: number;
+    postId: number;
     name: string;
-    type: string;
+    postUrl: string;
     address: string;
-    tel: string;
-    rate: number;
+    number: string;
+    useTime: string;
+    subwayInfo: string;
     menu: string;
-    thumbnailImageUrl: string;
-    subImageUrl: string;
-    lat: number;
-    lng: number;
+    category: string;
 }
+
+
