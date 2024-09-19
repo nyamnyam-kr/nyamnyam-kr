@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.nio.file.Path;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post_tags")

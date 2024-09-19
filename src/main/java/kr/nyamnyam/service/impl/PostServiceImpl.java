@@ -218,7 +218,7 @@ public class PostServiceImpl implements PostService {
                 .images(entity.getImages().stream()
                         .map(image -> {
                             // 이 부분에서 ID 확인
-                            System.out.println("Image ID in Model Conversion: " + image.getId());
+                            System.out.println("convert 이미지 Id: " + image.getId());
                             return ImageModel.builder()
                                     .id(image.getId().toString())
                                     .originalFilename(image.getOriginalFileName())

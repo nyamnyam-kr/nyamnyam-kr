@@ -1,8 +1,5 @@
 package kr.nyamnyam.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;

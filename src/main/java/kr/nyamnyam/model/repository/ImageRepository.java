@@ -10,11 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
+public interface ImageRepository extends JpaRepository<ImageEntity, UUID> {
 
-    Optional<ImageEntity> findById(UUID id);
-
-    Boolean existsById(UUID id);
-
-    void deleteById(UUID id);
 }

@@ -20,16 +20,21 @@ import java.util.UUID;
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
 
-    @Value("${file.upload-dir}")
+    @Value("${file.upload-dir}") // 경로 변경 시 yaml & WebConfig 바꾸기
     private String uploadDir;
 
     @Override
     public Boolean saveImages(List<MultipartFile> files, PostEntity entity) {
         for (MultipartFile file : files) {
             try {
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
                 String originalFilename = file.getOriginalFilename();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                String storedFilename = UUID.randomUUID().toString() + extension;
+                String storedFilename = System.currentTimeMillis() + extension;
+                //String storedFilename = UUID.randomUUID().toString() + extension;
 
                 File destFile = new File(uploadDir +"/" + storedFilename);
                 file.transferTo(destFile);
@@ -42,7 +47,7 @@ public class ImageServiceImpl implements ImageService {
                         .build();
 
                 repository.save(image);
-                System.out.println("Image ID after saving: " + image.getId());
+                System.out.println("saveImage(ID): " + image.getId());
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
