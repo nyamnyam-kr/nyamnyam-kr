@@ -24,7 +24,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
-    private static final int NUM_THREADS = 6; // 사용할 스레드 수
+    private static final int NUM_THREADS = 4; // 사용할 스레드 수
 
     @Override
     public void crawlAndSaveInfos() {
@@ -65,7 +65,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private List<String> getPageUrls() {
         List<String> urls = new ArrayList<>();
-        String[] regions = {"홍대", "잠실", "건대"};
+        String[] regions = {"이태원", "성수", "사당", "을지로"};
 
         for (String region : regions) {
             urls.add("https://map.naver.com/v5/search/" + region + " 맛집");
@@ -87,7 +87,7 @@ public class CrawlServiceImpl implements CrawlService {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".place_bluelink")));
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
 
-            int maxItemsToProcess = 5; // 각 지역별 최대 5개
+            int maxItemsToProcess = 5; // 각 zone 당 최대 5개
             int count = 0;
             for (int i = 0; i < titleElements.size() && count < maxItemsToProcess; i++) {
                 WebElement titleElement = titleElements.get(i);
