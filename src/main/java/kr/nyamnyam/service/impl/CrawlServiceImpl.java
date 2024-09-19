@@ -24,7 +24,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private final RestaurantService restaurantService;
     private final RestaurantRepository restaurantRepository;
-    private static final int NUM_THREADS = 4; // 사용할 스레드 수
+    private static final int NUM_THREADS = 6; // 사용할 스레드 수
 
     @Override
     public void crawlAndSaveInfos() {
