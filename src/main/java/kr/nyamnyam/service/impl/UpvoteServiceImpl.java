@@ -1,7 +1,6 @@
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.UpvoteEntity;
-import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.UpvoteRepository;
 import kr.nyamnyam.service.UpvoteService;
@@ -17,7 +16,7 @@ public class UpvoteServiceImpl implements UpvoteService {
     @Override
     public boolean like(Long postId, Long userId) {
         if(!repository.existsByPostIdAndGiveId(postId, userId)){
-            Long haveId =2L; // 테스트로 haveId 고정값 2 설정
+            Long haveId =2L; // 테스트로 haveId 고정값 2 설정 -> 연결 후 아래 코드 적용
 
             /*Long haveId = postRepository.findById(postId)
                     .map(PostEntity::getUserId)

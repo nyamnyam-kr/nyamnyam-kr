@@ -34,26 +34,22 @@ public class PostController {
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")
     public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam Long userId){
-        upvoteService.like(postId,userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(upvoteService.like(postId,userId));
     }
 
     @PostMapping("/{postId}/unlike")
     public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam Long userId){
-        upvoteService.unlike(postId,userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(upvoteService.unlike(postId,userId));
     }
 
     @GetMapping("/{postId}/hasLiked")
     public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam Long userId){
-        boolean hasLiked = upvoteService.hasLiked(postId, userId);
-        return ResponseEntity.ok(hasLiked);
+        return ResponseEntity.ok(upvoteService.hasLiked(postId, userId));
     }
 
     @GetMapping("/{postId}/like-count")
     public ResponseEntity<Integer> getLikeCount(@PathVariable Long postId){
-        int likeCount = upvoteService.getLikeCount(postId);
-        return ResponseEntity.ok(likeCount);
+        return ResponseEntity.ok( upvoteService.getLikeCount(postId));
     }
 
     @GetMapping("/crawling")
