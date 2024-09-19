@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.repository.Custom;
 
-import ch.qos.logback.core.model.Model;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

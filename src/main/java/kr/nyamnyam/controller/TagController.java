@@ -1,5 +1,6 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.TagModel;
 import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,27 @@ import java.util.Optional;
 public class TagController {
     private final TagService service;
 
+    @GetMapping("/top5/{restaurantId}")
+    public ResponseEntity<List<String>> getTagRestaurant(@PathVariable Long restaurantId){
+        return ResponseEntity.ok(service.getTagRestaurant(restaurantId));
+    }
+
+    @GetMapping("/tag-category")
+    public ResponseEntity<List<String>> getTagCategory() {
+        return ResponseEntity.ok(service.getTagCategory());
+    }
+
     @GetMapping("/category")
-    public ResponseEntity<Map<String ,List<TagEntity>>> getTagsByCategory() {
+    public ResponseEntity<Map<String ,List<TagModel>>> getTagsByCategory() {
         return ResponseEntity.ok(service.getTagsByCategory());
     }
     @GetMapping("/group")
-    public ResponseEntity<List<TagEntity>> findAll() {
+    public ResponseEntity<List<TagModel>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<Optional<TagEntity>> findByName(@PathVariable String name) {
+    public ResponseEntity<Optional<TagModel>> findByName(@PathVariable String name) {
         return ResponseEntity.ok(service.findByName(name));
     }
 
@@ -36,23 +47,18 @@ public class TagController {
         return ResponseEntity.ok(service.existsByName(name));
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(service.count());
-    }
-
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Boolean> deleteByName(@PathVariable String name) {
+    @DeleteMapping("")
+    public ResponseEntity<Boolean> deleteByName(@RequestParam String name) {
         return ResponseEntity.ok(service.deleteByName(name));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Boolean> update(@PathVariable String name, @RequestBody TagEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    @PutMapping("")
+    public ResponseEntity<Boolean> update(@RequestParam String name, @RequestBody TagModel model) {
+        return ResponseEntity.ok(service.save(model));
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> save(@RequestBody TagEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    public ResponseEntity<Boolean> save(@RequestBody TagModel model) {
+        return ResponseEntity.ok(service.save(model));
     }
 }

@@ -1,9 +1,11 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
-import java.awt.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,8 +16,13 @@ import java.awt.*;
 @Table(name = "images")
 public class ImageEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", columnDefinition = "CHAR(36)")
+    private UUID id;
     private String originalFileName;
     private String storedFileName;
     private String extension;

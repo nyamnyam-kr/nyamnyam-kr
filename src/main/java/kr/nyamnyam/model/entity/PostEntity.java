@@ -1,6 +1,7 @@
 package kr.nyamnyam.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,8 +12,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(toBuilder = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "posts")
 public class PostEntity {
@@ -28,11 +29,9 @@ public class PostEntity {
     private LocalDateTime entryDate;
     private LocalDateTime modifyDate;
 
-
     // nyamnyam-admin부분에서 추가된 부분
     private Long userId;
     private Long restaurantId;
-
 
     @PrePersist
     protected void onCreate() {
@@ -46,6 +45,7 @@ public class PostEntity {
     }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<PostTagEntity> postTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

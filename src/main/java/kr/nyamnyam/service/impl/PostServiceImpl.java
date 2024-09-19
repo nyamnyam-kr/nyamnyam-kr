@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.transaction.Transactional;
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.PostTagEntity;
@@ -17,8 +18,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,14 +32,51 @@ public class PostServiceImpl implements PostService {
     private final PostTagRepository postTagRepository;
 
     @Override
+    public double allAverageRating(Long restaurantId){
+        List<PostEntity> posts = repository.findByRestaurantId(restaurantId);
+
+        if(posts.isEmpty()){
+            return 0.0;
+        }
+        double totalRating = posts.stream()
+                .mapToDouble(post -> (post.getTaste() + post.getClean() + post.getService()) / 3.0)
+                .sum();
+        return totalRating / posts.size();
+    }
+
+    @Override
+    public PostModel postWithImage(Long id){
+        PostEntity postEntity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+
+        List<ImageModel> imageModels = postEntity.getImages().stream()
+                .map(imageEntity -> ImageModel.builder()
+                        .originalFilename(imageEntity.getOriginalFileName())
+                        .storedFileName(imageEntity.getStoredFileName())
+                        .build())
+                .collect(Collectors.toList());
+
+        PostModel postModel = convertToModel(postEntity);
+        postModel.setImages(imageModels);
+
+        return postModel;
+    }
+
+    @Override
+    public PostEntity findEntityById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    }
+
+    @Override
     public List<PostModel> findAllPerPage(int page) {
         Long totalCount = count();
         Pagination p = new Pagination(page, totalCount.intValue());
         return repository.findAll().stream()
-                .skip(p.getStartRow()) // 페이지의 시작 행부터 스킵
-                .limit(p.getEndRow() - p.getStartRow() + 1) // 페이지의 끝까지 제한
-                .map(this::convertToModel) // 엔티티를 모델로 변환
-                .collect(Collectors.toList()); // 리스트로 수집
+                .skip(p.getStartRow())
+                .limit(p.getEndRow() - p.getStartRow() + 1)
+                .map(this::convertToModel)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -108,6 +146,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Boolean deleteById(Long id) {
         if (existsById(id)) {
+            postTagRepository.deleteByPostId(id);
             repository.deleteById(id);
             return true;
         }
@@ -115,48 +154,80 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Boolean save(PostModel model) {
+    public Long createPost(PostModel model) {
         PostEntity entity = convertToEntity(model);
-
-        // PostEntity 먼저 저장
+        entity.setEntryDate(LocalDateTime.now());
         repository.save(entity);
 
-        if (model.getTags() != null && !model.getTags().isEmpty()) {
-            List<PostTagEntity> postTags = model.getTags().stream()
-                    .map(tagName -> {
-                        // 태그가 존재하는지 확인하고, 없으면 예외 처리
-                        TagEntity tag = tagRepository.findByName(tagName)
-                                .orElseThrow(() -> new RuntimeException("Tag not found: " + tagName));
+        saveTags(model.getTags(), entity);
 
-                        // PostTagEntity 생성
-                        return new PostTagEntity(entity, tag);
-                    })
-                    .collect(Collectors.toList());
+        return entity.getId();
+    }
 
-            // 생성된 PostTagEntity 리스트 저장
-            postTagRepository.saveAll(postTags);
-        }
+    @Override
+    public Boolean updatePost(Long id, PostModel model) {
+        PostEntity existingEntity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+
+        PostEntity updatedEntity = existingEntity.toBuilder()
+                .content(model.getContent())
+                .taste(model.getTaste())
+                .clean(model.getClean())
+                .service(model.getService())
+                .modifyDate(LocalDateTime.now())
+                .build();
+
+        repository.save(updatedEntity);
+        saveTags(model.getTags(), existingEntity);
 
         return true;
     }
 
+    // 태그 저장
+    private void saveTags(List<String> tags, PostEntity postEntity) {
+        if (tags != null && !tags.isEmpty()) {
+            List<PostTagEntity> postTags = tags.stream()
+                    .map(tagName -> {
+                        TagEntity tag = tagRepository.findByName(tagName)
+                                .orElseGet(() -> {
+                                    TagEntity newTag = new TagEntity();
+                                    newTag.setName(tagName);
+                                    tagRepository.save(newTag);
+                                    return newTag;
+                                });
+                        return new PostTagEntity(postEntity, tag);
+                    })
+                    .collect(Collectors.toList());
+            postTagRepository.saveAll(postTags);
+        }
+    }
+
     private PostModel convertToModel(PostEntity entity) {
-        PostModel model = new PostModel();
-        model.setId(entity.getId());
-        model.setContent(entity.getContent());
-        model.setTaste(entity.getTaste());
-        model.setClean(entity.getClean());
-        model.setService(entity.getService());
-        model.setEntryDate(entity.getEntryDate());
-        model.setModifyDate(entity.getModifyDate());
-        model.setAverageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0);
-
-        List<String> tags = postTagRepository.findByPostId(entity.getId()).stream()
-                .map(postTagEntity -> postTagEntity.getTag().getName())
-                .collect(Collectors.toList());
-        model.setTags(tags);
-
-        return model;
+        return PostModel.builder()
+                .id(entity.getId())
+                .content(entity.getContent())
+                .taste(entity.getTaste())
+                .clean(entity.getClean())
+                .service(entity.getService())
+                .entryDate(entity.getEntryDate())
+                .modifyDate(entity.getModifyDate())
+                .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
+                .tags(postTagRepository.findByPostId(entity.getId()).stream()
+                        .map(postTagEntity -> postTagEntity.getTag().getName())
+                        .collect(Collectors.toList()))
+                .images(entity.getImages().stream()
+                        .map(image -> {
+                            // 이 부분에서 ID 확인
+                            System.out.println("Image ID in Model Conversion: " + image.getId());
+                            return ImageModel.builder()
+                                    .id(image.getId().toString())
+                                    .originalFilename(image.getOriginalFileName())
+                                    .storedFileName(image.getStoredFileName())
+                                    .extension(image.getExtension())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private PostEntity convertToEntity(PostModel model) {
@@ -165,6 +236,7 @@ public class PostServiceImpl implements PostService {
                 .taste(model.getTaste())
                 .clean(model.getClean())
                 .service(model.getService())
+                .restaurantId(model.getRestaurantId())
                 .build();
     }
 }

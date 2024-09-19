@@ -16,8 +16,8 @@ public class UpvoteEntity {
     private Long id;
 
     private Long postId;
-    private Long giveId;
-    private Long haveId;
+    private Long giveId; // 좋아요 누른 사용자 ID
+    private Long haveId; // 좋아요 받은 사용자 ID
 
     // admin에서 넘어온거 아마 userId랑 haveId 같은 의미?
     private Long userId;
