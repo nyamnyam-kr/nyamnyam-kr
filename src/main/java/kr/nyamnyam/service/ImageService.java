@@ -1,5 +1,6 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,7 @@ public interface ImageService {
 
     Boolean saveImages(List<MultipartFile> files, PostEntity post);
 
-    Boolean insertReceipt(MultipartFile file);
+    ImageModel insertReceipt(MultipartFile file);
 
 
 }

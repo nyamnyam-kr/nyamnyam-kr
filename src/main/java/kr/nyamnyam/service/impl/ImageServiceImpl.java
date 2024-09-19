@@ -1,5 +1,6 @@
 package kr.nyamnyam.service.impl;
 
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.ImageRepository;
@@ -30,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public Boolean insertReceipt(MultipartFile file){
+    public ImageModel insertReceipt(MultipartFile file){
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일이 없습니다.");
         }
@@ -67,9 +68,15 @@ public class ImageServiceImpl implements ImageService {
                 .extension(extension)
                 .build();
 
-        repository.save(img);
+        ImageEntity save = repository.save(img);
 
-        return true;
+        ImageModel imageModel = ImageModel.builder()
+                .originalFilename(save.getOriginalFileName())
+                .storedFileName(save.getStoredFileName())
+                .extension(save.getExtension())
+                .build();
+
+        return imageModel;
     }
 
     @Override
