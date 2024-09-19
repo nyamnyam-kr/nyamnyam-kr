@@ -1,25 +1,27 @@
-/*
-package kr.nyamnyam_kr.service;
+package kr.nyamnyam.service;
 
-import kr.nyamnyam_kr.model.domain.UserModel;
-import kr.nyamnyam_kr.model.entity.UserEntity;
+import kr.nyamnyam.model.domain.UserModel;
+import kr.nyamnyam.model.entity.UsersEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    UserEntity save(UserModel userModel);
-
-    List<UserEntity> findAll();
-
-    Optional<UserEntity> findById(Long id);
-
-    void deleteById(Long id);
 
     boolean existsById(Long id);
 
+    Optional<UsersEntity> findByUsername(String username);
+
+    Optional<UsersEntity> findById(Long id);
+
+    List<UsersEntity> findAll();
+
     long count();
 
-    Optional<UserEntity> findByUsername(String username);
+    void deleteById(Long id);
+
+    UsersEntity update(UserModel userModel);
+
+    UsersEntity save(UserModel userModel);
+
 }
-*/

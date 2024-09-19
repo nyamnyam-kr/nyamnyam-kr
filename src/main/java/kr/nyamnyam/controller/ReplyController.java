@@ -4,47 +4,62 @@ import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@RestController
+@CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("/reply/")
-public class ReplyController  {
-    private final ReplyService replyService;
+@RequestMapping("/api/replies")
+public class ReplyController {
+    private final ReplyService service;
 
-    @PostMapping("save")
-    public ReplyEntity save(ReplyModel replyModel) {
-        return replyService.save(replyModel);
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<ReplyModel>> getReplyByPostId(@PathVariable Long postId){
+        return ResponseEntity.ok(service.findByPostId(postId));
     }
 
-    @GetMapping("findAll")
-    public List<ReplyEntity> findAll() {
-        return replyService.findAll();
+    @GetMapping("/group")
+    public ResponseEntity<List<ReplyModel>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("findById")
-    public Optional<ReplyEntity> findById(Long id) {
-        return replyService.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ReplyModel> getReplyById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("deleteById")
-    public void deleteById(Long id) {
-        replyService.deleteById(id);
+    @GetMapping("/exist/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.existsById(id));
     }
 
-    @GetMapping("existsById")
-    public boolean existsById(Long id) {
-        return replyService.existsById(id);
+    @GetMapping("/count")
+    public ResponseEntity<Long> count() {
+        return ResponseEntity.ok(service.count());
     }
 
-    @GetMapping("count")
-    public long count() {
-        return replyService.count();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.deleteById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyModel model) {
+       boolean updated = service.update(id, model);
+       if(updated){
+           return ResponseEntity.ok(true);
+       } else {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+       }
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Boolean> write(@RequestBody ReplyModel model) {
+        ReplyEntity entity = service.convertToEntity(model);
+        return ResponseEntity.ok(service.save(model));
     }
 }

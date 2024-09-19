@@ -18,6 +18,9 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+src/main/resources/application.yaml
+src/main/resources/ncloud.properties
+
 .idea
 *.iws
 *.iml
@@ -35,3 +38,5 @@ out/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/static/chromedriver-win64/
+'application.yaml' 

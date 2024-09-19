@@ -31,7 +31,7 @@ public class RestaurantEntity {
     @Column(length = 500)
     private String subImageUrl;
 
-    
+    private Long postId;
 
 
 

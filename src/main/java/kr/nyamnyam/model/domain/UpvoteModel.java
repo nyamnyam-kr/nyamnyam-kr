@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class ZoneModel {
-
+public class UpvoteModel {
     private Long id;
-    private String name;
+    private Long giveId;
+    private Long haveId;
+    private Long postId;
 }

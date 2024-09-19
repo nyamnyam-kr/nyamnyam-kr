@@ -6,45 +6,64 @@ import org.springframework.stereotype.Component;
 
 @Component("page")
 @Data
-@Lazy // 필요할 때만 불러와야하기 때문에
+@Lazy
 public class Pagination {
-    private int totalCount, startPage, endPage,
-            pageNum, blockCount, prevBlock, nextBlock, blockNum, startRow, endRow, pageCount,
-            PAGE_SIZE = 10, BLOCK_SIZE = 5;
 
-    private boolean existsPrev, existsNext;
+    private int totalCount, startRow, endRow, rowNum,
+            pageCount, pageSize, startPage, endPage, pageNum,
+            blockCount, prevBlock, nextBlock, blockNum;
+    /*
+     request값으로 넘어올 경우 필요한 것 : rowNum(상세페이지), pageNum(), blockNum(이전 블락 이후 블락 필요함 -> >> 이거! )
+     row (count start end)
+     ->
+     page (count size start end)
+     ->
+     block (count size prev next)
+     */
 
-    public Pagination() {
-    }
+    private String tableName;
+    private boolean existPrev, existNext;
 
-    public Pagination(int pageNum, int count) {
+    public Pagination() {}
+
+    private final int BLOCK_SIZE = 5;
+
+    public final int PAGE_SIZE = 10;
+
+
+
+
+    public Pagination (int pageNum, int count, int pageSize) {
         this.pageNum = pageNum;
         this.totalCount = count;
+        this.pageSize = pageSize;
 
-        // 페이지당 항목 수와 총 항목 수를 기반으로 페이지 수 계산
-        this.pageCount = count / PAGE_SIZE;
-
-        this.blockCount = pageCount / BLOCK_SIZE;
-
-        // 현재 페이지 번호와 페이지당 항목 수를 기반으로 시작 및 종료 행 계산
-        this.startRow = (pageNum - 1) * PAGE_SIZE;
-        this.endRow = Math.min(startRow + PAGE_SIZE - 1, count - 1);
-
-        // 현재 페이지 번호를 기반으로 블록 번호 계산
-        this.blockNum = (pageNum - 1) / BLOCK_SIZE;
-
-        // 현재 페이지 번호를 기반으로 시작 및 종료 페이지 계산
-        this.startPage = blockNum * BLOCK_SIZE + 1;
-        this.endPage = Math.min(startPage + BLOCK_SIZE - 1, pageCount);
-
-        this.existsPrev = blockNum > 0;
-        this.existsNext = blockNum < blockCount - 1;
-
-        // 블록의 이전 및 다음 블록 번호 계산
-        this.prevBlock = startPage - BLOCK_SIZE;
+        this.pageCount = (totalCount % pageSize == 0) ? totalCount / pageSize : totalCount / pageSize + 1;
+        this.blockCount = (pageCount % BLOCK_SIZE == 0) ? pageCount / BLOCK_SIZE : pageCount / BLOCK_SIZE + 1;
+        this.startRow = (pageNum - 1) * pageSize;
+        this.endRow = pageNum * pageSize - 1;
+        this.blockNum = (pageNum - 1) * BLOCK_SIZE;
+        this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
+        this.endPage = (endPage == blockCount) ? blockCount : pageNum + 2;
+        this.existPrev = (pageNum > 1);
+        this.existNext = (pageNum < pageCount);
         this.nextBlock = startPage + BLOCK_SIZE;
+        this.prevBlock = startPage - BLOCK_SIZE;
+
     }
 
+    public Pagination(int pageNum, int totalCount) {
+        this.pageNum = pageNum;
+        this.totalCount = totalCount;
+        this.pageCount = (totalCount % PAGE_SIZE == 0) ? totalCount / PAGE_SIZE : totalCount / PAGE_SIZE + 1;
+        this.blockCount = (pageCount + BLOCK_SIZE - 1) / BLOCK_SIZE;
+        this.startRow = (pageNum - 1) * PAGE_SIZE;
+        this.endRow = (pageNum * PAGE_SIZE) - 1;
+        this.blockNum = (pageNum - 1) * BLOCK_SIZE;
+        this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
+        this.endPage = (endPage >= pageCount - 2) ? pageCount : pageNum + 2;
+        this.existPrev = (pageNum <= 1) ? false : true;
+        this.existNext = (pageNum == pageCount) ? false : true;
 
-
+    }
 }

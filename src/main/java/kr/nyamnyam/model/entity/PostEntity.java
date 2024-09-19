@@ -1,44 +1,54 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@Table(name = "post")
+@Getter
+@Setter
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "posts")
 public class PostEntity {
-
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name="content")
     private String content;
+    private Long taste;
+    private Long clean;
+    private Long service;
 
-    @Column(name="rating")  // 친절도,맛,청결
-    private float rating;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime entryDate;
+    private LocalDateTime modifyDate;
 
-    @Column(name="entry_date")
-    private Date entryDate;
+    // nyamnyam-admin부분에서 추가된 부분
+    private Long userId;
+    private Long restaurantId;
 
-    @Column(name="modify_date")
-    private Date modifyDate;
+    @PrePersist
+    protected void onCreate() {
+        this.entryDate = LocalDateTime.now();
+        this.modifyDate = LocalDateTime.now();
+    }
 
-    @OneToMany(mappedBy = "post")
-    private List<ReplyEntity> replyEntityList;
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifyDate = LocalDateTime.now();
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PostTagEntity> postTags = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurant;
-
-
-
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> images = new ArrayList<>();
 
 }

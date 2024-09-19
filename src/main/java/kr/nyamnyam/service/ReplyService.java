@@ -5,18 +5,25 @@ import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.ReplyEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReplyService {
-    ReplyEntity save(ReplyModel replyModel);
 
-    List<ReplyEntity> findAll();
+    List<ReplyModel> findAll();
 
-    Optional<ReplyEntity> findById(Long id);
+    ReplyModel findById(Long id);
 
-    void deleteById(Long id);
+    Boolean existsById(Long id);
 
-    boolean existsById(Long id);
+    Long count();
 
-    long count();
+    Boolean deleteById(Long id);
+
+    Boolean save(ReplyModel model);
+
+    Boolean update(Long id, ReplyModel model);
+
+    List<ReplyModel> findByPostId(Long postId);
+
+    ReplyEntity convertToEntity(ReplyModel model);
 }
+

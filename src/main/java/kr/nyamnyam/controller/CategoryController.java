@@ -14,37 +14,37 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/category/")
+@RequestMapping("/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("save")
+    @PostMapping("/save")
     public CategoryEntity save(CategoryModel categoryModel) {
         return categoryService.save(categoryModel);
     }
 
-    @GetMapping("findAll")
+    @GetMapping("/findAll")
     public List<CategoryEntity> findAll() {
         return categoryService.findAll();
     }
 
-    @GetMapping("findById")
+    @GetMapping("/findById")
     public Optional<CategoryEntity> findById(Long id) {
         return categoryService.findById(id);
     }
 
-    @GetMapping("deleteById")
+    @GetMapping("/deleteById")
     public void deleteById(Long id) {
         categoryService.deleteById(id);
     }
 
-    @GetMapping("existsById")
+    @GetMapping("/existsById")
     public boolean existsById(Long id) {
         return categoryService.existsById(id);
     }
 
-    @GetMapping("count")
+    @GetMapping("/count")
     public long count() {
         return categoryService.count();
     }

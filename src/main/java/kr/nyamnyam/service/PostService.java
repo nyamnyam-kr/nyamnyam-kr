@@ -5,18 +5,30 @@ import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostService {
-    PostEntity save(PostModel postModel);
+    double allAverageRating(Long restaurantId);
 
-    List<PostEntity> findAll();
+    PostModel postWithImage(Long id);
 
-    Optional<PostEntity> findById(Long id);
+    PostEntity findEntityById(Long id);
 
-    void deleteById(Long id);
+    List<PostModel> findAll();
 
-    boolean existsById(Long id);
+    PostModel findById(Long id);
 
-    long count();
+    Boolean existsById(Long id);
+
+    Long count();
+
+    Boolean deleteById(Long id);
+
+    List<PostModel> findAllPerPage(int page);
+
+    Boolean crawling();
+
+    Long createPost(PostModel model);
+
+    Boolean updatePost(Long id, PostModel model);
 }
+
