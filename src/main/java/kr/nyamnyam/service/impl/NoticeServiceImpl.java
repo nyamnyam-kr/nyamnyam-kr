@@ -25,6 +25,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeEntity findById(Long id) {
+        updateHits(id);
         return noticeRepository.findById(id).orElse(null);
     }
 

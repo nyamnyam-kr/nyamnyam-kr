@@ -11,6 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +27,44 @@ public class ImageServiceImpl implements ImageService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+
+    @Override
+    public Boolean insertReceipt(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 없습니다.");
+        }
+
+
+        Path uploadPath = Paths.get("src/main/resources/static/image");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        String extension = "";
+
+        if (originalFileName != null && originalFileName.contains(".")) {
+            extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        }
+
+        String storedFileName = System.currentTimeMillis() + "." + extension;
+
+        Path filePath = uploadPath.resolve(storedFileName);
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        ImageEntity img = ImageEntity.builder()
+                .originalFileName(originalFileName)
+                .storedFileName(storedFileName)
+                .extension(extension)
+                .build();
+
+        repository.save(img);
+
+        return true;
+    }
 
     @Override
     public Boolean saveImages(List<MultipartFile> files, PostEntity entity) {

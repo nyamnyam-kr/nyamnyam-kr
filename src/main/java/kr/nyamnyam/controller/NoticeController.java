@@ -39,7 +39,7 @@ public class NoticeController {
         return ResponseEntity.ok(noticeService.save(model));
     }
 
-    @PutMapping("/save/{id}")
+    @PutMapping("/save")
     public ResponseEntity<NoticeEntity> update(@RequestBody NoticeModel model) {
        return ResponseEntity.ok(noticeService.update(model));
     }

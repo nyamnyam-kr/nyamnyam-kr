@@ -95,6 +95,9 @@ dependencies {
 
 
 
+	//영수증 인식 OCR을 위한 JSON 파싱
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }
 
 tasks.named('test') {
