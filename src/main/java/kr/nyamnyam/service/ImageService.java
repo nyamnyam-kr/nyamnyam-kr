@@ -1,5 +1,6 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,12 @@ public interface ImageService {
     Boolean save(ImageEntity entity);
 
     Boolean saveImages(List<MultipartFile> files, PostEntity post);
+
+    String getFileName(String fileName);
+
+    //List<ImageModel> uploadFilesSample(List<MultipartFile> multipartFiles);
+
+    List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, String uploadPath, Long postId);
 
     Boolean insertReceipt(MultipartFile file) throws IOException;
 

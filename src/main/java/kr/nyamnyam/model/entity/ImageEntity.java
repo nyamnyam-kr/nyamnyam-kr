@@ -21,6 +21,8 @@ public class ImageEntity {
     private String originalFileName;
     private String storedFileName;
     private String extension;
+    private String uploadPath;
+    private String uploadURL;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")

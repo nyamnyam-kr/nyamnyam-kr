@@ -1,5 +1,6 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;
@@ -18,9 +19,27 @@ import java.util.UUID;
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/images")
-public class ImageController {
+public class ImageController{
     private final ImageService service;
     private final PostService postService;
+
+    @GetMapping("/fileName")
+    public ResponseEntity<String> getFileName(@RequestParam String fileName) {
+        return ResponseEntity.ok(service.getFileName(fileName));
+    }
+
+    /*@PostMapping("/uploadSample")
+    public ResponseEntity<List<ImageModel>> uploadFilesSample(@RequestParam List<MultipartFile> multipartFiles) {
+        return ResponseEntity.ok(service.uploadFilesSample(multipartFiles));
+    }*/
+
+    @PostMapping("/upload")
+    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestParam("files") List<MultipartFile> multipartFiles,
+                                                        @RequestParam String uploadPath,
+                                                        @RequestParam Long postId) {
+        System.out.println("리액트에서 넘어온 postId: " + postId);
+        return ResponseEntity.ok(service.uploadFiles(multipartFiles, uploadPath, postId));
+    }
 
     @PostMapping("")
     public ResponseEntity<Boolean> uploadImages(

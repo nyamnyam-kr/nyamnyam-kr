@@ -1,9 +1,15 @@
 package kr.nyamnyam.service.impl;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.ImageRepository;
 import kr.nyamnyam.service.ImageService;
+import kr.nyamnyam.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +31,66 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
+    private final PostServiceImpl postService;
+    private final AmazonS3Client amazonS3Client;
 
-    @Value("${file.upload-dir}") // 경로 변경 시 yaml & WebConfig 바꾸기
+    @Value("${naver.storage.bucket}")
+    private String bucketName;
+
+    // 클라우드 스토리지 연결 시 삭제 예정 : + saveImages
+    @Value("${file.upload-dir}")
     private String uploadDir;
+
+    @Override
+    public String getFileName(String fileName) {
+        String ext = fileName.substring(fileName.indexOf("."));
+        return System.currentTimeMillis() + ext;
+    }
+    /*@Override
+    public List<ImageModel> uploadFilesSample(List<MultipartFile> multipartFiles) {
+        return uploadFiles(multipartFiles, "sample-folder");
+    }*/
+    @Override
+    public List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, String uploadPath, Long postId){
+        List<ImageModel> s3files = new ArrayList<>();
+
+        PostEntity postEntity = postService.findEntityById(postId);
+        if(postEntity == null){
+            throw new IllegalArgumentException("Invalid postId: " + postId);
+        }
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            String originalFilename = multipartFile.getOriginalFilename();
+            String storedFileName = getFileName(originalFilename);
+            String uploadURL = "";
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(multipartFile.getSize());
+            objectMetadata.setContentType(multipartFile.getContentType());
+
+            try(InputStream inputStream = multipartFile.getInputStream()){
+                String keyName = uploadPath + "/" + storedFileName;
+
+                amazonS3Client.putObject(
+                        new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata)
+                                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+                uploadURL = "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            s3files.add(
+                    ImageModel.builder()
+                            .originalFilename(originalFilename)
+                            .storedFileName(storedFileName)
+                            .uploadPath(uploadPath)
+                            .uploadURL(uploadURL)
+                            .postId(postEntity.getId())
+                            .build()
+            );
+        }
+        return s3files;
+    }
 
 
     @Override
@@ -78,7 +142,7 @@ public class ImageServiceImpl implements ImageService {
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String storedFilename = System.currentTimeMillis() + extension;
 
-                File destFile = new File(uploadDir +"/" + storedFilename);
+                File destFile = new File(uploadDir + "/" + storedFilename);
                 file.transferTo(destFile);
 
                 ImageEntity image = ImageEntity.builder()
