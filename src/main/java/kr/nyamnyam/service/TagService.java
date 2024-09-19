@@ -1,21 +1,28 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.TagModel;
 import kr.nyamnyam.model.entity.TagEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface TagService {
 
-    List<TagEntity> findAll();
+    Map<String, List<TagModel>> getTagsByCategory();
 
-    Optional<TagEntity> findById(Long id);
+    List<TagModel> findAll();
 
-    Boolean existsById(Long id);
+    Boolean save(TagModel model);
 
-    Long count();
+    Optional<TagModel> findByName(String name);
 
-    Boolean deleteById(Long id);
+    Boolean existsByName(String name);
 
-    Boolean save(TagEntity entity);
+    Boolean deleteByName(String name);
+
+    // 레스토랑 별 Top5 Tag
+    List<String> getTagRestaurant(Long restaurantId);
+
+    List<String> getTagCategory();
 }

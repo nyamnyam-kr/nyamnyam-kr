@@ -1,17 +1,21 @@
 package kr.nyamnyam.service;
 
 
+import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface PostService {
+    double allAverageRating(Long restaurantId);
 
-    List<PostEntity> findAll();
+    PostModel postWithImage(Long id);
 
-    PostEntity findById(Long id);
+    PostEntity findEntityById(Long id);
+
+    List<PostModel> findAll();
+
+    PostModel findById(Long id);
 
     Boolean existsById(Long id);
 
@@ -19,10 +23,12 @@ public interface PostService {
 
     Boolean deleteById(Long id);
 
-    Boolean save(PostEntity entity);
-
-    List<PostEntity> findAllPerPage(int page);
+    List<PostModel> findAllPerPage(int page);
 
     Boolean crawling();
+
+    Long createPost(PostModel model);
+
+    Boolean updatePost(Long id, PostModel model);
 }
 

@@ -1,29 +1,27 @@
 package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.UserModel;
-import kr.nyamnyam.model.entity.UserEntity;
+import kr.nyamnyam.model.entity.UsersEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    List<UserEntity> crawling(int pageNum, int pageSize);
-
     boolean existsById(Long id);
 
-    Optional<UserEntity> findByUsername(String username);
+    Optional<UsersEntity> findByUsername(String username);
 
-    Optional<UserEntity> findById(Long id);
+    Optional<UsersEntity> findById(Long id);
 
-    List<UserEntity> findAll();
+    List<UsersEntity> findAll();
 
     long count();
 
     void deleteById(Long id);
 
-    UserEntity update(UserModel userModel);
+    UsersEntity update(UserModel userModel);
 
-    UserEntity save(UserModel userModel);
+    UsersEntity save(UserModel userModel);
 
 }

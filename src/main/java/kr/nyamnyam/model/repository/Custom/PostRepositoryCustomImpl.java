@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.repository.Custom;
 
-import ch.qos.logback.core.model.Model;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,7 +7,7 @@ import kr.nyamnyam.model.domain.CountModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QUpvoteEntity;
-import kr.nyamnyam.model.entity.QUserEntity;
+import kr.nyamnyam.model.entity.QUsersEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -24,13 +23,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<CountModel> findNicknamesWithCounts() {
         QPostEntity postEntity = QPostEntity.postEntity;
-        QUserEntity userEntity = QUserEntity.userEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
 
         JPAQuery<Tuple> query = jpaQueryFactory
-                .select(userEntity.nickname, postEntity.count())
+                .select(usersEntity.nickname, postEntity.count())
                 .from(postEntity)
-                .join(userEntity).on(postEntity.userId.eq(userEntity.id)) // 수정: 올바른 조인 조건
-                .groupBy(userEntity.nickname)
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id)) // 수정: 올바른 조인 조건
+                .groupBy(usersEntity.nickname)
                 .orderBy(postEntity.count().desc());
 
         List<Tuple> result = query.fetch();
@@ -38,7 +37,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
         return result.stream()
                 .map(tuple -> new CountModel(
-                        tuple.get(userEntity.nickname),
+                        tuple.get(usersEntity.nickname),
                         tuple.get(postEntity.count())))
                 .collect(Collectors.toList());
     }
@@ -66,12 +65,12 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
         QPostEntity postEntity = QPostEntity.postEntity;
         QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
-        QUserEntity userEntity = QUserEntity.userEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
 
-        return jpaQueryFactory.select(userEntity.nickname)
+        return jpaQueryFactory.select(usersEntity.nickname)
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .join(userEntity).on(postEntity.userId.eq(userEntity.id))
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
                 .groupBy(upvoteEntity.postId)
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)

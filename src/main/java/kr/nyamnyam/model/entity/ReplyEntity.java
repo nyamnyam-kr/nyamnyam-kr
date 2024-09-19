@@ -1,15 +1,17 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(toBuilder = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "replies")
 public class ReplyEntity {
@@ -17,11 +19,26 @@ public class ReplyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    private Date entryDate;
-    private Date modifyDate;
-    private Long upvoteId;
+    //private Long upvoteId;
+    @Column(nullable = false)
     private Long userId;
+
+    @Column(nullable = false)
     private Long postId;
 
-    // users, posts, restaurants JOIN 필요
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime entryDate;
+    private LocalDateTime modifyDate;
+
+    @PrePersist
+    private void onCreate(){
+        this.entryDate = LocalDateTime.now();
+        this.modifyDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+        this.modifyDate = LocalDateTime.now();
+    }
+
 }

@@ -1,9 +1,9 @@
+/*
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.service.ApiService;
 import kr.nyamnyam.service.CategoryService;
-import kr.nyamnyam.service.RestImgService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class ApiServiceImpl implements ApiService {
     private final String API_URL = "http://openapi.seoul.go.kr:8088/6752776d616f796a38324674447771/xml/TbVwRestaurants/1/500/";
     private final RestaurantService restaurantService;
     private final CategoryService categoryService;
-    private final RestImgService restImgService;
+
 
     @Override
     public List<RestaurantEntity> getRestaurants() {
@@ -70,8 +70,10 @@ public class ApiServiceImpl implements ApiService {
                     String representativeMenu = restaurant.getRepresentativeMenu();
                     restaurant.setCategory(categoryService.extractCategory(representativeMenu));
 
-                   /* String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
-                    restaurant.setImageUrl(imageUrl);*/
+         */
+/*           String imageUrl = restImgService.extractImageUrl(restaurant.getPostUrl());
+                    restaurant.setImageUrl(imageUrl);*//*
+
 
                     if (restaurantService.existsByNameAndAddress(restaurant.getName(), restaurant.getAddress())) {
                         restaurantList.add(restaurant);
@@ -89,4 +91,4 @@ public class ApiServiceImpl implements ApiService {
     }
 
 
-}
+}*/
