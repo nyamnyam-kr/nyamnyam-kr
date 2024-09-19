@@ -25,7 +25,7 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public Boolean insertReceipt(MultipartFile file) throws IOException {
+    public Boolean insertReceipt(MultipartFile file){
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일이 없습니다.");
         }
@@ -33,7 +33,11 @@ public class ImageServiceImpl implements ImageService {
 
         Path uploadPath = Paths.get("src/main/resources/static/image");
         if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+            try {
+                Files.createDirectories(uploadPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         String originalFileName = file.getOriginalFilename();
@@ -48,6 +52,8 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = uploadPath.resolve(storedFileName);
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         ImageEntity img = ImageEntity.builder()
