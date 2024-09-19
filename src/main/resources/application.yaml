@@ -23,6 +23,6 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 file:
-  upload-dir: C:/Users/bitcamp/Documents/nyamnyam/uploads
+  upload-dir: src/main/resources/static/uploads/posts
 server:
   port: 8080

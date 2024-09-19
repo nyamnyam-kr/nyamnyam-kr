@@ -12,20 +12,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Long;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
 
-    @Value("${file.upload-dir}")
+    @Value("${file.upload-dir}") // 경로 변경 시 yaml & WebConfig 바꾸기
     private String uploadDir;
 
 
@@ -70,9 +70,13 @@ public class ImageServiceImpl implements ImageService {
     public Boolean saveImages(List<MultipartFile> files, PostEntity entity) {
         for (MultipartFile file : files) {
             try {
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
                 String originalFilename = file.getOriginalFilename();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                String storedFilename = UUID.randomUUID().toString() + extension;
+                String storedFilename = System.currentTimeMillis() + extension;
 
                 File destFile = new File(uploadDir +"/" + storedFilename);
                 file.transferTo(destFile);
@@ -85,7 +89,7 @@ public class ImageServiceImpl implements ImageService {
                         .build();
 
                 repository.save(image);
-                System.out.println("Image ID after saving: " + image.getId());
+                System.out.println("saveImage(ID): " + image.getId());
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
@@ -100,12 +104,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Optional<ImageEntity> findById(UUID id) {
+    public Optional<ImageEntity> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public Boolean existsById(UUID id) {
+    public Boolean existsById(Long id) {
         return repository.existsById(id);
     }
 
@@ -115,7 +119,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean deleteById(UUID id) {
+    public Boolean deleteById(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
             return true;
