@@ -11,7 +11,7 @@ public class RestaurantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private Long postId; // 고유번호 (POST_SN)
     private String langCodeId; // 언어
     private String name; // 상호명
