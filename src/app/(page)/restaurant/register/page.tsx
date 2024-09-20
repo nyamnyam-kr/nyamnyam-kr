@@ -1,11 +1,11 @@
-"use client";  
+"use client";
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { save } from'@/app/service/restaurant/restaurant.api';
 
 
 export default function Home2() {
-    
+
     const [restaurant, setRestaurant] = useState<RestaurantModel>({id: 0, name: '', tel: 0, address: '' });
     const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function Home2() {
 
 
 
-    
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,7 +28,7 @@ export default function Home2() {
         // Perform API call or other actions here
         alert(`제출된 내용:\n이름: ${restaurant.name}\n전화번호: ${restaurant.tel}\n주소: ${restaurant.address}`);
         save(restaurant);
-        router.push('/'); 
+        router.push('/');
     };
 
     return (

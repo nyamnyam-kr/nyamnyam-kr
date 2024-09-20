@@ -9,7 +9,6 @@ export default function InsertReceipt() {
     const [preview, setPreview] = useState<string | null>(null);
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement | null>(null); // ref 생성
-    const [restaurantId, setRestaurantId] = useState<number>(0);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -43,13 +42,10 @@ export default function InsertReceipt() {
                 });
 
                 if (resp.status === 200) {
-                    console.log(resp)
-                    setRestaurantId(resp.data.id);
+                    console.log(resp);
+                    const restaurantId = resp.data.id;
 
-                    router.push(`/receipt/receiptRestaurant/${restaurantId}`)
-
-
-
+                    router.push(`/receipt/receiptRestaurant/${restaurantId}`);
                 }
             } catch (error) {
                 console.error('파일 업로드 오류:', error);
