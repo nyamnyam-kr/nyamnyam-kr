@@ -2,11 +2,13 @@ package kr.nyamnyam.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "post_tags")
 public class PostTagEntity {
     @Id
@@ -26,7 +28,6 @@ public class PostTagEntity {
         this.post = entity;
         this.tag = tag;
     }
-
     public TagEntity getTag() {
         return tag;
     }
