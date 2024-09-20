@@ -199,7 +199,7 @@ useEffect(() => {
                     <p><strong>전화번호:</strong> {restaurant.tel}</p>
                     <div><strong>네이버 평점:</strong> 
                     <div className="flex items-center">
-                        <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => { }} />
+                        <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={(rating) => console.log(rating)} />
                         <div className="ml-2">{restaurant.rate.toFixed(1)} / 5</div>
                     </div> </div>
                     <p><strong>메뉴:</strong></p>
@@ -212,7 +212,7 @@ useEffect(() => {
                 <strong>[레스토랑 전체 평점]</strong>
                 {allAverage !== null ? (
                     <div className="flex items-center">
-                        <Star w="w-6" h="h-6" readonly={true} rate={allAverage} onChange={() => { }} />
+                        <Star w="w-6" h="h-6" readonly={true} rate={allAverage} onChange={(rating) => console.log(rating)} />
                         <p className="ml-2">{allAverage.toFixed(1)} / 5</p>
                     </div>
                 ) : (
