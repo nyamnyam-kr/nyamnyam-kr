@@ -3,11 +3,10 @@ import Star from "@/app/(page)/star/page";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-
 export default function PostDetail() {
   const [posts, setPosts] = useState<PostModel | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const { id, restaurantId } = useParams();
-  const bucketName = "nyamnyam.storage"
   const router = useRouter();
 
   useEffect(() => {
@@ -15,35 +14,39 @@ export default function PostDetail() {
       fetch(`http://localhost:8080/api/posts/${id}`)
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Failed to fetch group details");
+            throw new Error("Failed to fetch post details");
           }
           return response.json();
         })
         .then((data) => setPosts(data))
         .catch((error) => {
           console.error("Fetch error:", error);
+        });
+
+      fetch(`http://localhost:8080/api/images/post/${id}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch images");
+          }
+          return response.json();
         })
+        .then((data) => {
+          const imageURLs = data.map((image: any) => image.uploadURL);
+          setImages(imageURLs); 
+        })
+        .catch((error) => {
+          console.error("Failed to fetch images:", error);
+        });
     }
   }, [id]);
 
-  const handleUpdate = () => {
-    router.push(`/post/update/${id}`);
-  }
-  const handleHome = () => {
-    router.push(`/post/${restaurantId}`);
-  }
-  const handleReply = () => {
-    router.push(`/post/${id}/reply`)
-  }
-
   const formDate = (dateString: string) => {
     const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit' }
-    const formattedDate = new Intl.DateTimeFormat('ko-KR', options).format(date);
-    const [year, month] = formattedDate.split('.').map(part => part.trim());
+    const options: Intl.DateTimeFormatOptions = { year: "2-digit", month: "2-digit" };
+    const formattedDate = new Intl.DateTimeFormat("ko-KR", options).format(date);
+    const [year, month] = formattedDate.split(".").map((part) => part.trim());
     return `${year}년 ${month}월`;
-  }
-
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
@@ -75,11 +78,11 @@ export default function PostDetail() {
           <div>
             <strong>이미지:</strong>
             <div>
-              {posts?.images && posts.images.length > 0 ? (
-                posts.images.map((image, index) => (
+              {images.length > 0 ? (
+                images.map((url, index) => (
                   <img
                     key={index}
-                    src={`https://kr.object.ncloudstorage.com/${bucketName}/${image.storedFileName}`}
+                    src={url}
                     alt={`이미지 ${index + 1}`}
                     style={{ width: "200px", height: "auto" }}
                   />
@@ -89,27 +92,28 @@ export default function PostDetail() {
               )}
             </div>
           </div>
-
         </div>
       </div>
       <div className="mt-4">
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={handleUpdate}>
+          onClick={() => router.push(`/post/update/${id}`)}
+        >
           수정하기
         </button>
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={handleHome}>
+          onClick={() => router.push(`/post/${restaurantId}`)}
+        >
           목록
         </button>
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={handleReply}>
+          onClick={() => router.push(`/post/${restaurantId}/${id}/reply`)}
+        >
           댓글
         </button>
       </div>
     </main>
-
   );
 }

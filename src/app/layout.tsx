@@ -19,10 +19,10 @@ export default function RootLayout({
       <body className={inter.className}>
       <nav className="bg-blue-500 text-white py-4">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <Link href="/restaurant" className="text-xl font-bold">냠냠</Link>
+          <Link href="/" className="text-xl font-bold">냠냠</Link>
           <ul className="flex space-x-4">
             <li>
-              <Link href="/restaurant" className="hover:bg-blue-600 px-3 py-2 rounded">홈</Link>
+              <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">홈</Link>
             </li>
             <li>
               <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">POST</Link>

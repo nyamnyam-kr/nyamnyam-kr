@@ -6,7 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function ReplyRegister() {
     const router = useRouter();
-    const { id } = useParams();
+    const { id, restaurantId } = useParams();
     const [formData, setFormData] = useState<ReplyModel>({
         content: '',
         postId: 0,
@@ -40,7 +40,7 @@ export default function ReplyRegister() {
         console.log("db전송 데이터: ", replyData);
 
         await insertReply(replyData);
-        router.push(`/post/${id}/reply`)
+        router.push(`/post/${restaurantId}/${postId}/reply`)
     };
 
 

@@ -8,7 +8,6 @@ import { insertImage } from "@/app/service/image/image.api";
 export default function PostRegister() {
   const router = useRouter();
   const { restaurantId } = useParams();
-  console.log("useParam으로 가져온 레스토랑ID: ", restaurantId)
   const [formData, setFormData] = useState<PostModel>({
     id: 0,
     content: '',
@@ -88,10 +87,9 @@ export default function PostRegister() {
       clean: formData.clean.toString(),
       service: formData.service.toString(),
       tags: selectTags,
+      images: formData.images,
       restaurantId: formData.restaurantId
     };
-
-    console.log("전송할 데이터: ", data); // 데이터 확인용 로그
 
     const response = await fetch('http://localhost:8080/api/posts', {
       method: 'POST',
@@ -103,7 +101,6 @@ export default function PostRegister() {
 
     if (response.ok) {
       const postId = await response.json();
-      console.log("Post ID:", postId); // 삭제 필요
 
       if (selectImages.length > 0) {
         const imageData = new FormData();
@@ -111,7 +108,9 @@ export default function PostRegister() {
           imageData.append('files', file);
         });
         imageData.append('postId', postId);
-        imageData.append('uploadPath','uploads/images')
+        imageData.append('uploadPath','uploads/posts')
+
+        console.log("업로드할 이미지 데이터: ", imageData);
 
         const imageResponse = await fetch('http://localhost:8080/api/images/upload', {
           method: 'POST',
@@ -124,16 +123,11 @@ export default function PostRegister() {
       }
       await fetchTagCategory();
       setSelectTags([]);
-      router.push(`/restaurant/${restaurantId}`);
+      router.push(`/post/details/${postId}`);
     } else {
       console.error('Post creation failed:', response.statusText);
     }
   };
-
-  const handlePrev = () => {
-    router.push(`/`)
-  }
-
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
@@ -220,7 +214,7 @@ export default function PostRegister() {
         </button>
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-          onClick={handlePrev}>
+          onClick={() => router.push(`/`)}>
           뒤로가기
         </button>
       </form>

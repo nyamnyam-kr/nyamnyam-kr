@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SearchBar from './components/SearchBox';
 
-
 interface Restaurant {
     id: number;
     name: string;

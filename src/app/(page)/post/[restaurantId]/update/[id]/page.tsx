@@ -11,7 +11,7 @@ export default function PostUpdate() {
   const [selectTags, setSelectTags] = useState<string[]>([]);
   const [selectImages, setSelectImages] = useState<File[]>([]);
   const [prevImages, setPrevImages] = useState<ImageModel[]>([]);
-  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]); 
+  const [imagesToDelete, setImagesToDelete] = useState<number[]>([]); 
 
   const [formData, setFormData] = useState<PostModel>({
     id: 0,
@@ -35,10 +35,9 @@ export default function PostUpdate() {
                 throw new Error('Failed to fetch post');
             }
             const data: PostModel = await response.json();
-            console.log('Fetched post data:', data);
 
             const uniqueTags = Array.isArray(data.tags) ? Array.from(new Set(data.tags)) : [];
-            setFormData(data);
+            setFormData({ ...data, tags: uniqueTags });
             setSelectTags(uniqueTags);
             setPrevImages(data.images);
         } catch (error) {
@@ -68,10 +67,11 @@ export default function PostUpdate() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
+      const uniqueTags = Array.from(new Set(selectTags));
       const updatePost = {
         ...formData,
         id: formData.id,   
-        tags: selectTags,
+        tags: uniqueTags,
       };
 
       const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
@@ -86,13 +86,26 @@ export default function PostUpdate() {
         throw new Error('Failed to update post');
       }
 
-      if (imagesToDelete.length > 0) {
-        for (const imageId of imagesToDelete){
-          await fetch (`http://localhost:8080/api/images/${imageId}`,{
-            method:'DELETE',
-          });
+      const handleDeleteByPostId = async () => {
+        try {
+          const deleteResponse = await fetch(`http://localhost:8080/api/images/post/${id}/imageIDs`);
+          const imageIds: number[] = await deleteResponse.json();
+          
+          if(imageIds.length > 0){
+            for (const imageId of imagesToDelete) {
+              const deleteResponse = await fetch(`http://localhost:8080/api/images/${imageId}`, {
+                method: 'DELETE',
+              });
+              if (!deleteResponse.ok) {
+                throw new Error(`Failed to delete image with ID: ${imageId}`);
+              }
+            } 
+          }
+        }catch(error) {
+          console.error("이미지 삭제 에러: ", error)
         }
-      }
+      }; 
+      await handleDeleteByPostId();
 
       if(selectImages.length > 0){
         const imageData = new FormData();
@@ -102,7 +115,7 @@ export default function PostUpdate() {
         imageData.append('postId', String(id));
 
         const imageResponse = await fetch(`http://localhost:8080/api/images`,{
-          method: 'POST',
+          method: 'PUT',
           body: imageData,
         });
 
@@ -127,15 +140,15 @@ export default function PostUpdate() {
 
   const handleTagSelect = (tag: string) => {
     setSelectTags((prevSelected) => {
-        const tagSet = new Set(prevSelected); 
-        if (tagSet.has(tag)) {
-            tagSet.delete(tag); 
-        } else {
-            tagSet.add(tag); 
-        }
-        return Array.from(tagSet); 
+      const tagSet = new Set(prevSelected); 
+      if (tagSet.has(tag)) {
+        tagSet.delete(tag);  
+      } else {
+        tagSet.add(tag);
+      }
+      return Array.from(tagSet);
     });
-};
+  };
 
   const handleStar = (value: number, field: keyof PostModel) => {
     setFormData((prevData) => ({
@@ -150,18 +163,14 @@ export default function PostUpdate() {
     }
   };
 
-  const handleDeleteImage = (imageId: string) => {
-    console.log("Image ID in handleDeleteImage:", imageId);
-    if (imageId === null || imageId === undefined) {
+  const handleDeleteImage = (imageId: number) => {
+    if (!imageId) {
       console.error('Invalid image ID:', imageId);
       return;
     }
-  
     setImagesToDelete((prev) => [...prev, imageId]);
     setPrevImages((prevImages) => prevImages.filter(img => img.id !== imageId));
   };
-
-
 
   return (
     <main className="flex min-h-screen flex-col items-center">
