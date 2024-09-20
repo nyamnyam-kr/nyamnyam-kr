@@ -27,7 +27,7 @@ public class PostModel {
 
     // 임시로 1값 설정
     private Long userId = 1L;
-    private RestaurantModel restaurantId;
+    private Long restaurantId;
 
     private List<ImageModel> images;
 
