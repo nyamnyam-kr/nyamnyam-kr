@@ -30,9 +30,4 @@ public class RestaurantEntity {
     private String thumbnailImageUrl;
     @Column(length = 500)
     private String subImageUrl;
-
-    private Long postId;
-
-
-
 }

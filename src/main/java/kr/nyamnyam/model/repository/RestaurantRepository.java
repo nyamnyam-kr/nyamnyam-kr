@@ -2,7 +2,7 @@ package kr.nyamnyam.model.repository;
 
 import kr.nyamnyam.model.entity.CrawlingInfo;
 import kr.nyamnyam.model.entity.RestaurantEntity;
-import kr.nyamnyam.service.RestaurantRepositoryCustom;
+import kr.nyamnyam.model.repository.Custom.RestaurantRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

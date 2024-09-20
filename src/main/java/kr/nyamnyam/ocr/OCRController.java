@@ -40,7 +40,7 @@ public class OCRController {
     private static final Logger log = LoggerFactory.getLogger(OCRController.class);
 
     @PostMapping("/insert")
-    public ResponseEntity insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<RestaurantModel> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
         ImageModel imageModel = imageService.insertReceipt(file);
         String storedFileName = imageModel.getStoredFileName();
         System.out.println(storedFileName);
@@ -98,11 +98,7 @@ public class OCRController {
                 .build();
 
         System.out.println("menu = " + menu + " name =" + name + " price =" + price);
-
-        receiptService.save(receipt);
-
-        return new ResponseEntity(result, HttpStatus.OK);
-
+        return ResponseEntity.ok(receiptService.save(receipt));
     }
 
 

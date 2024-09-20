@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface RestaurantRepositoryCustom {
     List<RestaurantEntity> findByName(String name);
+
+    List<RestaurantEntity> searchRestaurant(String keyword);
 }
