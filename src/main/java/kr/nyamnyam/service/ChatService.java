@@ -13,4 +13,6 @@ public interface ChatService {
 
     Mono<Chat> saveMessage(Chat chat);
 
+    Mono<Chat> uploadFileAndSaveMessage(Chat chat);
+
 }

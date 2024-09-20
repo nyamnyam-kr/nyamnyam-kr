@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Document(collection = "chats")
@@ -22,4 +23,5 @@ public class Chat {
     private String sender;  // 발신자 nickname
 
     private String chatRoomId;
+    private List<ChatFile> files; // 채팅에 포함된 파일들
 }

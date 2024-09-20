@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://root:1234@localhost:27017/test
+      uri: mongodb://test123:1234@localhost:27017/test
       auto-index-creation: true
 
 
@@ -21,3 +21,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss'Z'
     time-zone: UTC
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: 8081

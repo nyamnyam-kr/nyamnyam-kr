@@ -2,6 +2,7 @@ package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.ChatRoom;
 import kr.nyamnyam.service.ChatRoomService;
+import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/chatRoom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
+    private final ChatService chatService;
 
 
     @PostMapping("/save")
@@ -35,7 +37,7 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/findById/{id}")
+    @GetMapping("/{id}")
     public Mono<ResponseEntity<ChatRoom>> findById(@PathVariable String id) {
         return chatRoomService.findById(id)
                 .map(chatRoom -> ResponseEntity.ok(chatRoom))
@@ -70,8 +72,16 @@ public class ChatRoomController {
                 .map(count -> ResponseEntity.ok(count));
     }
 
-
-    public Flux<ChatRoom> crawling() {
-        return null;
+    /*// 채팅방별로 총 메시지 수를 반환하는 API
+    @GetMapping("/{chatRoomId}/messageCount")
+    public Mono<Long> getMessageCount(@PathVariable String chatRoomId) {
+        return chatService.getMessageCountByChatRoomId(chatRoomId);
     }
+
+    // 채팅방별로 새로운 메시지 수를 반환하는 API
+    @GetMapping("/{chatRoomId}/newMessages")
+    public Mono<Long> getNewMessageCount(@PathVariable String chatRoomId, @RequestParam("lastSeenMessageId") String lastSeenMessageId) {
+        return chatService.getNewMessageCountSince(chatRoomId, lastSeenMessageId);
+    }
+*/
 }

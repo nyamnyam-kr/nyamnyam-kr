@@ -2,16 +2,24 @@ package kr.nyamnyam.controller;
 
 
 import kr.nyamnyam.model.domain.Chat;
+import kr.nyamnyam.model.domain.ChatFile;
 import kr.nyamnyam.model.repository.ChatRepository;
 import kr.nyamnyam.model.repository.ChatRoomRepository;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -45,7 +53,15 @@ public class ChatController {
     @CrossOrigin
     @GetMapping(value = "/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId) {
-       return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
+        return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
 
+
+    @CrossOrigin
+    @PostMapping(value = "/{chatRoomId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<Chat> uploadFileAndPostMessage(@RequestBody Chat chat, @PathVariable String chatRoomId) {
+        chat.setChatRoomId(chatRoomId);
+        chat.setCreatedAt(LocalDateTime.now());
+        return chatService.uploadFileAndSaveMessage(chat);
+    }
 }
