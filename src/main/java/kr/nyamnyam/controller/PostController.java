@@ -62,9 +62,9 @@ public class PostController {
         return ResponseEntity.ok(service.findAllPerPage(page));
     }
 
-    @GetMapping("/group")
-    public ResponseEntity<List<PostModel>> getList() {
-        return ResponseEntity.ok(service.findAll());
+    @GetMapping("/{restaurantId}/group")
+    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
     }
 
     @GetMapping("/{id}")
@@ -103,4 +103,3 @@ public class PostController {
         }
     }
 }
-

@@ -31,7 +31,6 @@ public class PostEntity {
 
     // nyamnyam-admin부분에서 추가된 부분
     private Long userId;
-    private Long restaurantId;
 
     @PrePersist
     protected void onCreate() {
@@ -50,5 +49,9 @@ public class PostEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> images = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")  // FK 설정
+    private RestaurantEntity restaurant;
 
 }

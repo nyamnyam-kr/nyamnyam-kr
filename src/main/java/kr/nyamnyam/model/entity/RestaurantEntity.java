@@ -1,10 +1,14 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @RequiredArgsConstructor
@@ -31,5 +35,8 @@ public class RestaurantEntity {
     @Column(length = 500)
     private String subImageUrl;
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PostEntity> posts = new ArrayList<>();
 
 }

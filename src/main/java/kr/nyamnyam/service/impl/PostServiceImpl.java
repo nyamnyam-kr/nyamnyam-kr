@@ -5,9 +5,11 @@ import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.PostTagEntity;
+import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.PostTagRepository;
+import kr.nyamnyam.model.repository.RestaurantRepository;
 import kr.nyamnyam.model.repository.TagRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.PostService;
@@ -31,6 +33,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository repository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public double allAverageRating(Long restaurantId){
@@ -121,8 +124,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostModel> findAll() {
-        return repository.findAll().stream()
+    public List<PostModel> findAllByRestaurant(Long restaurantId) {
+        List<PostEntity> posts = repository.findByRestaurantId(restaurantId);
+
+        return posts.stream()
                 .map(this::convertToModel)
                 .collect(Collectors.toList());
     }
@@ -219,7 +224,7 @@ public class PostServiceImpl implements PostService {
                 .images(entity.getImages().stream()
                         .map(image -> {
                             // 이 부분에서 ID 확인
-                            System.out.println("Image ID in Model Conversion: " + image.getId());
+                            System.out.println("convert 이미지 Id: " + image.getId());
                             return ImageModel.builder()
                                     .id(image.getId().toString())
                                     .originalFilename(image.getOriginalFileName())
@@ -232,12 +237,15 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostEntity convertToEntity(PostModel model) {
+        RestaurantEntity restaurant = restaurantRepository.findById(model.getRestaurantId())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found with id: " + model.getRestaurantId()));
+
         return PostEntity.builder()
                 .content(model.getContent())
                 .taste(model.getTaste())
                 .clean(model.getClean())
                 .service(model.getService())
-                .restaurantId(model.getRestaurantId())
+                .restaurant(restaurant)
                 .build();
     }
 }

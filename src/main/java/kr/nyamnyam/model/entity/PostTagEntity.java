@@ -3,10 +3,12 @@ package kr.nyamnyam.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.nio.file.Path;
 
+@Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post_tags")
