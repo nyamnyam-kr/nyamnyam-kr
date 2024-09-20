@@ -1,12 +1,14 @@
 "use client";
 import { insertPost } from "@/app/service/post/post.api";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Star from "../../star/page";
+import Star from "../../../star/page";
 import { insertImage } from "@/app/service/image/image.api";
 
 export default function PostRegister() {
   const router = useRouter();
+  const { restaurantId } = useParams();
+  console.log("useParam으로 가져온 레스토랑ID: ", restaurantId)
   const [formData, setFormData] = useState<PostModel>({
     id: 0,
     content: '',
@@ -18,7 +20,7 @@ export default function PostRegister() {
     averageRating: 0,
     tags: [],
     images: [],
-    restaurantId: 0
+    restaurantId: Number(restaurantId) || 0
   });
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
@@ -37,8 +39,14 @@ export default function PostRegister() {
   };
 
   useEffect(() => {
+    if(restaurantId){
+      setFormData((prevData)=>({
+        ...prevData,
+        restaurantId: Number(restaurantId)
+      }));
+    }
     fetchTagCategory();
-  }, []);
+  }, [restaurantId]);
 
   const handleTagSelect = (tag: string) => {
     setSelectTags(prevSelected =>
@@ -79,8 +87,11 @@ export default function PostRegister() {
       taste: formData.taste.toString(),
       clean: formData.clean.toString(),
       service: formData.service.toString(),
-      tags: selectTags
+      tags: selectTags,
+      restaurantId: formData.restaurantId
     };
+
+    console.log("전송할 데이터: ", data); // 데이터 확인용 로그
 
     const response = await fetch('http://localhost:8080/api/posts', {
       method: 'POST',
@@ -113,7 +124,7 @@ export default function PostRegister() {
       }
       await fetchTagCategory();
       setSelectTags([]);
-      router.push('/');
+      router.push(`/restaurant/${restaurantId}`);
     } else {
       console.error('Post creation failed:', response.statusText);
     }

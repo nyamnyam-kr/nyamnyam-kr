@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function PostDetail() {
   const [posts, setPosts] = useState<PostModel | null>(null);
-  const { id } = useParams();
+  const { id, restaurantId } = useParams();
   const bucketName = "nyamnyam.storage"
   const router = useRouter();
 
@@ -30,7 +30,7 @@ export default function PostDetail() {
     router.push(`/post/update/${id}`);
   }
   const handleHome = () => {
-    router.push('/');
+    router.push(`/post/${restaurantId}`);
   }
   const handleReply = () => {
     router.push(`/post/${id}/reply`)

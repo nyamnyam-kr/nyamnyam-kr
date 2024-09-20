@@ -23,45 +23,47 @@ export default function PostUpdate() {
     modifyDate: '',
     averageRating: 0,
     tags: [],
-    images: []
+    images: [],
+    restaurantId:0
   });
 
   useEffect(() => {
     const fetchPost = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/api/posts/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch post');
+        try {
+            const response = await fetch(`http://localhost:8080/api/posts/${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch post');
+            }
+            const data: PostModel = await response.json();
+            console.log('Fetched post data:', data);
+
+            const uniqueTags = Array.isArray(data.tags) ? Array.from(new Set(data.tags)) : [];
+            setFormData(data);
+            setSelectTags(uniqueTags);
+            setPrevImages(data.images);
+        } catch (error) {
+            console.error('Error fetching post:', error);
         }
-        const data: PostModel = await response.json();
-        console.log('Fetched post data:', data);
-        setFormData(data);
-        setSelectTags(data.tags);
-        setPrevImages(data.images);
-        console.log('Images in Post:', data.images);  // 로그 추가
-      } catch (error) {
-        console.error('Error fetching post:', error);
-      }
     };
 
     const fetchTags = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/tags/category');
-        if (!response.ok) {
-          throw new Error('Failed to fetch tags');
+        try {
+            const response = await fetch('http://localhost:8080/api/tags/category');
+            if (!response.ok) {
+                throw new Error('Failed to fetch tags');
+            }
+            const data = await response.json();
+            setAllTags(data);
+        } catch (error) {
+            console.error('Error fetching tags:', error);
         }
-        const data = await response.json();
-        setAllTags(data);
-      } catch (error) {
-        console.error('Error fetching tags:', error);
-      }
     };
 
     if (id) {
-      fetchPost();
+        fetchPost();
     }
     fetchTags();
-  }, [id]);
+}, [id]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -124,12 +126,16 @@ export default function PostUpdate() {
   };
 
   const handleTagSelect = (tag: string) => {
-    setSelectTags((prevSelected) =>
-      prevSelected.includes(tag)
-        ? prevSelected.filter((t) => t !== tag)
-        : [...prevSelected, tag]
-    );
-  };
+    setSelectTags((prevSelected) => {
+        const tagSet = new Set(prevSelected); 
+        if (tagSet.has(tag)) {
+            tagSet.delete(tag); 
+        } else {
+            tagSet.add(tag); 
+        }
+        return Array.from(tagSet); 
+    });
+};
 
   const handleStar = (value: number, field: keyof PostModel) => {
     setFormData((prevData) => ({
@@ -154,6 +160,8 @@ export default function PostUpdate() {
     setImagesToDelete((prev) => [...prev, imageId]);
     setPrevImages((prevImages) => prevImages.filter(img => img.id !== imageId));
   };
+
+
 
   return (
     <main className="flex min-h-screen flex-col items-center">
