@@ -57,6 +57,10 @@ public class RestaurantController {
         return restaurantService.searchRestaurants(query);
     }
 
+   /* @GetMapping("/filtered")
+
+    @PostMapping("/filtered")*/
+
     // 맛집 상세보기
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantModel> getRestaurant(@PathVariable Long id) {

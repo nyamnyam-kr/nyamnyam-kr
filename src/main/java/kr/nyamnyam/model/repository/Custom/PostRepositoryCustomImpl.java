@@ -89,7 +89,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return jpaQueryFactory.select(restaurantEntity.name)
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .join(restaurantEntity).on(restaurantEntity.postId.eq(postEntity.id))
+                .join(restaurantEntity).on(restaurantEntity.id.eq(postEntity.id))
                 .groupBy(upvoteEntity.postId)
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)

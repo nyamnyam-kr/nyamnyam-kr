@@ -50,7 +50,7 @@ public class CrawlServiceImpl implements CrawlService {
 
             List<RestaurantEntity> allRestaurants = new ArrayList<>();
             for (Future<List<RestaurantEntity>> future : futures) {
-                allRestaurants.addAll(future.get()); // 모든 페이지의 크롤링 결과를 합침
+                allRestaurants.addAll(future.get());
             }
 
             restaurantRepository.saveAll(allRestaurants);
