@@ -3,6 +3,7 @@ package kr.nyamnyam.model.repository.Custom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.entity.QPostEntity;
+import kr.nyamnyam.model.entity.QPostTagEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +42,16 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     @Override
     public List<RestaurantEntity> findByTagName(String tagName) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
+        QPostTagEntity postTag = QPostTagEntity.postTagEntity;
 
         return jpaQueryFactory
-                .selectFrom(restaurantEntity)
-                .join(restaurantEntity.posts, post)
-                .join(post.postTags)
-                .where(post.postTags.any().tag.name.eq(tagName))
+                .selectFrom(restaurant)
+                .distinct()
+                .join(restaurant.posts, post)
+                .join(post.postTags, postTag)
+                .where(postTag.tag.name.eq(tagName))
                 .fetch();
     }
 

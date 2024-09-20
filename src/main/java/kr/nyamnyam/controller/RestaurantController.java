@@ -57,9 +57,10 @@ public class RestaurantController {
         return restaurantService.searchRestaurants(query);
     }
 
-   /* @GetMapping("/filtered")
-
-    @PostMapping("/filtered")*/
+    @GetMapping("/tag")
+    public List<RestaurantModel> getRestaurantsByTag(@RequestParam("name") String tagName) {
+        return restaurantService.getRestaurantsByTag(tagName);
+    }
 
     // 맛집 상세보기
     @GetMapping("/{id}")
