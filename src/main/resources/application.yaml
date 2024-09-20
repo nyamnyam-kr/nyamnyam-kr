@@ -2,7 +2,7 @@ spring:
   application:
     name: nyamnyam_kr
   datasource:
-    url: jdbc:mysql://localhost:3306/nyamnyamdb
+    url: jdbc:mysql://223.130.131.65:3306/nyamnyamdb
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,7 +22,5 @@ spring:
       file-size-threshold: 2MB
       max-file-size: 20MB
       max-request-size: 20MB
-file:
-  upload-dir: C:/Users/bitcamp/Documents/nyamnyam/uploads
 server:
   port: 8080
