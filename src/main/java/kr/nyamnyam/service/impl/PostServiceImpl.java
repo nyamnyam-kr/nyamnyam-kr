@@ -49,21 +49,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostModel postWithImage(Long id) {
-        PostEntity postEntity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    public PostModel postWithImage(Long postId) {
+        PostEntity postEntity = repository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
 
-        List<ImageModel> imageModels = postEntity.getImages().stream()
-                .map(imageEntity -> ImageModel.builder()
-                        .originalFilename(imageEntity.getOriginalFileName())
-                        .storedFileName(imageEntity.getStoredFileName())
-                        .build())
-                .collect(Collectors.toList());
-
-        PostModel postModel = convertToModel(postEntity);
-        postModel.setImages(imageModels);
-
-        return postModel;
+        return convertToModel(postEntity);
     }
 
     @Override
@@ -224,7 +214,7 @@ public class PostServiceImpl implements PostService {
                 .images(entity.getImages().stream()
                         .map(image -> {
                             return ImageModel.builder()
-                                    .id(image.getId().toString())
+                                    .id(image.getId())
                                     .originalFilename(image.getOriginalFileName())
                                     .storedFileName(image.getStoredFileName())
                                     .extension(image.getExtension())

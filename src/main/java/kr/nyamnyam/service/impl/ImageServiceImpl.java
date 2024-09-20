@@ -2,6 +2,7 @@ package kr.nyamnyam.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.nyamnyam.model.domain.ImageModel;
@@ -82,13 +83,20 @@ public class ImageServiceImpl implements ImageService {
                     .postId(postEntity.getId())
                     .build();
 
-            s3files.add(imageModel);
-
             ImageEntity imageEntity = convertToEntity(imageModel);
             imageEntity.setPost(postEntity);
-            repository.save(imageEntity);
+
+            ImageEntity savedEntity = repository.save(imageEntity);
+
+            imageModel.setId(savedEntity.getId());
+            s3files.add(imageModel);
         }
         return s3files;
+    }
+
+    @Override
+    public List<Long> findImageIdsByPostId(Long postId) {
+        return repository.findImageIdsByPostId(postId);
     }
 
     @Override
@@ -102,7 +110,57 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean insertReceipt(MultipartFile file) throws IOException {
+    public Boolean updateImages(Long postId, List<MultipartFile> multipartFiles) {
+        List<ImageEntity> existImages = repository.findByPostId(postId);
+        for (ImageEntity image : existImages) {
+            amazonS3.deleteObject(bucketName, image.getStoredFileName());
+            repository.delete(image);
+        }
+        PostEntity postEntity = postService.findEntityById(postId);
+        if(postEntity == null) {
+            throw new IllegalArgumentException("Invalid postId: " + postId);
+        }
+        for (MultipartFile multipartFile : multipartFiles) {
+            String originalFilename = multipartFile.getOriginalFilename();
+            String storedFileName = getFileName(originalFilename);
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+            }
+            String uploadURL = "";
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(multipartFile.getSize());
+            objectMetadata.setContentType(multipartFile.getContentType());
+
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                String keyName = "uploads/" + storedFileName;
+
+                amazonS3.putObject(
+                        new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata)
+                                .withCannedAcl(CannedAccessControlList.PublicRead)
+                );
+                uploadURL = "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
+            } catch (IOException e) {
+                throw new RuntimeException("파일 업로드 실패: " + e.getMessage());
+            }
+            ImageEntity imageEntity = ImageEntity.builder()
+                    .originalFileName(originalFilename)
+                    .storedFileName(storedFileName)
+                    .extension(extension)
+                    .uploadPath("uploads/")
+                    .uploadURL(uploadURL)
+                    .post(postEntity)
+                    .build();
+
+            repository.save(imageEntity);
+        }
+
+        return true;
+    }
+
+    @Override
+    public ImageModel insertReceipt(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("파일이 없습니다.");
         }
@@ -110,7 +168,11 @@ public class ImageServiceImpl implements ImageService {
 
         Path uploadPath = Paths.get("src/main/resources/static/image");
         if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+            try {
+                Files.createDirectories(uploadPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         String originalFileName = file.getOriginalFilename();
@@ -125,6 +187,8 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = uploadPath.resolve(storedFileName);
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         ImageEntity img = ImageEntity.builder()
@@ -133,9 +197,15 @@ public class ImageServiceImpl implements ImageService {
                 .extension(extension)
                 .build();
 
-        repository.save(img);
+        ImageEntity save = repository.save(img);
 
-        return true;
+        ImageModel imageModel = ImageModel.builder()
+                .originalFilename(save.getOriginalFileName())
+                .storedFileName(save.getStoredFileName())
+                .extension(save.getExtension())
+                .build();
+
+        return imageModel;
     }
 
     @Override
@@ -148,20 +218,16 @@ public class ImageServiceImpl implements ImageService {
         return repository.findById(id);
     }
 
-    /*@Override
-    public Boolean existsByPostId(Long postId) {
-        return repository.existsByPostId(postId);
-    }*/
-
     @Override
     public Boolean deleteById(Long imgId) {
-        if(repository.existsById(imgId)) {
+        if (repository.existsById(imgId)) {
             repository.deleteById(imgId);
             return true;
         } else {
             return false;
         }
     }
+
     @Override
     public Long count() {
         return repository.count();
@@ -173,15 +239,6 @@ public class ImageServiceImpl implements ImageService {
         return true;
     }
 
-    private ImageModel convertToModel(ImageEntity entity) {
-        return ImageModel.builder()
-                .originalFilename(entity.getOriginalFileName())
-                .storedFileName(entity.getStoredFileName())
-                .extension(entity.getExtension())
-                .uploadPath(entity.getUploadPath())
-                .uploadURL(entity.getUploadURL())
-                .build();
-    }
     private ImageEntity convertToEntity(ImageModel model) {
         PostEntity postEntity = postService.findEntityById(model.getPostId());
 

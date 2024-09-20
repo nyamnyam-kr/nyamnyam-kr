@@ -1,7 +1,11 @@
 package kr.nyamnyam.ocr;
 
 import kr.nyamnyam.model.domain.ImageModel;
+import kr.nyamnyam.model.domain.ReceiptModel;
+import kr.nyamnyam.model.domain.RestaurantModel;
+import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.service.ImageService;
+import kr.nyamnyam.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +31,7 @@ public class OCRController {
 
     private final NaverOcrApi naverOcrApi;
     private final ImageService imageService;
+    private final ReceiptService receiptService;
 
 
     @Value("${naver.service.secretKey}")
@@ -31,12 +39,18 @@ public class OCRController {
 
     private static final Logger log = LoggerFactory.getLogger(OCRController.class);
 
-    @GetMapping("/ocr")
-    public ResponseEntity ocr() throws IOException {
-        String fileName = "test.jpg"; // 파일 이름
-        File file = ResourceUtils.getFile("classpath:static/image/" + fileName);
+    @PostMapping("/insert")
+    public ResponseEntity<RestaurantModel> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+        ImageModel imageModel = imageService.insertReceipt(file);
+        String storedFileName = imageModel.getStoredFileName();
+        System.out.println(storedFileName);
 
-        List<String> result = naverOcrApi.callApi(file.getPath(), secretKey, "jpg");
+        File file1 = new File("src/main/resources/static/image/" + storedFileName);
+        if (!file1.exists()) {
+            throw new RuntimeException("File does not exist: " + file1.getPath());
+        }
+
+        List<String> result = naverOcrApi.callApi(file1.getPath(), secretKey, "jpg");
         if (result != null) {
             for (String s : result) {
                 log.info(s);
@@ -45,16 +59,46 @@ public class OCRController {
             log.info("No result returned from OCR API.");
         }
 
-        return new ResponseEntity(result, HttpStatus.OK);
-    }
+        int startIndex = result.indexOf("[매장명]") + 1;
+        int endIndex = result.indexOf("[사업자]");
 
-    @PostMapping("/insert")
-    public ResponseEntity<Boolean> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println("OCRController.insertReceipt");
+        String name = result.subList(startIndex, endIndex).stream()
+                .collect(Collectors.joining(" "));
 
 
-        return ResponseEntity.ok(imageService.insertReceipt(file));
+        String price = IntStream.range(0, result.size())
+                .filter(i -> i < result.size() - 2 &&
+                        result.get(i).equals("합계") &&
+                        result.get(i + 1).equals("금액"))
+                .mapToObj(i -> result.get(i + 2))
+                .findFirst()
+                .orElse("");
 
+        StringBuilder menuBuilder = new StringBuilder();
+
+        int start = result.indexOf("금액") + 1;
+        int end = result.indexOf("합계");
+
+        for (int i = start; i < end; i++) {
+            if ((i - start) % 4 == 0) {
+                menuBuilder.append(result.get(i)).append(", ");
+            }
+        }
+
+        if (menuBuilder.length() > 0) {
+            menuBuilder.setLength(menuBuilder.length() - 2);
+        }
+        String menu = menuBuilder.toString();
+
+
+        ReceiptEntity receipt = ReceiptEntity.builder()
+                .name(name)
+                .menu(menu)
+                .price(price)
+                .build();
+
+        System.out.println("menu = " + menu + " name =" + name + " price =" + price);
+        return ResponseEntity.ok(receiptService.save(receipt));
     }
 
 

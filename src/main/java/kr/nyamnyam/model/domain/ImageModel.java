@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageModel {
-    private String id;
+    private Long id;
     private String originalFilename;
     private String storedFileName;
     private String extension;

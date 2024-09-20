@@ -22,19 +22,16 @@ public interface ImageService {
 
     Boolean save(ImageEntity entity);
 
-    // Boolean saveImages(List<MultipartFile> files, PostEntity post);
-
     String getFileName(String fileName);
-
-    //List<ImageModel> uploadFilesSample(List<MultipartFile> multipartFiles);
 
     List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, String uploadPath, Long postId);
 
-    Boolean insertReceipt(MultipartFile file) throws IOException;
+    ImageModel insertReceipt(MultipartFile file);
+
+    List<Long> findImageIdsByPostId(Long postId);
 
     List<ImageEntity> findByPostId(Long postId);
 
-    //Boolean existsByPostId(Long postId);
+    Boolean updateImages(Long postId, List<MultipartFile> multipartFiles);
 
-    //Boolean deleteByPostId(Long postId);
 }

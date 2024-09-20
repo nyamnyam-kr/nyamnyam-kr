@@ -58,6 +58,7 @@ public class NaverOcrApi {
             images.add(image);
             json.put("images", images);
             String postParams = json.toString();
+            System.out.println("filePath = " + filePath + ", naver_secretKey = " + naver_secretKey + ", extension = " + extension);
 
             con.connect();
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
@@ -129,7 +130,7 @@ public class NaverOcrApi {
         out.flush();
     }
     /**
-     * 데이터 가공
+     * 데이터 가공                         
      * @param {StringBuffer} response 응답값
      * @returns {List} result text list
      */
@@ -150,7 +151,4 @@ public class NaverOcrApi {
 
         return result;
     }
-
-
-
 }
