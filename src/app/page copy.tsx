@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 
 export default function Home2() {
+    
     const [data, setData] = useState(null);
     const [name, setName] = useState(null);
     const [tel, setTel] = useState(null);

@@ -9,15 +9,30 @@ interface Chat {
   createdAt: string;
 }
 
+interface ChatRoom {
+  id: string;
+  name: string;
+}
+
 export default function ChatRoom({ params }: { params: { id: string } }) {
   const [messages, setMessages] = useState<Chat[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sender, setSender] = useState(""); // 사용자 ID를 설정할 수 있습니다.
+  const [chatRoomName, setChatRoomName] = useState(""); // ChatRoom 이름 상태
   const chatRoomId = params.id;
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://localhost:8080/api/chats/${chatRoomId}`);
-    
+    // ChatRoom 이름 가져오기
+    fetch(`http://localhost:8081/api/chatRoom/${chatRoomId}`)
+      .then(response => response.json())
+      .then((data: ChatRoom) => {
+        setChatRoomName(data.name);
+      })
+      .catch(error => console.error("Error fetching chat room:", error));
+
+
+    const eventSource = new EventSource(`http://localhost:8081/api/chats/${chatRoomId}`);
+
     eventSource.onmessage = (event) => {
       const data: Chat = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, data]);
@@ -43,7 +58,7 @@ export default function ChatRoom({ params }: { params: { id: string } }) {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/api/chats/${chatRoomId}`, {
+      const response = await fetch(`http://localhost:8081/api/chats/${chatRoomId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,9 +76,34 @@ export default function ChatRoom({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);               
+
+    try {
+      const response = await fetch(`http://localhost:8081/api/chats/${chatRoomId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("이미지 업로드 실패");
+      }
+
+      const imageUrl = await response.text();
+      setNewMessage((prevMessage) => prevMessage + ` ${imageUrl}`);
+    } catch (error) {
+      console.error("이미지 업로드 중 오류 발생:", error);
+    }
+  };
+
+
   return (
     <div className="chat-room flex flex-col h-screen p-4 bg-gray-100">
-      <h1 className="text-2xl font-bold text-center mb-4">Chat Room {chatRoomId}</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">Chat Room - {chatRoomName}</h1>
 
       <div className="messages flex-1 overflow-y-auto p-4 bg-white shadow-md rounded-lg space-y-4">
         {messages.map((msg, index) => (
@@ -96,6 +136,11 @@ export default function ChatRoom({ params }: { params: { id: string } }) {
           onChange={(e) => setNewMessage(e.target.value)}
           className="input flex-grow border border-gray-300 p-2"
           required
+        />
+        <input
+          type="file"
+          onChange={(e) => handleFileUpload(e)}
+          className="input border border-gray-300 p-2"
         />
         <button
           type="submit"

@@ -1,11 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -13,6 +15,7 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -22,8 +25,26 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.text-primary-review{
+  color: #FFD700;
+}
+
+.text-gray200{
+  color: #8c8c8c;
+}
+
+.text-half-star{
+  position: relative;
+  color: #FFD700;
+  overflow: hidden;
+  width: 50%;
+  display: inline-block;
+  height: 100%;
 }
