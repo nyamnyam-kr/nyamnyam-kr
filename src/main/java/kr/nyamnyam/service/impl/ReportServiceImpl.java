@@ -7,6 +7,7 @@ import kr.nyamnyam.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,22 +37,13 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.count();
     }
 
-    @Override
-    public Boolean deleteById(Long id) {
-        if (reportRepository.existsById(id)) {
-            reportRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public ReportEntity save(ReportModel model) {
         ReportEntity report = ReportEntity.builder()
-                .title(model.getTitle())
                 .content(model.getContent())
-                .state(model.getState())
                 .userId(model.getUserId())
+                .entryDate(LocalDateTime.now())
                 .build();
 
         return reportRepository.save(report);

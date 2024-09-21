@@ -1,16 +1,44 @@
 package kr.nyamnyam.model.domain;
 
+import kr.nyamnyam.model.entity.NoticeEntity;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 @Data
+@Builder
+@NoArgsConstructor
 public class NoticeModel {
     private Long id;
     private String title;
     private String content;
-    private Long hit;
+    private Long hits;
     private Date date;
+
+    @Builder
+    public NoticeModel(Long id, String title, String content, Long hits, Date date) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.date = date;
+        this.hits = hits;
+    }
+
+    public static NoticeModel toDto(NoticeEntity entity) {
+        return NoticeModel.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .hits(entity.getHits())
+                .date(entity.getDate())
+                .build();
+    }
 }
+
+
+
+

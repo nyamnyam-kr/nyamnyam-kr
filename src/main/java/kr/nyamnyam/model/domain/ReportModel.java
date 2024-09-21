@@ -11,9 +11,7 @@ import java.util.Date;
 public class ReportModel {
     private Long id;
     private Long userId;
-    private String title;
     private String content;
     private Date entryDate;
-    private String state;
 
 }

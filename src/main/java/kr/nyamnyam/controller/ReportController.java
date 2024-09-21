@@ -28,11 +28,6 @@ public class ReportController {
     }
 
 
-   @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
-        return ResponseEntity.ok(reportService.deleteById(id));
-    }
-
    @PostMapping("/save")
     public ResponseEntity<ReportEntity> save(@RequestBody ReportModel model) {
        System.out.println("model = " + model);

@@ -19,7 +19,7 @@ public class NoticeEntity {
     private Long id;
     private String title;
     private String content;
-    private Long hit;
+    private Long hits;
     private Date date;
 
 

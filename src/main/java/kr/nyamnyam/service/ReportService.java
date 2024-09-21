@@ -16,7 +16,5 @@ public interface ReportService {
 
     Long count();
 
-    Boolean deleteById(Long id);
-
     ReportEntity save(ReportModel model);
 }

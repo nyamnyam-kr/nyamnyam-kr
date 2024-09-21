@@ -3,7 +3,8 @@ package kr.nyamnyam.model.repository.Custom;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.nyamnyam.model.domain.CountModel;
+import kr.nyamnyam.model.domain.Chart.CountModel;
+import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QUpvoteEntity;
@@ -96,7 +97,33 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     }
 
-    
+    @Override
+    public List<TotalModel> countRestaurantList() {
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
+
+        List<Tuple> results = jpaQueryFactory.select(
+                        restaurantEntity.name,
+                        postEntity.restaurantId.count()
+                )
+                .from(restaurantEntity)
+                .leftJoin(postEntity)
+                .on(restaurantEntity.id.eq(postEntity.restaurantId))
+                .groupBy(restaurantEntity.name)
+                .orderBy(postEntity.restaurantId.count().desc())
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurantEntity.name));
+                    totalModel.setTotal(tuple.get(postEntity.restaurantId.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+    }
+
 
 
 }
