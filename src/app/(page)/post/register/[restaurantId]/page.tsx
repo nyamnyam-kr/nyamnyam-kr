@@ -1,9 +1,7 @@
 "use client";
-import { insertPost } from "@/app/service/post/post.api";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../../star/page";
-import { insertImage } from "@/app/service/image/image.api";
 
 export default function PostRegister() {
   const router = useRouter();
@@ -19,7 +17,8 @@ export default function PostRegister() {
     averageRating: 0,
     tags: [],
     images: [],
-    restaurantId: Number(restaurantId) || 0
+    restaurantId: Number(restaurantId) || 0,
+    userId: 1 // 수정 필요!!!! 
   });
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});

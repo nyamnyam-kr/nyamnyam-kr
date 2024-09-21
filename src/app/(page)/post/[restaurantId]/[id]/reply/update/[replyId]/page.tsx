@@ -3,7 +3,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { FormEvent, useEffect, useState } from "react";
 
 export default function ReplyUpdate() {
-  const { id, replyId } = useParams();
+  const { restaurantId, id, replyId } = useParams();
   const router = useRouter();
 
   const [formData, setFormData] = useState<ReplyModel>({
@@ -49,9 +49,6 @@ export default function ReplyUpdate() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("replyId:", replyId);  
-    console.log("Sending reply formdata: ", formData);
-    
     const { content, postId, userId } = formData;
     const replyUpdateData = { content, postId, userId }; 
   
@@ -66,7 +63,7 @@ export default function ReplyUpdate() {
   
       if (response.ok) {
         console.log('Reply updated successfully.');
-        router.push(`/post/${id}/reply`);
+        router.push(`/post/${restaurantId}/${id}/reply`);
       } else {
         console.error('Failed to update reply');
       }
@@ -82,10 +79,6 @@ export default function ReplyUpdate() {
       [name]: value
     }));
   };
-
-  const handleReplyList = () => {
-    router.push(`/post/${id}/reply`)
-  }
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -109,7 +102,7 @@ export default function ReplyUpdate() {
           <button
             type="button"
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            onClick={handleReplyList}
+            onClick={()=> router.push(`/post/${restaurantId}/${id}/reply`)}
           >
             뒤로가기
           </button>

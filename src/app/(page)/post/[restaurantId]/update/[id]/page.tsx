@@ -6,7 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
 export default function PostUpdate() {
   const router = useRouter();
-  const { id } = useParams();
+  const { restaurantId,id } = useParams();
   const [allTags, setAllTags] = useState<{[category: string]: TagModel[]}>({});
   const [selectTags, setSelectTags] = useState<string[]>([]);
   const [selectImages, setSelectImages] = useState<File[]>([]);
@@ -24,7 +24,8 @@ export default function PostUpdate() {
     averageRating: 0,
     tags: [],
     images: [],
-    restaurantId:0
+    restaurantId:0,
+    userId: 1 // 수정필요 !!! 
   });
 
   useEffect(() => {
@@ -123,8 +124,8 @@ export default function PostUpdate() {
           throw new Error('Failed to upload images');
         }
       }
+      router.push(`/post/${restaurantId}/details/${id}`);
 
-      router.push(`/post/details/${id}`);
     } catch (error) {
       console.error('Error updating post:', error);
     }

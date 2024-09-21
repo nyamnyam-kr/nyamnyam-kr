@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 
 
 export default function Reply() {
-    const { id, postId, restaurantId } = useParams();
+    const { id, restaurantId } = useParams();
     const [replies, setReplies] = useState<ReplyModel[]>([]);
     const router = useRouter();
+    const currentUserId = 1; // 삭제 필요 !!! 
 
     useEffect(() => {
         if (id) {
@@ -42,26 +43,22 @@ export default function Reply() {
         }
     };
 
-    const handleUpdate = (replyId: number) => {
-        router.push(`/post/${id}/reply/${replyId}/update`)
-    }
-
-
     return (
         <main className="flex min-h-screen flex-col items-center p-6">
             <h1 className="text-2xl font-bold mb-6">댓글</h1>
             <div className="bg-white shadow-md rounded p-6 w-full max-w-2xl space-y-4">
                 {replies.length > 0 ? (
-                    replies.map((r: ReplyModel) => (
+                    replies.map((r) => (
                         <div key={r.id} className="border-b pb-4 mb-4">
                             <div className="flex justify-between items-center">
                                 <p>{r.content}</p>
                                 <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
                             </div>
-                            <div className="mt-2 flex justify-end gap-4">
+                            {r.userId === currentUserId && (
+                                <div className="mt-2 flex justify-end gap-4">
                                 <button
                                     className="text-blue-500 hover:text-blue-700"
-                                    onClick={() => handleUpdate(r.id!)}>
+                                    onClick={() => router.push(`/post/${restaurantId}/${id}/reply/update/${r.id}`)}>
                                     수정
                                 </button>
                                 <button
@@ -70,6 +67,7 @@ export default function Reply() {
                                     삭제
                                 </button>
                             </div>
+                            )}
                         </div>
                     ))
                 ) : (
@@ -79,12 +77,12 @@ export default function Reply() {
             <div className="flex gap-4 mt-6">
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    onClick={()=> router.push(`/post/${restaurantId}/${postId}/reply/register`)}>
+                    onClick={()=> router.push(`/post/${restaurantId}/${id}/reply/register`)}>
                     댓글 작성
                 </button>
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    onClick={() => router.push(`/post/details/${postId}`)}>
+                    onClick={() => router.push(`/post/${restaurantId}/details/${id}`)}>
                     뒤로가기
                 </button>
             </div>

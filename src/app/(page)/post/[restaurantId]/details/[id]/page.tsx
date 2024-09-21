@@ -8,6 +8,7 @@ export default function PostDetail() {
   const [images, setImages] = useState<string[]>([]);
   const { id, restaurantId } = useParams();
   const router = useRouter();
+  const currentUserId = 1; // 수정 필요 !!! 
 
   useEffect(() => {
     if (id) {
@@ -32,7 +33,7 @@ export default function PostDetail() {
         })
         .then((data) => {
           const imageURLs = data.map((image: any) => image.uploadURL);
-          setImages(imageURLs); 
+          setImages(imageURLs);
         })
         .catch((error) => {
           console.error("Failed to fetch images:", error);
@@ -46,6 +47,20 @@ export default function PostDetail() {
     const formattedDate = new Intl.DateTimeFormat("ko-KR", options).format(date);
     const [year, month] = formattedDate.split(".").map((part) => part.trim());
     return `${year}년 ${month}월`;
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("게시글을 삭제하시겠습니까?")) {
+      fetch(`http://localhost:8080/api/posts/${id}`, { method: 'DELETE' })
+        .then(() => {
+          alert("게시글이 삭제되었습니다.");
+          router.push(`/post/${restaurantId}`);
+        })
+        .catch(error => {
+          console.error('Delete operation failed:', error);
+          alert("삭제 중 오류가 발생했습니다.");
+        });
+    }
   };
 
   return (
@@ -97,12 +112,6 @@ export default function PostDetail() {
       <div className="mt-4">
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={() => router.push(`/post/update/${id}`)}
-        >
-          수정하기
-        </button>
-        <button
-          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
           onClick={() => router.push(`/post/${restaurantId}`)}
         >
           목록
@@ -113,6 +122,21 @@ export default function PostDetail() {
         >
           댓글
         </button>
+        {posts?.userId === currentUserId && (
+          <>
+            <button
+              className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+              onClick={() => router.push(`/post/${restaurantId}/update/${id}`)}
+            >
+              수정하기
+            </button>
+            <button
+              className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2"
+              onClick={handleDelete}>
+              삭제하기
+            </button>
+          </>
+        )}
       </div>
     </main>
   );

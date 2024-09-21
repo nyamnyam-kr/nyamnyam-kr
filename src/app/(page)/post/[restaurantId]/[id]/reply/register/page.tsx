@@ -6,13 +6,12 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function ReplyRegister() {
     const router = useRouter();
-    const { id, restaurantId } = useParams();
+    const { restaurantId, id } = useParams();
     const [formData, setFormData] = useState<ReplyModel>({
         content: '',
-        postId: 0,
+        postId: Number(id),
         userId: 1 // 강제값으로 수정 필요!! 
     });
-
     useEffect(() => {
         if (id) {
             setFormData((prev) => ({
@@ -42,7 +41,6 @@ export default function ReplyRegister() {
         await insertReply(replyData);
         router.push(`/post/${restaurantId}/${postId}/reply`)
     };
-
 
     return (
         <main className="flex min-h-screen flex-col items-center">
