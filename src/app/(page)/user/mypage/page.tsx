@@ -1,155 +1,60 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Doughnut, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale } from "chart.js";
-import styles from "./mypage.module.css";
-import axios from "axios";
-import Link from "next/link";
+import React, {FormEvent, useState} from "react";
+import {insertReport} from "@/app/service/user/user.api";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
-
-const data1 = {
-    labels: ["Red", "Blue", "Yellow"],
-    datasets: [{
-        data: [20, 50, 100],
-        backgroundColor: ["red", "blue", "yellow"],
-        borderColor: ["#fff", "#fff", "#fff"],
-        borderWidth: 1,
-    }],
-};
-
-const data2 = {
-    labels: ["Green", "Purple", "Orange"],
-    datasets: [{
-        data: [200, 150, 50],
-        backgroundColor: ["green", "purple", "orange"],
-        borderColor: ["#fff", "#fff", "#fff"],
-        borderWidth: 1,
-    }],
-};
-
-const data3 = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        },
-        {
-            label: 'Dataset 2',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-        },
-    ],
-};
-
-interface CountItem {
-    nickname: string;
-    count: number;
+interface ReportModel {
+    id: number;
+    userId: number;
+    content: string;
+    entryDate: string;
 }
 
+export default function MyPage() {
+    const [content, setContent] = useState("");
+    const userId = 1; // Replace this with the actual user ID
+    const currentDate = new Date().toISOString(); // Adjust format if needed
 
-
-const HomePage = () => {
-    const [count, setCount] = useState<{ CountList: CountItem[] }>({ CountList: [] });
-    const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null); // 선택된 파일 상태
-
-
-
-    useEffect(() => {
-        const showCount = async () => {
-            try {
-                const resp = await axios.get("http://localhost:8080/admin/count");
-                console.log(resp.data); // 응답 데이터 확인
-                if (resp.status === 200) {
-                    setCount(resp.data);
-                    console.log(countList[0].nickname)
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+    const submit = async (content: string) => {
+        const report: ReportModel = {
+            id: Date.now(), // Using current timestamp as a temporary ID
+            userId: userId,
+            content: content,
+            entryDate: currentDate,
         };
-        showCount();
-    }, []);
 
-
-    const countList = count.CountList || []; // count.CountList가 정의되지 않았을 경우 빈 배열로 설정
-
-    const chartData = {
-        labels: countList.length > 0 ? [countList[0].nickname] : [], // 첫 번째 nickname만 추출
-        datasets: [
-            {
-                label: 'UserRank',
-                data: countList.length > 0 ? [countList[0].count] : [], // 첫 번째 count만 추출
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 1,
+        try {
+            const result = await insertReport(report);
+            if (result) {
+                alert('의견이 성공적으로 제출되었습니다.');
+                setContent(""); // Clear the textarea after submission
+            } else {
+                alert('의견 제출에 실패하였습니다.');
             }
-        ],
-    };
-
-
-
-
-  
+        } catch (error) {
+            console.error('오류가 발생했습니다:', error);
+            alert('의견 제출 중 오류가 발생했습니다.');
+        }
+    }
 
     return (
-        <div className={styles.row}>
-            <div className={styles.col}>
-                <div className={styles.card}>
-                    <div className={styles.cardHeader}>서울시 구별 List</div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.chartContainer}>
-                            <Doughnut data={data1}/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className={`${styles.col} mb-10`}>
-                <div className={styles.card}>
-                    <div className={styles.cardHeader}>특정 구별 category</div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.chartContainer}>
-                            <Doughnut data={data2}/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.col}>
-                <div className={styles.card}>
-                    <div className={styles.cardHeader}>Bar Chart 1</div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.chartContainer}>
-                            <Bar data={data3}
-                                 options={{responsive: true, scales: {x: {stacked: true}, y: {stacked: true}}}}/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.col}>
-                <div className={styles.card}>
-                    <div className={styles.cardHeader}>Bar Chart 2</div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.chartContainer}>
-                            <Bar data={chartData}
-                                 options={{responsive: true, scales: {x: {stacked: true}, y: {stacked: true}}}}/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <Link href="/receipt/insertReceipt">내 영수증 추가하기</Link>
-            </div>
-
+        <div>
+            <h2>냠냠에 전하고싶은 의견이 있나요?</h2>
+            <h2>00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                if (window.confirm("냠냠에 의견을 보낼까요?")) {
+                    submit(content);
+                }
+            }}>
+                <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="여기에 의견을 남겨주세요"
+                    rows={4}
+                    style={{width: '100%', marginBottom: '10px'}}
+                />
+                <button type="submit">제출</button>
+            </form>
         </div>
-
     );
-};
-
-export default HomePage;
+}

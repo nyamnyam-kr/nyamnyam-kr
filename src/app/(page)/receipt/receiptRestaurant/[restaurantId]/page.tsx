@@ -1,7 +1,6 @@
 "use client";
 import React, {useEffect, useState, useRef} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import SearchBar from "@/app/components/SearchBox";
 import Star from "@/app/(page)/star/page";
 
 interface Restaurant {
@@ -176,8 +175,14 @@ export default function showRestaurant() {
                 <h1>이용하신 음식점의 정보가 맞나요?</h1>
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                    onClick={() => router.push('/post/register/register')}>
-                    음식점 등록하기
+                    onClick={() => {
+                        if (restaurantId) {
+                            router.push(`/post/register/${restaurantId}`);
+                        } else {
+                            console.error("Restaurant ID is not available");
+                        }
+                    }}>
+                    포스트 등록하기
                 </button>
             </div>
         </div>
