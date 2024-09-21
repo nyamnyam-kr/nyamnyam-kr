@@ -1,7 +1,6 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.TagModel;
-import kr.nyamnyam.model.entity.TagEntity;
 import kr.nyamnyam.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

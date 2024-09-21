@@ -42,9 +42,14 @@ public class PostServiceImpl implements PostService {
         if (posts.isEmpty()) {
             return 0.0;
         }
+
         double totalRating = posts.stream()
-                .mapToDouble(post -> (post.getTaste() + post.getClean() + post.getService()) / 3.0)
+                .mapToDouble(post -> {
+                    double averageRating = (post.getTaste() + post.getClean() + post.getService()) / 3.0;
+                    return Math.min(averageRating, 5.0);
+                })
                 .sum();
+
         return totalRating / posts.size();
     }
 
@@ -139,6 +144,7 @@ public class PostServiceImpl implements PostService {
         return repository.count();
     }
 
+    @Transactional
     @Override
     public Boolean deleteById(Long id) {
         if (existsById(id)) {
@@ -174,12 +180,36 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         repository.save(updatedEntity);
-        saveTags(model.getTags(), existingEntity);
+        updateTags(model.getTags(), updatedEntity);
 
         return true;
     }
 
-    // 태그 저장
+    private void updateTags(List<String> tags, PostEntity postEntity) {
+        List<PostTagEntity> existPostTags = postTagRepository.findByPost(postEntity);
+        List<PostTagEntity> newPostTags = tags.stream()
+                .filter(tagName -> existPostTags.stream().noneMatch(postTag -> postTag.getTag().getName().equals(tagName)))
+                .map(tagName -> {
+                    TagEntity tag = tagRepository.findByName(tagName)
+                            .orElseGet(()-> {
+                                TagEntity newTag = new TagEntity();
+                                newTag.setName(tagName);
+                                tagRepository.save(newTag);
+                                return newTag;
+                            });
+                    return new PostTagEntity(postEntity, tag);
+                })
+                .collect(Collectors.toList());
+
+        postTagRepository.saveAll(newPostTags);
+
+        List<PostTagEntity> tagsToDelete = existPostTags.stream()
+                .filter(postTag -> !tags.contains(postTag.getTag().getName()))
+                .collect(Collectors.toList());
+
+        postTagRepository.deleteAll(tagsToDelete);
+    }
+
     private void saveTags(List<String> tags, PostEntity postEntity) {
         if (tags != null && !tags.isEmpty()) {
             List<PostTagEntity> postTags = tags.stream()
@@ -207,6 +237,7 @@ public class PostServiceImpl implements PostService {
                 .service(entity.getService())
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
+                .userId(entity.getUserId())
                 .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()
                         .map(postTagEntity -> postTagEntity.getTag().getName())
@@ -233,6 +264,7 @@ public class PostServiceImpl implements PostService {
                 .taste(model.getTaste())
                 .clean(model.getClean())
                 .service(model.getService())
+                .userId(model.getUserId())
                 .restaurant(restaurant)
                 .build();
     }

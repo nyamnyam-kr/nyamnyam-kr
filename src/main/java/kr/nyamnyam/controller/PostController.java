@@ -20,8 +20,7 @@ public class PostController {
 
     @GetMapping("/{restaurantId}/allAverage")
     public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
-        double averageRating = service.allAverageRating(restaurantId);
-        return ResponseEntity.ok(averageRating);
+        return ResponseEntity.ok(service.allAverageRating(restaurantId));
     }
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
