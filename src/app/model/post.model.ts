@@ -11,5 +11,6 @@ interface PostModel {
   images: ImageModel[];
   restaurantId: number;
   userId: number;
+  nickname?: string;
 }
 

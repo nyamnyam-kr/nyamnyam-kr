@@ -50,23 +50,34 @@ export default function Reply() {
                 {replies.length > 0 ? (
                     replies.map((r) => (
                         <div key={r.id} className="border-b pb-4 mb-4">
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                    <p className="font-bold">{r.nickname}</p>
+                                </div>
+                                <div className="text-right">
+                                    <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
+                                </div>
+                            </div>
+                            <div className="mt-2">
                                 <p>{r.content}</p>
-                                <small>{r.entryDate ? formDate(r.entryDate) : "날짜 없음"}</small>
                             </div>
                             {r.userId === currentUserId && (
                                 <div className="mt-2 flex justify-end gap-4">
-                                <button
-                                    className="text-blue-500 hover:text-blue-700"
-                                    onClick={() => router.push(`/post/${restaurantId}/${id}/reply/update/${r.id}`)}>
-                                    수정
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700"
-                                    onClick={() => handleDelete(r.id!)}>
-                                    삭제
-                                </button>
-                            </div>
+                                    <button
+                                        className="text-blue-500 hover:text-blue-700"
+                                        onClick={() =>
+                                            router.push(`/post/${restaurantId}/${id}/reply/update/${r.id}`)
+                                        }
+                                    >
+                                        수정
+                                    </button>
+                                    <button
+                                        className="text-red-500 hover:text-red-700"
+                                        onClick={() => handleDelete(r.id!)}
+                                    >
+                                        삭제
+                                    </button>
+                                </div>
                             )}
                         </div>
                     ))
@@ -77,7 +88,7 @@ export default function Reply() {
             <div className="flex gap-4 mt-6">
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    onClick={()=> router.push(`/post/${restaurantId}/${id}/reply/register`)}>
+                    onClick={() => router.push(`/post/${restaurantId}/${id}/reply/register`)}>
                     댓글 작성
                 </button>
                 <button

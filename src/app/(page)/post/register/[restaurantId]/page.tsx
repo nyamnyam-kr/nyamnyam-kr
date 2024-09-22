@@ -122,7 +122,7 @@ export default function PostRegister() {
       }
       await fetchTagCategory();
       setSelectTags([]);
-      router.push(`/post/details/${postId}`);
+      router.push(`/post/${restaurantId}/details/${postId}`);
     } else {
       console.error('Post creation failed:', response.statusText);
     }

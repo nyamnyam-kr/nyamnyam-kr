@@ -132,6 +132,11 @@ export default function Home() {
                     onClick={() => router.push(`/post/register/${restaurantId}`)}>
                     등록하기
                 </button>
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                    onClick={() => router.push(`/restaurant/${restaurantId}`)}>
+                    뒤로가기
+                </button>
             </div>
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
                 <div className="flex flex-col space-y-4">
@@ -147,7 +152,7 @@ export default function Home() {
                                         handleDetails(p.id ?? 0);
                                     }}
                                 >
-                                    <h2 className="text-xl font-semibold mb-2">닉네임: {p.id}</h2>
+                                    <h2 className="text-xl font-semibold mb-2">닉네임: {p.nickname}</h2>
                                 </Link>
                                 <button
                                     onClick={() => handleLike(p.id)}
