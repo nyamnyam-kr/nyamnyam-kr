@@ -32,6 +32,7 @@ public class PostEntity {
     // nyamnyam-admin부분에서 추가된 부분
     private Long userId;
 
+
     @PrePersist
     protected void onCreate() {
         this.entryDate = LocalDateTime.now();

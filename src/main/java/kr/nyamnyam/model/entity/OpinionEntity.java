@@ -5,24 +5,22 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
 @Entity
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "report")
-public class ReportEntity {
+@Table(name = "opinion")
+public class OpinionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private Long postId;
-    private String reason;
+    private String content;
 
-
-
+    @Column(columnDefinition = "TIMESTAMP(0)")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime entryDate;
 }

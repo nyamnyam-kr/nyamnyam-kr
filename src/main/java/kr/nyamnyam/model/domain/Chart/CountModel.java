@@ -1,4 +1,4 @@
-package kr.nyamnyam.model.domain;
+package kr.nyamnyam.model.domain.Chart;
 
 import lombok.Getter;
 import lombok.Setter;
