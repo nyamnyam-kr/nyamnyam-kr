@@ -151,7 +151,7 @@ const RestaurantDetail: React.FC = () => {
     };
 
     return (
-        <div className="overflow-y-auto bg-gray-100">
+        <div className="bg-gray-100">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
                 <div className="w-full max-w-lg mx-auto mb-6">
                     <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
@@ -178,15 +178,18 @@ const RestaurantDetail: React.FC = () => {
                     </ul>
                 ) : (
                     <>
+                        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-4 shadow-md p-4 rounded-lg bg-gray-100">
+                            {restaurant.name}
+                        </h1>
                         <div className="flex mb-4">
                             <div className="w-2/3 pr-4"> {/* 레스토랑 정보 영역의 너비를 조정 */}
-                                <h1 className="text-3xl font-bold mb-4">{restaurant.name}</h1>
+
                                 <div className="flex mb-4">
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
                                         style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
-         
+
 
                                     />
                                     {restaurant.subImageUrl && (
