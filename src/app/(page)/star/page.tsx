@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa6";
 
-
-
 export default function Star({ w, h, readonly, rate, onChange }: StarModel) {
     const [rating, setRating] = useState(rate || 0);
 

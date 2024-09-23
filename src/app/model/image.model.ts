@@ -1,6 +1,7 @@
 interface ImageModel {
-    id: string;  
+    id: number;
     originalFilename: string;
     storedFileName : string;
     extension: string;
+    uploadURL: string;
 }

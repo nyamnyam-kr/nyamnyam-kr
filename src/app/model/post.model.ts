@@ -10,5 +10,7 @@ interface PostModel {
   tags: string[]; 
   images: ImageModel[];
   restaurantId: number;
+  userId: number;
+  nickname?: string;
 }
 
