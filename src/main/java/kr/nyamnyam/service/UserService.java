@@ -27,12 +27,14 @@ public interface UserService {
 
     UsersEntity save(UserModel userModel);
 
-    String loginWithOAuth2(String code, String receivedState, HttpServletRequest request);
+    Optional<UsersEntity> login(String username, String password);
 
-    void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException;
+//    String loginWithOAuth2(String code, String receivedState, HttpServletRequest request);
+//
+//    void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    String authenticate(String username, String password);
+//    String authenticate(String username, String password);
 
-    boolean validateToken(String token);
+//    boolean validateToken(String token);
 
 }
