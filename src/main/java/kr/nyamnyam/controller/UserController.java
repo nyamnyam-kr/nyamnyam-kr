@@ -6,7 +6,6 @@ import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UsersEntity;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,9 +15,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("/api/user")
+
 public class UserController {
 
     private final UserService userService;
