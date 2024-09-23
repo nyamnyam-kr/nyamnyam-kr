@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/notice")
 @RequiredArgsConstructor
+@CrossOrigin
 public class NoticeController {
 
     private final NoticeService noticeService;
@@ -34,13 +35,14 @@ public class NoticeController {
         return ResponseEntity.ok(noticeService.deleteById(id));
     }
 
-   @PostMapping("/save")
+   @PostMapping("")
     public ResponseEntity<NoticeEntity> save(@RequestBody NoticeModel model) {
         return ResponseEntity.ok(noticeService.save(model));
     }
 
-    @PutMapping("/save")
-    public ResponseEntity<NoticeEntity> update(@RequestBody NoticeModel model) {
+    @PutMapping("/{id}")
+    public ResponseEntity<NoticeEntity> update(@PathVariable Long id, @RequestBody NoticeModel model) {
+        System.out.println(model);
        return ResponseEntity.ok(noticeService.update(model));
     }
 }

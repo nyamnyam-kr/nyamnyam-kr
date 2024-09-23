@@ -1,11 +1,10 @@
 package kr.nyamnyam.service.impl;
 
+import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
-import kr.nyamnyam.model.entity.PostEntity;
-import kr.nyamnyam.model.entity.PostTagEntity;
-import kr.nyamnyam.model.entity.TagEntity;
+import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.PostTagRepository;
 import kr.nyamnyam.model.repository.TagRepository;
@@ -121,11 +120,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostModel> findAll() {
-        return repository.findAll().stream()
-                .map(this::convertToModel)
+    public List<PostModel> findAllByRestaurant(Long restaurantId) {
+        List<Tuple> posts = repository.findAllByRestaurantWithNickname(restaurantId);
+
+        return posts.stream()
+                .map(tuple -> convertToModelWithNickname(tuple.get(QPostEntity.postEntity),
+                        tuple.get(QUsersEntity.usersEntity.nickname)))
                 .collect(Collectors.toList());
     }
+
+    private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
+        PostModel postModel = convertToModel(postEntity);
+        postModel.setNickname(nickname);
+        return postModel;
+    }
+
 
     @Override
     public PostModel findById(Long id) {

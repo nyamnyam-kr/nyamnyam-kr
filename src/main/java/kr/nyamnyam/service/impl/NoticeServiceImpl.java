@@ -10,6 +10,7 @@ import kr.nyamnyam.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .title(model.getTitle())
                 .content(model.getContent())
                 .hits(model.getHits())
-                .date(new Date())
+                .date(LocalDateTime.now())
                 .build();
 
         return noticeRepository.save(noticeEntity);
@@ -82,10 +83,10 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeEntity update(NoticeModel model) {
         NoticeEntity noticeEntity = NoticeEntity.builder()
                 .id(model.getId())
-                .title(model.getTitle())
                 .content(model.getContent())
+                .title(model.getTitle())
                 .hits(model.getHits())
-                .date(new Date())
+                .date(LocalDateTime.now())
                 .build();
 
         return noticeRepository.save(noticeEntity);

@@ -19,6 +19,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
+    public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
+
+        return jpaQueryFactory
+                .select(postEntity, usersEntity.nickname)
+                .from(postEntity)
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .where(postEntity.restaurantId.eq(restaurantId))
+                .fetch();
+    }
+
 
     // 가장 많은 post 쓴 사람 순위 뽑아내기
     @Override

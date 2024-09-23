@@ -1,13 +1,11 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.service.AdminService;
-import kr.nyamnyam.service.ReportService;
+import kr.nyamnyam.service.OpinionService;
 import kr.nyamnyam.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,11 +19,11 @@ public class AdminController {
 
     private final UserService userService;
     private final AdminService adminService;
-    private final ReportService reportService;
+    private final OpinionService opinionService;
 
     @GetMapping("/reportAll")
     public ResponseEntity<List<?>> reportAll() {
-        return ResponseEntity.ok(reportService.findAll());
+        return ResponseEntity.ok(opinionService.findAll());
     }
 
     @GetMapping("/upvote")

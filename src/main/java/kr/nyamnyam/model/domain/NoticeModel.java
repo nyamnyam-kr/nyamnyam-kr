@@ -28,15 +28,6 @@ public class NoticeModel {
         this.hits = hits;
     }
 
-    public static NoticeModel toDto(NoticeEntity entity) {
-        return NoticeModel.builder()
-                .id(entity.getId())
-                .title(entity.getTitle())
-                .content(entity.getContent())
-                .hits(entity.getHits())
-                .date(entity.getDate())
-                .build();
-    }
 }
 
 

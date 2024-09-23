@@ -27,8 +27,7 @@ public class PostController {
 
     @GetMapping("/{restaurantId}/allAverage")
     public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
-        double averageRating = service.allAverageRating(restaurantId);
-        return ResponseEntity.ok(averageRating);
+        return ResponseEntity.ok(service.allAverageRating(restaurantId));
     }
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
@@ -62,9 +61,9 @@ public class PostController {
         return ResponseEntity.ok(service.findAllPerPage(page));
     }
 
-    @GetMapping("/group")
-    public ResponseEntity<List<PostModel>> getList() {
-        return ResponseEntity.ok(service.findAll());
+    @GetMapping("/{restaurantId}/group")
+    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
     }
 
     @GetMapping("/{id}")

@@ -5,18 +5,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-
 @Data
 @Component
-public class ReceiptModel {
-
+public class OpinionModel {
     private Long id;
-    private Long price;
-    private String name;
-    private String menu;
     private Long userId;
-    private String date;
+    private String content;
     private Date entryDate;
-
 
 }

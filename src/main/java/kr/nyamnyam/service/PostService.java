@@ -13,7 +13,7 @@ public interface PostService {
 
     PostEntity findEntityById(Long id);
 
-    List<PostModel> findAll();
+    List<PostModel> findAllByRestaurant(Long restaurantId);
 
     PostModel findById(Long id);
 
