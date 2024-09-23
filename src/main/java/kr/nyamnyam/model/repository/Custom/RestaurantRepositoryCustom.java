@@ -9,5 +9,7 @@ public interface RestaurantRepositoryCustom {
 
     List<RestaurantEntity> searchRestaurant(String keyword);
 
-    List<RestaurantEntity> findByTagName(String tagName);
+    List<RestaurantEntity> findByTagName(List<String> tagNames);
+
+
 }

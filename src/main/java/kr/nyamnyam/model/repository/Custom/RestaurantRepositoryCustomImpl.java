@@ -40,8 +40,9 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     }
 
+
     @Override
-    public List<RestaurantEntity> findByTagName(String tagName) {
+    public List<RestaurantEntity> findByTagName(List<String> tagNames) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
         QPostTagEntity postTag = QPostTagEntity.postTagEntity;
@@ -51,8 +52,10 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .distinct()
                 .join(restaurant.posts, post)
                 .join(post.postTags, postTag)
-                .where(postTag.tag.name.eq(tagName))
+                .where(postTag.tag.name.in(tagNames))
                 .fetch();
     }
+
+
 
 }

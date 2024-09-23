@@ -87,7 +87,7 @@ public class CrawlServiceImpl implements CrawlService {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".place_bluelink")));
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
 
-            int maxItemsToProcess = 1; // 각 zone 당 최대 개수
+            int maxItemsToProcess = 4; // 각 zone 당 최대 개수
             int count = 0;
             for (int i = 0; i < titleElements.size() && count < maxItemsToProcess; i++) {
                 WebElement titleElement = titleElements.get(i);
