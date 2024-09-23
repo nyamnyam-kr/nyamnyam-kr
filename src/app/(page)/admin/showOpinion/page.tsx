@@ -2,11 +2,11 @@
 import React, {useEffect, useState} from "react";
 import {router} from "next/client";
 
-export default function showReport() {
-    const [report, setReport] = useState<ReportModel[]>([]);
+export default function showOpinion() {
+    const [opinion, setOpinion] = useState<OpinionModel[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/report')
+        fetch('http://localhost:8080/api/opinion')
             .then((resp) => {
                 if(!resp.ok) {
                     throw new Error("Failed to fetch group details");
@@ -15,13 +15,10 @@ export default function showReport() {
                 return resp.json();
             })
             .then((data) => {
-                setReport(data)
+                setOpinion(data)
             })
     }, []);
 
-    const moveToOne = (id : number) => {
-        router.push(`/report/details/${id}`)
-    }
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
@@ -34,10 +31,10 @@ export default function showReport() {
                     </tr>
                     </thead>
                     <tbody>
-                    {report.map((r) => (
-                        <tr key={r.id} className=" text-black" onClick={() => moveToOne(r.id)}>
-                            <th className="py-3 px-4 border-b">{r.id}</th>
-                            <th className="py-3 px-4 border-b">{r.content}</th>
+                    {opinion.map((o) => (
+                        <tr key={o.id} className=" text-black">
+                            <th className="py-3 px-4 border-b">{o.id}</th>
+                            <th className="py-3 px-4 border-b">{o.content}</th>
                         </tr>
                     ))}
                     </tbody>

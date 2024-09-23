@@ -1,4 +1,4 @@
-interface ReportModel {
+interface OpinionModel {
     id: number;
     userId: number;
     content: string;

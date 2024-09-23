@@ -1,8 +1,8 @@
 "use client";
 import React, {FormEvent, useState} from "react";
-import {insertReport} from "@/app/service/user/user.api";
+import {insertOpinion} from "@/app/service/user/user.api";
 
-interface ReportModel {
+interface OpinionModel {
     id: number;
     userId: number;
     content: string;
@@ -15,15 +15,15 @@ export default function MyPage() {
     const currentDate = new Date().toISOString(); // Adjust format if needed
 
     const submit = async (content: string) => {
-        const report: ReportModel = {
-            id: Date.now(), // Using current timestamp as a temporary ID
+        const report: OpinionModel = {
+            id: Date.now(),
             userId: userId,
             content: content,
             entryDate: currentDate,
         };
 
         try {
-            const result = await insertReport(report);
+            const result = await insertOpinion(report);
             if (result) {
                 alert('의견이 성공적으로 제출되었습니다.');
                 setContent(""); // Clear the textarea after submission

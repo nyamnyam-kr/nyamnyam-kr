@@ -1,13 +1,13 @@
-export async function insertReport(report: ReportModel): Promise<any | {status: number}> {
+export async function insertOpinion(opinion: OpinionModel): Promise<any | {status: number}> {
     try {
         const body = {
-            id: report.id,
-            userId: report.userId,
-            content: report.content,
-            entryDate: report.entryDate
+            id: opinion.id,
+            userId: opinion.userId,
+            content: opinion.content,
+            entryDate: opinion.entryDate
         }
 
-        const resp = await fetch('http://localhost:8080/api/report/save',{
+        const resp = await fetch('http://localhost:8080/api/opinion/save',{
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
