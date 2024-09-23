@@ -89,4 +89,10 @@ public class UserServiceImpl implements UserService {
                 .build();
         return userRepository.save(usersEntity);
     }
+
+    @Override
+    public Optional<UsersEntity> login(String username, String password) {
+        return userRepository.findByUsername(username)
+                .filter(user -> user.getPassword().equals(password));
+    }
 }
