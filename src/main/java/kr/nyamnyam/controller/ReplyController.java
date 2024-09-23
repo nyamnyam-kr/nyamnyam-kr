@@ -19,7 +19,7 @@ public class ReplyController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ReplyModel>> getReplyByPostId(@PathVariable Long postId){
-        return ResponseEntity.ok(service.findByPostId(postId));
+        return ResponseEntity.ok(service.findAllByPostId(postId));
     }
 
     @GetMapping("/group")

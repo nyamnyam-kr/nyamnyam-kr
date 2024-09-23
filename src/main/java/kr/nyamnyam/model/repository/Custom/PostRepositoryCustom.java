@@ -1,6 +1,7 @@
 package kr.nyamnyam.model.repository.Custom;
 
 import com.querydsl.core.Tuple;
+
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 
