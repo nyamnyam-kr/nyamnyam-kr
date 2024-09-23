@@ -61,4 +61,9 @@ public class RestaurantController {
         return restaurantOpt;
     }
 
+    @GetMapping("/category")
+    public List<RestaurantModel> getRestaurantsByCategory(@RequestParam("category") List<String> category) {
+        return restaurantService.findByCategory(category);
+    }
+
 }

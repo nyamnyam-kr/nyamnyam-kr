@@ -17,5 +17,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity,Lon
     @Query("SELECT r.name FROM RestaurantEntity r")
     List<String> findAllNames();
 
+    List<RestaurantEntity> findByCategoryUsingMenu(List<String> categories);
+
 
 }

@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,6 +79,13 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<RestaurantModel> findByCategory(List<String> categories) {
+        List<RestaurantEntity> entities = restaurantRepository.findByCategoryUsingMenu(categories);
+        return entities.stream()
+                .map(RestaurantModel::toDto)
+                .collect(Collectors.toList());
+    }
 
 
 
