@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SearchBar from './components/SearchBox';
 
-
 interface Restaurant {
     id: number;
     name: string;
@@ -46,7 +45,7 @@ export default function Home() {
             </header> */}
 
             <div className="mb-6">
-                <SearchBar searchTerm={searchTerm} onSearch={handleSearch} /> 
+                <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
             </div>
 
             {restaurants.length > 0 ? (

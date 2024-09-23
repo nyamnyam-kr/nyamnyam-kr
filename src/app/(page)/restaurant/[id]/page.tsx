@@ -20,7 +20,6 @@ interface Restaurant {
     lng: number;
 }
 
-
 const RestaurantDetail: React.FC = () => {
     const { id } = useParams();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
@@ -147,10 +146,6 @@ useEffect(() => {
         );
     };
 
-    const handlePost = () => {
-        router.push(`/post/${id}`)
-    }
-
     return (
         <div className="container mx-auto p-4">
             <div className="mb-6">
@@ -197,11 +192,11 @@ useEffect(() => {
                     <p><strong>유형:</strong> {restaurant.type}</p>
                     <p><strong>주소:</strong> {restaurant.address}</p>
                     <p><strong>전화번호:</strong> {restaurant.tel}</p>
-                    <div><strong>네이버 평점:</strong> 
+                    <p><strong>네이버 평점:</strong>
                     <div className="flex items-center">
                         <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => { }} />
-                        <div className="ml-2">{restaurant.rate.toFixed(1)} / 5</div>
-                    </div> </div>
+                        <p className="ml-2">{restaurant.rate.toFixed(1)} / 5</p>
+                    </div> </p>
                     <p><strong>메뉴:</strong></p>
                     <div className="whitespace-pre-line">
                         {renderMenu(restaurant.menu)}
@@ -234,7 +229,7 @@ useEffect(() => {
             </div>
             <div>
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    onClick={handlePost}>
+                    onClick={()=> router.push(`/post/${id}`)}>
                     후기 보기
                 </button>
             </div>
