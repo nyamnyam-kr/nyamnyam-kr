@@ -19,10 +19,10 @@ bin/
 
 ### IntelliJ IDEA ###
 # Ignore application.yaml
-application.yaml
+/src/main/resources/application.yaml
 
 # Ignore ncloud.properties
-ncloud.properties
+/src/main/resources/ncloud.properties
 
 
 .idea
