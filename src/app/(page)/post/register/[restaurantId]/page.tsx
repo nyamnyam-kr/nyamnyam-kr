@@ -211,12 +211,12 @@ export default function PostRegister() {
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-4">
           등록하기
         </button>
-        <button
+      </form>
+      <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-          onClick={() => router.push(`/`)}>
+          onClick={() => router.push(`/post/${restaurantId}`)}>
           뒤로가기
         </button>
-      </form>
     </main>
 
   );
