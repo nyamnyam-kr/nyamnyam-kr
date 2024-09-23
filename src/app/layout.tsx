@@ -3,14 +3,34 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link"; 
+import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
+
+interface User {
+  id: number;
+  nickname: string;
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+  };
   return (
     <html lang="en">
        <head>
@@ -27,6 +47,23 @@ export default function RootLayout({
                 <li>
                     <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">POST</Link>
                 </li>
+                {user ? (
+                <>
+                  <li className="hover:bg-blue-600 px-3 py-2 rounded">{user.nickname}님, 환영합니다!</li>
+                  <li>
+                    <button onClick={handleLogout} className="hover:bg-blue-600 px-3 py-2 rounded">
+                      로그아웃
+                    </button>
+                  </li>
+                  <li>
+                    <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">유저 목록</Link>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Link href="/user/login" className="hover:bg-blue-600 px-3 py-2 rounded">로그인</Link>
+                </li>
+              )}
                 <li>
                     <Link href="/chatRoom/list" className="hover:bg-blue-600 px-3 py-2 rounded">채팅방</Link>
                 </li>

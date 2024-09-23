@@ -75,24 +75,26 @@ export default function Home1() {
 
   const handleDelete = () => {
     if (selectChatRooms.length === 0) {
-      alert("삭제할 게시글을 선택해주세요.");
-      return;
+        alert("삭제할 게시글을 선택해주세요.");
+        return;
     }
     if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
-      Promise.all(selectChatRooms.map((id: any) =>
-        fetch(`http://localhost:8081/api/chatRoom/${id}`, { method: 'DELETE' })
-      ))
+        Promise.all(selectChatRooms.map((id: any) =>
+            fetch(`http://localhost:8081/api/chatRoom/deleteById/${id}`, { method: 'DELETE' })
+        ))
         .then(() => {
-          alert("게시글이 삭제되었습니다.");
-          setSelectChatRooms([]);
-          handlePage(1);
+            alert("게시글이 삭제되었습니다.");
+            setChatRooms(prevChatRooms => 
+                prevChatRooms.filter(room => !selectChatRooms.includes(room.id)) // 삭제한 방을 제외
+            );
+            setSelectChatRooms([]); // 선택 초기화
         })
         .catch(error => {
-          console.error('Delete operation failed:', error);
-          alert("삭제 중 오류가 발생했습니다.");
+            console.error('Delete operation failed:', error);
+            alert("삭제 중 오류가 발생했습니다.");
         });
     }
-  };
+};
 
   const handleCrawling = async () => {
     try {

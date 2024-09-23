@@ -193,16 +193,15 @@ const RestaurantDetail: React.FC = () => {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
-         
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가         
 
                                         />
                                     )}
                                 </div>
-                                <p className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</p>
-                                <p className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</p>
-                                <p className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</p>
-                                <p className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></p>
+                                <div className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</div>
+                                <div className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</div>
+                                <div className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</div>
+                                <div className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></div>
                                 <div className="flex items-center">
                                     {restaurant.rate != null && restaurant.rate !== 0 ? (
                                         <div className="flex items-center">
@@ -227,7 +226,7 @@ const RestaurantDetail: React.FC = () => {
                                     </div>
                                 </ul>
                                 <strong className="text-lg">운영시간</strong>
-                                <p>{renderOperTime(restaurant.operation)}</p>
+                                <div>{renderOperTime(restaurant.operation)}</div>
                             </div>
                             <div className="w-1/3 h-80 rounded-lg shadow-md mt-0">
                                 <div id="map" className="w-full h-full rounded-lg shadow-md mb-4" ></div>
