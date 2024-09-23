@@ -6,7 +6,6 @@ import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UsersEntity;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,52 +16,51 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/existsById")
-    public ResponseEntity<Boolean> existsById(@RequestParam Long id) {
-        return ResponseEntity.ok(userService.existsById(id));
+    public Boolean existsById(@RequestParam Long id) {
+        return userService.existsById(id);
     }
 
     @GetMapping("/findById")
-    public ResponseEntity<Optional<UsersEntity>> findById(@RequestParam Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+    public Optional<UsersEntity> findById(@RequestParam Long id) {
+        return userService.findById(id);
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<UsersEntity>> findAll() {
-        return ResponseEntity.ok(userService.findAll());
+    public List<UsersEntity> findAll() {
+        return userService.findAll();
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(userService.count());
+    public Long count() {
+        return userService.count();
     }
 
     @DeleteMapping("/deleteById")
-    public ResponseEntity<Void> deleteById(@RequestParam Long id) {
+    public void deleteById(@RequestParam Long id) {
         userService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UsersEntity> update(@RequestBody UserModel userModel) {
-        return ResponseEntity.ok(userService.update(userModel));
+    public UsersEntity update(@RequestBody UserModel userModel) {
+        return userService.update(userModel);
     }
 
     @PostMapping("/join")
-    public ResponseEntity<UsersEntity> join(@RequestBody UserModel userModel) {
-        return ResponseEntity.ok(userService.save(userModel));
+    public UsersEntity join(@RequestBody UserModel userModel) {
+        return userService.save(userModel);
     }
 
     @GetMapping("/login/oauth2")
-    public ResponseEntity<String> loginWithOAuth2(
-            @RequestParam String code,
-            @RequestParam String receivedState,
-            HttpServletRequest request) {
-        return ResponseEntity.ok(userService.loginWithOAuth2(code, receivedState, request));
+    public String loginWithOAuth2(@RequestParam String code, @RequestParam String receivedState, HttpServletRequest request) {
+        return userService.loginWithOAuth2(code, receivedState, request);
     }
 
     @GetMapping("/startOAuth2")
@@ -71,15 +69,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
-        return ResponseEntity.ok(userService.authenticate(username, password));
+    public String login(@RequestParam String username, @RequestParam String password) {
+        return userService.authenticate(username, password);
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(@RequestHeader("Authorization") String token) {
-        return userService.validateToken(token)
-                ? ResponseEntity.ok("Valid token")
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    public String validateToken(@RequestHeader("Authorization") String token) {
+        return userService.validateToken(token) ? "Valid token" : "Invalid token";
     }
 }
 
