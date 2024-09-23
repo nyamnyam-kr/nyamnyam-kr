@@ -21,7 +21,6 @@ public class RestaurantEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String address;
     private String type;
@@ -36,11 +35,8 @@ public class RestaurantEntity {
     @Column(length = 500)
     private String subImageUrl;
 
-    private Long postId;
-
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<PostEntity> posts = new ArrayList<>();
-
 
 }

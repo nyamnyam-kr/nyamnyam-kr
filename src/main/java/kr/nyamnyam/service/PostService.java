@@ -33,4 +33,3 @@ public interface PostService {
 
     Boolean updatePost(Long id, PostModel model);
 }
-

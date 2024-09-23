@@ -6,6 +6,9 @@ import kr.nyamnyam.service.CrawlService;
 import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,10 +49,21 @@ public class RestaurantController {
         return restaurantService.searchRestaurants(query);
     }
 
+    @GetMapping("/tag")
+    public List<RestaurantModel> getRestaurantsByTag(@RequestParam("name")  List<String> tagNames) {
+        return restaurantService.getRestaurantsByTag(tagNames);
+    }
+
     // 맛집 상세보기
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantModel> getRestaurant(@PathVariable Long id) {
         ResponseEntity<RestaurantModel> restaurantOpt = restaurantService.getOneRestaurant(id);
         return restaurantOpt;
     }
+
+    @GetMapping("/category")
+    public List<RestaurantModel> getRestaurantsByCategory(@RequestParam("category") List<String> category) {
+        return restaurantService.findByCategory(category);
+    }
+
 }
