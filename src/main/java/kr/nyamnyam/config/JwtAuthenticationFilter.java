@@ -1,3 +1,4 @@
+/*
 package kr.nyamnyam.config;
 
 import jakarta.servlet.FilterChain;
@@ -48,3 +49,4 @@ public class JwtAuthenticationFilter implements jakarta.servlet.Filter {
         return null;
     }
 }
+*/

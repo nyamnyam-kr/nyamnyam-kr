@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OAuth2Service oAuth2Service; // OAuth2 관련 서비스
-    private final JwtTokenProvider jwtTokenProvider; // JWT 관련 클래스
+   /* private final JwtTokenProvider jwtTokenProvider; // JWT 관련 클래스*/
 
     @Override
     public boolean existsById(Long id) {
@@ -90,8 +90,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(usersEntity);
     }
 
-    // OAuth2 로그인 관련 메서드
     @Override
+    public Optional<UsersEntity> login(String username, String password) {
+        return userRepository.findByUsername(username)
+                .filter(user -> user.getPassword().equals(password));
+    }
+
+    // OAuth2 로그인 관련 메서드
+    /*@Override
     public String loginWithOAuth2(String code, String receivedState, HttpServletRequest request) {
         // 세션에서 저장된 state 값 가져오기
         String savedState = (String) request.getSession().getAttribute("oauth_state");
@@ -115,9 +121,9 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
             throw new RuntimeException("Failed to login with OAuth2");
         }
-    }
+    }*/
 
-    private String extractUsername(String userInfo) {
+   /* private String extractUsername(String userInfo) {
         JSONObject jsonObject = new JSONObject(userInfo);
         return jsonObject.getString("email");
     }
@@ -148,7 +154,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validateToken(String token) {
         return jwtTokenProvider.validateToken(token);
-    }
+    }*/
 
 }
 
