@@ -1,26 +1,33 @@
 package kr.nyamnyam.service.impl;
 
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UsersEntity;
 import kr.nyamnyam.model.repository.UserRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+
     @Autowired
     private Pagination pagination;
 
     private final UserRepository userRepository;
+    private final OAuth2Service oAuth2Service;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean existsById(Long id) {
@@ -89,4 +96,50 @@ public class UserServiceImpl implements UserService {
                 .build();
         return userRepository.save(usersEntity);
     }
+
+    @Override
+    public String loginWithOAuth2(String code, String receivedState, HttpServletRequest request) {
+        // 세션에서 저장된 state 값 가져오기
+        String savedState = (String) request.getSession().getAttribute("oauth_state");
+
+        // state 값 검증
+        if (!receivedState.equals(savedState)) {
+            throw new RuntimeException("Invalid state value, potential CSRF attack");
+        }
+
+        try {
+            String accessToken = oAuth2Service.getAccessToken(code);
+            String userInfo = oAuth2Service.getUserInfo(accessToken);
+
+            // 사용자 정보에서 필요한 정보 추출
+            String username = extractUsername(userInfo);
+
+            // 사용자 정보를 이용해 JWT 발급
+            String jwtToken = jwtTokenProvider.createToken(username, "ROLE_USER");
+            return jwtToken;
+        } catch (IOException e) {
+            e.printStackTrace(); // 예외 처리
+            throw new RuntimeException("Failed to login with OAuth2");
+        }
+    }
+
+    private String extractUsername(String userInfo) {
+        JSONObject jsonObject = new JSONObject(userInfo);
+        return jsonObject.getString("email");
+    }
+
+    @Override
+    public void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String state = UUID.randomUUID().toString();
+        request.getSession().setAttribute("oauth_state", state);
+
+        String authorizationUrl = "https://nid.naver.com/oauth2.0/authorize" +
+                "?response_type=code" +
+                "&client_id=your_client_id" +
+                "&redirect_uri=your_redirect_uri" +
+                "&state=" + state;
+
+        response.sendRedirect(authorizationUrl);
+    }
+
 }
