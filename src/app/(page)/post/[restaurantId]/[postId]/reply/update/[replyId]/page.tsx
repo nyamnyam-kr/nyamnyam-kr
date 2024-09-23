@@ -3,13 +3,13 @@ import { useParams, useRouter } from "next/navigation";
 import React, { FormEvent, useEffect, useState } from "react";
 
 export default function ReplyUpdate() {
-  const { restaurantId, id, replyId } = useParams();
+  const { restaurantId, postId, replyId } = useParams();
   const router = useRouter();
 
   const [formData, setFormData] = useState<ReplyModel>({
     id: 0,
     content: '',
-    postId: Number(id),
+    postId: Number(postId),
     userId: 1 // 강제값으로 수정 필요 
   });
 
@@ -29,7 +29,7 @@ export default function ReplyUpdate() {
           console.log("Fetched data:", data); 
           setFormData({
             ...data,
-            postId: Number(id), 
+            postId: Number(postId), 
             userId: 1
           });
         } else {
@@ -45,7 +45,7 @@ export default function ReplyUpdate() {
     if (replyId) {
       fetchReply();
     }
-  }, [id, replyId]);
+  }, [postId, replyId]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ export default function ReplyUpdate() {
   
       if (response.ok) {
         console.log('Reply updated successfully.');
-        router.push(`/post/${restaurantId}/${id}/reply`);
+        router.push(`/post/${restaurantId}/${postId}/reply`);
       } else {
         console.error('Failed to update reply');
       }
@@ -102,7 +102,7 @@ export default function ReplyUpdate() {
           <button
             type="button"
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            onClick={()=> router.push(`/post/${restaurantId}/${id}/reply`)}
+            onClick={()=> router.push(`/post/${restaurantId}/${postId}/reply`)}
           >
             뒤로가기
           </button>

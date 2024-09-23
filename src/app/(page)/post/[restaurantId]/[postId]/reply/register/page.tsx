@@ -6,21 +6,20 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function ReplyRegister() {
     const router = useRouter();
-    const { id } = useParams();
+    const { restaurantId, postId } = useParams();
     const [formData, setFormData] = useState<ReplyModel>({
         content: '',
-        postId: 0,
+        postId: Number(postId),
         userId: 1 // 강제값으로 수정 필요!! 
     });
-
     useEffect(() => {
-        if (id) {
+        if (postId) {
             setFormData((prev) => ({
                 ...prev,
-                postId: Number(id)
+                postId: Number(postId)
             }));
         }
-    }, [id]);
+    }, [postId]);
 
     const handleChange = (
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -40,9 +39,8 @@ export default function ReplyRegister() {
         console.log("db전송 데이터: ", replyData);
 
         await insertReply(replyData);
-        router.push(`/post/${id}/reply`)
+        router.push(`/post/${restaurantId}/${postId}/reply`)
     };
-
 
     return (
         <main className="flex min-h-screen flex-col items-center">
