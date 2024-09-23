@@ -111,6 +111,8 @@ public class ReceiptController {
                 .entryDate(LocalDateTime.now())
                 .build();
 
+
+
         System.out.println("menu = " + menu + " name =" + name + " price =" + price + " date =" + date);
         return ResponseEntity.ok(receiptService.save(receipt));
     }
