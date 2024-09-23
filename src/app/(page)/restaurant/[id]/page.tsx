@@ -1,5 +1,5 @@
 "use client";
-import { useParams ,useRouter} from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import SearchBar from '@/app/components/SearchBox';
 import Star from '../../star/page';
@@ -33,39 +33,39 @@ const RestaurantDetail: React.FC = () => {
     const router = useRouter();
 
 
-useEffect(() => {
-    const fetchData = async () => {
-        try {
-            
-            const [restaurantRes, allAverageRes, tagsRes] = await Promise.all([
-                fetch(`http://localhost:8080/api/restaurant/${id}`),
-                fetch(`http://localhost:8080/api/posts/${id}/allAverage`),
-                fetch(`http://localhost:8080/api/tags/top5/${id}`)
-            ]);
-            
-            
-            const restaurantData = await restaurantRes.json();
-            const allAverageData = await allAverageRes.json(); 
-            const tagsData = await tagsRes.json();
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
 
-            
-            setRestaurant(restaurantData);
-            setAllAverage(allAverageData);
-            setTags(tagsData);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        } finally {
-            setLoading(false);
+                const [restaurantRes, allAverageRes, tagsRes] = await Promise.all([
+                    fetch(`http://localhost:8080/api/restaurant/${id}`),
+                    fetch(`http://localhost:8080/api/posts/${id}/allAverage`),
+                    fetch(`http://localhost:8080/api/tags/top5/${id}`)
+                ]);
+
+
+                const restaurantData = await restaurantRes.json();
+                const allAverageData = await allAverageRes.json();
+                const tagsData = await tagsRes.json();
+
+
+                setRestaurant(restaurantData);
+                setAllAverage(allAverageData);
+                setTags(tagsData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            fetchData();
         }
-    };
-
-    if (id) {
-        fetchData();
-    }
-}, [id]);
+    }, [id]);
 
 
-   
+
     useEffect(() => {
         if (restaurant && restaurant.address) {
             const mapScript = document.createElement('script');
@@ -86,7 +86,7 @@ useEffect(() => {
                         const map = new kakao.maps.Map(mapContainer, mapOption);
                         const geocoder = new (window as any).kakao.maps.services.Geocoder();
 
-                        geocoder.addressSearch(restaurant.address, function(result: any, status: any) {
+                        geocoder.addressSearch(restaurant.address, function (result: any, status: any) {
                             if (status === window.kakao.maps.services.Status.OK) {
                                 const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
                                 const marker = new window.kakao.maps.Marker({
@@ -137,14 +137,20 @@ useEffect(() => {
                     const [name, price] = item.split('-').map(part => part.trim());
                     return (
                         <div key={index}>
-                            <span>{name}</span>
-                            <span> - {price}</span>
+                            <li>
+                                <span>{name}</span>
+                                <span> - {price}</span>
+                            </li>
                         </div>
                     );
                 })}
             </div>
         );
     };
+
+    const handlePost = () => {
+        router.push('/post')
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -192,35 +198,49 @@ useEffect(() => {
                     <p><strong>유형:</strong> {restaurant.type}</p>
                     <p><strong>주소:</strong> {restaurant.address}</p>
                     <p><strong>전화번호:</strong> {restaurant.tel}</p>
-                    <p><strong>네이버 평점:</strong>
-                    <div className="flex items-center">
-                        <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => { }} />
-                        <p className="ml-2">{restaurant.rate.toFixed(1)} / 5</p>
-                    </div> </p>
-                    <p><strong>메뉴:</strong></p>
-                    <div className="whitespace-pre-line">
-                        {renderMenu(restaurant.menu)}
+                    <p><strong>[네이버 평점]</strong></p>
+                        <div className="flex items-center">
+                            {restaurant.rate != null && restaurant.rate != 0 ? ( 
+                                <div className="flex items-center">
+                                <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => { }} />
+                            <p className="ml-2">{restaurant.rate.toFixed(1)} / 5</p>
+                            </div>
+                            ) : 
+                            '등록된 평점이 없습니다'}
+                            
+                        </div> 
+                    <div className="mb-4">
+                        <strong>[레스토랑 전체 평점]</strong>
+                        {allAverage !== null ? (
+                            <div className="flex items-center">
+                                <Star w="w-6" h="h-6" readonly={true} rate={allAverage} onChange={() => { }} />
+                                <p className="ml-2">{allAverage.toFixed(1)} / 5</p>
+                            </div>
+                        ) : (
+                            '등록된 평점이 없습니다.'
+                        )}
                     </div>
+                    <strong>메뉴 </strong>
+                    <ul role="list" className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500">
+                        <div className="whitespace-pre-line">
+                            {renderMenu(restaurant.menu)}
+                        </div>
+                    </ul>
                 </div>
             )}
-            <div className="mb-4">
-                <strong>[레스토랑 전체 평점]</strong>
-                {allAverage !== null ? (
-                    <div className="flex items-center">
-                        <Star w="w-6" h="h-6" readonly={true} rate={allAverage} onChange={() => { }} />
-                        <p className="ml-2">{allAverage.toFixed(1)} / 5</p>
-                    </div>
-                ) : (
-                    '등록된 평점이 없습니다.'
-                )}
-            </div>
+
 
             <div className="mb-4">
-                <strong>[가장 많이 선택된 태그]</strong>
+                <h2 className="text-lg font-bold mb-2">[가장 많이 선택된 태그]</h2>
                 {tags.length > 0 ? (
-                    <ul>
+                    <ul className="flex flex-wrap gap-2">
                         {tags.map((tag, index) => (
-                            <li key={index}>{tag}</li>
+                            <li
+                                key={index}
+                                className="rounded-full border border-sky-100 bg-sky-50 px-2 py-0.5 dark:text-sky-300 dark:border-sky-500/15 dark:bg-sky-500/10"
+                            >
+                                {tag}
+                            </li>
                         ))}
                     </ul>
                 ) : (
@@ -229,8 +249,8 @@ useEffect(() => {
             </div>
             <div>
                 <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                    onClick={()=> router.push(`/post/${id}`)}>
-                    후기 보기
+                    onClick={() => router.push(`/post/${id}`)}>
+                    후기 보기   
                 </button>
             </div>
         </div>
