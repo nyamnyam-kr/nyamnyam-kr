@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "tags")
 public class TagEntity {
+
     @Id
     private String name;
 
@@ -30,6 +31,5 @@ public class TagEntity {
         this.tagCategory = tagCategory;
     }
 
-    // admin에서 온듯??
     private Long postId;
 }

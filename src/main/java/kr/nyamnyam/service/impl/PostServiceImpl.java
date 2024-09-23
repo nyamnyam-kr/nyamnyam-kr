@@ -36,10 +36,10 @@ public class PostServiceImpl implements PostService {
     private final RestaurantRepository restaurantRepository;
 
     @Override
-    public double allAverageRating(Long restaurantId){
+    public double allAverageRating(Long restaurantId) {
         List<PostEntity> posts = repository.findByRestaurantId(restaurantId);
 
-        if(posts.isEmpty()){
+        if (posts.isEmpty()) {
             return 0.0;
         }
         double totalRating = posts.stream()
@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostModel postWithImage(Long id){
+    public PostModel postWithImage(Long id) {
         PostEntity postEntity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
 
@@ -223,8 +223,6 @@ public class PostServiceImpl implements PostService {
                         .collect(Collectors.toList()))
                 .images(entity.getImages().stream()
                         .map(image -> {
-                            // 이 부분에서 ID 확인
-                            System.out.println("convert 이미지 Id: " + image.getId());
                             return ImageModel.builder()
                                     .id(image.getId().toString())
                                     .originalFilename(image.getOriginalFileName())

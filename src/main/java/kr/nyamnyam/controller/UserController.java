@@ -55,7 +55,10 @@ public class UserController {
         return userService.save(userModel);
     }
 
-
+    @PostMapping("/login")
+    public Optional<UsersEntity> login(@RequestBody UserModel userModel) {
+        return userService.login(userModel.getUsername(), userModel.getPassword());
+    }
 
 }
 

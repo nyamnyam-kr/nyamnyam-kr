@@ -24,4 +24,6 @@ public interface UserService {
 
     UsersEntity save(UserModel userModel);
 
+    Optional<UsersEntity> login(String username, String password);
+
 }
