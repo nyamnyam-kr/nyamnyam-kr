@@ -29,16 +29,14 @@ export default function showReport() {
                 <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
                     <thead>
                     <tr className="bg-blue-600 text-white">
-                        <th className="py-3 px-4 border-b">제목</th>
-                        <th className="py-3 px-4 border-b">사용자ID</th>
-                        <th className="py-3 px-4 border-b">작성일</th>
+                        <th className="py-3 px-4 border-b">번호</th>
+                        <th className="py-3 px-4 border-b">내용</th>
                     </tr>
                     </thead>
                     <tbody>
                     {report.map((r) => (
                         <tr key={r.id} className=" text-black" onClick={() => moveToOne(r.id)}>
                             <th className="py-3 px-4 border-b">{r.id}</th>
-                            <th className="py-3 px-4 border-b">{r.userId}</th>
                             <th className="py-3 px-4 border-b">{r.content}</th>
                         </tr>
                     ))}

@@ -66,6 +66,16 @@ export default function ShowNotice() {
 
                     )}
                 </table>
+                {notice && (
+                    <div className="mt-4">
+                        <button
+                            onClick={() => router.push(`/notice/update/${id}`)}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
+                            수정하기
+                        </button>
+                    </div>
+                )}
             </div>
         </main>
     );

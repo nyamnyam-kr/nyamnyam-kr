@@ -15,13 +15,20 @@ export default function showNotice() {
                 return response.json();
             })
             .then((data) => {
-                setNotice(data)
-            })
+                const sortedData = data.sort((a: NoticeModel, b: NoticeModel) => {
+                    return new Date(b.date).getTime() - new Date(a.date).getTime();
+                });
+                setNotice(sortedData);
+            });
     }, []);
 
     const moveToOne = (id : number) => {
         router.push(`/notice/details/${id}`)
     }
+
+    const moveToInsert = () => {
+        router.push('/notice/register'); // 공지사항 추가 페이지로 이동
+    };
 
 
     return (
@@ -45,6 +52,9 @@ export default function showNotice() {
                     ))}
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <button onClick={moveToInsert}>공지사항 추가하기</button>
             </div>
         </main>
     )
