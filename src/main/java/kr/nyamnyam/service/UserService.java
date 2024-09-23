@@ -31,4 +31,8 @@ public interface UserService {
 
     void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+    String authenticate(String username, String password);
+
+    boolean validateToken(String token);
+
 }

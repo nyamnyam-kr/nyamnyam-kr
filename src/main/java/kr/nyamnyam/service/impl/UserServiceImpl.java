@@ -5,11 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.nyamnyam.model.domain.UserModel;
 import kr.nyamnyam.model.entity.UsersEntity;
 import kr.nyamnyam.model.repository.UserRepository;
-import kr.nyamnyam.pattern.proxy.Pagination;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,13 +19,9 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-
-    @Autowired
-    private Pagination pagination;
-
     private final UserRepository userRepository;
-    private final OAuth2Service oAuth2Service;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final OAuth2Service oAuth2Service; // OAuth2 관련 서비스
+    private final JwtTokenProvider jwtTokenProvider; // JWT 관련 클래스
 
     @Override
     public boolean existsById(Long id) {
@@ -43,7 +37,6 @@ public class UserServiceImpl implements UserService {
     public Optional<UsersEntity> findById(Long id) {
         return userRepository.findById(id);
     }
-
 
     @Override
     public List<UsersEntity> findAll() {
@@ -97,6 +90,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(usersEntity);
     }
 
+    // OAuth2 로그인 관련 메서드
     @Override
     public String loginWithOAuth2(String code, String receivedState, HttpServletRequest request) {
         // 세션에서 저장된 state 값 가져오기
@@ -118,7 +112,7 @@ public class UserServiceImpl implements UserService {
             String jwtToken = jwtTokenProvider.createToken(username, "ROLE_USER");
             return jwtToken;
         } catch (IOException e) {
-            e.printStackTrace(); // 예외 처리
+            e.printStackTrace();
             throw new RuntimeException("Failed to login with OAuth2");
         }
     }
@@ -128,6 +122,7 @@ public class UserServiceImpl implements UserService {
         return jsonObject.getString("email");
     }
 
+    // OAuth2 인증 시작 메서드
     @Override
     public void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String state = UUID.randomUUID().toString();
@@ -142,4 +137,18 @@ public class UserServiceImpl implements UserService {
         response.sendRedirect(authorizationUrl);
     }
 
+    @Override
+    public String authenticate(String username, String password) {
+        return userRepository.findByUsername(username)
+                .filter(user -> user.getPassword().equals(password))
+                .map(user -> jwtTokenProvider.createToken(username, user.getRole()))
+                .orElseThrow(() -> new RuntimeException("Invalid credentials")); // 예외 처리
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
+
 }
+
