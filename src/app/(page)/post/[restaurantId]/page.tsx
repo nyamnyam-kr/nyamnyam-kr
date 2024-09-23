@@ -66,7 +66,7 @@ export default function Home() {
         if (!dateString) return '';
 
         const date = new Date(dateString);
-        const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit', day: '2-digit'};
+        const options: Intl.DateTimeFormatOptions = { year: '2-digit', month: '2-digit', day: '2-digit' };
         const formattedDate = new Intl.DateTimeFormat('ko-KR', options).format(date);
 
         const [year, month, day] = formattedDate.split('.').map(part => part.trim());
@@ -143,54 +143,69 @@ export default function Home() {
                     {posts.map((p) => (
                         <div key={p.id} className="flex flex-col md:flex-row border border-indigo-600 rounded-lg p-4 shadow-lg bg-white">
                             <div className="md:w-full">
-                                <div className="flex justify-between items-center mb-2">
-                                <Link
-                                    href={`/post/${restaurantId}/details/${p.id}`}
-                                    className="text-blue-600 hover:underline"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDetails(p.id ?? 0);
-                                    }}
-                                >
-                                    <h2 className="text-xl font-semibold mb-2">닉네임: {p.nickname}</h2>
-                                </Link>
-                                <button
-                                    onClick={() => handleLike(p.id)}
-                                    className="flex items-center text-black rounded-lg py-2 px-4"
-                                >
-                                    <FontAwesomeIcon
-                                        icon={likeCount[p.id] > 0 ? solidHeart : regularHeart}
-                                        style={{ color: likeCount[p.id] > 0 ? 'pink' : 'gray' }}
-                                    />
-                                    <span className="ml-2">{likeCount[p.id] || 0}</span>
-                                </button>
-                                </div>
-                                <div className="inline-flex space-x-2 mb-2">
-                                    <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
-                                    <h1>{p.averageRating.toFixed(1)} / 5</h1>
-                                </div>
-                                <div className="mb-2">
-                                    <p className="text-gray-700">{p.content}</p>
-                                </div>
-                                <div className="flex flex-col space-y-2 mb-2">
-                                    <div className="inline-flex space-x-2">
-                                        <p>맛: </p>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.taste} />
+                                <div onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDetails(p.id ?? 0);
+                                }}>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h2 className="text-xl font-semibold mb-2">닉네임: {p.nickname}</h2>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleLike(p.id)
+                                            }
+                                            }
+                                            className="flex items-center text-black rounded-lg py-2 px-4"
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={likeCount[p.id] > 0 ? solidHeart : regularHeart}
+                                                style={{ color: likeCount[p.id] > 0 ? 'pink' : 'gray' }}
+                                            />
+                                            <span className="ml-2">{likeCount[p.id] || 0}</span>
+                                        </button>
                                     </div>
-                                    <div className="inline-flex space-x-2">
-                                        <p>청결: </p>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.clean} />
+                                    <div className="inline-flex space-x-2 mb-2">
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
+                                        <h1>{p.averageRating.toFixed(1)} / 5</h1>
                                     </div>
-                                    <div className="inline-flex space-x-2">
-                                        <p>서비스: </p>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.service} />
+                                    <div className="mb-2">
+                                        <p className="text-gray-700">{p.content}</p>
                                     </div>
-                                </div>
-                                <div className="mb-2">
-                                    <p>태그: {p.tags && p.tags.length > 0 ? p.tags.join(", ") : "태그 없음"}</p>
-                                </div>
-                                <div className="mb-2">
-                                    <p>작성일: {formatDate(p.entryDate)}</p>
+                                    <div className="flex flex-col space-y-2 mb-2">
+                                        <div className="inline-flex space-x-2">
+                                            <p>맛: </p>
+                                            <Star w="w-4" h="h-4" readonly={true} rate={p.taste} />
+                                        </div>
+                                        <div className="inline-flex space-x-2">
+                                            <p>청결: </p>
+                                            <Star w="w-4" h="h-4" readonly={true} rate={p.clean} />
+                                        </div>
+                                        <div className="inline-flex space-x-2">
+                                            <p>서비스: </p>
+                                            <Star w="w-4" h="h-4" readonly={true} rate={p.service} />
+                                        </div>
+                                    </div>
+                                    <div className="mb-2 flex items-center">
+                                        <h2 className="text-lg font-bold mb-2 flex-shrink-0 self-center">태그:</h2>
+                                        {p.tags && p.tags.length > 0 ? (
+                                            <ul className="flex flex-wrap gap-2 ml-2 items-center">
+                                                {p.tags.map((tag, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="rounded-full border border-sky-100 bg-sky-50 px-2 py-1 text-sky-700"
+                                                    >
+                                                        {tag}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="ml-2">태그 없음</p>
+                                        )}
+                                    </div>
+                                    <div className="mb-2">
+                                        <p>작성일: {formatDate(p.entryDate)}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
