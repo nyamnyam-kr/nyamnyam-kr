@@ -41,3 +41,5 @@ out/
 /src/main/resources/static/chromedriver-win64/
 'application.yaml' 
 /src/main/resources/static/image/
+
+.ncloud.properties
