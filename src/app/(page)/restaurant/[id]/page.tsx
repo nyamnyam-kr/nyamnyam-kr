@@ -178,15 +178,18 @@ const RestaurantDetail: React.FC = () => {
                     </ul>
                 ) : (
                     <>
+                        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-4 shadow-md p-4 rounded-lg bg-gray-100">
+                            {restaurant.name}
+                        </h1>
                         <div className="flex mb-4">
                             <div className="w-2/3 pr-4"> {/* 레스토랑 정보 영역의 너비를 조정 */}
-                                <h1 className="text-3xl font-bold mb-4">{restaurant.name}</h1>
+
                                 <div className="flex mb-4">
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
                                         style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
-         
+
 
                                     />
                                     {restaurant.subImageUrl && (
@@ -194,15 +197,14 @@ const RestaurantDetail: React.FC = () => {
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
                                             style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
-         
 
                                         />
                                     )}
                                 </div>
-                                <p className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</p>
-                                <p className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</p>
-                                <p className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</p>
-                                <p className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></p>
+                                <div className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</div>
+                                <div className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</div>
+                                <div className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</div>
+                                <div className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></div>
                                 <div className="flex items-center">
                                     {restaurant.rate != null && restaurant.rate !== 0 ? (
                                         <div className="flex items-center">
@@ -227,7 +229,7 @@ const RestaurantDetail: React.FC = () => {
                                     </div>
                                 </ul>
                                 <strong className="text-lg">운영시간</strong>
-                                <p>{renderOperTime(restaurant.operation)}</p>
+                                <div>{renderOperTime(restaurant.operation)}</div>
                             </div>
                             <div className="w-1/3 h-80 rounded-lg shadow-md mt-0">
                                 <div id="map" className="w-full h-full rounded-lg shadow-md mb-4" ></div>
@@ -266,7 +268,7 @@ const RestaurantDetail: React.FC = () => {
                 </div>
                 <div className="text-center">
                     <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
-                        onClick={() => router.push(`/post/${id}`)}>
+                            onClick={() => router.push(`/post/${id}`)}>
                         후기 보기
                     </button>
                 </div>
