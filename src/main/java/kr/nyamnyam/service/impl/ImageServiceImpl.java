@@ -2,7 +2,6 @@ package kr.nyamnyam.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import kr.nyamnyam.model.domain.ImageModel;
@@ -116,13 +115,19 @@ public class ImageServiceImpl implements ImageService {
     public Boolean updateImages(Long postId, List<MultipartFile> multipartFiles) {
         List<ImageEntity> existImages = repository.findByPostId(postId);
         for (ImageEntity image : existImages) {
-            amazonS3.deleteObject(bucketName, image.getStoredFileName());
-            repository.delete(image);
+            try {
+                String keyName = image.getUploadURL().replace("https://kr.object.ncloudstorage.com/" + bucketName + "/", "");
+                amazonS3.deleteObject(bucketName, keyName);
+                repository.delete(image);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to delete image: " + image.getStoredFileName());
+            }
         }
         PostEntity postEntity = postService.findEntityById(postId);
-        if(postEntity == null) {
+        if (postEntity == null) {
             throw new IllegalArgumentException("Invalid postId: " + postId);
         }
+
         for (MultipartFile multipartFile : multipartFiles) {
             String originalFilename = multipartFile.getOriginalFilename();
             String storedFileName = getFileName(originalFilename);
@@ -137,7 +142,7 @@ public class ImageServiceImpl implements ImageService {
             objectMetadata.setContentType(multipartFile.getContentType());
 
             try (InputStream inputStream = multipartFile.getInputStream()) {
-                String keyName = "uploads/" + storedFileName;
+                String keyName = uploadPath + storedFileName;
 
                 amazonS3.putObject(
                         new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata)
@@ -151,7 +156,7 @@ public class ImageServiceImpl implements ImageService {
                     .originalFileName(originalFilename)
                     .storedFileName(storedFileName)
                     .extension(extension)
-                    .uploadPath("uploads/")
+                    .uploadPath(uploadPath)
                     .uploadURL(uploadURL)
                     .post(postEntity)
                     .build();

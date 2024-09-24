@@ -56,7 +56,6 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
 
         List<ImageEntity> images = postEntity.getImages();
-        System.out.println("이미지 사이즈: "+ images.size());
 
         return convertToModel(postEntity);
     }
