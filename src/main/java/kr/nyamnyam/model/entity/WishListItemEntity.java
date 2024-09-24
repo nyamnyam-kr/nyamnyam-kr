@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,16 +12,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "wishLists")
-public class WishListEntity {
+@Table(name = "wishlist_items")
+public class WishListItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private Long userId;
-
+    private Long wishlistGroupId;
     private Long restaurantId;
+    private LocalDateTime addedAt;
+
 
 }
