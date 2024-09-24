@@ -90,22 +90,21 @@ export default function PostDetail() {
           <p><strong>태그: </strong> {posts?.tags && posts?.tags.length > 0 ? posts?.tags.join(",") : "태그 없음"}</p>
           <p><strong>작성일: </strong> {posts?.entryDate && formDate(posts.entryDate)}</p>
 
-          <div>
-            <strong>이미지:</strong>
-            <div>
+          <div className="mb-2">
               {images.length > 0 ? (
-                images.map((url, index) => (
+                <div className="flex flex-wrap gap-4">
+                  {images.map((url, index) => (
                   <img
                     key={index}
                     src={url}
                     alt={`이미지 ${index + 1}`}
                     style={{ width: "200px", height: "auto" }}
                   />
-                ))
+                ))}
+                </div>
               ) : (
                 <p>이미지 없음</p>
               )}
-            </div>
           </div>
         </div>
       </div>
