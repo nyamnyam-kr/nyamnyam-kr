@@ -1,8 +1,10 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,9 +20,9 @@ public class ReportEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private String title;
-    private String content;
-    private Date entryDate;
-    private String state;
+    private Long postId;
+    private String reason;
+
+
 
 }

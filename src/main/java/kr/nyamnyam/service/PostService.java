@@ -7,13 +7,12 @@ import kr.nyamnyam.model.entity.PostEntity;
 import java.util.List;
 
 public interface PostService {
+
     double allAverageRating(Long restaurantId);
 
     PostModel postWithImage(Long id);
 
     PostEntity findEntityById(Long id);
-
-    //List<PostModel> findAll();
 
     List<PostModel> findAllByRestaurant(Long restaurantId);
 
@@ -33,3 +32,4 @@ public interface PostService {
 
     Boolean updatePost(Long id, PostModel model);
 }
+

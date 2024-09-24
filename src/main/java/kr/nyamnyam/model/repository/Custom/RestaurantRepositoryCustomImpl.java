@@ -1,9 +1,11 @@
 package kr.nyamnyam.model.repository.Custom;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.nyamnyam.model.domain.Chart.AreaModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QPostTagEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
@@ -11,7 +13,9 @@ import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Objects;
+
 
 import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
 
@@ -42,6 +46,33 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .fetch();
 
     }
+
+    @Override
+    public List<AreaModel> countAreaList() {
+        QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
+
+        List<Tuple> results = jpaQueryFactory.select(
+                        Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address).as("district"),
+                        restaurantEntity.address.count()
+                )
+                .from(restaurantEntity)
+                .groupBy(Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address))
+                .orderBy(restaurantEntity.address.count().desc())
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    AreaModel areaModel = new AreaModel();
+                    areaModel.setArea(tuple.get(0, String.class));
+                    areaModel.setTotal(tuple.get(1, Long.class));
+                    return areaModel;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
 
 
     @Override

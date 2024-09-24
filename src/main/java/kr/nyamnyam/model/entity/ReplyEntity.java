@@ -20,10 +20,10 @@ public class ReplyEntity {
     private Long id;
     private String content;
     //private Long upvoteId;
-    @Column(nullable = false)
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "post_id")
     private Long postId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

@@ -1,12 +1,10 @@
 package kr.nyamnyam.service.impl;
 
+import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
-import kr.nyamnyam.model.entity.PostEntity;
-import kr.nyamnyam.model.entity.PostTagEntity;
-import kr.nyamnyam.model.entity.RestaurantEntity;
-import kr.nyamnyam.model.entity.TagEntity;
+import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.PostTagRepository;
 import kr.nyamnyam.model.repository.RestaurantRepository;
@@ -42,28 +40,23 @@ public class PostServiceImpl implements PostService {
         if (posts.isEmpty()) {
             return 0.0;
         }
+
         double totalRating = posts.stream()
-                .mapToDouble(post -> (post.getTaste() + post.getClean() + post.getService()) / 3.0)
+                .mapToDouble(post -> {
+                    double averageRating = (post.getTaste() + post.getClean() + post.getService()) / 3.0;
+                    return Math.min(averageRating, 5.0);
+                })
                 .sum();
+
         return totalRating / posts.size();
     }
 
     @Override
-    public PostModel postWithImage(Long id) {
-        PostEntity postEntity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    public PostModel postWithImage(Long postId) {
+        PostEntity postEntity = repository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
 
-        List<ImageModel> imageModels = postEntity.getImages().stream()
-                .map(imageEntity -> ImageModel.builder()
-                        .originalFilename(imageEntity.getOriginalFileName())
-                        .storedFileName(imageEntity.getStoredFileName())
-                        .build())
-                .collect(Collectors.toList());
-
-        PostModel postModel = convertToModel(postEntity);
-        postModel.setImages(imageModels);
-
-        return postModel;
+        return convertToModel(postEntity);
     }
 
     @Override
@@ -125,11 +118,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostModel> findAllByRestaurant(Long restaurantId) {
-        List<PostEntity> posts = repository.findByRestaurantId(restaurantId);
+        List<Tuple> posts = repository.findAllByRestaurantWithNickname(restaurantId);
 
         return posts.stream()
-                .map(this::convertToModel)
+                .map(tuple -> convertToModelWithNickname(tuple.get(QPostEntity.postEntity),
+                        tuple.get(QUsersEntity.usersEntity.nickname)))
                 .collect(Collectors.toList());
+    }
+
+    private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
+        PostModel postModel = convertToModel(postEntity);
+        postModel.setNickname(nickname);
+        return postModel;
     }
 
     @Override
@@ -149,6 +149,7 @@ public class PostServiceImpl implements PostService {
         return repository.count();
     }
 
+    @Transactional
     @Override
     public Boolean deleteById(Long id) {
         if (existsById(id)) {
@@ -184,12 +185,36 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         repository.save(updatedEntity);
-        saveTags(model.getTags(), existingEntity);
+        updateTags(model.getTags(), updatedEntity);
 
         return true;
     }
 
-    // 태그 저장
+    private void updateTags(List<String> tags, PostEntity postEntity) {
+        List<PostTagEntity> existPostTags = postTagRepository.findByPost(postEntity);
+        List<PostTagEntity> newPostTags = tags.stream()
+                .filter(tagName -> existPostTags.stream().noneMatch(postTag -> postTag.getTag().getName().equals(tagName)))
+                .map(tagName -> {
+                    TagEntity tag = tagRepository.findByName(tagName)
+                            .orElseGet(() -> {
+                                TagEntity newTag = new TagEntity();
+                                newTag.setName(tagName);
+                                tagRepository.save(newTag);
+                                return newTag;
+                            });
+                    return new PostTagEntity(postEntity, tag);
+                })
+                .collect(Collectors.toList());
+
+        postTagRepository.saveAll(newPostTags);
+
+        List<PostTagEntity> tagsToDelete = existPostTags.stream()
+                .filter(postTag -> !tags.contains(postTag.getTag().getName()))
+                .collect(Collectors.toList());
+
+        postTagRepository.deleteAll(tagsToDelete);
+    }
+
     private void saveTags(List<String> tags, PostEntity postEntity) {
         if (tags != null && !tags.isEmpty()) {
             List<PostTagEntity> postTags = tags.stream()
@@ -217,6 +242,7 @@ public class PostServiceImpl implements PostService {
                 .service(entity.getService())
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
+                .userId(entity.getUserId())
                 .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()
                         .map(postTagEntity -> postTagEntity.getTag().getName())
@@ -224,7 +250,7 @@ public class PostServiceImpl implements PostService {
                 .images(entity.getImages().stream()
                         .map(image -> {
                             return ImageModel.builder()
-                                    .id(image.getId().toString())
+                                    .id(image.getId())
                                     .originalFilename(image.getOriginalFileName())
                                     .storedFileName(image.getStoredFileName())
                                     .extension(image.getExtension())
@@ -243,6 +269,7 @@ public class PostServiceImpl implements PostService {
                 .taste(model.getTaste())
                 .clean(model.getClean())
                 .service(model.getService())
+                .userId(model.getUserId())
                 .restaurant(restaurant)
                 .build();
     }

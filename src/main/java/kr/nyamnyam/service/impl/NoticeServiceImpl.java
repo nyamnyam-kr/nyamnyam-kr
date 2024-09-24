@@ -1,6 +1,8 @@
 package kr.nyamnyam.service.impl;
 
+import jakarta.transaction.Transactional;
 import kr.nyamnyam.model.domain.NoticeModel;
+import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.NoticeEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.NoticeRepository;
@@ -8,6 +10,7 @@ import kr.nyamnyam.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +28,14 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeEntity findById(Long id) {
-        updateHits(id);
         return noticeRepository.findById(id).orElse(null);
     }
+
+//    @Override
+//    public NoticeEntity findById(Long id) {
+//        updateHits(id);
+//        return noticeRepository.findById(id).orElse(null);
+//    }
 
 
     @Override
@@ -38,15 +46,12 @@ public class NoticeServiceImpl implements NoticeService {
         return false;
     }
 
-    @Override
-    public Boolean updateHits(Long id) {
-        if(noticeRepository.updateHits(id) != null) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
+//    @Override
+//    @Transactional
+//    public Boolean updateHits(Long id) {
+//        noticeRepository.updateHits(id);
+//        return true;
+//    }
 
     @Override
     public Long count() {
@@ -67,8 +72,8 @@ public class NoticeServiceImpl implements NoticeService {
         NoticeEntity noticeEntity = NoticeEntity.builder()
                 .title(model.getTitle())
                 .content(model.getContent())
-                .hit(model.getHit())
-                .date(new Date())
+                .hits(model.getHits())
+                .date(LocalDateTime.now())
                 .build();
 
         return noticeRepository.save(noticeEntity);
@@ -76,13 +81,12 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeEntity update(NoticeModel model) {
-        System.out.println("NoticeServiceImpl.update");
         NoticeEntity noticeEntity = NoticeEntity.builder()
                 .id(model.getId())
-                .title(model.getTitle())
                 .content(model.getContent())
-                .hit(model.getHit())
-                .date(new Date())
+                .title(model.getTitle())
+                .hits(model.getHits())
+                .date(LocalDateTime.now())
                 .build();
 
         return noticeRepository.save(noticeEntity);

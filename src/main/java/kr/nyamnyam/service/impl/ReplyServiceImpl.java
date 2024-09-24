@@ -1,6 +1,9 @@
 package kr.nyamnyam.service.impl;
 
+import com.querydsl.core.Tuple;
 import kr.nyamnyam.model.domain.ReplyModel;
+import kr.nyamnyam.model.entity.QReplyEntity;
+import kr.nyamnyam.model.entity.QUsersEntity;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
@@ -19,11 +22,33 @@ public class ReplyServiceImpl implements ReplyService {
     private final ReplyRepository repository;
 
     @Override
-    public List<ReplyModel> findByPostId(Long postId) {
-        List<ReplyEntity> entity = repository.findByPostId(postId);
-        return entity.stream()
-                .map(this::convertToModel)
+    public List<ReplyModel> findAllByPostId(Long postId) {
+        List<Tuple> results = repository.findAllByPostWithNickname(postId);
+
+        System.out.println("댓글 size : " + results.size());
+        results.forEach(tuple -> {
+         ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
+         String nickname = tuple.get(QUsersEntity.usersEntity.nickname);
+            System.out.println("ReplyEntity : " + replyEntity);
+            System.out.println("Nickname : " + nickname);
+        });
+
+        return results.stream()
+                .map(tuple -> {
+                    ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
+                    String nickname = tuple.get(QUsersEntity.usersEntity.nickname);
+                    return convertToModelWithNickname(replyEntity, nickname);
+                })
                 .collect(Collectors.toList());
+    }
+
+    private ReplyModel convertToModelWithNickname(ReplyEntity replyEntity, String nickname) {
+        ReplyModel replyModel = convertToModel(replyEntity);
+        replyModel.setNickname(nickname);
+
+        System.out.println("convertToModelWithNickname : " + replyModel);
+
+        return replyModel;
     }
 
     @Override
@@ -75,8 +100,8 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public Boolean save(ReplyModel model) {
         ReplyEntity entity = convertToEntity(model);
-            entity.setEntryDate(LocalDateTime.now());
-            repository.save(entity);
+        entity.setEntryDate(LocalDateTime.now());
+        repository.save(entity);
         return true;
     }
 

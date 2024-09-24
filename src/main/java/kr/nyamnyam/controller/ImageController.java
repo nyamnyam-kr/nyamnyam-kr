@@ -35,6 +35,10 @@ public class ImageController{
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findByPostId(postId));
     }
+    @GetMapping("/post/{postId}/imageIds")
+    public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId){
+        return ResponseEntity.ok(service.findImageIdsByPostId(postId));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
@@ -45,7 +49,7 @@ public class ImageController{
         return ResponseEntity.ok(service.existsById(postId));
     }
     @DeleteMapping("")
-    public ResponseEntity<Boolean> deleteByPostId(@RequestParam Long imgId) {
+    public ResponseEntity<Boolean> deleteById(@RequestParam Long imgId) {
         return ResponseEntity.ok(service.deleteById(imgId));
     }
     @GetMapping("/group")
@@ -57,7 +61,7 @@ public class ImageController{
         return ResponseEntity.ok(service.count());
     }
     @PutMapping("")
-    public ResponseEntity<Boolean> update(@RequestBody ImageEntity entity) {
-        return ResponseEntity.ok(service.save(entity));
+    public ResponseEntity<Boolean> updateImages(@RequestParam Long postId,@RequestParam("files") List<MultipartFile> multipartFiles) {
+        return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
     }
 }

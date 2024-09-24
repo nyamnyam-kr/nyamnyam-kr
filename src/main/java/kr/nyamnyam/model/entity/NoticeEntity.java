@@ -1,8 +1,10 @@
 package kr.nyamnyam.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -19,8 +21,13 @@ public class NoticeEntity {
     private Long id;
     private String title;
     private String content;
-    private Long hit;
-    private Date date;
+    private Long hits;
+
+    @Column(columnDefinition = "TIMESTAMP(0)")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime date;
+
+
 
 
 

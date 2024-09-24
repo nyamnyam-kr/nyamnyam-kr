@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name="user")
+@Table(name="users")
 public class UsersEntity {
 
     @Id

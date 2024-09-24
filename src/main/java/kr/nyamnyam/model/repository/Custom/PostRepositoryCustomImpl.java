@@ -3,7 +3,8 @@ package kr.nyamnyam.model.repository.Custom;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.nyamnyam.model.domain.CountModel;
+import kr.nyamnyam.model.domain.Chart.CountModel;
+import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QUpvoteEntity;
@@ -18,6 +19,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    // post에 nickname 불러오기
+    @Override
+    public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
+
+        return jpaQueryFactory
+                .select(postEntity, usersEntity.nickname)
+                .from(postEntity)
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .where(postEntity.restaurant.id.eq(restaurantId))
+                .fetch();
+    }
 
     // 가장 많은 post 쓴 사람 순위 뽑아내기
     @Override
@@ -89,6 +103,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return jpaQueryFactory.select(restaurantEntity.name)
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
+                .join(restaurantEntity).on(restaurantEntity.id.eq(postEntity.id))
                 .groupBy(upvoteEntity.postId)
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)
@@ -96,6 +111,32 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     }
 
+    @Override
+    public List<TotalModel> countRestaurantList() {
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
+
+        List<Tuple> results = jpaQueryFactory.select(
+                        restaurantEntity.name,
+                        postEntity.restaurant.id.count()
+                )
+                .from(restaurantEntity)
+                .leftJoin(postEntity)
+                .on(restaurantEntity.id.eq(postEntity.restaurant.id))
+                .groupBy(restaurantEntity.name)
+                .orderBy(postEntity.restaurant.id.count().desc())
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurantEntity.name));
+                    totalModel.setTotal(tuple.get(postEntity.restaurant.id.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+    }
 
 
 

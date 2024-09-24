@@ -49,6 +49,7 @@ dependencies {
 	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
 	// Spring Boot 스타터
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -99,6 +100,16 @@ dependencies {
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.300'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
+
+	/*// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'*/
+
+	implementation 'org.json:json:20211205'
 }
 
 tasks.named('test') {

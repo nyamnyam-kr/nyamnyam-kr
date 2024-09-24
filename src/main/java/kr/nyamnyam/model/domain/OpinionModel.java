@@ -1,0 +1,16 @@
+package kr.nyamnyam.model.domain;
+
+import lombok.Data;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Data
+@Component
+public class OpinionModel {
+    private Long id;
+    private Long userId;
+    private String content;
+    private Date entryDate;
+
+}

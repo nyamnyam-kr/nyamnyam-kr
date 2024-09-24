@@ -18,8 +18,12 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-src/main/resources/application.yaml
-src/main/resources/ncloud.properties
+# Ignore application.yaml
+/src/main/resources/application.yaml
+
+# Ignore ncloud.properties
+/src/main/resources/ncloud.properties
+
 
 .idea
 *.iws
@@ -39,4 +43,3 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/static/chromedriver-win64/
-'application.yaml' 
