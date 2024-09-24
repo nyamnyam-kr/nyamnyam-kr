@@ -1,5 +1,6 @@
 "use client";
 import Star from '@/app/(page)/star/page';
+import { PostModel } from '@/app/model/post.model';
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
