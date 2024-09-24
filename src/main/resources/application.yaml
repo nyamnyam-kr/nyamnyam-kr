@@ -2,21 +2,23 @@ spring:
   application:
     name: nyamnyam_kr
   datasource:
-    url: jdbc:mysql://localhost:3306/nyamnyamdb
+    url: jdbc:mysql://localhost:3306/nyamnyam
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     defer-datasource-initialization: true
+    show-sql: true
     hibernate:
       ddl-auto: update
-      show-sql: true
-      format_sql: true
-      default_batch_fetch_size: 100
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
 
-    sql:
-      init:
-        mode: always
+  sql:
+    init:
+      mode: always
   servlet:
     multipart:
       enabled: true
