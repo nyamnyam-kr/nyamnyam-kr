@@ -151,7 +151,7 @@ const RestaurantDetail: React.FC = () => {
     };
 
     return (
-        <div className="overflow-y-auto bg-gray-100">
+        <div className="bg-gray-100">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
                 <div className="w-full max-w-lg mx-auto mb-6">
                     <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
