@@ -1,15 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from 'next/navigation';
-import Link from "next/link";
 import Star from "../../star/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 
-export default function Home() {
+export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
+    const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
+    const [images, setImages] = useState<{ [key: number]: string[] }>({});
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const currentUserId = 1; // giveId : 테스트로 1값 설정 
@@ -19,6 +20,7 @@ export default function Home() {
     useEffect(() => {
         if (restaurantId) {
             fetchPosts();
+            fetchRestaurant();
         }
     }, [restaurantId]);
 
@@ -36,6 +38,7 @@ export default function Home() {
                 const likeStatus = data.map(async (post: PostModel) => {
                     const liked = await checkLikedStatus(post.id);
                     const count = await getLikeCount(post.id);
+                    await fetchImage(post.id);
                     return { postId: post.id, liked, count };
                 });
 
@@ -57,6 +60,38 @@ export default function Home() {
                 console.error('There has been a problem with your fetch operation:', error);
             });
     };
+
+    const fetchRestaurant = () => {
+        fetch(`http://localhost:8080/api/restaurant/${restaurantId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Restaurant fetch fail')
+                }
+                return response.json();
+            })
+            .then(async (data) => {
+                setRestaurant(data);
+            })
+    };
+
+    const fetchImage = (postId: number) => {
+        fetch(`http://localhost:8080/api/images/post/${postId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Image fetch fail')
+                }
+                return response.json();
+            })
+            .then(async (data) => {
+                console.log("이미지 데이터: ", data);
+                const imageURLs = data.map((image: any) => image.uploadURL);
+                console.log('이미지 경로:', imageURLs);
+                setImages(prevImages => ({
+                    ...prevImages,
+                    [postId]: imageURLs,
+                }));
+            })
+    }
 
     const handleDetails = (id: number) => {
         router.push(`/post/${restaurantId}/details/${id}`);
@@ -138,6 +173,13 @@ export default function Home() {
                     뒤로가기
                 </button>
             </div>
+
+            {restaurant && (
+                <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 mb-4">
+                    <h1 className="text-2xl font-bold">{restaurant.name}</h1>
+                </div>
+            )}
+
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
                 <div className="flex flex-col space-y-4">
                     {posts.map((p) => (
@@ -185,6 +227,22 @@ export default function Home() {
                                             <p>서비스: </p>
                                             <Star w="w-4" h="h-4" readonly={true} rate={p.service} />
                                         </div>
+                                    </div>
+                                    <div className="mb-2">
+                                        {images[p.id] && images[p.id].length > 0 ? (
+                                            <div className="flex flex-wrap gap-4">
+                                                {images[p.id].map((url, index) => (
+                                                    <img
+                                                        key={index}
+                                                        src={url}
+                                                        alt={`이미지 ${index + 1}`}
+                                                        className="w-48 h-auto rounded-lg shadow-lg"
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p>이미지 없음</p>
+                                        )}
                                     </div>
                                     <div className="mb-2 flex items-center">
                                         <h2 className="text-lg font-bold mb-2 flex-shrink-0 self-center">태그:</h2>

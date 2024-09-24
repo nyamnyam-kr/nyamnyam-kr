@@ -8,7 +8,7 @@ export default function PostDetail() {
   const [images, setImages] = useState<string[]>([]);
   const { id, restaurantId } = useParams();
   const router = useRouter();
-  const currentUserId = 11; // 수정 필요 !!! 
+  const currentUserId = 1; // 수정 필요 !!! 
 
   useEffect(() => {
     if (id) {

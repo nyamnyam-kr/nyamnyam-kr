@@ -250,7 +250,7 @@ const RestaurantDetail: React.FC = () => {
                 )}
 
                 <div className="mb-4">
-                    <h2 className="text-lg font-bold mb-2">[가장 많이 선택된 태그]</h2>
+                    <h2 className="text-lg font-bold mb-2">[맛집 태그]</h2>
                     {tags.length > 0 ? (
                         <ul className="flex flex-wrap gap-2">
                             {tags.map((tag, index) => (

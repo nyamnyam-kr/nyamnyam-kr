@@ -44,9 +44,6 @@ export default function RootLayout({
               <li>
                 <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">홈</Link>
               </li>
-              <li>
-                <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">POST</Link>
-              </li>
               {user ? (
                 <>
                   <li className="px-3 py-2"> {/* 버튼 대신 텍스트는 버튼과 같은 높이를 유지하기 위해 padding 추가 */}
