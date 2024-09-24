@@ -46,8 +46,6 @@ public class ReplyServiceImpl implements ReplyService {
         ReplyModel replyModel = convertToModel(replyEntity);
         replyModel.setNickname(nickname);
 
-        System.out.println("convertToModelWithNickname : " + replyModel);
-
         return replyModel;
     }
 
