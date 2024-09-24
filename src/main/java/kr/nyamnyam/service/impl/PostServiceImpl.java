@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -55,6 +54,9 @@ public class PostServiceImpl implements PostService {
     public PostModel postWithImage(Long postId) {
         PostEntity postEntity = repository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+
+        List<ImageEntity> images = postEntity.getImages();
+        System.out.println("이미지 사이즈: "+ images.size());
 
         return convertToModel(postEntity);
     }
@@ -248,14 +250,13 @@ public class PostServiceImpl implements PostService {
                         .map(postTagEntity -> postTagEntity.getTag().getName())
                         .collect(Collectors.toList()))
                 .images(entity.getImages().stream()
-                        .map(image -> {
-                            return ImageModel.builder()
-                                    .id(image.getId())
-                                    .originalFilename(image.getOriginalFileName())
-                                    .storedFileName(image.getStoredFileName())
-                                    .extension(image.getExtension())
-                                    .build();
-                        })
+                        .map(image -> ImageModel.builder()
+                                .id(image.getId())
+                                .originalFilename(image.getOriginalFileName())
+                                .storedFileName(image.getStoredFileName())
+                                .extension(image.getExtension())
+                                .uploadURL(image.getUploadURL())
+                                .build())
                         .collect(Collectors.toList()))
                 .build();
     }

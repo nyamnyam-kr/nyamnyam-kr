@@ -35,6 +35,9 @@ public class ImageServiceImpl implements ImageService {
     @Value("${naver.storage.bucket}")
     private String bucketName;
 
+    @Value("${naver.storage.upload.path}")
+    private String uploadPath;
+
     @Override
     public String getFileName(String fileName) {
         String ext = fileName.substring(fileName.indexOf("."));
@@ -42,7 +45,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, String uploadPath, Long postId) {
+    public List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, Long postId) {
         List<ImageModel> s3files = new ArrayList<>();
 
         PostEntity postEntity = postService.findEntityById(postId);

@@ -18,18 +18,16 @@ import java.util.Optional;
 @RequestMapping("/api/images")
 public class ImageController{
     private final ImageService service;
-    private final PostService postService;
 
     @GetMapping("/fileName")
     public ResponseEntity<String> getFileName(@RequestParam String fileName) {
         return ResponseEntity.ok(service.getFileName(fileName));
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestParam("files") List<MultipartFile> multipartFiles,
-                                                        @RequestParam String uploadPath,
-                                                        @RequestParam Long postId) {
-        return ResponseEntity.ok(service.uploadFiles(multipartFiles, uploadPath, postId));
+    @PostMapping("/upload/{postId}")
+    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestPart("files") List<MultipartFile> multipartFiles,
+                                                        @PathVariable Long postId) {
+        return ResponseEntity.ok(service.uploadFiles(multipartFiles, postId));
     }
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
