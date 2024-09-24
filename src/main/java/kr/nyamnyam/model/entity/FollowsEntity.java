@@ -18,4 +18,6 @@ public class FollowsEntity {
     private Long id;
     private Long followerId;
     private Long followingId;
+
+
 }
