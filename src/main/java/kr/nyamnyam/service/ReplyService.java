@@ -22,7 +22,7 @@ public interface ReplyService {
 
     Boolean update(Long id, ReplyModel model);
 
-    List<ReplyModel> findByPostId(Long postId);
+    List<ReplyModel> findAllByPostId(Long postId);
 
     ReplyEntity convertToEntity(ReplyModel model);
 }

@@ -18,5 +18,6 @@ public interface RestaurantService {
     RestaurantModel findById(Long id);
     Boolean existsById(Long id);
     ResponseEntity<RestaurantModel> getOneRestaurant(@PathVariable Long id);
-
+    List<RestaurantModel> getRestaurantsByTag(List<String> tagNames);
+    List<RestaurantModel> findByCategory(List<String> categories);
 }

@@ -1,19 +1,18 @@
 package kr.nyamnyam.model.repository;
 
 import kr.nyamnyam.model.entity.ImageEntity;
-import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.model.repository.Custom.ImageRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
+public interface ImageRepository extends JpaRepository<ImageEntity, Long>, ImageRepositoryCustom {
 
-    Optional<ImageEntity> findById(Long id);
+    List<ImageEntity> findByPostId(Long postId);
 
+    Boolean existsByPostId(Long postId);
 
-    void deleteById(Long id);
+    Boolean deleteByPostId(Long postId);
 }

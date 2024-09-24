@@ -71,4 +71,22 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
     }
 
+    @Override
+    public List<RestaurantModel> getRestaurantsByTag( List<String> tagNames) {
+        List<RestaurantEntity> entities = restaurantRepository.findByTagName(tagNames);
+        return entities.stream()
+                .map(RestaurantModel::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RestaurantModel> findByCategory(List<String> categories) {
+        List<RestaurantEntity> entities = restaurantRepository.findByCategoryUsingMenu(categories);
+        return entities.stream()
+                .map(RestaurantModel::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+
 }
