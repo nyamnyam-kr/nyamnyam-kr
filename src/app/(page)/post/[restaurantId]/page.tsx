@@ -176,7 +176,7 @@ export default function Home() {
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
+        <main className="flex min-h-screen flex-col items-center p-6 ">
             <div className="w-full flex justify-end mb-4">
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
