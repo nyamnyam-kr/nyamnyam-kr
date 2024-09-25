@@ -58,8 +58,7 @@ public class ReplyController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> write(@RequestBody ReplyModel model) {
-        ReplyEntity entity = service.convertToEntity(model);
+    public ResponseEntity<Boolean> insertReply(@RequestBody ReplyModel model) {
         return ResponseEntity.ok(service.save(model));
     }
 }
