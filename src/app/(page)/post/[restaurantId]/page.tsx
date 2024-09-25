@@ -1,6 +1,6 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams } from "next/navigation";
 import Star from "../../star/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import { PostModel } from "@/app/model/post.model";
 import { insertReply } from "@/app/service/reply/reply.api";
+import { ReplyModel } from "@/app/model/reply.model";
 
 export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
@@ -367,8 +368,7 @@ export default function PostList() {
                                         <button
                                             onClick={() => {
                                                 handleLike(p.id)
-                                            }
-                                            }
+                                            }}
                                             className="flex items-center text-black rounded-lg py-2 px-4"
                                         >
                                             <FontAwesomeIcon
@@ -378,10 +378,11 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="inline-flex space-x-2 mb-2">
+                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
                                         <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
-                                        <h1>{p.averageRating.toFixed(1)} / 5</h1>
+                                        <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
+
                                     <div className="mb-2">
                                         <p className="text-gray-700">{p.content}</p>
                                     </div>
@@ -459,7 +460,7 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] || reply.content}
+                                                                                value={editInput[reply.id] !== undefined? editInput[reply.id] : reply.content}
                                                                                 onChange={(e) => handleEditChange(reply.id, e.target.value)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}
