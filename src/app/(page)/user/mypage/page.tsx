@@ -1,6 +1,6 @@
 "use client";
 import React, {FormEvent, useState} from "react";
-import {insertOpinion} from "@/app/service/user/user.api";
+import {insertOpinion} from "src/app/service/user/user.api";
 
 interface OpinionModel {
     id: number;

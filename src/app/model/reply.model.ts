@@ -1,5 +1,5 @@
 interface ReplyModel{
-    id?:number;
+    id:number;
     content:string;
     postId: number;
     userId: number;

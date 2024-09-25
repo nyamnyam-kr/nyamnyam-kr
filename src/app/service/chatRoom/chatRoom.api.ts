@@ -1,4 +1,3 @@
-
 export async function insertChatRoom(chatRoom: ChatRoomModel): Promise<any | {status: number}> {
     try {
         const ChannelModel = {
@@ -18,4 +17,5 @@ export async function insertChatRoom(chatRoom: ChatRoomModel): Promise<any | {st
         console.log('There has been a problem with your fetch operation', e);
         return {status: 500 };
     }
+
 }
