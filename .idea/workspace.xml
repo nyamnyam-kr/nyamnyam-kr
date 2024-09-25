@@ -5,8 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/app/StoreProvider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/features/receipt.slice.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/hooks.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024-09-20__3_57__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024-09-20__3_57__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/group/details/[id]/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/image/register/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/model/receipt.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/receipt.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +34,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="release0.03" />
+        <entry key="$PROJECT_DIR$" value="nyamnyam-ad" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -44,7 +55,7 @@
     &quot;git-widget-placeholder&quot;: &quot;nyamnyam-admin&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Documents/nyamnyam/nyamnyam-front/src/app/(page)/notice/details/[id]&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Documents/nyamnyam/nyamnyam-front&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -88,6 +99,13 @@
       <workItem from="1726934266646" duration="126000" />
       <workItem from="1726978994191" duration="8737000" />
       <workItem from="1727138171568" duration="608000" />
+      <workItem from="1727156412037" duration="2245000" />
+      <workItem from="1727161906772" duration="196000" />
+      <workItem from="1727162275180" duration="665000" />
+      <workItem from="1727166685124" duration="4376000" />
+      <workItem from="1727171750349" duration="3804000" />
+      <workItem from="1727181552545" duration="269000" />
+      <workItem from="1727181945480" duration="197000" />
     </task>
     <servers />
   </component>
