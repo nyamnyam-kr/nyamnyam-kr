@@ -1,7 +1,6 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import SearchBar from '@/app/components/SearchBox';
 import Star from '../../star/page';
 import { GiBottomRight3dArrow } from 'react-icons/gi';
 
@@ -153,10 +152,6 @@ const RestaurantDetail: React.FC = () => {
     return (
         <div className="bg-gray-100">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
-                <div className="w-full max-w-lg mx-auto mb-6">
-                    <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-                </div>
-
                 {filteredRestaurants.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         {filteredRestaurants.map((restaurant) => (
