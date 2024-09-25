@@ -1,10 +1,8 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://test123:1234@localhost:27017/test
+      uri: mongodb://root:1234@localhost:27017/nyamnyamdb
       auto-index-creation: true
-
-
   jpa:
     hibernate:
       ddl-auto: update
