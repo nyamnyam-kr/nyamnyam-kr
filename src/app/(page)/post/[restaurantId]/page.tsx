@@ -11,6 +11,7 @@ import { insertReply } from "@/app/service/reply/reply.api";
 
 export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
+    const [postId, setPostId] = useState<number | null>(null);
     const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [images, setImages] = useState<{ [key: number]: string[] }>({});
     const [likedPost, setLikedPosts] = useState<number[]>([]);
@@ -18,6 +19,8 @@ export default function PostList() {
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
     const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>({});
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
+    const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
+    const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
     const currentUserId = 1; // giveId : 테스트로 1값 설정 
     const router = useRouter();
     const { restaurantId } = useParams();
@@ -27,7 +30,7 @@ export default function PostList() {
             fetchPosts();
             fetchRestaurant();
         }
-    }, [restaurantId, replies]);
+    }, [restaurantId]);
 
     const fetchPosts = () => {
         fetch(`http://localhost:8080/api/posts/${restaurantId}/group`)
@@ -48,8 +51,6 @@ export default function PostList() {
                 });
 
                 const result = await Promise.all(likeStatus)
-
-
 
                 const likedPostId = result
                     .filter(result => result.liked)
@@ -99,17 +100,59 @@ export default function PostList() {
             })
     }
 
-    const fetchReply = (id: number) => {
-        fetch(`http://localhost:8080/api/replies/post/${id}`)
+    const fetchReply = (postId: number) => {
+        fetch(`http://localhost:8080/api/replies/post/${postId}`)
             .then((response) => response.json())
             .then(data => {
                 setReplies(prevReplies => ({
                     ...prevReplies,
-                    [id]: data,
+                    [postId]: data,
                 }));
+                console.log("setReplies: ", data);
             })
             .catch((error) => console.error("reply fetch fail:", error));
     }
+
+    useEffect(() => {
+        if (postId) {
+            fetchReply(postId);
+        }
+    }, [postId]);
+
+    const handleReplySubmit = async (postId: number, e: FormEvent) => {
+        e.preventDefault();
+
+        const replyContent = replyInput[postId];
+
+        if (!replyContent) {
+            alert('댓글을 입력하세요.');
+            return;
+        }
+
+        const replyData = {
+            id: 0,
+            content: replyContent,
+            postId: postId,
+            userId: currentUserId
+        };
+
+        try {
+            const newReply = await insertReply(replyData);
+
+            if (newReply) {
+                fetchReply(postId);
+
+                setReplyInput((prevInput) => ({
+                    ...prevInput,
+                    [postId]: '',
+                }));
+            } else {
+                console.log('댓글 등록 실패');
+            }
+        } catch (error) {
+            console.error('댓글 등록 중 오류:', error);
+        }
+    };
 
     const toggleReply = (id: number) => {
         setReplyToggles(prevToggles => ({
@@ -120,53 +163,15 @@ export default function PostList() {
         if (!replyToggles[id]) {
             fetchReply(id);
         }
-    }
-
-    const handleReplySubmit = async (id: number, e: FormEvent) => {
-        e.preventDefault();
-    
-        const replyContent = replyInput[id];
-        
-        if (!replyContent) {
-            alert('댓글을 입력하세요.');
-            return;
-        }
-    
-        const replyData = {
-            content: replyContent,
-            postId: id,
-            userId: currentUserId,
-        };
-    
-        try {
-            const newReply = await insertReply(replyData);
-
-            setReplies((prevReplies) => ({
-                ...prevReplies,
-                [id]: [...(prevReplies[id] || []), newReply],
-            }));
-
-            setReplyInput((prevInput) => ({
-                ...prevInput,
-                [id]: '',
-            }));
-    
-        } catch (error) {
-            console.error('댓글 등록 중 오류:', error);
-        }
     };
-    
 
-    const handleReplyChange = (id:number, content: string) => {
-        setReplyInput((prevInput)=>({
+    const handleReplyChange = (id: number, content: string) => {
+        setReplyInput((prevInput) => ({
             ...prevInput,
             [id]: content,
         }));
+        console.log('setReplyInput: ', setReplyInput);
     };
-
-    // const handleDetails = (id: number) => {
-    //     router.push(`/post/${restaurantId}/details/${id}`);
-    // };
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -230,6 +235,65 @@ export default function PostList() {
         }
     };
 
+    const handleEditClick = (replyId: number, currentContent: string) => {
+        setEditReply((prevEdit) => ({
+            ...prevEdit,
+            [replyId]: true,
+        }));
+        setEditInput((prevInput) => ({
+            ...prevInput,
+            [replyId]: currentContent,
+        }));
+    };
+
+    const handleEditChange = (replyId: number, newContent: string) => {
+        setEditInput((prevInput) => ({
+            ...prevInput,
+            [replyId]: newContent,
+        }));
+    };
+
+    const handleEditSave = async (replyId: number, postId: number) => {
+        const updateReply = {
+            id: replyId,
+            content: editInput[replyId],
+            postId: postId,
+            userId: currentUserId
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateReply)
+            });
+
+            if (response.ok) {
+                const updateReplyData = await response.json();
+                setReplies((prevReplies) => {
+                    const updateReplies = { ...prevReplies };
+                    if (updateReplies[postId]) {
+                        updateReplies[postId] = updateReplies[postId].map((reply) =>
+                            reply.id === replyId ? updateReplyData : reply
+                        );
+                    }
+                    fetchReply(postId);
+                    return updateReplies;
+                });
+                setEditReply((prevEditReply) => ({
+                    ...prevEditReply,
+                    [replyId]: false,
+                }));
+            } else {
+                console.error('댓글 수정 실패 ');
+            }
+        } catch (error) {
+            console.error("댓글 수정 중 에러 발생:", error);
+        }
+    };
+
     const handleDelete = (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
             fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
@@ -242,6 +306,31 @@ export default function PostList() {
                     console.error('Delete operation failed:', error);
                     alert("삭제 중 오류가 발생했습니다.");
                 });
+        }
+    };
+
+    const handleReplyDelete = async (replyId: number, postId: number) => {
+        if (window.confirm("삭제하시겠습니까?")) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    setReplies(prevReplies => {
+                        return {
+                            ...prevReplies,
+                            [postId]: prevReplies[postId].filter((reply) => reply.id !== replyId)
+                        };
+                    });
+                    alert("댓글이 삭제되었습니다.");
+                    fetchPosts();
+                } else {
+                    alert("댓글 삭제에 실패했습니다.");
+                }
+            } catch {
+                alert("댓글 삭제 중 문제가 발생했습니다.");
+            }
         }
     };
 
@@ -353,36 +442,76 @@ export default function PostList() {
                                     </div>
                                     {replyToggles[p.id] && (
                                         <>
-                                        <div className="mt-4">
-                                            {replies[p.id] && replies[p.id].length > 0 ? (
-                                                <ul>
-                                                    {replies[p.id].map((reply, index) => (
-                                                        <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center">
-                                                            <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
-                                                                {reply.nickname}</span>
-                                                            <span className="ml-2">{reply.content}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <p>댓글 없음</p>
-                                            )}
-                                        </div>
-                                        <form onSubmit={(e) => handleReplySubmit(p.id, e)} className="my-4">
+                                            <div className="mt-4 w-full">
+                                                {replies[p.id] && replies[p.id].length > 0 ? (
+                                                    <ul>
+                                                        {replies[p.id].map((reply, index) => (
+                                                            <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
+                                                                <div className="flex items-center">
+                                                                    <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
+                                                                        {reply.nickname}
+                                                                    </span>
+                                                                    {editReply[reply.id] ? (
+                                                                        <span
+                                                                            className="ml-2"
+                                                                            style={{ width: "600px", display: "inline-block", whiteSpace: "nowrap" }}
+                                                                        >
+                                                                            <textarea
+                                                                                name="content"
+                                                                                id="content"
+                                                                                value={editInput[reply.id] || reply.content}
+                                                                                onChange={(e) => handleEditChange(reply.id, e.target.value)}
+                                                                                className="border rounded p-2 w-full"
+                                                                                style={{ minHeight: "50px", width: "100%" }}
+                                                                            />
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span
+                                                                            className="ml-2"
+                                                                            style={{ width: "auto", display: "inline-block", whiteSpace: "nowrap" }}
+                                                                        >
+                                                                            {reply.content}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                {reply.userId === currentUserId && (
+                                                                    <div className="flex space-x-2 mt-2 justify-end">
+                                                                        <button
+                                                                            className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
+                                                                            onClick={() => editReply[reply.id] ? handleEditSave(reply.id, p.id) : handleEditClick(reply.id, reply.content)}
+                                                                        >
+                                                                            {editReply[reply.id] ? '저장' : '수정'}
+                                                                        </button>
+                                                                        <button
+                                                                            className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
+                                                                            onClick={() => reply.id && handleReplyDelete(reply.id, p.id)}
+                                                                        >
+                                                                            삭제
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p>댓글 없음</p>
+                                                )}
+                                            </div>
+                                            <form onSubmit={(e) => handleReplySubmit(p.id, e)} className="my-4 flex space-x-4">
                                                 <input
                                                     type="text"
                                                     placeholder="댓글을 입력하세요."
                                                     value={replyInput[p.id] || ""}
-                                                    onChange={(e) => handleReplyChange(p.id,e.target.value)}
-                                                    className="border rounded p-2 w-full" />
+                                                    onChange={(e) => handleReplyChange(p.id, e.target.value)}
+                                                    className="border rounded p-2 flex-grow" />
                                                 <button
                                                     type="submit"
-                                                    className="bg-blue-500 text-white py-2 px-4 mt-2 rounded hover:bg-blue-600"
+                                                    className="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600"
                                                 >
                                                     등록
                                                 </button>
                                             </form>
-                                            </>
+                                        </>
                                     )}
                                     {p.userId === currentUserId && (
                                         <div className="mt-2">
