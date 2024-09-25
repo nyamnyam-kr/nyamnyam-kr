@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,9 +20,7 @@ public class WishListEntity {
     private Long id;
 
     private String name;
-
     private Long userId;
 
-    private Long restaurantId;
 
 }
