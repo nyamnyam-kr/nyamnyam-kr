@@ -196,7 +196,7 @@ const RestaurantDetail: React.FC = () => {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가         
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
 
                                         />
                                     )}
@@ -268,7 +268,7 @@ const RestaurantDetail: React.FC = () => {
                 </div>
                 <div className="text-center">
                     <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
-                        onClick={() => router.push(`/post/${id}`)}>
+                            onClick={() => router.push(`/post/${id}`)}>
                         후기 보기
                     </button>
                 </div>
