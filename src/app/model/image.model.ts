@@ -3,5 +3,5 @@ interface ImageModel {
     originalFilename: string;
     storedFileName : string;
     extension: string;
-    uploadURL: string;
+    uploadURL?: string;
 }
