@@ -120,18 +120,25 @@ export default function RootLayout({
                     </li>
                   )}
                   <li>
-                    <Link href="/chatRoom/list" className="hover:bg-blue-600 px-3 py-2 rounded">채팅방</Link>
-                  </li>
-                  <li>
                     <Link href="/tag/tags" className="hover:bg-blue-600 px-3 py-2 rounded">Tag</Link>
                   </li>
                   <li>
                     <Link href="/user/mypage" className="hover:bg-blue-600 px-3 py-2 rounded">MyPage</Link>
                   </li>
                 </ul>
-                <Link href="/08_wallet" className="profile">
-                  <img src="/assets/img/profile.png" alt="profile" />
-                </Link>
+                <div className="page-header__action">
+                  <Link href="/chatRoom/list" className="action-btn">
+                    <i className="ico_message"></i>
+                    <span className="animation-ripple-delay1"></span>
+                  </Link>
+                  <Link href="/07_friends" className="action-btn">
+                    <i className="ico_notification"></i>
+                    <span className="animation-ripple-delay2"></span>
+                  </Link>
+                  <Link href="/08_wallet" className="profile">
+                    <img src="/assets/img/profile.png" alt="profile"/>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
