@@ -1,4 +1,4 @@
-export async function insertReply(reply: ReplyModel): Promise<any | {status: number}> {
+export async function insertReply(reply: ReplyModel): Promise<ReplyModel | null> {
   try {
     const replyData = {
         id: reply.id, 
@@ -16,15 +16,17 @@ export async function insertReply(reply: ReplyModel): Promise<any | {status: num
 
     const contentType = response.headers.get('content-type');
 
-    if (response.ok && contentType?.includes('application/json')) {
-      const data: any = await response.json();
+    if (response.ok && contentType && contentType.includes('application/json')) {
+      const data: ReplyModel = await response.json();
+      console.log('댓글 등록 성공 : ',data);
       return data;
     } else {
       const errorMessage = await response.text();
-      throw new Error(`Server returned non-JSON response: ${errorMessage}`);
+      console.log('서버 응답 에러: ${errorMessage}');
+      throw new Error(`서버 응답 에러: ${errorMessage}`);
     }
   } catch (error) {
-    console.error('Error occurred while inserting reply:', error);
-    return {status: 500};
+    console.error('댓글 등록 중 오류 발생:', error);
+    return null;
   }
 }

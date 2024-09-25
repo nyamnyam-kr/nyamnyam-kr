@@ -1,16 +1,18 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from  '@reduxjs/toolkit' ;
+import postSlice from  './features/post.slice' ;
 import receiptSlice from './features/receipt.slice';
 
-export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            receipt: receiptSlice,
-        },
-    });
+export  const  makeStore = ( ) => {
+  return  configureStore ({
+    reducer : {
+        receipt: receiptSlice,
+        post : postSlice,
+    },
+  });
 };
 
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>;
-export type AppDispatch = AppStore['dispatch'];
+// makeStore의 유형을 유추합니다.
+export  type  AppStore = ReturnType < typeof makeStore>;
+// 스토어 자체에서 `RootState` 및 `AppDispatch` 유형을 유추합니다.
+export  type  RootState = ReturnType < AppStore [ 'getState' ]>;
+export  type  AppDispatch = AppStore [ 'dispatch' ];
