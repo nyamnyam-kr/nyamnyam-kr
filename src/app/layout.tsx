@@ -51,6 +51,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/libs.min.css" />
         <link rel="stylesheet" href="/assets/css/main.css" />
 
+
         {/* Google Fonts */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
@@ -60,6 +61,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap"
           rel="stylesheet"
         />
+        <li>
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        </li>
       </head>
       <body>
         <header className="page-header">
@@ -89,14 +94,41 @@ export default function RootLayout({
                 </div>
               </div>
               <div className="page-header__action">
-                <Link href="/06_chats" className="action-btn">
-                  <i className="ico_message"></i>
-                  <span className="animation-ripple-delay1"></span>
-                </Link>
-                <Link href="/07_friends" className="action-btn">
-                  <i className="ico_notification"></i>
-                  <span className="animation-ripple-delay2"></span>
-                </Link>
+                <ul className="flex space-x-4 items-center">
+                  <li>
+                    <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">홈</Link>
+                  </li>
+                  {user ? (
+                    <>
+                      <li className="hover:bg-blue-600 px-3 py-2 rounded" style={{ color: "#F46119", fontSize: "16px", fontFamily: "Nunito", fontWeight: 700 }}>
+                        {user.nickname}님, 환영합니다!
+                      </li>
+                      <li>
+                        <button onClick={handleLogout} className="hover:bg-blue-600 px-3 py-2 rounded" style={{ color: "#F46119", fontSize: "16px", fontFamily: "Nunito", fontWeight: 700 }}>
+                          로그아웃
+                        </button>
+                      </li>
+                      <li>
+                        <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">
+                          유저 목록
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    <li>
+                      <Link href="/user/login" className="hover:bg-blue-600 px-3 py-2 rounded">로그인</Link>
+                    </li>
+                  )}
+                  <li>
+                    <Link href="/chatRoom/list" className="hover:bg-blue-600 px-3 py-2 rounded">채팅방</Link>
+                  </li>
+                  <li>
+                    <Link href="/tag/tags" className="hover:bg-blue-600 px-3 py-2 rounded">Tag</Link>
+                  </li>
+                  <li>
+                    <Link href="/user/mypage" className="hover:bg-blue-600 px-3 py-2 rounded">MyPage</Link>
+                  </li>
+                </ul>
                 <Link href="/08_wallet" className="profile">
                   <img src="/assets/img/profile.png" alt="profile" />
                 </Link>
