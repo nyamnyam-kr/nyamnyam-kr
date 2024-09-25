@@ -49,7 +49,7 @@ export default function Calendars() {
             </Head>
             <main className="p-6">
                 {/* 페이지 제목 시작 */}
-                <div className="flex items-center md:justify-between flex-wrap gap-2 mt-100">
+                <div className="flex items-center md:justify-between flex-wrap gap-2 mt-5">
                     <h4 className="text-default-900 text-lg font-medium mb-2">Starter Page</h4>
 
                     <div className="md:flex hidden items-center gap-3 text-sm font-semibold">
@@ -72,7 +72,7 @@ export default function Calendars() {
                 </div>
                 {/* 페이지 제목 끝 */}
 
-                <div className="card dark:bg-zinc-800 dark:border-zinc-600">
+                <div className="card dark:bg-zinc-800 dark:border-zinc-600 mt-10">
                     <div className="space-y-5 card-body mt-100">
                         {/* 여기에 캘린더 컴포넌트를 통합할 곳입니다 */}
                         {isClient && <CalendarComponent events={events} />}
