@@ -4,91 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/(page)/user/calendars/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/components/CalendarComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/acheivement-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/c1.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/g4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/game-profile-card.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/google.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/logo-big" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/logo-big.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/logo-big.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/logo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/mac.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/market-item-1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/market-item-2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/market-item-3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/market-item-4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/payment-card-chip.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/payment-card-logo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/post1-1170x558.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/post2-1-1170x558.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/post3-1-1170x558.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/profile.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/img/profile.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/recommend-slide-img.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/recommend-slide-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-10.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-4.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-7.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-8.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/streem-item-9.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/t1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/t2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/t3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/tour1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/tournament1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/trending.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/trending2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/trending3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/twitter.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-1.png-.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/img/user-list-9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,10 +25,10 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -126,7 +42,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "nyamnyam-admin",
+    "git-widget-placeholder": "nyamnyam-chat",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/USER/Documents/nyamnyam/nyamnyam-front",
@@ -136,7 +52,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "ts.external.directory.path": "C:\\Users\\USER\\Documents\\nyamnyam\\nyamnyam-front\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\bitcamp\\Desktop\\nyamnyam-chat\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -153,8 +69,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.419" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.419" />
       </set>
     </attachedChunks>
   </component>
