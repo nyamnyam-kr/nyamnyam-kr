@@ -1,49 +1,52 @@
 package kr.nyamnyam.config;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import kr.nyamnyam.service.impl.JwtTokenProvider;
+import kr.nyamnyam.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 @Component
-public class JwtAuthenticationFilter implements jakarta.servlet.Filter {
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter implements WebFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenProvider jwtTokenProvider; // JwtTokenProvider 주입
+    private final UserService userService; // UserService 주입
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-
-        String token = resolveToken(httpRequest);
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String token = resolveToken(exchange.getRequest());
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
-            httpRequest.setAttribute("username", username); // 사용자 정보 저장
+            // UserService를 통해 사용자 정보를 가져옴
+            return userService.findByUsername(username)
+                    .flatMap(user -> {
+                        // 사용자 정보를 Exchange의 속성에 추가
+                        exchange.getAttributes().put("userDetails", user);
+                        return chain.filter(exchange); // 다음 필터로 요청 전달
+                    })
+                    .switchIfEmpty(Mono.defer(() -> {
+                        // 사용자 정보가 없는 경우 401 반환
+                        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                        return Mono.empty();
+                    }));
         } else {
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 인증 실패 시 401 응답
-            return;
+            // 토큰이 유효하지 않거나 없는 경우 401 반환
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
         }
-
-        chain.doFilter(request, response); // 다음 필터로 진행
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+    private String resolveToken(ServerHttpRequest request) {
+        String bearerToken = request.getHeaders().getFirst("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // "Bearer " 이후의 토큰 값
+            return bearerToken.substring(7);
         }
         return null;
     }

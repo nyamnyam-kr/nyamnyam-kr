@@ -1,78 +1,62 @@
 package kr.nyamnyam.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import kr.nyamnyam.model.domain.UserModel;
-import kr.nyamnyam.model.entity.UsersEntity;
+import kr.nyamnyam.model.domain.User;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/existsById")
-    public Boolean existsById(@RequestParam Long id) {
+    public Mono<Boolean> existsById(@RequestParam String id) { // 반환 타입을 Mono<Boolean>로 변경
         return userService.existsById(id);
     }
 
     @GetMapping("/findById")
-    public Optional<UsersEntity> findById(@RequestParam Long id) {
+    public Mono<User> findById(@RequestParam String id) { // 반환 타입을 Mono<User>로 변경
         return userService.findById(id);
     }
 
     @GetMapping("/findAll")
-    public List<UsersEntity> findAll() {
+    public Flux<User> findAll() { // 반환 타입을 Flux<User>로 변경
         return userService.findAll();
     }
 
     @GetMapping("/count")
-    public Long count() {
+    public Mono<Long> count() { // 반환 타입을 Mono<Long>로 변경
         return userService.count();
     }
 
     @DeleteMapping("/deleteById")
-    public void deleteById(@RequestParam Long id) {
-        userService.deleteById(id);
+    public Mono<Void> deleteById(@RequestParam String id) { // 반환 타입을 Mono<Void>로 변경
+        return userService.deleteById(id);
     }
 
     @PutMapping("/update")
-    public UsersEntity update(@RequestBody UserModel userModel) {
-        return userService.update(userModel);
+    public Mono<User> update(@RequestBody User user) { // 반환 타입을 Mono<User>로 변경
+        return userService.update(user);
     }
 
     @PostMapping("/join")
-    public UsersEntity join(@RequestBody UserModel userModel) {
-        return userService.save(userModel);
-    }
-
-    @GetMapping("/login/oauth2")
-    public String loginWithOAuth2(@RequestParam String code, @RequestParam String receivedState, HttpServletRequest request) {
-        return userService.loginWithOAuth2(code, receivedState, request);
-    }
-
-    @GetMapping("/startOAuth2")
-    public void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        userService.startOAuth2(request, response);
+    public Mono<User> join(@RequestBody User user) { // 반환 타입을 Mono<User>로 변경
+        return userService.save(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
+    public Mono<String> login(@RequestParam String username, @RequestParam String password) { // 반환 타입을 Mono<String>로 변경
         return userService.authenticate(username, password);
     }
 
     @GetMapping("/validate")
-    public String validateToken(@RequestHeader("Authorization") String token) {
-        return userService.validateToken(token) ? "Valid token" : "Invalid token";
+    public Mono<String> validateToken(@RequestHeader("Authorization") String token) { // 반환 타입을 Mono<String>로 변경
+        return userService.validateToken(token)
+                .map(valid -> valid ? "Valid token" : "Invalid token");
     }
 }
-

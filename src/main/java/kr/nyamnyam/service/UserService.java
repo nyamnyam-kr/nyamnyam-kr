@@ -1,38 +1,28 @@
 package kr.nyamnyam.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import kr.nyamnyam.model.domain.UserModel;
-import kr.nyamnyam.model.entity.UsersEntity;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import kr.nyamnyam.model.domain.User; // User로 변경
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface UserService {
 
-    boolean existsById(Long id);
+    Mono<Boolean> existsById(String id); // Long에서 String으로 변경
 
-    Optional<UsersEntity> findByUsername(String username);
+    Mono<User> findByUsername(String username); // Optional<User> -> Mono<User>로 변경
 
-    Optional<UsersEntity> findById(Long id);
+    Mono<User> findById(String id); // Optional<User> -> Mono<User>로 변경
 
-    List<UsersEntity> findAll();
+    Flux<User> findAll(); // UsersEntity에서 User로 변경
 
-    long count();
+    Mono<Long> count(); // long -> Mono<Long>으로 변경
 
-    void deleteById(Long id);
+    Mono<Void> deleteById(String id); // Long에서 String으로 변경
 
-    UsersEntity update(UserModel userModel);
+    Mono<User> update(User user); // UsersEntity에서 User로 변경
 
-    UsersEntity save(UserModel userModel);
+    Mono<User> save(User user); // UsersEntity에서 User로 변경
 
-    String loginWithOAuth2(String code, String receivedState, HttpServletRequest request);
+    Mono<String> authenticate(String username, String password); // String -> Mono<String>으로 변경
 
-    void startOAuth2(HttpServletRequest request, HttpServletResponse response) throws IOException;
-
-    String authenticate(String username, String password);
-
-    boolean validateToken(String token);
-
+    Mono<Boolean> validateToken(String token); // boolean -> Mono<Boolean>으로 변경
 }
