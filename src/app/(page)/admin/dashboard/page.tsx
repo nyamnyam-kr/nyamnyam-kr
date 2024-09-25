@@ -40,7 +40,7 @@ const DashBoard = () => {
             }
         };
         showCount();
-    }, []);
+    }, [count]);
 
     useEffect(() => {
         const showArea = async () => {
@@ -54,7 +54,7 @@ const DashBoard = () => {
             }
         };
         showArea();
-    }, []);
+    }, [region]);
 
     useEffect(() => {
         const showRestaurant = async () => {
@@ -69,7 +69,7 @@ const DashBoard = () => {
             }
         };
         showRestaurant();
-    }, []);
+    }, [restaurant]);
 
     const top5Count = count.slice(0 , 5);
 
