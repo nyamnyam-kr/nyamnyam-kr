@@ -1,24 +1,5 @@
+import axios from "axios";
 import { PostModel } from "src/app/model/post.model";
-
-const fetchPosts = () => {
-  fetch(`http://localhost:8080/api/posts/${restaurantId}/group`)
-      .then((response) => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
-      })
-      .then(async (data) => {
-          setPosts(data);
-
-          setLikedPosts(likedPostId);
-          setLikeCounts(likeCountMap);
-      })
-      .catch((error) => {
-          console.error('There has been a problem with your fetch operation:', error);
-      });
-};
-
 
 export async function insertPost(post: PostModel): Promise<any | {status: number}> {
   try {
@@ -55,6 +36,15 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
     return {status: 500};
   }
 }
+
+export const deletePost = async (postId: number) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/posts/${postId}`);
+  } catch (error) {
+    console.error('Delete operation failed:', error);
+    throw error;
+  }
+};
 
 
 // likeCount, likeChecked, getimg 한번에 가져오기 

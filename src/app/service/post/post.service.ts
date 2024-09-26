@@ -1,21 +1,24 @@
-const likeStatus = data.map(async (post: PostModel) => {
-    const liked = await checkLikedStatus(post.id);
-    const count = await getLikeCount(post.id);
-    await fetchImage(post.id);
-    return { postId: post.id, liked, count };
-});
+import { useRouter } from "next/navigation";
+import { deletePost } from "src/app/api/post/post.api";
+import { AppDispatch } from "src/lib/store";
 
-const result = await Promise.all(likeStatus);
-
-const likedPostId = result
-    .filter(result => result.liked)
-    .map(result => result.postId);
-
-const likeCountMap = result.reduce((acc, result) => {
-    acc[result.postId] = result.count;
-    return acc;
-}, {} as { [key: number]: number });
-
-setLikedPosts(likedPostId);
-setLikeCounts(likeCountMap);
-})
+export const deletePostService = async (
+    postId: number,
+    restaurantId: number,
+    setPosts: React.Dispatch<React.SetStateAction<any[]>>,
+    dispatch?: AppDispatch 
+  ) => {
+    try {
+      await deletePost(postId); 
+  
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+  
+      const router = useRouter();
+      router.push(`/post/${restaurantId}`);
+  
+      alert("게시글이 삭제되었습니다.");
+    } catch (error) {
+      alert("삭제 중 오류가 발생했습니다.");
+      console.error('Error in deletePostService:', error);
+    }
+  };

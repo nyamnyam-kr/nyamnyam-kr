@@ -1,14 +1,13 @@
 //src/app/service/reply/reply.service.ts
 import { Dispatch } from "@reduxjs/toolkit";
-import { deleteReply, fetchReplyApi, insertReply } from "src/app/api/reply/reply.api";
+import { deleteReply, fetchReply, insertReply } from "src/app/api/reply/reply.api";
 import { ReplyModel } from "src/app/model/reply.model";
 import { addReplies } from "src/lib/features/reply.slice";
 import { AppDispatch } from "src/lib/store";
 
-
 export const fetchReplyService = async (postId: number, dispatch: AppDispatch) => {
     try {
-      const data = await fetchReplyApi(postId); // API 호출
+      const data = await fetchReply(postId); // API 호출
       
       // Redux 상태 업데이트
       dispatch(addReplies({ postId, replies: data }));
@@ -24,13 +23,11 @@ export async function serviceInsertReply(reply: ReplyModel, postId: number, disp
           id: reply.id, 
           content: reply.content,
           userId: reply.userId,
-          postId: reply.postId
+          postId: postId
       }
       const response = await insertReply(reply);
   
-      const contentType = response.headers.get('content-type');
-  
-      if (response.ok && contentType && contentType.includes('application/json')) {
+      if (response.ok) {
         const data: ReplyModel = await response.json();
         
         dispatch(addReplies({postId, replies:[data]}));

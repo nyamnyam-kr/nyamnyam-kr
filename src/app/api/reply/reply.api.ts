@@ -1,12 +1,15 @@
 // src/app/api/reply/reply.api.ts
 
-export const fetchReplyApi = async (postId: number) => {
-  const response = await fetch(`http://localhost:8080/api/replies/post/${postId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch replies");
+import axios from "axios";
+
+export const fetchReply = async (postId: number) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/replies/post/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error("reply fetch fail:", error);
+    throw error;
   }
-  const data = await response.json();
-  return data;
 };
 
 export const insertReply = async (replyData: any): Promise<Response> => {

@@ -2,7 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../../star/page";
-import { PostModel } from "@/app/model/post.model";
+import { PostModel } from "src/app/model/post.model";
+
 
 export default function PostRegister() {
   const router = useRouter();

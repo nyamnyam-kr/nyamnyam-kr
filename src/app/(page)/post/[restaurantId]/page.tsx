@@ -8,12 +8,13 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
+import { fetchReplyService, handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/lib/store";
 import { stat } from "fs";
 import { getReplies } from "src/lib/features/reply.slice";
 import { insertReply } from "src/app/api/reply/reply.api";
+import { deletePostService } from "src/app/service/post/post.service";
 
 const reportReasons = [
     "광고글이에요",
@@ -44,7 +45,7 @@ export default function PostList() {
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
     const dispatch = useDispatch();
-    const replies = useSelector((state: RootState) => getReplies(state));
+    const replies = useSelector((state: RootState) =>state.reply.replies);
 
     useEffect(() => {
         if (restaurantId) {
@@ -121,24 +122,11 @@ export default function PostList() {
             })
     }
 
-    const fetchReply = (postId: number) => {
-        fetch(`http://localhost:8080/api/replies/post/${postId}`)
-            .then((response) => response.json())
-            .then(data => {
-                setReplies(prevReplies => ({
-                    ...prevReplies,
-                    [postId]: data,
-                }));
-                console.log("setReplies: ", data);
-            })
-            .catch((error) => console.error("reply fetch fail:", error));
-    }
-
     useEffect(() => {
         if (postId) {
-            fetchReply(postId);
+            fetchReplyService(postId, dispatch);
         }
-    }, [postId]);
+    }, [postId, dispatch]);
 
     const handleReplySubmit = async (reply: ReplyModel, postId: number, dispatch: AppDispatch) => {
         await serviceInsertReply(reply, postId, dispatch);
@@ -161,6 +149,74 @@ export default function PostList() {
             [id]: content,
         }));
         console.log('setReplyInput: ', setReplyInput);
+
+        
+    const handleEditClick = (replyId: number, currentContent: string) => {
+        setEditReply((prevEdit) => ({
+            ...prevEdit,
+            [replyId]: true,
+        }));
+        setEditInput((prevInput) => ({
+            ...prevInput,
+            [replyId]: currentContent,
+        }));
+    };
+
+    const handleEditChange = (replyId: number, newContent: string) => {
+        setEditInput((prevInput) => ({
+            ...prevInput,
+            [replyId]: newContent,
+        }));
+    };
+
+    const handleEditSave = async (replyId: number, postId: number) => {
+        const updateReply = {
+            id: replyId,
+            content: editInput[replyId],
+            postId: postId,
+            userId: currentUserId
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateReply)
+            });
+
+            if (response.ok) {
+                const updateReplyData = await response.json();
+                setReplies((prevReplies) => {
+                    const updateReplies = { ...prevReplies };
+                    if (updateReplies[postId]) {
+                        updateReplies[postId] = updateReplies[postId].map((reply) =>
+                            reply.id === replyId ? updateReplyData : reply
+                        );
+                    }
+                    fetchReply(postId);
+                    return updateReplies;
+                });
+                setEditReply((prevEditReply) => ({
+                    ...prevEditReply,
+                    [replyId]: false,
+                }));
+            } else {
+                console.error('댓글 수정 실패 ');
+            }
+        } catch (error) {
+            console.error("댓글 수정 중 에러 발생:", error);
+        }
+    };
+
+    const handleRepDelete = async (replyId: number, postId: number) => {
+        await handleReplyDelete(replyId, postId, dispatch, replies);
+    };
+    };
+
+    const handleDelete = async(postId: number) => {
+       await deletePostService(postId, restaurantId, setPosts);
     };
 
     const formatDate = (dateString: string) => {
@@ -223,84 +279,6 @@ export default function PostList() {
                 }));
             }
         }
-    };
-
-    const handleEditClick = (replyId: number, currentContent: string) => {
-        setEditReply((prevEdit) => ({
-            ...prevEdit,
-            [replyId]: true,
-        }));
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: currentContent,
-        }));
-    };
-
-    const handleEditChange = (replyId: number, newContent: string) => {
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: newContent,
-        }));
-    };
-
-    const handleEditSave = async (replyId: number, postId: number) => {
-        const updateReply = {
-            id: replyId,
-            content: editInput[replyId],
-            postId: postId,
-            userId: currentUserId
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateReply)
-            });
-
-            if (response.ok) {
-                const updateReplyData = await response.json();
-                setReplies((prevReplies) => {
-                    const updateReplies = { ...prevReplies };
-                    if (updateReplies[postId]) {
-                        updateReplies[postId] = updateReplies[postId].map((reply) =>
-                            reply.id === replyId ? updateReplyData : reply
-                        );
-                    }
-                    fetchReply(postId);
-                    return updateReplies;
-                });
-                setEditReply((prevEditReply) => ({
-                    ...prevEditReply,
-                    [replyId]: false,
-                }));
-            } else {
-                console.error('댓글 수정 실패 ');
-            }
-        } catch (error) {
-            console.error("댓글 수정 중 에러 발생:", error);
-        }
-    };
-
-    const handleDelete = (postId: number) => {
-        if (window.confirm("게시글을 삭제하시겠습니까?")) {
-            fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
-                .then(() => {
-                    alert("게시글이 삭제되었습니다.");
-                    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-                    router.push(`/post/${restaurantId}`);
-                })
-                .catch(error => {
-                    console.error('Delete operation failed:', error);
-                    alert("삭제 중 오류가 발생했습니다.");
-                });
-        }
-    };
-
-    const handleRepDelete = async (replyId: number, postId: number) => {
-        await handleReplyDelete(replyId, postId, dispatch, replies);
     };
 
     const postReport = async (postId: number) => {
