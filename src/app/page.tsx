@@ -49,6 +49,7 @@ export default function Home({ searchTerm }: HomeProps) {
 
     useEffect(() => {
         console.log("가져온 검색어:", searchTerm); 
+
         const fetchData = async () => {
             try {
                 // 검색어로 레스토랑 데이터 가져오기
