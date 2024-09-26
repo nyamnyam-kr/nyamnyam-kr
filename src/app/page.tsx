@@ -4,6 +4,7 @@ import Link from 'next/link';
 import SearchBar from './components/SearchBox';
 import Sidebar from './components/SideBar';
 import ScrollToTop from './components/ScrollToTop';
+import { useSearchContext } from './components/SearchContext';
 
 interface Restaurant {
     id: number;
@@ -39,44 +40,31 @@ const fetchRestaurantsByCategory = async (categories: string[]): Promise<Restaur
 
 export default function Home() {
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    const { searchTerm } = useSearchContext();
+    // const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
+
     useEffect(() => {
+        console.log("가져온 검색어:", searchTerm); 
         const fetchData = async () => {
             try {
-                let data: Restaurant[] = [];
+                // 검색어로 레스토랑 데이터 가져오기
+                let data: Restaurant[] = await fetchRestaurantsBySearch(searchTerm || '');
+                console.log("가져온 검색어:", searchTerm); 
 
-                if (searchTerm) {
-                    data = await fetchRestaurantsBySearch(searchTerm);
-                } else if (selectedTags.length === 0  && selectedCategories.length === 0) {
-                    // 검색어와 태그가 모두 없을 경우 모든 레스토랑 가져오기
-                    data = await fetchRestaurantsBySearch('');
-                }
-
+                // 태그와 카테고리에 따른 필터링
                 if (selectedTags.length > 0) {
                     const tagData = await fetchRestaurantsByTag(selectedTags);
-                    // 검색어와 태그가 둘 다 있을 경우 교차합집합으로 결합
-
-                    data = Array.from(new Set([...data, ...tagData]));
-                    if (searchTerm) {
-                        data = data.filter(restaurant => tagData.some(tagged => tagged.id === restaurant.id));
-                    } else {
-                        data = tagData; // 태그만 있을 경우 태그 데이터 사용
-                    }
+                    data = data.filter(restaurant => tagData.some(tagged => tagged.id === restaurant.id));
                 }
 
                 if (selectedCategories.length > 0) {
                     const categoryData = await fetchRestaurantsByCategory(selectedCategories);
-                    data = Array.from(new Set([...data, ...categoryData]));
-                    data = data.length > 0
-                      ? data.filter(restaurant => categoryData.some(cat => cat.id === restaurant.id))
-                      : categoryData; 
-                  }
-
-                  
+                    data = data.filter(restaurant => categoryData.some(categorized => categorized.id === restaurant.id));
+                }
 
                 setRestaurants(data);
             } catch (error) {
@@ -85,11 +73,12 @@ export default function Home() {
         };
 
         fetchData();
-    }, [searchTerm, selectedTags, selectedCategories]);
+    }, [searchTerm, selectedTags, selectedCategories]); 
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
-    };
+
+    // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setSearchTerm(e.target.value);
+    // };
 
     const handleFilterChange = (tags: string[], categories:string[]) => {
         setSelectedTags(tags);
@@ -104,9 +93,9 @@ export default function Home() {
                 </div>
     
                 <div className="flex-grow ml-4">
-                    <div className="w-full max-w-lg mx-auto mb-6">
+                    {/* <div className="w-full max-w-lg mx-auto mb-6">
                         <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-                    </div>
+                    </div> */}
     
                     {restaurants.length > 0 ? (
                         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
