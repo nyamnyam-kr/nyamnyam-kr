@@ -22,7 +22,8 @@
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "date-fns": "^4.1.0",
-    "next": "^14.2.8",
+    "jquery": "^3.7.1",
+    "next": "^14.2.13",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-chartjs-2": "^5.2.0",
@@ -33,6 +34,7 @@
     "vue-router": "^4.0.13"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.30",
     "@types/node": "^20",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

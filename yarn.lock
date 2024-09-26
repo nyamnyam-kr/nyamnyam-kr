@@ -82,7 +82,7 @@
 
 "@fullcalendar/react@^6.1.15":
   version "6.1.15"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/react/-/react-6.1.15.tgz#3198b4a64e256afd37c9760c8741a9af89ade894"
+  resolved "https://registry.npmjs.org/@fullcalendar/react/-/react-6.1.15.tgz"
   integrity sha512-L0b9hybS2J4e7lq6G2CD4nqriyLEqOH1tE8iI6JQjAMTVh5JicOo5Mqw+fhU5bJ7hLfMw2K3fksxX3Ul1ssw5w==
 
 "@isaacs/cliui@^8.0.2":
@@ -296,6 +296,13 @@
     expect "^29.0.0"
     pretty-format "^29.0.0"
 
+"@types/jquery@^3.5.30":
+  version "3.5.30"
+  resolved "https://registry.npmjs.org/@types/jquery/-/jquery-3.5.30.tgz"
+  integrity sha512-nbWKkkyb919DOUxjmRVk8vwtDb0/k8FKncmUKFi+NY+QXqWltooxTrswvz4LspQwxvLdvzBN1TImr6cw3aQx2A==
+  dependencies:
+    "@types/sizzle" "*"
+
 "@types/node@*", "@types/node@^20":
   version "20.16.3"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.16.3.tgz"
@@ -322,6 +329,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
+
+"@types/sizzle@*":
+  version "2.3.8"
+  resolved "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.8.tgz"
+  integrity sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==
 
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
@@ -861,6 +873,11 @@ jiti@^1.21.0:
   resolved "https://registry.npmjs.org/jiti/-/jiti-1.21.6.tgz"
   integrity sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==
 
+jquery@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -964,7 +981,7 @@ nanoid@^3.3.6, nanoid@^3.3.7:
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
 
-next@^14.2.8:
+next@^14.2.13:
   version "14.2.13"
   resolved "https://registry.npmjs.org/next/-/next-14.2.13.tgz"
   integrity sha512-BseY9YNw8QJSwLYD7hlZzl6QVDoSFHL/URN5K64kVEVpCsSOWeyjbIGK+dZUaRViHTaMQX8aqmnn0PHBbGZezg==
