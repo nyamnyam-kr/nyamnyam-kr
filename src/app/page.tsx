@@ -73,7 +73,7 @@ export default function Home({ searchTerm }: HomeProps) {
         };
 
         fetchData();
-    }, [searchTerm, selectedTags, selectedCategories]); // searchTerm이 변경될 때마다 fetchData 호출
+    }, [searchTerm, selectedTags, selectedCategories]); 
 
     const handleFilterChange = (tags: string[], categories: string[]) => {
         setSelectedTags(tags);

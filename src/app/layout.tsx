@@ -9,7 +9,6 @@ import SearchBar from "./components/SearchBox";
 import React from "react";
 import Home from "./page";
 
-const inter = Inter({ subsets: ["latin"] });
 
 interface User {
   id: number;
@@ -72,7 +71,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
   const handleEnter = async () => {
     await fetchRestaurantsBySearch(searchTerm);
-    console.log('검색어:', searchTerm);
+    // console.log('검색어:', searchTerm);
   };
 
   return (
@@ -167,7 +166,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
         </header>
         <main>
-        <Home searchTerm={searchTerm} />
+          <Home searchTerm={searchTerm} />
         </main>
       </body>
     </html>
