@@ -40,7 +40,7 @@ const DashBoard = () => {
             }
         };
         showCount();
-    }, []);
+    }, [count]);
 
     useEffect(() => {
         const showArea = async () => {
@@ -54,7 +54,7 @@ const DashBoard = () => {
             }
         };
         showArea();
-    }, []);
+    }, [region]);
 
     useEffect(() => {
         const showRestaurant = async () => {
@@ -69,7 +69,7 @@ const DashBoard = () => {
             }
         };
         showRestaurant();
-    }, []);
+    }, [restaurant]);
 
     const top5Count = count.slice(0 , 5);
 
@@ -113,7 +113,7 @@ const DashBoard = () => {
 
         <div className={styles.row}>
             <div>
-                <Link href='/admin/showReport'>고객이 보낸 의견 보기</Link>
+                <Link href='/admin/showOpinion'>고객이 보낸 의견 보기</Link>
             </div>
             <div className={styles.col}>
                 <div className={styles.card}>

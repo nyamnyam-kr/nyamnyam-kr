@@ -1,7 +1,6 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import SearchBar from '@/app/components/SearchBox';
 import Star from '../../star/page';
 import { GiBottomRight3dArrow } from 'react-icons/gi';
 
@@ -124,7 +123,7 @@ const RestaurantDetail: React.FC = () => {
                     const [name, price] = item.split('-').map(part => part.trim());
                     return (
                         <div key={index} className="flex justify-between">
-                            <span className="text-gray-800 text-xl font-semibold">{name}</span>
+                            <span className="text-gray-800 text-lg">{name}</span>
                             <span className="text-gray-600 text-lg">{price}</span>
                         </div>
                     );
@@ -153,10 +152,6 @@ const RestaurantDetail: React.FC = () => {
     return (
         <div className="bg-gray-100">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
-                {/* <div className="w-full max-w-lg mx-auto mb-6">
-                    <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-                </div> */}
-
                 {filteredRestaurants.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         {filteredRestaurants.map((restaurant) => (
@@ -196,18 +191,16 @@ const RestaurantDetail: React.FC = () => {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가         
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
 
                                         />
                                     )}
                                 </div>
-                                <div style={{ marginTop: '1.5%' }} className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</div>
-                                <div style={{ marginTop: '1.5%' }} className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</div>
-                                <div style={{ marginTop: '1.5%' }} className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</div>
-                                <div style={{ marginTop: '2%' }} className="text-gray-700 text-lg"></div>
-                                <div className="flex space-x-6 mb-4"> {/* 여백(space-x-6) 추가 */}
-                                <div>
-                                    <p className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></p>
+                                <div className="text-gray-700 text-lg"><strong>유형:</strong> {restaurant.type}</div>
+                                <div className="text-gray-700 text-lg"><strong>주소:</strong> {restaurant.address}</div>
+                                <div className="text-gray-700 text-lg"><strong>전화번호:</strong> {restaurant.tel}</div>
+                                <div className="text-gray-700 text-lg"><strong>[네이버 평점]</strong></div>
+                                <div className="flex items-center">
                                     {restaurant.rate != null && restaurant.rate !== 0 ? (
                                         <div className="flex items-center">
                                             <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => { }} />
@@ -215,9 +208,8 @@ const RestaurantDetail: React.FC = () => {
                                         </div>
                                     ) : '등록된 평점이 없습니다'}
                                 </div>
-
-                                <div>
-                                    <p className="text-gray-700 text-lg"><strong>[레스토랑 전체 평점]</strong></p>
+                                <div className="mb-4">
+                                    <strong className="text-lg">[레스토랑 전체 평점]</strong>
                                     {allAverage !== null ? (
                                         <div className="flex items-center">
                                             <Star w="w-6" h="h-6" readonly={true} rate={allAverage} onChange={() => { }} />
@@ -225,19 +217,14 @@ const RestaurantDetail: React.FC = () => {
                                         </div>
                                     ) : '등록된 평점이 없습니다.'}
                                 </div>
-                            </div>
-                                <div style={{ marginTop: '5%' }} >
-                                    <strong className="text-lg">메뉴</strong>
-                                    <ul role="list" className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500">
-                                        <div className="whitespace-pre-line">
-                                            {renderMenu(restaurant.menu)}
-                                        </div>
-                                    </ul>
-                                </div>
-                                <div style={{marginTop:'5%'}} >
-                                    <strong className="text-lg">운영시간</strong>
-                                    <div>{renderOperTime(restaurant.operation)}</div>
-                                </div>
+                                <strong className="text-lg">메뉴</strong>
+                                <ul role="list" className="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500">
+                                    <div className="whitespace-pre-line">
+                                        {renderMenu(restaurant.menu)}
+                                    </div>
+                                </ul>
+                                <strong className="text-lg">운영시간</strong>
+                                <div>{renderOperTime(restaurant.operation)}</div>
                             </div>
                             <div className="w-1/3 h-80 rounded-lg shadow-md mt-0">
                                 <div id="map" className="w-full h-full rounded-lg shadow-md mb-4" ></div>
@@ -257,8 +244,8 @@ const RestaurantDetail: React.FC = () => {
                     </>
                 )}
 
-                <div style={{marginTop:'1.5%'}}  className="mb-4">
-                    <h2 className="text-lg font-bold mb-2">[맛집 태그]</h2>
+                <div className="mb-4">
+                    <h2 className="text-lg font-bold mb-2">[가장 많이 선택된 태그]</h2>
                     {tags.length > 0 ? (
                         <ul className="flex flex-wrap gap-2">
                             {tags.map((tag, index) => (
@@ -276,7 +263,7 @@ const RestaurantDetail: React.FC = () => {
                 </div>
                 <div className="text-center">
                     <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-300"
-                        onClick={() => router.push(`/post/${id}`)}>
+                            onClick={() => router.push(`/post/${id}`)}>
                         후기 보기
                     </button>
                 </div>

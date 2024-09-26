@@ -57,7 +57,8 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
   };
 
   return (
-    <div className="w-64 p-4 bg-gray-100 h-screen fixed top-0 left-0 shadow-lg rounded-lg overflow-y-auto">
+
+    <div className="w-64 pt-10 bg-gray-100 h-screen  fixed top-500 left-0 shadow-lg rounded-lg overflow-y-auto">
       <Section
         title="이용자층"
         items={['20대', '30대', '40대', '50대', '60대 이상']}

@@ -6,9 +6,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
-import { PostModel } from "@/app/model/post.model";
-import { insertReply } from "@/app/service/reply/reply.api";
-import { ReplyModel } from "@/app/model/reply.model";
+import {PostModel} from "src/app/model/post.model";
+import {insertReply} from "src/app/service/reply/reply.api";
+import { ReplyModel } from "src/app/model/reply.model";
+
+const reportReasons = [
+    "광고글이에요",
+    "해당 식당에서 찍은 사진이 아니에요",
+    "별점과 후기 내용이 일치하지 않아요",
+    "비속어가 포함되어 있어요",
+    "다른 사용자에게 불쾌감을 주는 포스트예요",
+    "공개하면 안되는 개인정보가 포함되어 있어요",
+    "악의적인 포스트를 지속적으로 작성하는 사용자예요",
+    "기타 사유"
+];
 
 export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
@@ -22,9 +33,10 @@ export default function PostList() {
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
     const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
-    const currentUserId = 1; // giveId : 테스트로 1값 설정 
+    const currentUserId = 1; // giveId : 테스트로 1값 설정
     const router = useRouter();
     const { restaurantId } = useParams();
+    const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
     useEffect(() => {
         if (restaurantId) {
@@ -51,7 +63,7 @@ export default function PostList() {
                     return { postId: post.id, liked, count };
                 });
 
-                const result = await Promise.all(likeStatus)
+                const result = await Promise.all(likeStatus);
 
                 const likedPostId = result
                     .filter(result => result.liked)
@@ -335,8 +347,47 @@ export default function PostList() {
         }
     };
 
+    const postReport = async (postId: number) => {
+        const selectedReason = selectedReasons[postId];
+
+        if (!selectedReason) {
+            alert("신고 사유를 선택해주세요.");
+            return;
+        }
+
+        const reportModel = {
+            userId: currentUserId,
+            postId: postId,
+            reason: selectedReason
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/report/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reportModel),
+            });
+
+            if (!response.ok) {
+                throw new Error('신고 실패');
+            }
+
+            const result = await response.json();
+            if (result) {
+                alert('신고가 성공적으로 제출되었습니다.');
+            } else {
+                alert('신고 제출에 실패하였습니다.');
+            }
+        } catch (error) {
+            console.error('신고 중 오류 발생:', error);
+            alert('신고 중 오류가 발생했습니다.');
+        }
+    };
+
     return (
-        <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
+        <main className="flex min-h-screen flex-col items-center p-6 ">
             <div className="w-full flex justify-end mb-4">
                 <button
                     className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
@@ -378,8 +429,8 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
+                                    <div className="flex space-x-2 mb-2 items-center" style={{whiteSpace: "nowrap"}}>
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
                                         <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
 
