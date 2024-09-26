@@ -58,7 +58,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
 
   return (
 
-    <div className="w-64 pt-10 bg-gray-100 h-screen  fixed top-500 left-0 shadow-lg rounded-lg overflow-y-auto">
+    <div className="w-64 pt-10 bg-gray-100 h-screen fixed top-500 left-0 shadow-lg rounded-lg overflow-y-auto">
       <Section
         title="이용자층"
         items={['20대', '30대', '40대', '50대', '60대 이상']}
@@ -67,7 +67,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
       />
       <Section
         title="카테고리"
-        items={['한식', '양식', '경양식', '일식', '중식', '분식', '카페', '베이커리']}
+        items={['한식', '일식', '중식', '양식', '아시아', '해산물', '술집', '카페']}
         selectedItems={selectedCategories}
         onItemToggle={handleCategoryToggle}
       />
@@ -85,7 +85,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
       />
       <Section
         title="분위기"
-        items={['고급스러움', '로맨틱', '소박함', '조용한', '아늑함', '유니크함', '전통적', '캐주얼', '현대적', '활기참']}
+        items={['고급스러움', '로맨틱', '소박함', '조용함', '아늑함', '유니크함', '전통적', '캐주얼', '현대적', '활기참']}
         selectedItems={selectedTags}
         onItemToggle={handleTagToggle}
       />

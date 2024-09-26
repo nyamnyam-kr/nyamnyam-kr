@@ -1,9 +1,13 @@
+// app/layout.tsx
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import SearchBar from "./components/SearchBox";
+import React from "react";
+import Home from "./page";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,13 +16,30 @@ interface User {
   nickname: string;
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+interface Restaurant {
+  id: number;
+  name: string;
+  type: string;
+  address: string;
+  tel: string;
+  rate: number;
+  thumbnailImageUrl: string;
+}
 
+interface SearchBarProps {
+  searchTerm: string;
+  onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onEnter: () => void;
+}
+
+interface RootLayoutProps {
+  children: React.ReactElement<SearchBarProps>[];
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -32,6 +53,28 @@ export default function RootLayout({
     setUser(null);
   };
 
+  const fetchRestaurantsBySearch = async (keyword: string): Promise<Restaurant[]> => {
+    if (!keyword) {
+      setRestaurants([]);
+      return [];
+    }
+    const res = await fetch(`http://localhost:8080/api/restaurant/search?q=${keyword}`);
+    const data = await res.json();
+    setRestaurants(data);
+    return data;
+  };
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    await fetchRestaurantsBySearch(value);
+  };
+
+  const handleEnter = async () => {
+    await fetchRestaurantsBySearch(searchTerm);
+    console.log('검색어:', searchTerm);
+  };
+
   return (
     <html lang="en">
       <head>
@@ -41,30 +84,12 @@ export default function RootLayout({
         <meta name="description" content="TeamHost" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="HandheldFriendly" content="true" />
-        <meta name="format-detection" content="telephone=no" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-
-        {/* Favicon */}
         <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/x-icon" />
-
-        {/* Styles */}
         <link rel="stylesheet" href="/assets/css/libs.min.css" />
         <link rel="stylesheet" href="/assets/css/main.css" />
-
-
-        {/* Google Fonts */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet" />
       </head>
       <body>
         <header className="page-header">
@@ -84,7 +109,7 @@ export default function RootLayout({
                 <div className="search">
                   <div className="search__input">
                     <i className="ico_search"></i>
-                    <input type="search" name="search" placeholder="Search" />
+                    <SearchBar searchTerm={searchTerm} onSearch={handleSearch} onEnter={handleEnter} />
                   </div>
                   <div className="search__btn">
                     <button type="button">
@@ -109,9 +134,7 @@ export default function RootLayout({
                         </button>
                       </li>
                       <li>
-                        <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">
-                          유저 목록
-                        </Link>
+                        <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">유저 목록</Link>
                       </li>
                     </>
                   ) : (
@@ -136,16 +159,16 @@ export default function RootLayout({
                     <span className="animation-ripple-delay2"></span>
                   </Link>
                   <Link href="/08_wallet" className="profile">
-                    <img src="/assets/img/profile.png" alt="profile"/>
+                    <img src="/assets/img/profile.png" alt="profile" />
                   </Link>
                 </div>
               </div>
             </div>
           </div>
         </header>
-        <div className="container mx-auto p-4">
-          {children}
-        </div>
+        <main>
+        <Home searchTerm={searchTerm} />
+        </main>
       </body>
     </html>
   );
