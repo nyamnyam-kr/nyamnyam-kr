@@ -72,11 +72,30 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
     }
 
 
+//    @Override
+//    public List<RestaurantEntity> findByTagName(List<String> tagNames) {
+//        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+//        QPostEntity post = QPostEntity.postEntity;
+//        QPostTagEntity postTag = QPostTagEntity.postTagEntity;
+//
+//        return jpaQueryFactory
+//                .selectFrom(restaurant)
+//                .distinct()
+//                .join(restaurant.posts, post)
+//                .join(post.postTags, postTag)
+//                .where(postTag.tag.name.in(tagNames))
+//                .groupBy(restaurant.id)
+//                .fetch();
+//    }
+
+
     @Override
     public List<RestaurantEntity> findByTagName(List<String> tagNames) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
         QPostTagEntity postTag = QPostTagEntity.postTagEntity;
+
+        long tagCount = tagNames.size();
 
         return jpaQueryFactory
                 .selectFrom(restaurant)
@@ -84,8 +103,11 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .join(restaurant.posts, post)
                 .join(post.postTags, postTag)
                 .where(postTag.tag.name.in(tagNames))
+                .groupBy(restaurant.id)
+                .having(Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", postTag.tag.name).eq(tagCount))
                 .fetch();
     }
+
 
 
     @Override
