@@ -4,11 +4,10 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.nyamnyam.model.domain.Chart.AreaModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QPostTagEntity;
-import kr.nyamnyam.model.domain.Chart.AreaModel;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Objects;
+
 
 import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
 
@@ -72,7 +72,21 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
     }
 
 
-
+//    @Override
+//    public List<RestaurantEntity> findByTagName(List<String> tagNames) {
+//        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+//        QPostEntity post = QPostEntity.postEntity;
+//        QPostTagEntity postTag = QPostTagEntity.postTagEntity;
+//
+//        return jpaQueryFactory
+//                .selectFrom(restaurant)
+//                .distinct()
+//                .join(restaurant.posts, post)
+//                .join(post.postTags, postTag)
+//                .where(postTag.tag.name.in(tagNames))
+//                .groupBy(restaurant.id)
+//                .fetch();
+//    }
 
 
     @Override
@@ -81,12 +95,16 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         QPostEntity post = QPostEntity.postEntity;
         QPostTagEntity postTag = QPostTagEntity.postTagEntity;
 
+        long tagCount = tagNames.size();
+
         return jpaQueryFactory
                 .selectFrom(restaurant)
                 .distinct()
                 .join(restaurant.posts, post)
                 .join(post.postTags, postTag)
                 .where(postTag.tag.name.in(tagNames))
+                .groupBy(restaurant.id)
+                .having(Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", postTag.tag.name).eq(tagCount))
                 .fetch();
     }
 
@@ -97,61 +115,77 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
 
         BooleanExpression categoryExpression = categories.stream()
-                .map(category -> getCategoryCondition(restaurant.menu, category))
+                .map(category -> getCategoryCondition(restaurant.type, category))
                 .filter(Objects::nonNull)
                 .reduce(BooleanExpression::or)
                 .orElse(null);
 
         return jpaQueryFactory
                 .select(restaurant)
+                .distinct()
                 .from(restaurant)
                 .where(categoryExpression)
                 .fetch();
     }
 
-    private BooleanExpression getCategoryCondition(StringExpression menu, String category) {
-        if (category.equals("중식")) {
-            return menu.contains("짜장")
-                    .or(menu.contains("짬뽕"))
-                    .or(menu.contains("탕수육"))
-                    .or(menu.contains("중국"));
+    private BooleanExpression getCategoryCondition(StringExpression type, String category) {
+        if (category.equals("한식")) {
+            return type.contains("육류")
+                    .or(type.contains("고기"))
+                    .or(type.contains("한식"))
+                    .or(type.contains("칼국수"))
+                    .or(type.contains("만두"))
+                    .or(type.contains("곱창"))
+                    .or(type.contains("막창"))
+                    .or(type.contains("감자"))
+                    .or(type.contains("돼지"))
+                    .or(type.contains("냉면"))
+                    .or(type.contains("쭈꾸미"));
         } else if (category.equals("일식")) {
-            return menu.contains("라멘")
-                    .or(menu.contains("스시"))
-                    .or(menu.contains("우동"))
-                    .or(menu.contains("일본"));
-        } else if (category.equals("한식")) {
-            return menu.contains("김치")
-                    .or(menu.contains("비빔밥"))
-                    .or(menu.contains("불고기"))
-                    .or(menu.contains("샤브"))
-                    .or(menu.contains("국수"))
-                    .or(menu.contains("만두"))
-                    .or(menu.contains("냉면"))
-                    .or(menu.contains("갈비"));
-        } else if (category.equals("분식")) {
-            return menu.contains("떡볶이")
-                    .or(menu.contains("순대"))
-                    .or(menu.contains("튀김"));
-        } else if (category.equals("경양식")) {
-            return menu.contains("돈까스")
-                    .or(menu.contains("스테이크"))
-                    .or(menu.contains("햄버거"));
+            return type.contains("일식")
+                    .or(type.contains("초밥"))
+                    .or(type.contains("롤"))
+                    .or(type.contains("이자카야"))
+                    .or(type.contains("덮밥"));
+
+        } else if (category.equals("중식")) {
+            return type.contains("중식")
+                    .or(type.contains("양꼬치"))
+                    .or(type.contains("마라탕"))
+                    .or(type.contains("짜장"));
         } else if (category.equals("양식")) {
-            return menu.contains("파스타")
-                    .or(menu.contains("피자"))
-                    .or(menu.contains("이탈리아"))
-                    .or(menu.contains("스파게티"));
+            return type.contains("양식")
+                    .or(type.contains("이탈리아"))
+                    .or(type.contains("스테이크"))
+                    .or(type.contains("립"))
+                    .or(type.contains("레스토랑"))
+                    .or(type.contains("파스타"))
+                    .or(type.contains("스테이크"))
+                    .or(type.contains("돈까스"));
+        } else if (category.equals("아시아")) {
+            return type.contains("아시아")
+                    .or(type.contains("베트남"))
+                    .or(type.contains("태국"))
+                    .or(type.contains("쌀국수"))
+                    .or(type.contains("팟타이"));
+        } else if (category.equals("해산물")) {
+            return type.contains("생선")
+                    .or(type.contains("회"))
+                    .or(type.contains("킹크랩"));
+        } else if (category.equals("술집")) {
+            return type.contains("술")
+                    .or(type.contains("주점"))
+                    .or(type.contains("이자카야"))
+                    .or(type.contains("바"))
+                    .or(type.contains("와인"))
+                    .or(type.contains("맥주"))
+                    .or(type.contains("호프"));
         } else if (category.equals("카페")) {
-            return menu.contains("아메리카노")
-                    .or(menu.contains("카푸치노"))
-                    .or(menu.contains("라떼"));
-        } else if (category.equals("디저트")) {
-            return menu.contains("케이크")
-                    .or(menu.contains("빙수"))
-                    .or(menu.contains("마카롱"));
-        }
-        return null;
+            return type.contains("카페")
+                    .or(type.contains("베이커리"))
+                    .or(type.contains("커피"));
+        } else
+            return null;
     }
 
 }
