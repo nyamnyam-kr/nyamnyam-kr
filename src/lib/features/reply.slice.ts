@@ -6,11 +6,15 @@ import { ReplyModel } from 'src/app/model/reply.model';
 interface ReplyState{
   replies: { [key:number]: ReplyModel[]};
   replyInput: {[key:number]: string};
+  editReply: {[key:number]: boolean};
+  editInput: {[key:number]: string};
 }
 
 const initialState: ReplyState = {
   replies: {}, 
   replyInput:{},
+  editReply:{},
+  editInput:{}
 };
 
 const replySlice = createSlice({
@@ -22,28 +26,18 @@ const replySlice = createSlice({
       const {postId, replies} = action.payload;
       state.replies[postId] = replies;
     },
-    // 댓글 입력값 저장 
+    // 수정 댓글 저장 
     setReplyInput: (state, action: PayloadAction<{postId: number; content: string}>) => {
       const {postId, content} = action.payload;
       state.replyInput[postId] = content;
-    }, 
-    // 댓글 입력값 초기화 
-    clearReplyInput:(state, action: PayloadAction<number>) => {
-      state.replyInput[action.payload] = ''; 
     },
-    // 단일 댓글 추가 
-    addReply: (state, action: PayloadAction<{ postId: number; reply: ReplyModel }>) => {
-      const { postId, reply } = action.payload;
-      if (state.replies[postId]) {
-        state.replies[postId] = [...state.replies[postId], reply]; 
-      } else {
-        state.replies[postId] = [reply];
-      }
+    setEditReply : (state, action: PayloadAction<{replyId: number; isEditing: boolean}>) => {
+      const {replyId, isEditing} = action.payload;
+      state.editReply[replyId] = isEditing;
     },
-    // 댓글 삭제 
-    deleteReply:(state, action: PayloadAction<{postId: number; replyId:number}>) =>{
-      const {postId, replyId} = action.payload;
-      state.replies[postId] = state.replies[postId].filter((reply) => reply.id !== replyId); 
+    setEditInput : (state, action: PayloadAction<{replyId: number, content:string}>) => {
+      const {replyId, content} = action.payload;
+      state.editInput[replyId] = content;
     }
   },
   extraReducers: (builder)=> {} 
@@ -51,7 +45,9 @@ const replySlice = createSlice({
 
 export const getReplies = (state: RootState) => state.reply.replies;
 export const getReplyInput = (state: RootState) => state.reply.replyInput;
+export const getEditReply = (state: RootState) => state.reply.editReply;
+export const getEditInput = (state: RootState) => state.reply.editInput;
 
-export  const { setReplies,setReplyInput, addReply } = replySlice. actions; 
+export const { setReplies,setReplyInput,setEditReply,setEditInput } = replySlice. actions; 
   
 export default  replySlice.reducer;

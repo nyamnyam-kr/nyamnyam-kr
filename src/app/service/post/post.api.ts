@@ -1,3 +1,5 @@
+import { PostModel } from "src/app/model/post.model";
+
 export async function insertPost(post: PostModel): Promise<any | {status: number}> {
   try {
     const body = {

@@ -6,7 +6,8 @@ export  const  makeStore = ( ) => {
   return  configureStore ({ 
     reducer : { 
       post : postSlice, 
-      reply : replySlice
+      reply : replySlice, 
+      receipt : replySlice
     }, 
   }); 
 }; 

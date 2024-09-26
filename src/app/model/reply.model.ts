@@ -4,8 +4,8 @@ export interface ReplyModel{
     postId: number;
     userId: number;
     nickname: string;
-    entryDate: string;
-    modifyDate: string;
+    entryDate?: string;
+    modifyDate?: string;
 }
 
 export const initialReply: ReplyModel = {

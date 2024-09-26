@@ -1,3 +1,5 @@
+import { ReplyModel } from "src/app/model/reply.model";
+
 export async function insertReply(reply: ReplyModel): Promise<ReplyModel | null> {
   try {
     const replyData = {

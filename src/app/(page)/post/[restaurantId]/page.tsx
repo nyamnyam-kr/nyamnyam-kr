@@ -8,7 +8,8 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
 import {insertReply} from "src/app/service/reply/reply.api";
-import { ReplyModel } from "src/app/model/reply.model";
+import { useAppSelector, useAppDispatch } from "src/lib/hooks";
+import { setEditInput, setEditReply, setReplies, setReplyInput } from "src/lib/features/reply.slice";
 
 const reportReasons = [
     "광고글이에요",
@@ -29,10 +30,11 @@ export default function PostList() {
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
-    const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>({});
-    const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
-    const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
-    const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
+    const replies = useAppSelector((state) => state.reply.replies);
+    const replyInput = useAppSelector((state) => state.reply.replyInput);
+    const editReply = useAppSelector((state) => state.reply.editReply);
+    const editInput = useAppSelector((state) => state.reply.editInput);
+    const dispatch = useAppDispatch();
     const currentUserId = 1; // giveId : 테스트로 1값 설정
     const router = useRouter();
     const { restaurantId } = useParams();
@@ -117,10 +119,9 @@ export default function PostList() {
         fetch(`http://localhost:8080/api/replies/post/${postId}`)
             .then((response) => response.json())
             .then(data => {
-                setReplies(prevReplies => ({
-                    ...prevReplies,
-                    [postId]: data,
-                }));
+                
+                dispatch(setReplies({postId, replies: data}));
+
                 console.log("setReplies: ", data);
             })
             .catch((error) => console.error("reply fetch fail:", error));
@@ -146,7 +147,8 @@ export default function PostList() {
             id: 0,
             content: replyContent,
             postId: postId,
-            userId: currentUserId
+            userId: currentUserId, 
+            nickname: ''
         };
 
         try {
@@ -155,10 +157,7 @@ export default function PostList() {
             if (newReply) {
                 fetchReply(postId);
 
-                setReplyInput((prevInput) => ({
-                    ...prevInput,
-                    [postId]: '',
-                }));
+               dispatch(setReplyInput({postId, content: ''}));
             } else {
                 console.log('댓글 등록 실패');
             }
@@ -167,22 +166,21 @@ export default function PostList() {
         }
     };
 
-    const toggleReply = (id: number) => {
+    const toggleReply = (postId: number) => {
         setReplyToggles(prevToggles => ({
             ...prevToggles,
-            [id]: !prevToggles[id],
+            [postId]: !prevToggles[postId],
         }));
 
-        if (!replyToggles[id]) {
-            fetchReply(id);
+        if (!replyToggles[postId]) {
+            fetchReply(postId);
         }
     };
 
-    const handleReplyChange = (id: number, content: string) => {
-        setReplyInput((prevInput) => ({
-            ...prevInput,
-            [id]: content,
-        }));
+    const handleReplyChange = (postId: number, content: string) => {
+        
+        dispatch(setReplyInput({postId, content}));
+
         console.log('setReplyInput: ', setReplyInput);
     };
 
@@ -249,21 +247,12 @@ export default function PostList() {
     };
 
     const handleEditClick = (replyId: number, currentContent: string) => {
-        setEditReply((prevEdit) => ({
-            ...prevEdit,
-            [replyId]: true,
-        }));
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: currentContent,
-        }));
+        dispatch(setEditReply({replyId, isEditing: true}));
+        dispatch(setEditInput({replyId, content: currentContent}));
     };
 
     const handleEditChange = (replyId: number, newContent: string) => {
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: newContent,
-        }));
+        dispatch(setEditInput({replyId, content:newContent}));
     };
 
     const handleEditSave = async (replyId: number, postId: number) => {
@@ -285,20 +274,13 @@ export default function PostList() {
 
             if (response.ok) {
                 const updateReplyData = await response.json();
-                setReplies((prevReplies) => {
-                    const updateReplies = { ...prevReplies };
-                    if (updateReplies[postId]) {
-                        updateReplies[postId] = updateReplies[postId].map((reply) =>
-                            reply.id === replyId ? updateReplyData : reply
-                        );
-                    }
-                    fetchReply(postId);
-                    return updateReplies;
-                });
-                setEditReply((prevEditReply) => ({
-                    ...prevEditReply,
-                    [replyId]: false,
-                }));
+
+                dispatch(setReplies({postId, 
+                    replies: replies[postId].map((reply) => 
+                        reply.id === replyId ? updateReplyData : reply)}))
+
+                dispatch(setEditReply({replyId, isEditing: false})); 
+
             } else {
                 console.error('댓글 수정 실패 ');
             }
@@ -330,14 +312,11 @@ export default function PostList() {
                 });
 
                 if (response.ok) {
-                    setReplies(prevReplies => {
-                        return {
-                            ...prevReplies,
-                            [postId]: prevReplies[postId].filter((reply) => reply.id !== replyId)
-                        };
-                    });
-                    alert("댓글이 삭제되었습니다.");
-                    fetchPosts();
+                    dispatch(setReplies({postId, 
+                        replies: replies[postId].filter((reply) => reply.id !== replyId)}));
+
+                        alert("댓글이 삭제되었습니다.");
+                        fetchPosts();
                 } else {
                     alert("댓글 삭제에 실패했습니다.");
                 }
