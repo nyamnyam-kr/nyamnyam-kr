@@ -1,5 +1,5 @@
 //src/app/service/reply/reply.service.ts
-import { an } from "@fullcalendar/core/internal-common";
+import { Dispatch } from "@reduxjs/toolkit";
 import { deleteReply, insertReply } from "src/app/api/reply/reply.api";
 import { ReplyModel } from "src/app/model/reply.model";
 import { addReplies } from "src/lib/features/reply.slice";
@@ -36,27 +36,22 @@ export async function serviceInsertReply(reply: ReplyModel, postId: number, disp
   }
 
 export const handleReplyDelete = async (
-  replyId: number, 
-  postId: number, 
-  setReplies: Function, 
-  fetchPosts: Function
+    replyId: number, 
+    postId: number, 
+    dispatch: Dispatch, 
+    replies: { [key:number]: ReplyModel[] }
 ) => {
   if (window.confirm("삭제하시겠습니까?")) {
     try {
-      await deleteReply(replyId);
+      await deleteReply(replyId); // 삭제 결과 반환값을 따로 사용하지 않음
 
-      setReplies((prevReplies: any) => {
-        return {
-          ...prevReplies,
-          [postId]: prevReplies[postId].filter((reply: any) => reply.id !== replyId)
-        };
-      });
+      const updateReplies = replies[postId].filter((reply) => reply.id !== replyId);
+      dispatch(addReplies({postId, replies: updateReplies}));
 
       alert("댓글이 삭제되었습니다.");
-      fetchPosts();
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("댓글 삭제 중 문제가 발생했습니다:", error);
-      alert(error.message);
+      alert(error.message); // 에러 메시지 출력
     }
   }
 };

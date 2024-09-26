@@ -1,9 +1,9 @@
 "use client";
-import Star from "@/app/(page)/star/page";
-import { PostModel } from "@/app/model/post.model";
+
 import { useParams, useRouter } from "next/navigation";
-import { list } from "postcss";
 import { useEffect, useState } from "react";
+import Star from "src/app/(page)/star/page";
+import { PostModel } from "src/app/model/post.model";
 
 export default function PostDetail() {
   const [posts, setPosts] = useState<PostModel | null>(null);

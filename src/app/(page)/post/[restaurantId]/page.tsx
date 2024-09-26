@@ -7,11 +7,13 @@ import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
-import { addEditInput, addEditReply, addReplies, addReplyInput, getReplies, getReplyInput } from "src/lib/features/reply.slice";
-import { handleReplyDelete, insertReply } from "src/app/api/reply/reply.api";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { AppDispatch } from "src/lib/store";
+import { ReplyModel } from "src/app/model/reply.model";
+import { handleReplyDelete } from "src/app/service/reply/reply.service";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "src/lib/store";
+import { stat } from "fs";
+import { getReplies } from "src/lib/features/reply.slice";
+import { insertReply } from "src/app/api/reply/reply.api";
 
 const reportReasons = [
     "광고글이에요",
@@ -32,16 +34,17 @@ export default function PostList() {
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
+    //const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>({});
+    const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
+    const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
+    const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
     const currentUserId = 1; // giveId : 테스트로 1값 설정
     const router = useRouter();
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
-    const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
-    const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
 
-    const dispatch = useDispatch<AppDispatch>(); 
-    const replies = useSelector(getReplies); 
-    const replyInput = useSelector(getReplyInput); 
+    const dispatch = useDispatch();
+    const replies = useSelector((state: RootState) => getReplies(state));
 
     useEffect(() => {
         if (restaurantId) {
@@ -118,18 +121,24 @@ export default function PostList() {
             })
     }
 
-    // const fetchReply = (postId: number) => {
-    //     fetch(`http://localhost:8080/api/replies/post/${postId}`)
-    //         .then((response) => response.json())
-    //         .then(data => {
-    //             setReplies(prevReplies => ({
-    //                 ...prevReplies,
-    //                 [postId]: data,
-    //             }));
-    //             console.log("setReplies: ", data);
-    //         })
-    //         .catch((error) => console.error("reply fetch fail:", error));
-    // }
+    const fetchReply = (postId: number) => {
+        fetch(`http://localhost:8080/api/replies/post/${postId}`)
+            .then((response) => response.json())
+            .then(data => {
+                setReplies(prevReplies => ({
+                    ...prevReplies,
+                    [postId]: data,
+                }));
+                console.log("setReplies: ", data);
+            })
+            .catch((error) => console.error("reply fetch fail:", error));
+    }
+
+    useEffect(() => {
+        if (postId) {
+            fetchReply(postId);
+        }
+    }, [postId]);
 
     const handleReplySubmit = async (postId: number, e: FormEvent) => {
         e.preventDefault();
@@ -145,17 +154,19 @@ export default function PostList() {
             id: 0,
             content: replyContent,
             postId: postId,
-            userId: currentUserId, 
-            nickname: ''
+            userId: currentUserId
         };
 
         try {
             const newReply = await insertReply(replyData);
 
             if (newReply) {
-                dispatch(addReplies({postId, replies:[newReply]}));
-                dispatch(addReplyInput)
+                fetchReply(postId);
 
+                setReplyInput((prevInput) => ({
+                    ...prevInput,
+                    [postId]: '',
+                }));
             } else {
                 console.log('댓글 등록 실패');
             }
@@ -164,27 +175,24 @@ export default function PostList() {
         }
     };
 
-    // const toggleReply = (postId: number) => {
-    //     setReplyToggles(prevToggles => ({
-    //         ...prevToggles,
-    //         [postId]: !prevToggles[postId],
-    //     }));
+    const toggleReply = (id: number) => {
+        setReplyToggles(prevToggles => ({
+            ...prevToggles,
+            [id]: !prevToggles[id],
+        }));
 
-    //     if (!replyToggles[postId]) {
-    //         fetchReply(postId);
-    //     }
-    // };
+        if (!replyToggles[id]) {
+            fetchReply(id);
+        }
+    };
 
-    // const handleReplyChange = (postId: number, content: string) => {
-        
-    //     setReplyInput((prevInput) => ({
-    //         ...prevInput,
-    //         [postId]: content,
-    //     }));
-
-
-    //     console.log('setReplyInput: ', addReplyInput);
-    // };
+    const handleReplyChange = (id: number, content: string) => {
+        setReplyInput((prevInput) => ({
+            ...prevInput,
+            [id]: content,
+        }));
+        console.log('setReplyInput: ', setReplyInput);
+    };
 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -257,7 +265,6 @@ export default function PostList() {
             ...prevInput,
             [replyId]: currentContent,
         }));
-
     };
 
     const handleEditChange = (replyId: number, newContent: string) => {
@@ -265,52 +272,50 @@ export default function PostList() {
             ...prevInput,
             [replyId]: newContent,
         }));
-
     };
 
-    // const handleEditSave = async (replyId: number, postId: number) => {
-    //     const updateReply = {
-    //         id: replyId,
-    //         content: editInput[replyId],
-    //         postId: postId,
-    //         userId: currentUserId
-    //     };
+    const handleEditSave = async (replyId: number, postId: number) => {
+        const updateReply = {
+            id: replyId,
+            content: editInput[replyId],
+            postId: postId,
+            userId: currentUserId
+        };
 
-    //     try {
-    //         const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(updateReply)
-    //         });
+        try {
+            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateReply)
+            });
 
-    //         if (response.ok) {
-    //             const updateReplyData = await response.json();
-    //             setReplies((prevReplies) => {
-    //                 const updateReplies = { ...prevReplies };
-    //                 if (updateReplies[postId]) {
-    //                     updateReplies[postId] = updateReplies[postId].map((reply) =>
-    //                         reply.id === replyId ? updateReplyData : reply
-    //                     );
-    //                 }
-    //                 fetchReply(postId);
-    //                 return updateReplies;
-    //             });
-    //             setEditReply((prevEditReply) => ({
-    //                 ...prevEditReply,
-    //                 [replyId]: false,
-    //             }));
+            if (response.ok) {
+                const updateReplyData = await response.json();
+                setReplies((prevReplies) => {
+                    const updateReplies = { ...prevReplies };
+                    if (updateReplies[postId]) {
+                        updateReplies[postId] = updateReplies[postId].map((reply) =>
+                            reply.id === replyId ? updateReplyData : reply
+                        );
+                    }
+                    fetchReply(postId);
+                    return updateReplies;
+                });
+                setEditReply((prevEditReply) => ({
+                    ...prevEditReply,
+                    [replyId]: false,
+                }));
+            } else {
+                console.error('댓글 수정 실패 ');
+            }
+        } catch (error) {
+            console.error("댓글 수정 중 에러 발생:", error);
+        }
+    };
 
-    //         } else {
-    //             console.error('댓글 수정 실패 ');
-    //         }
-    //     } catch (error) {
-    //         console.error("댓글 수정 중 에러 발생:", error);
-    //     }
-    // };
-
-    const handlePostDelete = (postId: number) => {
+    const handleDelete = (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
             fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
                 .then(() => {
@@ -325,9 +330,9 @@ export default function PostList() {
         }
     };
 
-    const handleDelete = (replyId: number, postId: number) => {
-        handleReplyDelete(replyId, postId, setReplies, fetchPosts);
-      };
+    const handleRepDelete = async (replyId: number, postId: number) => {
+        await handleReplyDelete(replyId, postId, dispatch, replies);
+    };
 
     const postReport = async (postId: number) => {
         const selectedReason = selectedReasons[postId];
@@ -519,7 +524,7 @@ export default function PostList() {
                                                                         </button>
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
-                                                                            onClick={() => reply.id && handleDelete(reply.id, p.id)}
+                                                                            onClick={() => reply.id && handleRepDelete(reply.id, p.id)}
                                                                         >
                                                                             삭제
                                                                         </button>
@@ -561,7 +566,7 @@ export default function PostList() {
                                             <button
                                                 className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2"
                                                 onClick={() => {
-                                                    handlePostDelete(p.id);
+                                                    handleDelete(p.id);
                                                 }}
                                             >
                                                 삭제
