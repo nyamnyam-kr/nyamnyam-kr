@@ -16,8 +16,6 @@ public interface ImageService {
 
     Boolean existsById(Long id);
 
-    Long count();
-
     Boolean deleteById(Long id);
 
     Boolean save(ImageEntity entity);

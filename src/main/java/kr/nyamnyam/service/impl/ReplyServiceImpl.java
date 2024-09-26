@@ -25,12 +25,9 @@ public class ReplyServiceImpl implements ReplyService {
     public List<ReplyModel> findAllByPostId(Long postId) {
         List<Tuple> results = repository.findAllByPostWithNickname(postId);
 
-        System.out.println("댓글 size : " + results.size());
         results.forEach(tuple -> {
          ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
          String nickname = tuple.get(QUsersEntity.usersEntity.nickname);
-            System.out.println("ReplyEntity : " + replyEntity);
-            System.out.println("Nickname : " + nickname);
         });
 
         return results.stream()

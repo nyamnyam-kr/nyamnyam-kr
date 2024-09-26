@@ -237,11 +237,6 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Long count() {
-        return repository.count();
-    }
-
-    @Override
     public Boolean save(ImageEntity entity) {
         repository.save(entity);
         return true;

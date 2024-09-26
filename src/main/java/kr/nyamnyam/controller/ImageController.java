@@ -54,10 +54,7 @@ public class ImageController{
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
-    @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(service.count());
-    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
         return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
