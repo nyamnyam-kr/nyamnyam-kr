@@ -8,9 +8,9 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { handleReplyDelete } from "src/app/service/reply/reply.service";
+import { handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/lib/store";
+import { AppDispatch, RootState } from "src/lib/store";
 import { stat } from "fs";
 import { getReplies } from "src/lib/features/reply.slice";
 import { insertReply } from "src/app/api/reply/reply.api";
@@ -140,39 +140,8 @@ export default function PostList() {
         }
     }, [postId]);
 
-    const handleReplySubmit = async (postId: number, e: FormEvent) => {
-        e.preventDefault();
-
-        const replyContent = replyInput[postId];
-
-        if (!replyContent) {
-            alert('댓글을 입력하세요.');
-            return;
-        }
-
-        const replyData = {
-            id: 0,
-            content: replyContent,
-            postId: postId,
-            userId: currentUserId
-        };
-
-        try {
-            const newReply = await insertReply(replyData);
-
-            if (newReply) {
-                fetchReply(postId);
-
-                setReplyInput((prevInput) => ({
-                    ...prevInput,
-                    [postId]: '',
-                }));
-            } else {
-                console.log('댓글 등록 실패');
-            }
-        } catch (error) {
-            console.error('댓글 등록 중 오류:', error);
-        }
+    const handleReplySubmit = async (reply: ReplyModel, postId: number, dispatch: AppDispatch) => {
+        await serviceInsertReply(reply, postId, dispatch);
     };
 
     const toggleReply = (id: number) => {

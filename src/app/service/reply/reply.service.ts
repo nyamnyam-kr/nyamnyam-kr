@@ -1,10 +1,22 @@
 //src/app/service/reply/reply.service.ts
 import { Dispatch } from "@reduxjs/toolkit";
-import { deleteReply, insertReply } from "src/app/api/reply/reply.api";
+import { deleteReply, fetchReplyApi, insertReply } from "src/app/api/reply/reply.api";
 import { ReplyModel } from "src/app/model/reply.model";
 import { addReplies } from "src/lib/features/reply.slice";
 import { AppDispatch } from "src/lib/store";
 
+
+export const fetchReplyService = async (postId: number, dispatch: AppDispatch) => {
+    try {
+      const data = await fetchReplyApi(postId); // API 호출
+      
+      // Redux 상태 업데이트
+      dispatch(addReplies({ postId, replies: data }));
+      console.log("setReplies: ", data);
+    } catch (error) {
+      console.error("Reply fetch fail:", error);
+    }
+  };
 
 export async function serviceInsertReply(reply: ReplyModel, postId: number, dispatch: AppDispatch): Promise<ReplyModel | null> {
     try {
