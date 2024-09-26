@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import receiptSlice from './features/receipt.slice';
+import noticeSlice from "src/lib/features/notice.slice";
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
             receipt: receiptSlice,
+            notice: noticeSlice,
         },
     });
 };

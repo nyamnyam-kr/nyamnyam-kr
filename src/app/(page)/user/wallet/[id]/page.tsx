@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import {ReceiptModel} from "src/app/model/receipt.model";
 
 export default function Wallet() {
     const [wallet, setWallet] = useState<ReceiptModel[]>([]);

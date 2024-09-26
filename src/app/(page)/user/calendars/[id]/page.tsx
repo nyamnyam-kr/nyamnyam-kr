@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Head from 'next/head';
 import FullCalendar from "@fullcalendar/react"; // FullCalendar 컴포넌트를 기본으로 임포트
 import dayGridPlugin from "@fullcalendar/daygrid";
+import {useParams} from "next/navigation";
+import {ReceiptModel} from "src/app/model/receipt.model";
 
 const CalendarComponent: React.FC<{ events: Array<{ title: string; date: string }> }> = ({ events }) => {
     // 클라이언트에서만 실행되는 코드 (여기서는 필요 없지만 예시로 남겨둠)
@@ -24,16 +26,38 @@ const CalendarComponent: React.FC<{ events: Array<{ title: string; date: string 
 
 export default function Calendars() {
     const [isClient, setIsClient] = useState(false);
+    const [wallet, setWallet] = useState<ReceiptModel[]>([]);
+    const { id } = useParams();
+
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/receipt/wallet/${id}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch group details");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const updatedData = data.map((item: ReceiptModel) => ({
+                    ...item,
+                    date: item.date ? item.date.slice(0, 11) : '',
+                }));
+                setWallet(updatedData);
+            });
+    }, [id]);
+
+    const totalExpenditure = wallet.reduce((sum, item) => sum + item.price, 0);
+
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
     // 더미 이벤트 데이터
-    const events = [
-        { title: "Event 1", date: "2024-09-01" },
-        { title: "Event 2", date: "2024-09-05" }
-    ];
+    const events = wallet.map((item) => ({
+        title: item.name +" : "+ item.price,
+        date: item.date
+    }));
 
     return (
         <>
@@ -75,8 +99,11 @@ export default function Calendars() {
                 <div className="card dark:bg-zinc-800 dark:border-zinc-600 mt-10">
                     <div className="space-y-5 card-body mt-100">
                         {/* 여기에 캘린더 컴포넌트를 통합할 곳입니다 */}
-                        {isClient && <CalendarComponent events={events} />}
+                        {isClient && <CalendarComponent events={events}/>}
                     </div>
+                </div>
+                <div className="bg-blue-600 text-white">
+                    <div className="py-3 px-4 border-b">지출합계 : {totalExpenditure}</div>
                 </div>
             </main>
 

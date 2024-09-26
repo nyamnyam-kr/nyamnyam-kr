@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
+import Providers from './components/ReactQueryProvider';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -62,6 +64,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+      <Providers>
         <header className="page-header">
           <div className="page-header__inner">
             <div className="page-header__sidebar">
@@ -107,6 +110,7 @@ export default function RootLayout({
         <div className="container mx-auto p-4">
           {children}
         </div>
+        </Providers>
       </body>
     </html>
   );

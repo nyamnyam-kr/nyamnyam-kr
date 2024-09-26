@@ -1,35 +1,30 @@
-"use client";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
+'use client';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectNotices } from 'src/lib/features/notice.slice';
+import { noticeList } from 'src/app/service/notice/notice.api';
 
-export default function showNotice() {
-    const [notice, setNotice] = useState<NoticeModel[]>([]);
+export default function ShowNotice() {
+    const dispatch = useDispatch();
+    const notice = useSelector(selectNotices); // 공지사항 상태 가져오기
     const router = useRouter();
-    useEffect( () => {
-        fetch('http://localhost:8080/api/notice')
-            .then((response) => {
-                if(!response.ok) {
-                    throw new Error("Failed to fetch group details");
 
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const sortedData = data.sort((a: NoticeModel, b: NoticeModel) => {
-                    return new Date(b.date).getTime() - new Date(a.date).getTime();
-                });
-                setNotice(sortedData);
-            });
-    }, []);
+    useEffect(() => {
+        const fetchNotices = async () => {
+            await noticeList(dispatch);
+        };
 
-    const moveToOne = (id : number) => {
-        router.push(`/notice/details/${id}`)
-    }
+        fetchNotices();
+    }, [dispatch]);
 
-    const moveToInsert = () => {
-        router.push('/notice/register'); // 공지사항 추가 페이지로 이동
+    const moveToOne = (id: number) => {
+        router.push(`/notice/details/${id}`);
     };
 
+    const moveToInsert = () => {
+        router.push('/notice/register');
+    };
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
@@ -43,19 +38,27 @@ export default function showNotice() {
                     </tr>
                     </thead>
                     <tbody>
-                    {notice.map((n) => (
-                        <tr key={n.id} className=" text-black" onClick={() => moveToOne(n.id)}>
-                            <th className="py-3 px-4 border-b">{n.title}</th>
-                            <th className="py-3 px-4 border-b">{n.hits}</th>
-                            <th className="py-3 px-4 border-b">{n.date}</th>
+                    {Array.isArray(notice) && notice.length > 0 ? (
+                        notice.map((n) => (
+                            <tr key={n.id} className="text-black cursor-pointer" onClick={() => moveToOne(n.id)}>
+                                <td className="py-3 px-4 border-b">{n.title}</td>
+                                <td className="py-3 px-4 border-b">{n.hits}</td>
+                                <td className="py-3 px-4 border-b">{new Date(n.date).toLocaleDateString()}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={3} className="text-center py-3">공지사항이 없습니다.</td>
                         </tr>
-                    ))}
+                    )}
                     </tbody>
                 </table>
             </div>
-            <div>
-                <button onClick={moveToInsert}>공지사항 추가하기</button>
+            <div className="mt-4">
+                <button onClick={moveToInsert} className="bg-blue-600 text-white py-2 px-4 rounded">
+                    공지사항 추가하기
+                </button>
             </div>
         </main>
-    )
+    );
 }

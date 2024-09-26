@@ -42,11 +42,18 @@ export default function InsertReceipt() {
                 });
 
                 if (resp.status === 200) {
+
                     console.log(resp);
                     const restaurantId = resp.data.id;
 
-                    router.push(`/receipt/receiptRestaurant/${restaurantId}`);
+                    if (restaurantId == null) {
+                        alert("이미 등록된 정보입니다");
+                        router.push(`/`);
+                    } else {
+                        router.push(`/receipt/receiptRestaurant/${restaurantId}`);
+                    }
                 }
+
             } catch (error) {
                 console.error('파일 업로드 오류:', error);
             } finally {
