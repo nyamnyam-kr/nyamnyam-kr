@@ -1,10 +1,12 @@
 import { configureStore } from  '@reduxjs/toolkit' ; 
 import postSlice from  './features/post.slice' ; 
+import replySlice from './features/reply.slice';
 
 export  const  makeStore = ( ) => { 
   return  configureStore ({ 
     reducer : { 
       post : postSlice, 
+      reply : replySlice
     }, 
   }); 
 }; 

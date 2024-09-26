@@ -526,6 +526,7 @@ export default function PostList() {
                                                                         </span>
                                                                     )}
                                                                 </div>
+                                                                <div className="text-gray-500">{formatDate(reply.entryDate)}</div>
                                                                 {reply.userId === currentUserId && (
                                                                     <div className="flex space-x-2 mt-2 justify-end">
                                                                         <button

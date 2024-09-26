@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from  '@reduxjs/toolkit' 
 import  type { RootState } from  '../store'
-import { initialReply, ReplyModel } from '@/app/model/reply.model'
+import { ReplyModel } from 'src/app/model/reply.model';
+
 
 interface ReplyState{
   replies: { [key:number]: ReplyModel[]};
