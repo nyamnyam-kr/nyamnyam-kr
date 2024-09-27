@@ -8,24 +8,11 @@ import { PostModel } from "src/app/model/post.model";
 export default function PostRegister() {
   const router = useRouter();
   const { restaurantId } = useParams();
-  const [formData, setFormData] = useState<PostModel>({
-    id: 0,
-    content: '',
-    taste: 0,
-    clean: 0,
-    service: 0,
-    entryDate: '',
-    modifyDate: '',
-    averageRating: 0,
-    tags: [],
-    images: [],
-    restaurantId: Number(restaurantId) || 0,
-    userId: 1 // 수정 필요!!!!
-  });
+  const [formData, setFormData] = useState<PostModel>({} as PostModel);
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
-  const [selectTags, setSelectTags] = useState<string[]>([]);
-  const [selectImages, setSelectImages] = useState<File[]>([]);
+  const [tags, setSelectTags] = useState<string[]>([]);
+  const [images, setSelectImages] = useState<File[]>([]);
 
   const fetchTagCategory = async () => {
     try {
@@ -39,12 +26,10 @@ export default function PostRegister() {
   };
 
   useEffect(() => {
-    if(restaurantId){
-      setFormData((prevData)=>({
-        ...prevData,
-        restaurantId: Number(restaurantId)
-      }));
-    }
+    setFormData((prevData)=>({
+      ...prevData,
+      restaurantId: Number(restaurantId)
+    }));
     fetchTagCategory();
   }, [restaurantId]);
 

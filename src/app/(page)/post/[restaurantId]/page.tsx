@@ -6,13 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
-import {PostModel} from "src/app/model/post.model";
+import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
 import { fetchReplyService, handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/lib/store";
 import { stat } from "fs";
-import { getReplies } from "src/lib/features/reply.slice";
+import { addReplies, getReplies } from "src/lib/features/reply.slice";
 import { insertReply } from "src/app/api/reply/reply.api";
 import { deletePostService } from "src/app/service/post/post.service";
 
@@ -35,7 +35,7 @@ export default function PostList() {
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
-    //const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>({});
+    const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>([]);
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
     const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
@@ -45,7 +45,8 @@ export default function PostList() {
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
     const dispatch = useDispatch();
-    const replies = useSelector((state: RootState) =>state.reply.replies);
+    const reduxReplies = useSelector(getReplies);
+
 
     useEffect(() => {
         if (restaurantId) {
@@ -124,12 +125,25 @@ export default function PostList() {
 
     useEffect(() => {
         if (postId) {
-            fetchReplyService(postId, dispatch);
+
         }
     }, [postId, dispatch]);
 
+    const fetchReply = async (postId: number, dispatch: AppDispatch) => {
+        await fetchReplyService(postId, dispatch);
+
+        if (reduxReplies[postId]) {
+            setReplies(reduxReplies[postId]);
+        }
+    }
+
     const handleReplySubmit = async (reply: ReplyModel, postId: number, dispatch: AppDispatch) => {
         await serviceInsertReply(reply, postId, dispatch);
+        addReplies()
+        setReplies(prevReplies => ({
+            ...prevReplies,
+            [postId]: [...(prevReplies[postId] || []), reply]
+        }));
     };
 
     const toggleReply = (id: number) => {
@@ -139,7 +153,10 @@ export default function PostList() {
         }));
 
         if (!replyToggles[id]) {
-            fetchReply(id);
+            setReplies(prevReplies => ({
+                ...prevReplies,
+                [id]: reduxReplies[id]
+            }));
         }
     };
 
@@ -149,8 +166,29 @@ export default function PostList() {
             [id]: content,
         }));
         console.log('setReplyInput: ', setReplyInput);
+    };
 
-        
+    const handleEditChange = (replyId: number, newContent: string) => {
+        setEditInput((prevInput) => ({
+            ...prevInput,
+            [replyId]: newContent,
+        }));
+    };
+
+    const handleInputChange = (id: number, content: string, isEdit: boolean) => {
+        if(isEdit){ // 댓글 작성
+            setReplyInput((prevInput)=> ({
+                ...prevInput,
+                [id]: content,
+            }));
+        } else { // 댓글 수정
+            setEditInput((prevInput)=> ({
+                ...prevInput,
+                [id]: content,
+            }))
+        }
+    }
+
     const handleEditClick = (replyId: number, currentContent: string) => {
         setEditReply((prevEdit) => ({
             ...prevEdit,
@@ -159,13 +197,6 @@ export default function PostList() {
         setEditInput((prevInput) => ({
             ...prevInput,
             [replyId]: currentContent,
-        }));
-    };
-
-    const handleEditChange = (replyId: number, newContent: string) => {
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: newContent,
         }));
     };
 
@@ -210,13 +241,14 @@ export default function PostList() {
         }
     };
 
-    const handleRepDelete = async (replyId: number, postId: number) => {
-        await handleReplyDelete(replyId, postId, dispatch, replies);
-    };
+    const handleRepDelete = async (replyId: number) => {
+        if (postId) {
+            await handleReplyDelete(replyId, postId, dispatch, replies);
+        }
     };
 
-    const handleDelete = async(postId: number) => {
-       await deletePostService(postId, restaurantId, setPosts);
+    const handleDelete = async (postId: number, restaurantId: number) => {
+        await deletePostService(postId, restaurantId, setPosts);
     };
 
     const formatDate = (dateString: string) => {
@@ -363,8 +395,8 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="flex space-x-2 mb-2 items-center" style={{whiteSpace: "nowrap"}}>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
+                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
                                         <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
 
@@ -429,10 +461,10 @@ export default function PostList() {
                                     {replyToggles[p.id] && (
                                         <>
                                             <div className="mt-4 w-full">
-                                                {replies[p.id] && replies[p.id].length > 0 ? (
+                                                {replies && replies[p.id] ? (
                                                     <ul>
-                                                        {replies[p.id].map((reply, index) => (
-                                                            <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
+                                                        {replies.map((reply) => (
+                                                            <li key={reply.id} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
                                                                         {reply.nickname}
@@ -445,7 +477,7 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] !== undefined? editInput[reply.id] : reply.content}
+                                                                                value={editInput[reply.id] !== undefined ? editInput[reply.id] : reply.content}
                                                                                 onChange={(e) => handleEditChange(reply.id, e.target.value)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}

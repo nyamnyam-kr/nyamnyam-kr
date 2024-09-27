@@ -1,10 +1,13 @@
 // src/app/api/reply/reply.api.ts
 
 import axios from "axios";
+import { addReplies } from "src/lib/features/reply.slice";
+import { dispatch } from 'src/lib/store'; 
 
 export const fetchReply = async (postId: number) => {
   try {
     const response = await axios.get(`http://localhost:8080/api/replies/post/${postId}`);
+    dispatch(addReplies({postId, replies:response.data}))
     return response.data;
   } catch (error) {
     console.error("reply fetch fail:", error);

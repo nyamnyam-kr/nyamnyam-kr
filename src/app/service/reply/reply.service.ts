@@ -2,7 +2,7 @@
 import { Dispatch } from "@reduxjs/toolkit";
 import { deleteReply, fetchReply, insertReply } from "src/app/api/reply/reply.api";
 import { ReplyModel } from "src/app/model/reply.model";
-import { addReplies } from "src/lib/features/reply.slice";
+import { addReplies, getReplies } from "src/lib/features/reply.slice";
 import { AppDispatch } from "src/lib/store";
 
 export const fetchReplyService = async (postId: number, dispatch: AppDispatch) => {
@@ -12,6 +12,7 @@ export const fetchReplyService = async (postId: number, dispatch: AppDispatch) =
       // Redux 상태 업데이트
       dispatch(addReplies({ postId, replies: data }));
       console.log("setReplies: ", data);
+      console.log(getReplies);
     } catch (error) {
       console.error("Reply fetch fail:", error);
     }
@@ -19,12 +20,7 @@ export const fetchReplyService = async (postId: number, dispatch: AppDispatch) =
 
 export async function serviceInsertReply(reply: ReplyModel, postId: number, dispatch: AppDispatch): Promise<ReplyModel | null> {
     try {
-      const replyData = {
-          id: reply.id, 
-          content: reply.content,
-          userId: reply.userId,
-          postId: postId
-      }
+        
       const response = await insertReply(reply);
   
       if (response.ok) {
@@ -41,15 +37,9 @@ export async function serviceInsertReply(reply: ReplyModel, postId: number, disp
       console.error('댓글 등록 중 오류 발생:', error);
       return null;
     }
-
   }
 
-export const handleReplyDelete = async (
-    replyId: number, 
-    postId: number, 
-    dispatch: Dispatch, 
-    replies: { [key:number]: ReplyModel[] }
-) => {
+export const handleReplyDelete = async (replyId: number, postId: number, dispatch: Dispatch, replies: { [key:number]: ReplyModel[] }) => {
   if (window.confirm("삭제하시겠습니까?")) {
     try {
       await deleteReply(replyId); // 삭제 결과 반환값을 따로 사용하지 않음

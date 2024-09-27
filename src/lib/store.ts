@@ -1,3 +1,5 @@
+//src/lib/store.ts
+
 import { configureStore } from  '@reduxjs/toolkit' ; 
 import postSlice from  './features/post.slice' ; 
 import replySlice from './features/reply.slice';

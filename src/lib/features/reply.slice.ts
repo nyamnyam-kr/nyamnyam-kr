@@ -24,10 +24,7 @@ const replySlice = createSlice({
     // 특정 게시글의 댓글 저장
     addReplies: (state, action:PayloadAction<{postId: number; replies: ReplyModel[] }>)=> {
       const {postId, replies} = action.payload;
-      if(!state.replies[postId]){
-        state.replies[postId] = [];
-      }
-      state.replies[postId] = [...state.replies[postId], ...replies];
+      state.replies[postId] = replies;
     },
     // 수정 댓글 저장 
     addReplyInput: (state, action: PayloadAction<{postId: number; content: string}>) => {
