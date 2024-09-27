@@ -1,13 +1,11 @@
 // src/app/api/reply/reply.api.ts
 
-import axios from "axios";
-import { addReplies } from "src/lib/features/reply.slice";
-import { dispatch } from 'src/lib/store'; 
+import { instance } from "../axios";
+import { api } from "../request";
 
 export const fetchReply = async (postId: number) => {
   try {
-    const response = await axios.get(`http://localhost:8080/api/replies/post/${postId}`);
-    dispatch(addReplies({postId, replies:response.data}))
+    const response = await instance.get(`${api.reply}/post/${postId}`);
     return response.data;
   } catch (error) {
     console.error("reply fetch fail:", error);
@@ -15,23 +13,24 @@ export const fetchReply = async (postId: number) => {
   }
 };
 
-export const insertReply = async (replyData: any): Promise<Response> => {
-  return await fetch('http://localhost:8080/api/replies', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(replyData),
-  } 
-);
+export const insertReply = async (replyData: any) => {
+  try{
+    const response = await instance.post(api.reply, replyData) // 고정 경로
+    return response.data;
+  } catch(error) {
+    console.error("reply insert fail: ", error);
+    throw error;
+  }
 };
 
 export const deleteReply = async (replyId: number) => {
-  const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-    method: 'DELETE',
-  });
-
-  return response;
+  try{
+    const response = await instance.delete(`${api.reply}/${replyId}`);
+    return response;
+  } catch(error) {
+    console.error("reply delete fail: ", error);
+    throw error;
+  }
 };
 
 

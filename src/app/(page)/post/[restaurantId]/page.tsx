@@ -11,7 +11,6 @@ import { ReplyModel } from "src/app/model/reply.model";
 import { fetchReplyService, handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/lib/store";
-import { stat } from "fs";
 import { addReplies, getReplies } from "src/lib/features/reply.slice";
 import { insertReply } from "src/app/api/reply/reply.api";
 import { deletePostService } from "src/app/service/post/post.service";
@@ -461,9 +460,9 @@ export default function PostList() {
                                     {replyToggles[p.id] && (
                                         <>
                                             <div className="mt-4 w-full">
-                                                {replies && replies[p.id] ? (
+                                                {Array.isArray(reduxReplies) && reduxReplies.length > 0 ? (
                                                     <ul>
-                                                        {replies.map((reply) => (
+                                                        {reduxReplies.map((reply) => (
                                                             <li key={reply.id} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">

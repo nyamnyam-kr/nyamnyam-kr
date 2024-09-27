@@ -8,8 +8,7 @@ export  const  makeStore = ( ) => {
   return  configureStore ({ 
     reducer : { 
       post : postSlice, 
-      reply : replySlice, 
-      receipt : replySlice
+      reply : replySlice
     }, 
   }); 
 }; 
