@@ -4,7 +4,7 @@ export interface ReplyModel{
     postId: number;
     userId: number;
     nickname: string;
-    entryDate?: string;
+    entryDate: string;
     modifyDate?: string;
 }
 

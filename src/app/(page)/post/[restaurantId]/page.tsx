@@ -6,14 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
-import { PostModel } from "src/app/model/post.model";
+import {PostModel} from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { fetchReplyService, handleReplyDelete, serviceInsertReply } from "src/app/service/reply/reply.service";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "src/lib/store";
-import { addReplies, getReplies } from "src/lib/features/reply.slice";
 import { insertReply } from "src/app/api/reply/reply.api";
-import { deletePostService } from "src/app/service/post/post.service";
 
 const reportReasons = [
     "광고글이에요",
@@ -34,7 +29,7 @@ export default function PostList() {
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
-    const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>([]);
+    const [replies, setReplies] = useState<{ [key: number]: ReplyModel[] }>({});
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
     const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
@@ -42,10 +37,6 @@ export default function PostList() {
     const router = useRouter();
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
-
-    const dispatch = useDispatch();
-    const reduxReplies = useSelector(getReplies);
-
 
     useEffect(() => {
         if (restaurantId) {
@@ -122,28 +113,74 @@ export default function PostList() {
             })
     }
 
+    const handleDelete = (postId: number) => {
+        if (window.confirm("게시글을 삭제하시겠습니까?")) {
+            fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
+                .then(() => {
+                    alert("게시글이 삭제되었습니다.");
+                    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+                    router.push(`/post/${restaurantId}`);
+                })
+                .catch(error => {
+                    console.error('Delete operation failed:', error);
+                    alert("삭제 중 오류가 발생했습니다.");
+                });
+        }
+    };
+
     useEffect(() => {
         if (postId) {
-
+            fetchReply(postId);
         }
-    }, [postId, dispatch]);
+    }, [postId]);
 
-    const fetchReply = async (postId: number, dispatch: AppDispatch) => {
-        await fetchReplyService(postId, dispatch);
+    const handleReplySubmit = async (postId: number, e: FormEvent) => {
+        e.preventDefault();
 
-        if (reduxReplies[postId]) {
-            setReplies(reduxReplies[postId]);
+        const replyContent = replyInput[postId];
+
+        if (!replyContent) {
+            alert('댓글을 입력하세요.');
+            return;
         }
-    }
 
-    const handleReplySubmit = async (reply: ReplyModel, postId: number, dispatch: AppDispatch) => {
-        await serviceInsertReply(reply, postId, dispatch);
-        addReplies()
-        setReplies(prevReplies => ({
-            ...prevReplies,
-            [postId]: [...(prevReplies[postId] || []), reply]
-        }));
+        const replyData = {
+            id: 0,
+            content: replyContent,
+            postId: postId,
+            userId: currentUserId
+        };
+
+        try {
+            const newReply = await insertReply(replyData);
+
+            if (newReply) {
+                fetchReply(postId);
+
+                setReplyInput((prevInput) => ({
+                    ...prevInput,
+                    [postId]: '',
+                }));
+            } else {
+                console.log('댓글 등록 실패');
+            }
+        } catch (error) {
+            console.error('댓글 등록 중 오류:', error);
+        }
     };
+
+    const fetchReply = (postId: number) => {
+        fetch(`http://localhost:8080/api/replies/post/${postId}`)
+            .then((response) => response.json())
+            .then(data => {
+                setReplies(prevReplies => ({
+                    ...prevReplies,
+                    [postId]: data,
+                }));
+                console.log("setReplies: ", data);
+            })
+            .catch((error) => console.error("reply fetch fail:", error));
+    }
 
     const toggleReply = (id: number) => {
         setReplyToggles(prevToggles => ({
@@ -152,43 +189,11 @@ export default function PostList() {
         }));
 
         if (!replyToggles[id]) {
-            setReplies(prevReplies => ({
-                ...prevReplies,
-                [id]: reduxReplies[id]
-            }));
+            fetchReply(id);
         }
     };
 
-    const handleReplyChange = (id: number, content: string) => {
-        setReplyInput((prevInput) => ({
-            ...prevInput,
-            [id]: content,
-        }));
-        console.log('setReplyInput: ', setReplyInput);
-    };
-
-    const handleEditChange = (replyId: number, newContent: string) => {
-        setEditInput((prevInput) => ({
-            ...prevInput,
-            [replyId]: newContent,
-        }));
-    };
-
-    const handleInputChange = (id: number, content: string, isEdit: boolean) => {
-        if(isEdit){ // 댓글 작성
-            setReplyInput((prevInput)=> ({
-                ...prevInput,
-                [id]: content,
-            }));
-        } else { // 댓글 수정
-            setEditInput((prevInput)=> ({
-                ...prevInput,
-                [id]: content,
-            }))
-        }
-    }
-
-    const handleEditClick = (replyId: number, currentContent: string) => {
+    const replyEditClick = (replyId: number, currentContent: string) => {
         setEditReply((prevEdit) => ({
             ...prevEdit,
             [replyId]: true,
@@ -198,6 +203,20 @@ export default function PostList() {
             [replyId]: currentContent,
         }));
     };
+
+    const replyInputChange = (id:number, content: string, isEdit: boolean) => {
+        if(isEdit){ // 댓글 작성 (postId)
+            setReplyInput((prevInput)=>({
+                ...prevInput,
+                [id]: content,
+            }));
+        } else { // 댓글 수정 (replyId)
+            setEditInput((prevInput)=>({
+                ...prevInput,
+                [id]: content,
+            }));
+        }
+    }
 
     const handleEditSave = async (replyId: number, postId: number) => {
         const updateReply = {
@@ -240,14 +259,29 @@ export default function PostList() {
         }
     };
 
-    const handleRepDelete = async (replyId: number) => {
-        if (postId) {
-            await handleReplyDelete(replyId, postId, dispatch, replies);
-        }
-    };
+    const handleReplyDelete = async (replyId: number, postId: number) => {
+        if (window.confirm("삭제하시겠습니까?")) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
+                    method: 'DELETE'
+                });
 
-    const handleDelete = async (postId: number, restaurantId: number) => {
-        await deletePostService(postId, restaurantId, setPosts);
+                if (response.ok) {
+                    setReplies(prevReplies => {
+                        return {
+                            ...prevReplies,
+                            [postId]: prevReplies[postId].filter((reply) => reply.id !== replyId)
+                        };
+                    });
+                    alert("댓글이 삭제되었습니다.");
+                    fetchPosts();
+                } else {
+                    alert("댓글 삭제에 실패했습니다.");
+                }
+            } catch {
+                alert("댓글 삭제 중 문제가 발생했습니다.");
+            }
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -394,8 +428,8 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
+                                    <div className="flex space-x-2 mb-2 items-center" style={{whiteSpace: "nowrap"}}>
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
                                         <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
 
@@ -460,10 +494,10 @@ export default function PostList() {
                                     {replyToggles[p.id] && (
                                         <>
                                             <div className="mt-4 w-full">
-                                                {Array.isArray(reduxReplies) && reduxReplies.length > 0 ? (
+                                                {replies[p.id] && replies[p.id].length > 0 ? (
                                                     <ul>
-                                                        {reduxReplies.map((reply) => (
-                                                            <li key={reply.id} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
+                                                        {replies[p.id].map((reply, index) => (
+                                                            <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
                                                                         {reply.nickname}
@@ -476,8 +510,8 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] !== undefined ? editInput[reply.id] : reply.content}
-                                                                                onChange={(e) => handleEditChange(reply.id, e.target.value)}
+                                                                                value={editInput[reply.id] !== undefined? editInput[reply.id] : reply.content}
+                                                                                onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}
                                                                             />
@@ -496,13 +530,13 @@ export default function PostList() {
                                                                     <div className="flex space-x-2 mt-2 justify-end">
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
-                                                                            onClick={() => editReply[reply.id] ? handleEditSave(reply.id, p.id) : handleEditClick(reply.id, reply.content)}
+                                                                            onClick={() => editReply[reply.id] ? handleEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
                                                                         >
                                                                             {editReply[reply.id] ? '저장' : '수정'}
                                                                         </button>
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
-                                                                            onClick={() => reply.id && handleRepDelete(reply.id, p.id)}
+                                                                            onClick={() => reply.id && handleReplyDelete(reply.id, p.id)}
                                                                         >
                                                                             삭제
                                                                         </button>
@@ -520,7 +554,7 @@ export default function PostList() {
                                                     type="text"
                                                     placeholder="댓글을 입력하세요."
                                                     value={replyInput[p.id] || ""}
-                                                    onChange={(e) => handleReplyChange(p.id, e.target.value)}
+                                                    onChange={(e) => replyInputChange(p.id, e.target.value, true)}
                                                     className="border rounded p-2 flex-grow" />
                                                 <button
                                                     type="submit"

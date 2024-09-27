@@ -1,3 +1,4 @@
+//src/app/api/request.ts
 
 export const api = {
     admin: "/api/admin",
