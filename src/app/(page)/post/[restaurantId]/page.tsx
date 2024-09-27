@@ -8,6 +8,7 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
 import {insertReply} from "src/app/service/reply/reply.api";
+import { ReplyModel } from "src/app/model/reply.model";
 
 const reportReasons = [
     "광고글이에요",
