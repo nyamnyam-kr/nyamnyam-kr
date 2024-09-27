@@ -1,14 +1,15 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.PostModel;
-import kr.nyamnyam.service.PostService;
-import kr.nyamnyam.service.UpvoteService;
+import kr.nyamnyam.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +18,9 @@ import java.util.List;
 public class PostController {
     private final PostService service;
     private final UpvoteService upvoteService;
+    private final RestaurantService restaurantService;
+    private final ReplyService replyService;
+    private final ImageService imageService;
 
     @GetMapping("/{restaurantId}/allAverage")
     public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
