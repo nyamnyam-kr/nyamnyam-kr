@@ -370,7 +370,7 @@ a:hover {
 
 
 
-html #youzify-groups-list .item .item-title a {
+html #youzify-groups-list .item .item-title a { 
     font-family: 'Inter', sans-serif;
     font-size: 18px;
     color: #222;
@@ -1516,13 +1516,14 @@ a:hover {
 .page-header__logo {
     display: block;
     position: relative;
-    margin-left: 30px;
+    margin-left: -4px;
 }
 
 
 .page-header__logo img {
-    max-width: 110px;
+    max-width: 30px;
     height: auto;
+    margin-right: 12px;
 }
 
 .page-header__logo_text {
@@ -5316,7 +5317,9 @@ body.dark-theme #modal-help ul li {
     padding-left: 0;
 }
 
-.youzify-group-data .game-card__users li {}
+.youzify-group-data .game-card__users li {
+    /* 나중에 스타일 추가 예정 */
+  }
 
 
 
@@ -5707,7 +5710,11 @@ html body.dark-theme .chat-user-list__head a.ico_edit {
     width: 60%;
     height: 100%;
     border-radius: 5px;
-    background: -webkit-gradient(linear, right top, left top, from(rgba(217, 37, 59, 0.042)), color-stop(58.85%, rgba(0, 0, 0, 0.306)));
+    background: linear-gradient(
+        to left, /* 방향 설정: 오른쪽에서 왼쪽으로 */
+        rgba(217, 37, 59, 0.042), /* 시작 색상 */
+        rgba(0, 0, 0, 0.306) 58.85% /* 58.85% 위치에서 중지점 색상 */
+      );
     background: -o-linear-gradient(right, rgba(217, 37, 59, 0.042) 0%, rgba(0, 0, 0, 0.306) 58.85%);
     background: linear-gradient(270deg, rgba(217, 37, 59, 0.042) 0%, rgba(0, 0, 0, 0.306) 58.85%);
     content: '';

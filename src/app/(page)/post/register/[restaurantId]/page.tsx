@@ -2,6 +2,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../../star/page";
+import { PostModel } from "@/app/model/post.model";
 
 export default function PostRegister() {
   const router = useRouter();
@@ -82,9 +83,9 @@ export default function PostRegister() {
 
     const data = {
       content: formData.content,
-      taste: formData.taste.toString(),
-      clean: formData.clean.toString(),
-      service: formData.service.toString(),
+      taste: formData.taste,
+      clean: formData.clean,
+      service: formData.service,
       tags: selectTags,
       images: formData.images,
       restaurantId: formData.restaurantId
@@ -107,11 +108,11 @@ export default function PostRegister() {
           imageData.append('files', file);
         });
         imageData.append('postId', postId);
-        imageData.append('uploadPath','uploads/posts')
+
 
         console.log("업로드할 이미지 데이터: ", imageData);
 
-        const imageResponse = await fetch('http://localhost:8080/api/images/upload', {
+        const imageResponse = await fetch(`http://localhost:8080/api/images/upload/${postId}`, {
           method: 'POST',
           body: imageData
         });
@@ -131,7 +132,7 @@ export default function PostRegister() {
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h3 className="font-bold text-xl">[평가하기]</h3>
-      <form onSubmit={handleSubmit} className="space-y-4 p-4" encType="multipart/form-data">
+      <form onSubmit={handleSubmit} className="space-y-4 p-4"  encType="multipart/form-data">
         <div>
           <h2 className="font-bold">[항목별 평점]</h2>
         </div>

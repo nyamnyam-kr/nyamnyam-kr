@@ -19,7 +19,7 @@ interface Restaurant {
     lng: number;
 }
 
-const RestaurantDetail: React.FC = () => {
+export default function Restaurant() {
     const { id } = useParams();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
     const [loading, setLoading] = useState(true);
@@ -272,4 +272,3 @@ const RestaurantDetail: React.FC = () => {
     );
 };
 
-export default RestaurantDetail;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from  '@reduxjs/toolkit'
-import  type { RootState } from '../store'
-import {initialReceipt, ReceiptModel} from "src/app/model/receipt.model"; // export default를 안했기 때문에 구조분해 할당을 해주어야 한다.
+import  type { RootState } from  '../store'
+import { initialReceipt, ReceiptModel } from 'src/app/model/receipt.model'
 
 
 const receiptSlice = createSlice ({ //자바의 POJO이다
@@ -24,5 +24,3 @@ export  const { saveReceipt,clearReceipt } = receiptSlice.actions
 
 // 선택자와 같은 다른 코드는 가져온 `RootState` 유형을 사용할 수 있습니다
 export  default  receiptSlice.reducer
-
-

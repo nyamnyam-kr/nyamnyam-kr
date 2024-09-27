@@ -1,6 +1,6 @@
 "use client";
 import Star from '@/app/(page)/star/page';
-import { ST } from 'next/dist/shared/lib/utils';
+import { PostModel } from '@/app/model/post.model';
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
@@ -89,7 +89,7 @@ export default function PostUpdate() {
 
       const handleDeleteByPostId = async () => {
         try {
-          const deleteResponse = await fetch(`http://localhost:8080/api/images/post/${id}/imageIDs`);
+          const deleteResponse = await fetch(`http://localhost:8080/api/images/post/${id}/imageIds`);
           const imageIds: number[] = await deleteResponse.json();
           
           if(imageIds.length > 0){
@@ -115,7 +115,7 @@ export default function PostUpdate() {
         });
         imageData.append('postId', String(id));
 
-        const imageResponse = await fetch(`http://localhost:8080/api/images`,{
+        const imageResponse = await fetch(`http://localhost:8080/api/images/${id}`,{
           method: 'PUT',
           body: imageData,
         });
