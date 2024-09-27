@@ -1,7 +1,9 @@
 package kr.nyamnyam.service.impl;
 
+import kr.nyamnyam.model.domain.Token;
 import kr.nyamnyam.model.domain.User;
 import kr.nyamnyam.model.repository.UserRepository;
+import kr.nyamnyam.service.TokenService;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,12 +11,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenService tokenService;
 
     @Override
     public Mono<Boolean> existsById(String id) {
@@ -69,7 +74,6 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 
-
     @Override
     public Mono<User> save(User user) {
         String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
@@ -90,13 +94,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
-                .filter(user -> user.getPassword().equals(password))
-                .map(user -> jwtTokenProvider.createToken(username, user.getRole()))
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid credentials"))); // 예외 처리
+                .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
+                .flatMap(user -> tokenService.createAndSaveToken(user.getId(), user.getRole())) // TokenService 사용
+                .switchIfEmpty(Mono.error(new RuntimeException("Invalid credentials")));
     }
 
-    @Override
-    public Mono<Boolean> validateToken(String token) {
-        return Mono.just(jwtTokenProvider.validateToken(token));
-    }
 }

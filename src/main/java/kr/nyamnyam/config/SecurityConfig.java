@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // 새로운 방식으로 CSRF 비활성화
                 .authorizeExchange(authorize ->
                         authorize
+                                .pathMatchers("/api/user/join").permitAll() // 회원가입 엔드포인트는 인증 없이 접근 가능
                                 .pathMatchers("/api/user/login").permitAll() // 로그인 엔드포인트는 인증 없이 접근 가능
                                 .anyExchange().authenticated() // 나머지 요청은 인증 필요
                 )

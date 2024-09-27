@@ -54,9 +54,4 @@ public class UserController {
         return userService.authenticate(username, password);
     }
 
-    @GetMapping("/validate")
-    public Mono<String> validateToken(@RequestHeader("Authorization") String token) { // 반환 타입을 Mono<String>로 변경
-        return userService.validateToken(token)
-                .map(valid -> valid ? "Valid token" : "Invalid token");
-    }
 }

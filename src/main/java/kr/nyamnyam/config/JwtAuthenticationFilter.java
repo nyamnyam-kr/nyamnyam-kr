@@ -20,24 +20,27 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String requestPath = exchange.getRequest().getPath().value();
+
+        // join 경로와 login 경로에서는 인증을 skip
+        if (requestPath.equals("/api/user/join") || requestPath.equals("/api/user/login")) {
+            return chain.filter(exchange); // 다음 필터로 요청 전달
+        }
+
         String token = resolveToken(exchange.getRequest());
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
-            // UserService를 통해 사용자 정보를 가져옴
             return userService.findByUsername(username)
                     .flatMap(user -> {
-                        // 사용자 정보를 Exchange의 속성에 추가
                         exchange.getAttributes().put("userDetails", user);
-                        return chain.filter(exchange); // 다음 필터로 요청 전달
+                        return chain.filter(exchange);
                     })
                     .switchIfEmpty(Mono.defer(() -> {
-                        // 사용자 정보가 없는 경우 401 반환
                         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                         return Mono.empty();
                     }));
         } else {
-            // 토큰이 유효하지 않거나 없는 경우 401 반환
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }

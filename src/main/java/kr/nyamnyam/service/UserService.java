@@ -24,5 +24,4 @@ public interface UserService {
 
     Mono<String> authenticate(String username, String password); // String -> Mono<String>으로 변경
 
-    Mono<Boolean> validateToken(String token); // boolean -> Mono<Boolean>으로 변경
 }
