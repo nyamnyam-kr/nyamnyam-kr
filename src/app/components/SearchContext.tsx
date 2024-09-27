@@ -1,3 +1,4 @@
+"use client"
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Context의 타입 정의
