@@ -3,19 +3,6 @@ spring:
     mongodb:
       uri: mongodb://root:1234@localhost:27017/nyamnyamdb
       auto-index-creation: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
-        use_sql_comments: true
-      show-sql: true
-
-    timezone: UTC
-    mysql:
-      init-mode: always
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss'Z'
     time-zone: UTC
