@@ -8,6 +8,9 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import {PostModel} from "src/app/model/post.model";
 import {insertReply} from "src/app/service/reply/reply.api";
+import { ReplyModel } from "src/app/model/reply.model";
+import { useDispatch } from "react-redux";
+import { addReplies, getReplies } from "src/lib/features/reply.slice";
 
 const reportReasons = [
     "광고글이에요",
@@ -36,6 +39,8 @@ export default function PostList() {
     const router = useRouter();
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (restaurantId) {
@@ -121,6 +126,8 @@ export default function PostList() {
                     [postId]: data,
                 }));
                 console.log("setReplies: ", data);
+                dispatch(addReplies({postId,replies:data}))
+                console.log(getReplies)
             })
             .catch((error) => console.error("reply fetch fail:", error));
     }

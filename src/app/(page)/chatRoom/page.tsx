@@ -9,13 +9,7 @@ import { Html } from "next/document";
 
 
 
-interface Chat {
-  id: string;
-  sender: string;
-  message: string;
-  createdAt: string;
-  nickname: string;
-}
+
 
 export default function Home1() {
   const [chatRooms, setChatRooms] = useState<ChatRoomModel[]>([]);
@@ -23,7 +17,7 @@ export default function Home1() {
   const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoomModel | null>(null); // 채팅방 정보
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [messages, setMessages] = useState<Chat[]>([]);
+  const [messages, setMessages] = useState<ChatModel[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sender, setSender] = useState(""); // 사용자 ID
 
@@ -38,6 +32,7 @@ export default function Home1() {
     fetchData();
   }, []); // currentPage가 변경될 때마다 데이터 새로 고침
 
+  
   const fetchData = async () => {
     setLoading(true); // 로딩 상태 시작
 
@@ -89,7 +84,7 @@ export default function Home1() {
     const eventSource = new EventSource(`http://localhost:8081/api/chats/${selectedChatRoomId}`);
 
     eventSource.onmessage = (event) => {
-      const data: Chat = JSON.parse(event.data);
+      const data: ChatModel = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, data]);
     };
 
