@@ -1,12 +1,10 @@
-// app/page.tsx
-
-
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Search from 'src/app/components/Search';
 import Sidebar from 'src/app/components/SideBar';
 import ScrollToTop from 'src/app/components/ScrollToTop';
-
+import { useSearchContext } from 'src/app/components/SearchContext';
 
 interface Restaurant {
     id: number;
@@ -31,21 +29,23 @@ const fetchRestaurantsByTag = async (tags: string[]): Promise<Restaurant[]> => {
     return data;
 };
 
+
 const fetchRestaurantsByCategory = async (categories: string[]): Promise<Restaurant[]> => {
     const categoryQuery = categories.length > 0 ? `category=${categories.join(',')}` : '';
     const res = await fetch(`http://localhost:8080/api/restaurant/category?${categoryQuery}`);
     const data = await res.json();
     return data;
-};
+  };
 
-interface HomeProps {
-    searchTerm: string; 
-}
 
-export default function Home({ searchTerm }: HomeProps) {
+export default function Home() {
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const { searchTerm } = useSearchContext();
+    // const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
 
     useEffect(() => {
         console.log("가져온 검색어:", searchTerm); 
@@ -75,7 +75,12 @@ export default function Home({ searchTerm }: HomeProps) {
         fetchData();
     }, [searchTerm, selectedTags, selectedCategories]); 
 
-    const handleFilterChange = (tags: string[], categories: string[]) => {
+
+    // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setSearchTerm(e.target.value);
+    // };
+
+    const handleFilterChange = (tags: string[], categories:string[]) => {
         setSelectedTags(tags);
         setSelectedCategories(categories);
     };
@@ -86,8 +91,12 @@ export default function Home({ searchTerm }: HomeProps) {
                 <div className="w-64">
                     <Sidebar onFilterChange={handleFilterChange} />
                 </div>
-
+    
                 <div className="flex-grow ml-4">
+                    {/* <div className="w-full max-w-lg mx-auto mb-6">
+                        <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+                    </div> */}
+    
                     {restaurants.length > 0 ? (
                         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {restaurants.map((restaurant) => (
@@ -114,7 +123,7 @@ export default function Home({ searchTerm }: HomeProps) {
                     )}
                 </div>
             </div>
-            <ScrollToTop />
+            <ScrollToTop/>
         </div>
     );
 }
