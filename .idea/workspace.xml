@@ -25,6 +25,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "JEunseo"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/nyamnyam-kr/nyamnyam-front.git",
+    "accountId": "1834116f-019d-451b-a5b8-17ef5bf3cd86"
+  }
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -42,17 +54,17 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "release0.05",
+    "git-widget-placeholder": "nyamnyam-post",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/USER/Documents/nyamnyam/nyamnyam-front",
+    "last_opened_file_path": "C:/Users/bit/Documents/NC13_project/nyamnyam/frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "ts.external.directory.path": "C:\\Users\\bitcamp\\Desktop\\nyamnyam-chat\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\bitcamp\\team\\release\\nyamnyam-front\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -98,6 +110,8 @@
       <workItem from="1727181552545" duration="269000" />
       <workItem from="1727181945480" duration="197000" />
       <workItem from="1727248575980" duration="3339000" />
+      <workItem from="1727261196016" duration="383000" />
+      <workItem from="1727426876305" duration="66000" />
     </task>
     <servers />
   </component>
