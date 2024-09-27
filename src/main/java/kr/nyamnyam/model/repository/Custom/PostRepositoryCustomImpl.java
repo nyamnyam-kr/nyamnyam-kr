@@ -138,6 +138,4 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .collect(Collectors.toList());
     }
 
-
-
 }
