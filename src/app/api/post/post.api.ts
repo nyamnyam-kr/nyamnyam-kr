@@ -1,3 +1,6 @@
+import axios from "axios";
+import { PostModel } from "src/app/model/post.model";
+
 export async function insertPost(post: PostModel): Promise<any | {status: number}> {
   try {
     const body = {
@@ -33,3 +36,15 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
     return {status: 500};
   }
 }
+
+export const deletePost = async (postId: number) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/posts/${postId}`);
+  } catch (error) {
+    console.error('Delete operation failed:', error);
+    throw error;
+  }
+};
+
+
+// likeCount, likeChecked, getimg 한번에 가져오기 

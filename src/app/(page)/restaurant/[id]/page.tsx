@@ -2,7 +2,6 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Star from '../../star/page';
-import { GiBottomRight3dArrow } from 'react-icons/gi';
 
 interface Restaurant {
     id: number;
@@ -19,7 +18,7 @@ interface Restaurant {
     lng: number;
 }
 
-const RestaurantDetail: React.FC = () => {
+export default function Restaurant() {
     const { id } = useParams();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
     const [loading, setLoading] = useState(true);
@@ -272,4 +271,3 @@ const RestaurantDetail: React.FC = () => {
     );
 };
 
-export default RestaurantDetail;
