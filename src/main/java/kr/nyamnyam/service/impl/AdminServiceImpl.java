@@ -21,6 +21,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<CountModel> countUserList() {
+        List<CountModel> nicknamesWithCounts = postRepository.findNicknamesWithCounts();
+        System.out.println(nicknamesWithCounts);
         return postRepository.findNicknamesWithCounts();
     }
 

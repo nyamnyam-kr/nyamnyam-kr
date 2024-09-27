@@ -4,12 +4,14 @@ import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.service.PostService;
 import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -56,6 +58,7 @@ public class PostController {
 
     @GetMapping("/{restaurantId}/group")
     public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
+        log.info("restaurantId: {}", restaurantId);
         return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
     }
 

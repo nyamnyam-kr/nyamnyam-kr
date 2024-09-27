@@ -17,12 +17,8 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-# Ignore application.yaml
-/src/main/resources/application.yaml
-
-# Ignore ncloud.properties
-/src/main/resources/ncloud.properties
+*/.yaml
+*/.properties
 
 
 .idea

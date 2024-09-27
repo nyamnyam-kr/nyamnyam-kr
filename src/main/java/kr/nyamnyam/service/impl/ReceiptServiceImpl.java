@@ -1,5 +1,6 @@
 package kr.nyamnyam.service.impl;
 
+import kr.nyamnyam.config.RestTemplateConfig;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
@@ -19,15 +20,35 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     private final ReceiptRepository repository;
     private final RestaurantRepository restaurantRepository;
+    private final RestTemplateConfig restTemplateConfig;
 
     @Override
     public RestaurantModel save(ReceiptEntity receipt) {
-        ReceiptEntity save = repository.save(receipt);
-        String restaurantName = save.getName();
+        ReceiptEntity existingReceipt = repository.findByDate(receipt.getDate());
+
+        if (existingReceipt != null && existingReceipt.getName().equals(receipt.getName())) {
+            return null;
+        }
+        ReceiptEntity savedReceipt = repository.save(receipt);
+        String restaurantName = savedReceipt.getName();
+
         Long restaurantId = repository.findRestaurantId(restaurantName);
         Optional<RestaurantEntity> restaurantEntity = restaurantRepository.findById(restaurantId);
+
         return restaurantEntity.map(RestaurantModel::toDto).orElse(null);
     }
+
+    public ReceiptEntity show(ReceiptEntity receipt) {
+        ReceiptEntity existingReceipt = repository.findByDate(receipt.getDate());
+
+        if (existingReceipt != null && existingReceipt.getName().equals(receipt.getName())) {
+            return existingReceipt;
+        } else return null;
+    }
+
+
+
+
 
     @Override
     public List<TotalModel> showTotalCount() {
@@ -45,5 +66,11 @@ public class ReceiptServiceImpl implements ReceiptService {
         repository.deleteById(id);
         return true;
     }
+
+    @Override
+    public ReceiptEntity findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
 
 }

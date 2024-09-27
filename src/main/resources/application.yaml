@@ -8,21 +8,24 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     defer-datasource-initialization: true
+    show-sql: true
     hibernate:
       ddl-auto: update
-      show-sql: true
-      format_sql: true
-      default_batch_fetch_size: 100
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
 
-    sql:
-      init:
-        mode: always
+  sql:
+    init:
+      mode: always
   servlet:
     multipart:
       enabled: true
       file-size-threshold: 2MB
       max-file-size: 20MB
       max-request-size: 20MB
+
   security:
     oauth2:
       client:

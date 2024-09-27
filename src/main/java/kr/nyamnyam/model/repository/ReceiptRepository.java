@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ReceiptRepository extends JpaRepository<ReceiptEntity, Long>, ReceiptRepositoryCustom {
 
+    ReceiptEntity findByDate(String date);
 
     List<ReceiptEntity> findByUserId(Long id);
+
 }

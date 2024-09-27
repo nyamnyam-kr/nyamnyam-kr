@@ -6,6 +6,7 @@ import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.ocr.NaverOcrApi;
 import kr.nyamnyam.service.ImageService;
 import kr.nyamnyam.service.ReceiptService;
+import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class ReceiptController {
     private final NaverOcrApi naverOcrApi;
     private final ImageService imageService;
     private final ReceiptService receiptService;
+    private final RestaurantService restaurantService;
 
 
     @Value("${naver.service.secretKey}")
@@ -52,7 +54,7 @@ public class ReceiptController {
 
 
     @PostMapping("/insert")
-    public ResponseEntity<RestaurantModel> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
         ImageModel imageModel = imageService.insertReceipt(file);
         String storedFileName = imageModel.getStoredFileName();
 
@@ -116,6 +118,13 @@ public class ReceiptController {
         System.out.println("menu = " + menu + " name =" + name + " price =" + price + " date =" + date);
         return ResponseEntity.ok(receiptService.save(receipt));
     }
+
+    @GetMapping("show")
+    public ResponseEntity<ReceiptEntity> show(@RequestBody ReceiptEntity receipt) {
+        return ResponseEntity.ok(receiptService.show(receipt));
+    }
+
+
 
 
 

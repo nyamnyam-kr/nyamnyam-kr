@@ -4,15 +4,14 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.nyamnyam.model.entity.QPostEntity;
-import kr.nyamnyam.model.entity.QPostTagEntity;
+import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.domain.Chart.AreaModel;
-import kr.nyamnyam.model.entity.QRestaurantEntity;
-import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Objects;
@@ -71,8 +70,66 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<RestaurantEntity> restaurantsByGender(String gender) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+        QUsersEntity user = QUsersEntity.usersEntity;
+
+        JPAQuery<String> subQuery = new JPAQuery<>();
+
+        String topType = subQuery.select(restaurant.type)
+                .from(restaurant)
+                .join(post).on(post.restaurant.id.eq(restaurant.id))
+                .join(user).on(user.id.eq(post.userId))
+                .where(user.gender.eq(gender))
+                .groupBy(restaurant.type)
+                .orderBy(restaurant.type.count().desc())
+                .limit(1)
+                .fetchOne();
+
+        if (topType == null) {
+            return Collections.emptyList();
+        }
+
+        return jpaQueryFactory
+                .select(restaurant)
+                .from(restaurant)
+                .where(restaurant.type.eq(topType))
+                .fetch();
+
+    }
 
 
+
+
+    @Override
+    public List<TotalModel> restaurantsByAge(Long age) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+        QUsersEntity user = QUsersEntity.usersEntity;
+
+        List<Tuple> results = jpaQueryFactory
+                .select(restaurant.name, post.restaurant.id.count())
+                .from(restaurant)
+                .join(post).on(post.restaurant.id.eq(restaurant.id))
+                .join(user).on(user.id.eq(post.userId))
+                .where(user.age.like(age + "%"))
+                .groupBy(restaurant.id)
+                .orderBy(post.restaurant.count().desc())
+                .limit(5)
+                .fetch();
+
+        return  results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurant.name));
+                    totalModel.setTotal(tuple.get(post.restaurant.id.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+
+    }
 
 
     @Override
