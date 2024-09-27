@@ -1,5 +1,6 @@
-import StoreProvider from './StoreProvider'; // StoreProvider 경로
-import ShowNotice from "src/app/(page)/notice/page"; // 다른 컴포넌트
+import StoreProvider from './StoreProvider';
+import Restaurant from "src/app/(page)/restaurant/page";
+import ShowNotice from "src/app/(page)/notice/page";
 
 const Page = () => {
     return (

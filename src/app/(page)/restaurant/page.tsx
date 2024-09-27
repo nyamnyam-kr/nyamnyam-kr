@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Sidebar from "src/app/components/SideBar";
 import SearchBar from "src/app/components/SearchBox";
 import ScrollToTop from "src/app/components/ScrollToTop";
+import {Provider} from "react-redux";
+import StoreProvider from "src/app/StoreProvider";
 
 interface Restaurant {
     id: number;
@@ -37,7 +39,7 @@ const fetchRestaurantsByCategory = async (categories: string[]): Promise<Restaur
 };
 
 
-export default function Home() {
+export default function Restaurant() {
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);

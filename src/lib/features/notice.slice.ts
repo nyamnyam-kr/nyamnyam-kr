@@ -1,30 +1,30 @@
-import { createSlice, PayloadAction } from  '@reduxjs/toolkit'
-import  type { RootState } from '../store'
-import {initialNotice, NoticeModel} from "src/app/model/notice.model";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../store';
+import {NoticeModel } from 'src/app/model/notice.model';
 
+export const initialNotice: NoticeModel[] = [];
 
-const noticeSlice = createSlice ({ //자바의 POJO이다
-    name : 'notice' ,
-    // `createSlice`는 `initialState` 인수에서 상태 유형을 유추합니다.
-    initialState: initialNotice,
-    reducers : {
-        saveNotice: (state, action:PayloadAction<NoticeModel>)=> {
-            return action.payload
+const noticeSlice = createSlice({
+    name: 'notice',
+    initialState: initialNotice, // 초기 상태를 빈 배열로 설정
+    reducers: {
+        saveNotice: (state, action: PayloadAction<NoticeModel>) => {
+            state.push(action.payload); // 새로운 공지사항을 배열에 추가
         },
-        clearNotice:(state) => {
-            return initialNotice
-        }
+        clearNotice: () => {
+            return initialNotice; // 초기 상태로 리셋
+        },
     },
-    extraReducers: (builder)=> {}
-})
+    extraReducers: (builder) => {},
+});
 
-export const getReceipt = (state: RootState) => state.receipt
+// 선택자
+export const getNotice = (state: RootState) => state.notice;
 
-export const { saveNotice ,clearNotice } = noticeSlice.actions
+// 액션 내보내기
+export const { saveNotice, clearNotice } = noticeSlice.actions;
 
+// 배열로 공지사항 선택하기
 export const selectNotices = (state: RootState) => state.notice;
 
-// 선택자와 같은 다른 코드는 가져온 `RootState` 유형을 사용할 수 있습니다
-export default noticeSlice.reducer
-
-
+export default noticeSlice.reducer;

@@ -2,29 +2,25 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectNotices } from 'src/lib/features/notice.slice';
+import {getNotice, selectNotices} from 'src/lib/features/notice.slice';
 import { noticeList } from 'src/app/service/notice/notice.api';
 
 export default function ShowNotice() {
     const dispatch = useDispatch();
-    const notice = useSelector(selectNotices); // 공지사항 상태 가져오기
+    const notice = useSelector(getNotice); // 공지사항 상태 가져오기
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchNotices = async () => {
-            await noticeList(dispatch);
-        };
-
-        fetchNotices();
-    }, [dispatch]);
 
     const moveToOne = (id: number) => {
+
+
         router.push(`/notice/details/${id}`);
     };
 
     const moveToInsert = () => {
         router.push('/notice/register');
     };
+
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-gray-100">
