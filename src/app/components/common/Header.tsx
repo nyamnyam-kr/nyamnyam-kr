@@ -95,8 +95,6 @@ export default function Header() {
                     </div>
                 </div>
             </header>
-            <div className="container mx-auto p-4">
-            </div>
         </body>
         </html>
     );

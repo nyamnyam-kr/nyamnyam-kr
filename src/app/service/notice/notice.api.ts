@@ -9,6 +9,8 @@ export const noticeList = async () => {
         data.sort((a: NoticeModel, b: NoticeModel) => {
             return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
+
+        console.log(data)
         saveNotice(data)
 
     } catch (error: any) {

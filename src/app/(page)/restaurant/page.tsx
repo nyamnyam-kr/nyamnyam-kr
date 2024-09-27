@@ -39,7 +39,7 @@ const fetchRestaurantsByCategory = async (categories: string[]): Promise<Restaur
 };
 
 
-export default function Restaurant() {
+export default function Home() {
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
