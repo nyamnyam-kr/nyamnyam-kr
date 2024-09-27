@@ -6,9 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
-import {PostModel} from "src/app/model/post.model";
+import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
 import { insertReply } from "src/app/api/reply/reply.api";
+import { submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
 
 const reportReasons = [
     "광고글이에요",
@@ -128,13 +129,19 @@ export default function PostList() {
         }
     };
 
-    useEffect(() => {
-        if (postId) {
-            fetchReply(postId);
-        }
-    }, [postId]);
+    // 댓글 버튼 
+    const toggleReply = async (id: number) => {
+        const { toggled, replies } = await toggleReplyService(id, replyToggles);
+        setReplyToggles(toggled);
 
-    const handleReplySubmit = async (postId: number, e: FormEvent) => {
+        setReplies(prevReplies => ({
+            ...prevReplies,
+            [id]: replies,
+        }));
+    }
+
+    // 댓글 작성 (서버 연결)
+    const replySubmit = async (postId: number, e: FormEvent) => {
         e.preventDefault();
 
         const replyContent = replyInput[postId];
@@ -144,55 +151,39 @@ export default function PostList() {
             return;
         }
 
-        const replyData = {
-            id: 0,
-            content: replyContent,
-            postId: postId,
-            userId: currentUserId
-        };
+        const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
 
-        try {
-            const newReply = await insertReply(replyData);
+    if (result) {
+        const { toggled, replies } = result;
 
-            if (newReply) {
-                fetchReply(postId);
-
-                setReplyInput((prevInput) => ({
-                    ...prevInput,
-                    [postId]: '',
-                }));
-            } else {
-                console.log('댓글 등록 실패');
-            }
-        } catch (error) {
-            console.error('댓글 등록 중 오류:', error);
-        }
-    };
-
-    const fetchReply = (postId: number) => {
-        fetch(`http://localhost:8080/api/replies/post/${postId}`)
-            .then((response) => response.json())
-            .then(data => {
-                setReplies(prevReplies => ({
-                    ...prevReplies,
-                    [postId]: data,
-                }));
-                console.log("setReplies: ", data);
-            })
-            .catch((error) => console.error("reply fetch fail:", error));
-    }
-
-    const toggleReply = (id: number) => {
-        setReplyToggles(prevToggles => ({
-            ...prevToggles,
-            [id]: !prevToggles[id],
+        setReplyToggles(toggled);
+        setReplies(prevReplies => ({
+            ...prevReplies,
+            [postId]: replies,
         }));
 
-        if (!replyToggles[id]) {
-            fetchReply(id);
+        setReplyInput(prevInput => ({
+            ...prevInput,
+            [postId]: '',
+        }));
+    }
+};
+    // 댓글 작성 & 수정 
+    const replyInputChange = (id: number, content: string, isEdit: boolean) => {
+        if (isEdit) { // 댓글 작성 (postId)
+            setReplyInput((prevInput) => ({
+                ...prevInput,
+                [id]: content,
+            }));
+        } else { // 댓글 수정 (replyId)
+            setEditInput((prevInput) => ({
+                ...prevInput,
+                [id]: content,
+            }));
         }
-    };
+    }
 
+    // 수정 & 저장 버튼 
     const replyEditClick = (replyId: number, currentContent: string) => {
         setEditReply((prevEdit) => ({
             ...prevEdit,
@@ -204,21 +195,8 @@ export default function PostList() {
         }));
     };
 
-    const replyInputChange = (id:number, content: string, isEdit: boolean) => {
-        if(isEdit){ // 댓글 작성 (postId)
-            setReplyInput((prevInput)=>({
-                ...prevInput,
-                [id]: content,
-            }));
-        } else { // 댓글 수정 (replyId)
-            setEditInput((prevInput)=>({
-                ...prevInput,
-                [id]: content,
-            }));
-        }
-    }
-
-    const handleEditSave = async (replyId: number, postId: number) => {
+    // 수정내용 저장 (서버연결)
+    const replyEditSave = async (replyId: number, postId: number) => {
         const updateReply = {
             id: replyId,
             content: editInput[replyId],
@@ -244,7 +222,7 @@ export default function PostList() {
                             reply.id === replyId ? updateReplyData : reply
                         );
                     }
-                    fetchReply(postId);
+                    toggleReply(postId);
                     return updateReplies;
                 });
                 setEditReply((prevEditReply) => ({
@@ -259,6 +237,7 @@ export default function PostList() {
         }
     };
 
+    // 댓글 삭제 
     const handleReplyDelete = async (replyId: number, postId: number) => {
         if (window.confirm("삭제하시겠습니까?")) {
             try {
@@ -428,8 +407,8 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="flex space-x-2 mb-2 items-center" style={{whiteSpace: "nowrap"}}>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
+                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
                                         <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
 
@@ -510,7 +489,7 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] !== undefined? editInput[reply.id] : reply.content}
+                                                                                value={editInput[reply.id] !== undefined ? editInput[reply.id] : reply.content}
                                                                                 onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}
@@ -530,7 +509,7 @@ export default function PostList() {
                                                                     <div className="flex space-x-2 mt-2 justify-end">
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
-                                                                            onClick={() => editReply[reply.id] ? handleEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
+                                                                            onClick={() => editReply[reply.id] ? replyEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
                                                                         >
                                                                             {editReply[reply.id] ? '저장' : '수정'}
                                                                         </button>
@@ -549,7 +528,7 @@ export default function PostList() {
                                                     <p>댓글 없음</p>
                                                 )}
                                             </div>
-                                            <form onSubmit={(e) => handleReplySubmit(p.id, e)} className="my-4 flex space-x-4">
+                                            <form onSubmit={(e) => replySubmit(p.id, e)} className="my-4 flex space-x-4">
                                                 <input
                                                     type="text"
                                                     placeholder="댓글을 입력하세요."

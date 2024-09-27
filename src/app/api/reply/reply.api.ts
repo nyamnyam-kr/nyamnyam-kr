@@ -9,7 +9,7 @@ export const fetchReply = async (postId: number) => {
     return response.data;
   } catch (error) {
     console.error("reply fetch fail:", error);
-    throw error;
+    return null;
   }
 };
 
