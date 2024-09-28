@@ -1,5 +1,5 @@
 interface ChatModel {
-    id: string;
+    id?: string;
   sender: string;
   message: string;
   createdAt: string;

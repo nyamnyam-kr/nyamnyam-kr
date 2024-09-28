@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Html } from "next/document";
+import { deleteChatRoomsService, getChatRoomData, getChatRoomDetails } from "src/app/service/chatRoom/chatRoom.api";
+import { sendMessageService, subscribeMessages } from "src/app/service/chat/chat.api";
 
 
 
@@ -37,16 +39,9 @@ export default function Home1() {
     setLoading(true); // 로딩 상태 시작
 
     try {
-      const response = await fetch(`http://localhost:8081/api/chatRoom/findAll`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setChatRooms(data);
-
-      const totalCountResponse = await fetch('http://localhost:8081/api/chatRoom/count');
-      const totalCount = await totalCountResponse.json();
-      setTotalPages(Math.ceil(totalCount / 10));
+      const { chatRooms, totalPages } = await getChatRoomData(); // 서비스 호출
+      setChatRooms(chatRooms);
+      setTotalPages(totalPages);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -54,11 +49,8 @@ export default function Home1() {
     }
   };
 
-
-
-  // 디테일 원
-  const handleDetails = (id: any) => {
-    console.log(id)
+   // 디테일 원
+   const handleDetails = (id: any) => {
     router.push('/channel/details/${id}');
   };
 
@@ -67,100 +59,72 @@ export default function Home1() {
       prevSelected.includes(id)
         ? prevSelected.filter((channelId: string) => channelId !== id)
         : [...prevSelected, id]
-    );
-  };
+    )};
 
-  useEffect(() => {
-    if (!selectedChatRoomId) return;
 
-    // 선택된 채팅방 정보 및 메시지 가져오기
-    fetch(`http://localhost:8081/api/chatRoom/${selectedChatRoomId}`)
-      .then(response => response.json())
-      .then((data: ChatRoomModel) => {
-        setSelectedChatRoom(data);
-      })
-      .catch(error => console.error("채팅방 정보를 가져오는 중 오류 발생:", error));
-
-    const eventSource = new EventSource(`http://localhost:8081/api/chats/${selectedChatRoomId}`);
-
-    eventSource.onmessage = (event) => {
-      const data: ChatModel = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, data]);
-    };
-
-    return () => {
-      eventSource.close(); // 컴포넌트 언마운트 시 EventSource 닫기
-    };
-  }, [selectedChatRoomId]);
-
-  const sendMessage = async () => {
-    if (newMessage.trim() === "" || sender.trim() === "") {
-      alert("메시지와 사용자 이름을 입력해주세요.");
-      return;
-    }
-
-    const chat = {
-      sender: sender,
-      message: newMessage,
-      chatRoomId: selectedChatRoomId,
-    };
-
-    try {
-      const response = await fetch(`http://localhost:8081/api/chats/${selectedChatRoomId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(chat),
+    useEffect(() => {
+      if (!selectedChatRoomId) return;
+  
+      // 채팅방 정보 가져오기
+      getChatRoomDetails(selectedChatRoomId)
+        .then((data) => {
+          setSelectedChatRoom(data);
+        })
+        .catch((error) => console.error(error));
+  
+      // 메시지 스트리밍 구독
+      const eventSource = subscribeMessages(selectedChatRoomId, (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
+  
+      return () => {
+        eventSource.close(); // 컴포넌트 언마운트 시 EventSource 닫기
+      };
+    }, [selectedChatRoomId]);
 
-      if (!response.ok) {
-        throw new Error("메시지 전송 실패");
+    const sendMessage = async () => {
+      try {
+        await sendMessageService(selectedChatRoomId, sender, newMessage);
+        setNewMessage(""); // 메시지 입력 필드 초기화
+      } catch (error) {
+        console.error(error);
       }
+    };
+  
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      await sendMessage(); // 메시지 전송 함수 호출
+    };
+  
+    useEffect(() => {
+      if (selectedChatRoomId) {
+        // 채팅방이 변경되었을 때 메시지 초기화 및 입력 필드 비우기
+        setMessages([]); // 메시지 초기화
+        setNewMessage(""); // 메시지 입력 필드 초기화
+        setSender(""); // 사용자 이름 입력 필드 초기화
+      }
+    }, [selectedChatRoomId]);  
 
-      setNewMessage(""); // 메시지 입력 필드 초기화
-    } catch (error) {
-      console.error("메시지 전송 중 오류 발생:", error);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await sendMessage(); // 메시지 전송 함수 호출
-  };
-
-  useEffect(() => {
-    if (selectedChatRoomId) {
-      // 채팅방이 변경되었을 때 메시지 초기화 및 입력 필드 비우기
-      setMessages([]); // 메시지 초기화
-      setNewMessage(""); // 메시지 입력 필드 초기화
-      setSender(""); // 사용자 이름 입력 필드 초기화
-    }
-  }, [selectedChatRoomId]);
-
-
-
-
-  const handleDelete = () => {
+  //===========================================여기 까지 serviceInsertReply,api 끝!!!!=============================================
+ 
+ 
+  const handleDelete = async () => {
     if (selectChatRooms.length === 0) {
       alert("삭제할 게시글을 선택해주세요.");
       return;
-    }
+    }  
     if (window.confirm("선택한 게시글을 삭제하시겠습니까?")) {
-      Promise.all(selectChatRooms.map((id: any) =>
-        fetch(`http://localhost:8081/api/chatRoom/deleteById/${id}`, { method: 'DELETE' })
-      ))
-        .then(() => {
-          alert("게시글이 삭제되었습니다.");
-          setChatRooms(prevChatRooms =>
-            prevChatRooms.filter(room => !selectChatRooms.includes(room.id)) // 삭제한 방을 제외
-          );
-          setSelectChatRooms([]); // 선택 초기화
-        })
-        .catch(error => {
-          console.error('Delete operation failed:', error);
-          alert("삭제 중 오류가 발생했습니다.");
-        });
+      try {
+        await deleteChatRoomsService(selectChatRooms); // 서비스 호출
+        alert("게시글이 삭제되었습니다.");
+        setChatRooms(prevChatRooms =>
+          prevChatRooms.filter(room => !selectChatRooms.includes(room.id)) // 삭제한 방을 제외
+        );
+        setSelectChatRooms([]); // 선택 초기화
+      } catch (error) {
+        console.error('Delete operation failed:', error);
+        alert("삭제 중 오류가 발생했습니다.");
+      }
     }
   };
 
