@@ -3,6 +3,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Star from '../../star/page';
 
+
 interface Restaurant {
     id: number;
     name: string;
@@ -109,6 +110,9 @@ export default function Restaurant() {
             setFilteredRestaurants([]);
         }
     };
+
+  
+
 
     if (loading) return <div className="text-center py-4">Loading...</div>;
     if (!restaurant) return <div className="text-center py-4">Restaurant not found.</div>;

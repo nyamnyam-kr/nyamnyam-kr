@@ -6,13 +6,14 @@ import Sidebar from 'src/app/components/SideBar';
 import ScrollToTop from 'src/app/components/ScrollToTop';
 import { SearchProvider, useSearchContext } from 'src/app/components/SearchContext';
 import { fetchRestaurantsByCategory, fetchRestaurantsBySearch, fetchRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
+import HeartButton from 'src/app/components/HeartButton';
 
 
 
 
 export default function Home() {
     const [restaurants, setRestaurants] = useState<RestaurantModel[]>([]);
-    const { searchTerm} = useSearchContext();
+    const { searchTerm } = useSearchContext();
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -45,6 +46,8 @@ export default function Home() {
         setSelectedCategories(categories);
     };
 
+
+
     return (
         <div className="overflow-y-auto">
             <SearchProvider>
@@ -57,13 +60,18 @@ export default function Home() {
                         {restaurants.length > 0 ? (
                             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {restaurants.map((restaurant) => (
-                                    <li key={restaurant.id} className="bg-white shadow-md rounded-lg overflow-hidden">
+                                    <li key={restaurant.id} className="bg-white shadow-md rounded-lg overflow-hidden relative">
                                         <Link href={`/restaurant/${restaurant.id}`}>
                                             <img
                                                 src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                                 alt={restaurant.name}
                                                 className="w-full h-48 object-cover"
                                             />
+                                        </Link>
+                                        <div className="absolute top-2 right-2">
+                                            <HeartButton restaurantId={restaurant.id} />
+                                        </div>
+                                        <Link href={`/restaurant/${restaurant.id}`}>
                                             <div className="p-4">
                                                 <h2 className="text-xl font-bold mb-2">{restaurant.name}</h2>
                                                 <p className="text-gray-600">유형: {restaurant.type}</p>
@@ -80,6 +88,8 @@ export default function Home() {
                         )}
                     </div>
                 </div>
+
+
                 <ScrollToTop />
             </SearchProvider>
         </div>

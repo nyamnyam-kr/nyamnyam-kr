@@ -34,9 +34,8 @@ export default function RootLayout({
         <SearchProvider>
           {/* 헤더 컴포넌트 추가 */}
           <Header />
-
           {/* 메인 컨텐츠 렌더링 */}
-          <main>{children}</main>
+          <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
         </SearchProvider>
       </body>
     </html>

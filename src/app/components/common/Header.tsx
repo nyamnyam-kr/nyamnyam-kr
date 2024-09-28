@@ -24,6 +24,8 @@ export default function Header() {
     setUser(null);
   };
 
+
+
   return (
     <header className="page-header">
       <div className="page-header__inner">
