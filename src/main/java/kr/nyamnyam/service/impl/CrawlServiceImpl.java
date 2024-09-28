@@ -36,9 +36,9 @@ public class CrawlServiceImpl implements CrawlService {
         try {
             // 브라우저 설정
             ChromeOptions chromeOptions = new ChromeOptions();
-/*            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--headless");
             chromeOptions.addArguments("--no-sandbox");
-            chromeOptions.addArguments("--disable-dev-shm-usage");*/
+            chromeOptions.addArguments("--disable-dev-shm-usage");
 
             // 크롤링할 페이지 URLs
             List<String> pageUrls = getPageUrls();
@@ -65,7 +65,7 @@ public class CrawlServiceImpl implements CrawlService {
 
     private List<String> getPageUrls() {
         List<String> urls = new ArrayList<>();
-        String[] regions = {"이태원", "성수", "사당", "을지로"};
+        String[] regions = {"동대문", "광화문", "마포", "동대문"};
 
         for (String region : regions) {
             urls.add("https://map.naver.com/v5/search/" + region + " 맛집");
@@ -87,7 +87,7 @@ public class CrawlServiceImpl implements CrawlService {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".place_bluelink")));
             List<WebElement> titleElements = webDriver.findElements(By.cssSelector(".place_bluelink"));
 
-            int maxItemsToProcess = 4; // 각 zone 당 최대 개수
+            int maxItemsToProcess = 10; // 각 zone 당 최대 개수
             int count = 0;
             for (int i = 0; i < titleElements.size() && count < maxItemsToProcess; i++) {
                 WebElement titleElement = titleElements.get(i);

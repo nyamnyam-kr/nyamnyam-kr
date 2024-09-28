@@ -50,9 +50,14 @@ public class WishListController {
     @GetMapping("/{wishListName}/restaurants")
     public ResponseEntity<List<RestaurantModel>> getRestaurants(
             @RequestHeader Long userId,
-            @RequestParam Long wishListId) {
+            @RequestParam Long wishListId, @PathVariable String wishListName) {
         List<RestaurantModel> restaurants = wishListRestaurantService.findRestaurantsByUserIdAndWishListId(userId, wishListId);
         return ResponseEntity.ok(restaurants);
+    }
+
+    @DeleteMapping
+    public boolean deleteWishList(@RequestHeader Long userId , @RequestParam Long restaurantId) {
+         return  wishListRestaurantService.deleteRestaurantFromWishList(userId, restaurantId);
     }
 
 

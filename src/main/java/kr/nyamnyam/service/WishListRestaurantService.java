@@ -10,4 +10,6 @@ public interface WishListRestaurantService {
     WishListRestaurantEntity addRestaurantToWishList(Long userId, Long wishListId, Long restaurantId);
 
     List<RestaurantModel> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId);
+
+    boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
 }

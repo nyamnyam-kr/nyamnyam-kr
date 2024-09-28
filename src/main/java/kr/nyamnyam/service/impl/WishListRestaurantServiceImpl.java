@@ -51,4 +51,12 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
+        if(wishListRestaurantRepository.existsByWishListIdAndRestaurantId(userId, restaurantId)) {
+            wishListRestaurantRepository.deleteById(restaurantId);
+        }
+        return wishListRestaurantRepository.existsByWishListIdAndRestaurantId(userId, restaurantId);
+    }
+
 }
