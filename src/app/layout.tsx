@@ -36,7 +36,7 @@ export default function RootLayout({
           <Header />
 
           {/* 메인 컨텐츠 렌더링 */}
-          <main>{children}</main>
+          <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
         </SearchProvider>
       </body>
     </html>
