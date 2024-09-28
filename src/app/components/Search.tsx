@@ -21,7 +21,9 @@ const Search: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchTerm(inputValue); // Context의 searchTerm 업데이트
+    window.history.pushState({}, '', `?search=${inputValue}`);
   };
+
 
   return (
     <form onSubmit={handleSearchSubmit} className="search">
