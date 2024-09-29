@@ -84,13 +84,11 @@ export default function PostList() {
 
     const fetchImage = async (postId: number) => {
         const imageURLs = await fetchImageService(postId)
-        console.log("Images before setting state:", imageURLs);
 
         setImages(prevImages => ({
             ...prevImages,
             [postId]: imageURLs,
         }));
-        console.log("Images after setting state:", images);
     }
 
     const handleDelete = async (postId: number) => {
@@ -281,18 +279,6 @@ export default function PostList() {
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 ">
-            <div className="w-full flex justify-end mb-4">
-                <button
-                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                    onClick={() => router.push(`/post/register/${restaurantId}`)}>
-                    등록하기
-                </button>
-                <button
-                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                    onClick={() => router.push(`/restaurant/${restaurantId}`)}>
-                    뒤로가기
-                </button>
-            </div>
 
             {restaurant && (
                 <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 mb-4">
@@ -484,6 +470,18 @@ export default function PostList() {
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className="w-full flex justify-end mt-4">
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                    onClick={() => router.push(`/post/register/${restaurantId}`)}>
+                    등록하기
+                </button>
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                    onClick={() => router.push(`/restaurant/${restaurantId}`)}>
+                    뒤로가기
+                </button>
             </div>
         </main>
     );

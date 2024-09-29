@@ -3,47 +3,51 @@ import { PostModel } from "src/app/model/post.model";
 import instance from "../axios";
 import { api } from "../request";
 
-export async function insertPost(post: PostModel): Promise<any | {status: number}> {
+export const updatePost = async (id: number, postData: any): Promise<any> => {
+  try{
+    const response = await instance.put(`${api.post}/${id}`, postData)
+    return response.data;
+  } catch(error){
+    console.error("Failed to update post:", error);
+    throw error;
+  }
+}
+
+export const getPostById = async (id:number): Promise<PostModel> => {
+  try{
+    const response = await instance.get(`${api.post}/${id}`); 
+    return response.data;
+  }catch(error) {
+    console.error("Failed to fetch post details:", error);
+    throw error;
+  }
+}
+
+export const detailsPost = async (postId: number) => {
   try {
-    const body = {
-        id: post.id, 
-        content: post.content,
-        taste: post.taste,
-        clean: post.clean,
-        service: post.service,
-        entryDate: post.entryDate,
-        modifyDate: post.modifyDate,
-        tags:post.tags,
-        restaurantId:post.restaurantId
-    }
-    const response = await fetch('http://localhost:8080/api/posts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    const contentType = response.headers.get('content-type');
-
-    if (response.ok && contentType?.includes('application/json')) {
-      const data: any = await response.json();
-      return data;
-    } else {
-      const errorMessage = await response.text();
-      throw new Error(`Server returned non-JSON response: ${errorMessage}`);
-    }
+    const response = await instance.get(`${api.post}/${postId}`);
+    return response.data;
   } catch (error) {
-    console.error('Error occurred while inserting post:', error);
-    return {status: 500};
+    console.error("Failed to fetch post details:", error);
+    throw error;
+  }
+}
+
+export const insertPost = async (postData: Partial<PostModel>): Promise<number> => {
+  try {
+    const response = await instance.post(api.post, postData); // 고정경로
+    return response.data;
+  } catch (error) {
+    console.error('Post insert failed:', error);
+    throw error;
   }
 }
 
 export const fetchPost = async (restaurantId: number) => {
-  try{
+  try {
     const response = await instance.get(`${api.post}/${restaurantId}/group`);
     return response.data;
-  }catch(error){
+  } catch (error) {
     console.error("fetchPosts API error:", error);
     throw error;
   }

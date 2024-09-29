@@ -3,128 +3,60 @@
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import Star from 'src/app/(page)/star/page';
-import { PostModel } from 'src/app/model/post.model';
+import { initialPost, PostModel } from 'src/app/model/post.model';
+import { TagModel } from 'src/app/model/tag.model';
+import { insertImageService } from 'src/app/service/image/image.service';
+import { detailsPostAndImages, getPostDetails, updatePostService } from 'src/app/service/post/post.service';
+import { fetchTagData } from 'src/app/service/tag/tag.service';
 
 export default function PostUpdate() {
   const router = useRouter();
-  const { restaurantId,id } = useParams();
-  const [allTags, setAllTags] = useState<{[category: string]: TagModel[]}>({});
-  const [selectTags, setSelectTags] = useState<string[]>([]);
-  const [selectImages, setSelectImages] = useState<File[]>([]);
+  const { restaurantId, id } = useParams();
+  const [allTags, setAllTags] = useState<{ [category: string]: TagModel[] }>({});
+  const [tags, setTags] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
   const [prevImages, setPrevImages] = useState<ImageModel[]>([]);
-  const [imagesToDelete, setImagesToDelete] = useState<number[]>([]); 
+  const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
 
-  const [formData, setFormData] = useState<PostModel>({
-    id: 0,
-    taste: 0,
-    clean: 0,
-    service: 0,
-    content: '',
-    entryDate: '',
-    modifyDate: '',
-    averageRating: 0,
-    tags: [],
-    images: [],
-    restaurantId:0,
-    userId: 1 // 수정필요 !!! 
-  });
+  const [formData, setFormData] = useState<PostModel>(initialPost);
 
   useEffect(() => {
-    const fetchPost = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/api/posts/${id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch post');
-            }
-            const data: PostModel = await response.json();
-
-            const uniqueTags = Array.isArray(data.tags) ? Array.from(new Set(data.tags)) : [];
-            setFormData({ ...data, tags: uniqueTags });
-            setSelectTags(uniqueTags);
-            setPrevImages(data.images);
-        } catch (error) {
-            console.error('Error fetching post:', error);
-        }
-    };
-
-    const fetchTags = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/tags/category');
-            if (!response.ok) {
-                throw new Error('Failed to fetch tags');
-            }
-            const data = await response.json();
-            setAllTags(data);
-        } catch (error) {
-            console.error('Error fetching tags:', error);
-        }
-    };
-
-    if (id) {
-        fetchPost();
+    console.log("currentId: ", id);
+    if(id){
+      loadData(Number(id));
+    } else {
+      console.error("invalid ID: ", id)
     }
-    fetchTags();
-}, [id]);
+  }, [id]);
+
+  const loadData = async (id: number) => {
+    try {
+      const post = await getPostDetails(id);
+      const uniqueTags = Array.isArray(post.tags) ? Array.from(new Set(post.tags)) : [];
+
+      setFormData({...post, tags: uniqueTags});
+      setTags(uniqueTags); 
+      setPrevImages(post.images || []);
+
+      const tagList = await fetchTagData();
+      console.log("TagList: ", tagList)
+      setAllTags(tagList);
+    } catch(error){
+      console.error("Error loading data:", error);
+    }
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const uniqueTags = Array.from(new Set(selectTags));
+      const uniqueTags = Array.from(new Set(tags));
       const updatePost = {
         ...formData,
-        id: formData.id,   
+        id: formData.id,
         tags: uniqueTags,
       };
 
-      const response = await fetch(`http://localhost:8080/api/posts/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatePost)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update post');
-      }
-
-      const handleDeleteByPostId = async () => {
-        try {
-          const deleteResponse = await fetch(`http://localhost:8080/api/images/post/${id}/imageIds`);
-          const imageIds: number[] = await deleteResponse.json();
-          
-          if(imageIds.length > 0){
-            for (const imageId of imagesToDelete) {
-              const deleteResponse = await fetch(`http://localhost:8080/api/images/${imageId}`, {
-                method: 'DELETE',
-              });
-              if (!deleteResponse.ok) {
-                throw new Error(`Failed to delete image with ID: ${imageId}`);
-              }
-            } 
-          }
-        }catch(error) {
-          console.error("이미지 삭제 에러: ", error)
-        }
-      }; 
-      await handleDeleteByPostId();
-
-      if(selectImages.length > 0){
-        const imageData = new FormData();
-        selectImages.forEach((file) => {
-          imageData.append('files', file);
-        });
-        imageData.append('postId', String(id));
-
-        const imageResponse = await fetch(`http://localhost:8080/api/images/${id}`,{
-          method: 'PUT',
-          body: imageData,
-        });
-
-        if(!imageResponse.ok){
-          throw new Error('Failed to upload images');
-        }
-      }
+      await updatePostService(Number(id), updatePost, images, imagesToDelete);
       router.push(`/post/${restaurantId}/details/${id}`);
 
     } catch (error) {
@@ -141,10 +73,11 @@ export default function PostUpdate() {
   };
 
   const handleTagSelect = (tag: string) => {
-    setSelectTags((prevSelected) => {
-      const tagSet = new Set(prevSelected); 
+    console.log("Tag Selected: ", tag);
+    setTags((prevSelected) => {
+      const tagSet = new Set(prevSelected);
       if (tagSet.has(tag)) {
-        tagSet.delete(tag);  
+        tagSet.delete(tag);
       } else {
         tagSet.add(tag);
       }
@@ -161,7 +94,7 @@ export default function PostUpdate() {
 
   const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setSelectImages(Array.from(e.target.files));
+      setImages(Array.from(e.target.files));
     }
   };
 
@@ -186,7 +119,7 @@ export default function PostUpdate() {
           <Star
             w="w-8" h="h-8"
             readonly={false}
-            rate={formData.taste}
+            rate={formData?.taste}
             onChange={(rating) => handleStar(rating, "taste")}
           />
         </div>
@@ -195,7 +128,7 @@ export default function PostUpdate() {
           <Star
             w="w-8" h="h-8"
             readonly={false}
-            rate={formData.clean}
+            rate={formData?.clean}
             onChange={(rating) => handleStar(rating, "clean")}
           />
         </div>
@@ -204,7 +137,7 @@ export default function PostUpdate() {
           <Star
             w="w-8" h="h-8"
             readonly={false}
-            rate={formData.service}
+            rate={formData?.service}
             onChange={(rating) => handleStar(rating, "service")}
           />
         </div>
@@ -220,7 +153,7 @@ export default function PostUpdate() {
                       type="checkbox"
                       id={t.name}
                       name={t.name}
-                      checked={selectTags.includes(t.name)}
+                      checked={tags.includes(t.name)}
                       onChange={() => handleTagSelect(t.name)}
                     />
                     <label htmlFor={t.name} className="ml-2">{t.name}</label>
@@ -235,7 +168,7 @@ export default function PostUpdate() {
           <textarea
             id="content"
             name="content"
-            value={formData.content}
+            value={formData?.content}
             onChange={handleChange}
             className="w-full p-2 border rounded"
             rows={3}
@@ -248,10 +181,10 @@ export default function PostUpdate() {
             {prevImages.length > 0 ? (
               prevImages.map((image, index) => (
                 <div key={index}>
-                  <img 
-                     src={`http://localhost:8080/uploads/${image.storedFileName}`}
-                     alt={`이미지 ${index + 1}`}
-                     style={{ width: '200px', height: 'auto' }}
+                  <img
+                    src={`http://localhost:8080/uploads/${image.storedFileName}`}
+                    alt={`이미지 ${index + 1}`}
+                    style={{ width: '200px', height: 'auto' }}
                   />
                   <button type="button" onClick={() => handleDeleteImage(image.id)} className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2">
                     삭제

@@ -1,3 +1,6 @@
+import { tagCategoryApi } from "src/app/api/tag/tag.api";
+import { TagModel } from "src/app/model/tag.model";
+
 export async function insertTag(tag: TagModel): Promise<any | { status: number }> {
     try {
         const body = {
@@ -27,3 +30,21 @@ export async function insertTag(tag: TagModel): Promise<any | { status: number }
         return { status: 500 };
     }
 }
+
+export const fetchTagData = async (): Promise<{ [category: string]: TagModel[] }> => {
+    try {
+        const tags = await tagCategoryApi();
+        console.log("fetchTagData: ", tags);
+        const categorizedTags = tags.reduce((acc: { [category: string]: TagModel[] }, tag: TagModel) => {
+            const category = tag.tagCategory || '기타';
+            if (!acc[category]) acc[category] = [];
+            acc[category].push(tag);
+            return acc;
+        }, {});
+        console.log("Categorized Tags:", categorizedTags);
+        return categorizedTags;
+    } catch (error) {
+        console.error("Error in fetchTagsData:", error);
+        throw error;
+    }
+};
