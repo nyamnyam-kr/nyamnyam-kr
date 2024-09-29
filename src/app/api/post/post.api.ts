@@ -1,5 +1,7 @@
 import axios from "axios";
 import { PostModel } from "src/app/model/post.model";
+import instance from "../axios";
+import { api } from "../request";
 
 export async function insertPost(post: PostModel): Promise<any | {status: number}> {
   try {
@@ -37,9 +39,20 @@ export async function insertPost(post: PostModel): Promise<any | {status: number
   }
 }
 
+export const fetchPost = async (restaurantId: number) => {
+  try{
+    const response = await instance.get(`${api.post}/${restaurantId}/group`);
+    return response.data;
+  }catch(error){
+    console.error("fetchPosts API error:", error);
+    throw error;
+  }
+}
+
 export const deletePost = async (postId: number) => {
   try {
-    await axios.delete(`http://localhost:8080/api/posts/${postId}`);
+    const response = await instance.delete(`${api.post}/${postId}`);
+    return response;
   } catch (error) {
     console.error('Delete operation failed:', error);
     throw error;

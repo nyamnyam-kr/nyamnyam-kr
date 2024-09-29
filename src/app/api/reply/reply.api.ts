@@ -23,6 +23,16 @@ export const insertReply = async (replyData: any) => {
   }
 };
 
+export const updateReply = async (replyId: number, replyData: any) => {
+  try{
+    const response = await instance.put(`${api.reply}/${replyId}`, replyData);
+    return response.data;
+  } catch(error){
+    console.error("reply update fail:", error);
+    throw error;
+  }
+}
+
 export const deleteReply = async (replyId: number) => {
   try{
     const response = await instance.delete(`${api.reply}/${replyId}`);

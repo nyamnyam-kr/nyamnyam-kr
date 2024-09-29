@@ -1,3 +1,5 @@
+import { fetchImage } from "src/app/api/image/image.api";
+
 export async function insertImage(formData: FormData): Promise<any | {status: number}> {
   try {
     const response = await fetch('http://localhost:8080/api/images/upload', {
@@ -19,3 +21,15 @@ export async function insertImage(formData: FormData): Promise<any | {status: nu
     return {status: 500};
   }
 }
+
+export const fetchImageService = async (postId: number): Promise<string[]> => {
+  try{
+    const imageURLs = await fetchImage(postId); 
+    console.log("Image URLs in Service:", imageURLs);
+
+    return imageURLs;
+  }catch(error){
+    console.error("Error fetching images:", error);
+    return [];
+  }
+};

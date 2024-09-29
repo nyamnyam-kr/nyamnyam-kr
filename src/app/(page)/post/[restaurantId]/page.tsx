@@ -5,11 +5,16 @@ import Star from "../../star/page";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
-import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
 import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
 import { insertReply } from "src/app/api/reply/reply.api";
-import { submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
+import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
+import { UpvoteModel } from "src/app/model/upvote.model";
+import { hasLikedPost, likePost, unLikePost } from "src/app/api/upvote/upvote.api";
+import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
+import { fetchImageService } from "src/app/service/image/image.service";
+import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
+import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
 
 const reportReasons = [
     "광고글이에요",
@@ -41,91 +46,62 @@ export default function PostList() {
 
     useEffect(() => {
         if (restaurantId) {
-            fetchPosts();
+            fetchPosts(Number(restaurantId));
             fetchRestaurant();
         }
     }, [restaurantId]);
 
-    const fetchPosts = () => {
-        fetch(`http://localhost:8080/api/posts/${restaurantId}/group`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(async (data) => {
-                setPosts(data);
+    const fetchPosts = async (restaurantId: number) => {
+        try {
+            const postData = await fetchPostService(restaurantId);
 
-                const likeStatus = data.map(async (post: PostModel) => {
-                    const liked = await checkLikedStatus(post.id);
-                    const count = await getLikeCount(post.id);
-                    await fetchImage(post.id);
-                    return { postId: post.id, liked, count };
-                });
+            setPosts(postData.map((data) => data.post)); 
+            setLikedPosts(postData.filter((data) => data.liked).map((data)=> data.post.id));
 
-                const result = await Promise.all(likeStatus);
-
-                const likedPostId = result
-                    .filter(result => result.liked)
-                    .map(result => result.postId);
-
-                const likeCountMap = result.reduce((acc, result) => {
-                    acc[result.postId] = result.count;
+            setLikeCounts(
+                postData.reduce((acc, data) => {
+                    acc[data.post.id] = data.count; 
+                    return acc; 
+                }, {} as { [key: number]: number})
+            );
+            setImages(
+                postData.reduce((acc, data) => {
+                    acc[data.post.id] = data.images; 
                     return acc;
-                }, {} as { [key: number]: number });
-
-                setLikedPosts(likedPostId);
-                setLikeCounts(likeCountMap);
-            })
-            .catch((error) => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+                }, {} as { [key:number]:string[]})
+            );
+        } catch (error) {
+            console.error("loadPosts error:", error);
+        }
     };
 
-    const fetchRestaurant = () => {
-        fetch(`http://localhost:8080/api/restaurant/${restaurantId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Restaurant fetch fail')
-                }
-                return response.json();
-            })
-            .then(async (data) => {
-                setRestaurant(data);
-            })
+    const fetchRestaurant = async () => {
+        if (restaurantId) {
+            const data = await fetchRestaurantService(Number(restaurantId));
+            if (data) setRestaurant(data);
+        }
     };
 
-    const fetchImage = (postId: number) => {
-        fetch(`http://localhost:8080/api/images/post/${postId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Image fetch fail')
-                }
-                return response.json();
-            })
-            .then(async (data) => {
+    const fetchImage = async (postId: number) => {
+        const imageURLs = await fetchImageService(postId)
+        console.log("Images before setting state:", imageURLs);
 
-                const imageURLs = data.map((image: any) => image.uploadURL);
-                setImages(prevImages => ({
-                    ...prevImages,
-                    [postId]: imageURLs,
-                }));
-            })
+        setImages(prevImages => ({
+            ...prevImages,
+            [postId]: imageURLs,
+        }));
+        console.log("Images after setting state:", images);
     }
 
-    const handleDelete = (postId: number) => {
+    const handleDelete = async (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
-            fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
-                .then(() => {
-                    alert("게시글이 삭제되었습니다.");
-                    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-                    router.push(`/post/${restaurantId}`);
-                })
-                .catch(error => {
-                    console.error('Delete operation failed:', error);
-                    alert("삭제 중 오류가 발생했습니다.");
-                });
+            const success = await deletePostService(postId);
+
+            if (success) {
+                alert("게시글이 삭제되었습니다.");
+                setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+                router.push(`/post/${restaurantId}`);
+            }
         }
     };
 
@@ -153,21 +129,21 @@ export default function PostList() {
 
         const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
 
-    if (result) {
-        const { toggled, replies } = result;
+        if (result && result.success) {
+            const { toggled, replies } = result;
 
-        setReplyToggles(toggled);
-        setReplies(prevReplies => ({
-            ...prevReplies,
-            [postId]: replies,
-        }));
+            setReplyToggles(toggled);
+            setReplies(prevReplies => ({
+                ...prevReplies,
+                [postId]: replies,
+            }));
 
-        setReplyInput(prevInput => ({
-            ...prevInput,
-            [postId]: '',
-        }));
-    }
-};
+            setReplyInput(prevInput => ({
+                ...prevInput,
+                [postId]: '',
+            }));
+        }
+    };
     // 댓글 작성 & 수정 
     const replyInputChange = (id: number, content: string, isEdit: boolean) => {
         if (isEdit) { // 댓글 작성 (postId)
@@ -197,72 +173,43 @@ export default function PostList() {
 
     // 수정내용 저장 (서버연결)
     const replyEditSave = async (replyId: number, postId: number) => {
-        const updateReply = {
-            id: replyId,
-            content: editInput[replyId],
-            postId: postId,
-            userId: currentUserId
-        };
+        const updateReply = await editSaveReplyService(replyId, postId, editInput[replyId], currentUserId);
+        if (updateReply) {
+            setReplies((prevReplies) => {
+                const updatedReplies = { ...prevReplies };
 
-        try {
-            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateReply)
+                if (updatedReplies[postId]) {
+                    updatedReplies[postId] = updatedReplies[postId].map((reply) =>
+                        reply.id === replyId ? updateReply : reply
+                    );
+                }
+                return updatedReplies;
             });
 
-            if (response.ok) {
-                const updateReplyData = await response.json();
-                setReplies((prevReplies) => {
-                    const updateReplies = { ...prevReplies };
-                    if (updateReplies[postId]) {
-                        updateReplies[postId] = updateReplies[postId].map((reply) =>
-                            reply.id === replyId ? updateReplyData : reply
-                        );
-                    }
-                    toggleReply(postId);
-                    return updateReplies;
-                });
-                setEditReply((prevEditReply) => ({
-                    ...prevEditReply,
-                    [replyId]: false,
-                }));
-            } else {
-                console.error('댓글 수정 실패 ');
-            }
-        } catch (error) {
-            console.error("댓글 수정 중 에러 발생:", error);
+            setEditReply((prevEditReply) => ({
+                ...prevEditReply,
+                [replyId]: false,
+            }));
+        } else {
+            console.log("댓글 수정 실패");
         }
     };
 
     // 댓글 삭제 
-    const handleReplyDelete = async (replyId: number, postId: number) => {
-        if (window.confirm("삭제하시겠습니까?")) {
-            try {
-                const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-                    method: 'DELETE'
-                });
+    const replyDelete = async (replyId: number, postId: number) => {
+        if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
-                if (response.ok) {
-                    setReplies(prevReplies => {
-                        return {
-                            ...prevReplies,
-                            [postId]: prevReplies[postId].filter((reply) => reply.id !== replyId)
-                        };
-                    });
-                    alert("댓글이 삭제되었습니다.");
-                    fetchPosts();
-                } else {
-                    alert("댓글 삭제에 실패했습니다.");
-                }
-            } catch {
-                alert("댓글 삭제 중 문제가 발생했습니다.");
-            }
+        const updatedReplies = await deleteReplyService(replyId, postId, replies);
+
+        if (updatedReplies) {
+            setReplies(prevReplies => ({
+                ...prevReplies,
+                [postId]: updatedReplies
+            }));
         }
     };
 
+    // 날짜 포맷 지정 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
 
@@ -274,54 +221,22 @@ export default function PostList() {
         return `${year}년 ${month}월 ${day}일`;
     };
 
+    // 좋아요 상태 확인 
     const checkLikedStatus = async (postId: number) => {
-        const upvote: UpvoteModel = {
-            id: 0,
-            giveId: currentUserId,
-            haveId: 0,
-            postId: postId
-        }
-        return await hasLikedPost(upvote) ? postId : null;
+        const isLiked = await checkLikedService(postId, currentUserId);
+        return isLiked ? postId : null;
     };
 
+    // 좋아요 & 취소 & count
     const handleLike = async (postId: number) => {
-        const upvote: UpvoteModel = {
-            id: 0,
-            giveId: currentUserId,
-            haveId: 0,
-            postId: postId
-        };
+        const result = await toggleLikeService(postId, currentUserId, likedPost);
 
-        if (likedPost.includes(postId)) {
-            setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
-            setLikeCounts(prevCounts => ({
+        if (result) {
+            setLikedPosts(result.likedPost);
+            setLikeCounts((prevCounts) => ({
                 ...prevCounts,
-                [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
-            }));
-
-            const success = await unLikePost(upvote);
-            if (!success) {
-                setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
-                setLikeCounts(prevCounts => ({
-                    ...prevCounts,
-                    [postId]: (prevCounts[postId] || 0) + 1
-                }));
-            }
-        } else {
-            setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
-            setLikeCounts(prevCounts => ({
-                ...prevCounts,
-                [postId]: (prevCounts[postId] || 0) + 1
-            }));
-
-            const success = await likePost(upvote);
-            if (!success) {
-                setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
-                setLikeCounts(prevCounts => ({
-                    ...prevCounts,
-                    [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
-                }));
-            }
+                [postId]: (prevCounts[postId] || 0) + result.likeCountDelta,
+            }))
         }
     };
 
@@ -515,7 +430,7 @@ export default function PostList() {
                                                                         </button>
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
-                                                                            onClick={() => reply.id && handleReplyDelete(reply.id, p.id)}
+                                                                            onClick={() => reply.id && replyDelete(reply.id, p.id)}
                                                                         >
                                                                             삭제
                                                                         </button>

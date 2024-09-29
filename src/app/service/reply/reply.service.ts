@@ -1,6 +1,6 @@
 //src/app/service/reply/reply.service.ts
 import { Dispatch } from "@reduxjs/toolkit";
-import { deleteReply, fetchReply, insertReply } from "src/app/api/reply/reply.api";
+import { deleteReply, fetchReply, insertReply, updateReply } from "src/app/api/reply/reply.api";
 import { initialReply, ReplyModel } from "src/app/model/reply.model";
 import { addReplies, getReplies } from "src/lib/features/reply.slice";
 import { AppDispatch } from "src/lib/store";
@@ -29,48 +29,43 @@ export const submitReplyService = async (postId: number, replyContent: string, c
     const newReply = await insertReply(replyData);
 
     if (newReply) {
-      return toggleReplyService(postId, replyToggles);
+      const {toggled, replies} = await toggleReplyService(postId, replyToggles);
+      return {success:true, toggled, replies: replies || []};
     } else {
-      return null;
+      return { success: false, toggled: replyToggles, replies:[]};
     }
   } catch (error) {
-    return { success: false, toggled: replyToggles };
+    return { success: false, toggled: replyToggles, replies:[]};
   }
 }
 
-export async function insertReplyService(reply: ReplyModel, postId: number, dispatch: AppDispatch): Promise<ReplyModel | null> {
-  try {
+export const editSaveReplyService = async (replyId: number, postId: number, updateContent: string, currentUserId: number) => {
+  const replyData = {
+    ...initialReply, 
+    id: replyId, 
+    content : updateContent, 
+    postId: postId, 
+    userId: currentUserId
+  }; 
+  try{
+    const updateReplyData = await updateReply(replyId, replyData);
+    return updateReplyData;
 
-    const response = await insertReply(reply);
-
-    if (response.ok) {
-      const data: ReplyModel = await response.json();
-
-      dispatch(addReplies({ postId, replies: [data] }));
-
-      return data;
-    } else {
-      const errorMessage = await response.text();
-      throw new Error(`서버 응답 에러: ${errorMessage}`);
-    }
-  } catch (error) {
-    console.error('댓글 등록 중 오류 발생:', error);
-    return null;
+  }catch(error){
+    console.error("댓글 수정 중 오류 발생:", error);
+    return null; 
   }
-}
+};
 
-export const handleReplyDelete = async (replyId: number, postId: number, dispatch: Dispatch, replies: { [key: number]: ReplyModel[] }) => {
-  if (window.confirm("삭제하시겠습니까?")) {
+export const deleteReplyService = async (replyId: number, postId: number, replies: { [key: number]: ReplyModel[] }) => {
     try {
-      await deleteReply(replyId); // 삭제 결과 반환값을 따로 사용하지 않음
+      await deleteReply(replyId);
 
       const updateReplies = replies[postId].filter((reply) => reply.id !== replyId);
-      dispatch(addReplies({ postId, replies: updateReplies }));
 
-      alert("댓글이 삭제되었습니다.");
+      return updateReplies;
     } catch (error: any) {
       console.error("댓글 삭제 중 문제가 발생했습니다:", error);
-      alert(error.message); // 에러 메시지 출력
-    }
+      return null;
   }
 };
