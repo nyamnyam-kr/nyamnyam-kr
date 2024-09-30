@@ -31,7 +31,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                 }
 
                 const favoritedRestaurants = await response.json();
-                console.log('Favorited Restaurants:', favoritedRestaurants);
+                //console.log('Favorited Restaurants:', favoritedRestaurants);
 
                 const isFavorited = favoritedRestaurants.includes(restaurantId);
                 setIsFavorited(isFavorited);
@@ -49,7 +49,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
     const handleToggleFavorite = async (event: React.MouseEvent) => {
         event.stopPropagation();
         const newFavoritedState = !isFavorited;
-        setIsFavorited(newFavoritedState);
+        //setIsFavorited(newFavoritedState);
 
         try {
             if (newFavoritedState) {
@@ -82,8 +82,10 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     console.log('위시리스트에서 삭제 실패');
                 } else {
                     console.log('식당이 위시리스트에서 삭제되었습니다.');
+                    setIsFavorited(false);
                 }
             }
+            
             
 
         } catch (error) {
@@ -140,6 +142,8 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
             const addedWishListName = wishList.find(item => item.id === wishListId)?.name;
             console.log('식당이 추가되었습니다:', newRestaurant);
             setMessage(`식당이 ${addedWishListName} 에 추가되었습니다!`);
+            
+            setIsFavorited(true); 
 
             setTimeout(() => {
                 setMessage(null);
