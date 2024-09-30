@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { authenticateUser } from "src/app/service/user/user.api";
 
 export default function Home() {
     const router = useRouter();
@@ -12,35 +13,22 @@ export default function Home() {
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/api/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
+            const token = await authenticateUser(username, password); // 서비스 호출
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Login successful:', data);
+            // JWT 토큰을 로컬 스토리지에 저장
+            localStorage.setItem('token', token);
 
-                // JWT 토큰을 로컬 스토리지에 저장
-                localStorage.setItem('token', data.token);
-
-                // 사용자 정보를 로컬 스토리지에 저장 (선택적)
-                localStorage.setItem('user', JSON.stringify(data.user)); // 예: 사용자 정보가 data.user에 포함되어 있을 때
-
-                // 로그인 성공 후 리디렉션
-                router.push("/"); // 로그인 후 이동할 페이지
-            } else {
-                const errorText = await response.text(); // 응답을 텍스트로 읽기
-                console.error('Error response:', errorText); // 오류 메시지 출력
-                setErrorMessage('Invalid username or password');
-            }
+            // 로그인 성공 후 리디렉션
+            router.push("/"); // 로그인 후 이동할 페이지
         } catch (error) {
-            console.error('Failed to save user data:', error);
-            setErrorMessage('An error occurred. Please try again.');
+            console.error('Login failed:', error);
+            setErrorMessage('Invalid username or password');
         }
+    };
+
+    // 회원가입 페이지로 이동하는 함수
+    const handleRegister = () => {
+        router.push("/register"); // 회원가입 페이지로 리디렉션
     };
 
     return (
@@ -81,6 +69,13 @@ export default function Home() {
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             Login
+                        </button>
+                        <button
+                            type="button" // form submission이 아닌 버튼 클릭으로 처리
+                            onClick={handleRegister}
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
+                        >
+                            Register
                         </button>
                     </div>
                 </form>

@@ -41,9 +41,30 @@ export const modifyUser = async (user: User): Promise<User> => {
     return await updateUser(user);
 };
 
-// 사용자 등록 서비스
-export const addUser = async (user: User): Promise<User> => {
-    return await registerUser(user);
+export const addUser = async (
+    username: string,
+    password: string,
+    nickname: string,
+    name: string,
+    age: number | string,
+    tel: string,
+    gender: string
+): Promise<User> => {
+    const user: User = {
+        id: '', // MongoDB에서 할당된 ID는 빈 문자열로 초기화
+        username,
+        password,
+        nickname,
+        name,
+        age: typeof age === 'string' ? parseInt(age) : age,
+        tel,
+        gender,
+        enabled: true,
+        role: 'user',
+        imgId: null,
+    };
+
+    return await registerUser(user); // User 객체를 API에 전송하여 등록 요청
 };
 
 // 사용자 로그인 서비스
