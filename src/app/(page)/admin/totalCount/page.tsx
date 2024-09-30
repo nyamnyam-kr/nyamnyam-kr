@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import styles from "@/app/(page)/admin/dashboard/mypage.module.css";
+import styles from "src/app/admin/dashboard/mypage.module.css";
 import {Bar, Doughnut} from "react-chartjs-2";
 import Link from "next/link";
 

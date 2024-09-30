@@ -42,7 +42,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "release0.05",
+    "git-widget-placeholder": "nyamnyam-chat",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/USER/Documents/nyamnyam/nyamnyam-front",
@@ -98,6 +98,7 @@
       <workItem from="1727181552545" duration="269000" />
       <workItem from="1727181945480" duration="197000" />
       <workItem from="1727248575980" duration="3339000" />
+      <workItem from="1727420940861" duration="1590000" />
     </task>
     <servers />
   </component>

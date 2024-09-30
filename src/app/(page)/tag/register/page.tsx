@@ -1,6 +1,6 @@
 "use client";
 
-import { insertTag } from "@/app/service/tag/tag.api";
+import { insertTag } from "src/app/service/tag/tag.api";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 

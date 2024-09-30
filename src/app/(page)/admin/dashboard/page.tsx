@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from "chart.js"; // ArcElement 추가
-import styles from "./mypage.module.css";
+import styles from '@/app/(page)/admin/dashboard/mypage.module.css';
 import axios from "axios";
 import Link from "next/link";
 
