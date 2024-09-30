@@ -1,35 +1,52 @@
-export async function insertOpinion(opinion: OpinionModel): Promise<any | {status: number}> {
-    try {
-        const body = {
-            id: opinion.id,
-            userId: opinion.userId,
-            content: opinion.content,
-            entryDate: opinion.entryDate
-        }
+// src/app/service/user.service.ts
+import { User } from "src/app/model/user.model";
+import {
+    fetchUserExists,
+    fetchUserById,
+    fetchAllUsers,
+    fetchUserCount,
+    deleteUserById,
+    updateUser,
+    registerUser,
+    loginUser,
+} from "src/app/api/user/user.api";
 
-        const resp = await fetch('http://localhost:8080/api/opinion/save',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-            body: JSON.stringify(body)
+// 사용자 존재 여부 확인 서비스
+export const checkUserExists = async (id: string): Promise<boolean> => {
+    return await fetchUserExists(id);
+};
 
-    })
-        const contentType =
-            resp.headers.get('content-type');
+// 사용자 정보 가져오기 서비스
+export const getUserById = async (id: string): Promise<User> => {
+    return await fetchUserById(id);
+};
 
-        if (resp.ok && contentType?.includes('application.json')) {
-            const data: any = await resp.json();
-            return data;
-        } else {
-            const errorMessage = await resp.text();
-            throw new Error(`Server returned non-JSON response: ${errorMessage}`);
-        }
-    } catch (error) {
-        console.error('Error occurred while inserting tag:', error);
-        return {status: 500};
-    }
+// 모든 사용자 가져오기 서비스
+export const getAllUsers = async (): Promise<User[]> => {
+    return await fetchAllUsers();
+};
 
+// 사용자 수 가져오기 서비스
+export const getUserCount = async (): Promise<number> => {
+    return await fetchUserCount();
+};
 
+// 사용자 삭제 서비스
+export const removeUserById = async (id: string): Promise<void> => {
+    await deleteUserById(id);
+};
 
-}
+// 사용자 정보 업데이트 서비스
+export const modifyUser = async (user: User): Promise<User> => {
+    return await updateUser(user);
+};
+
+// 사용자 등록 서비스
+export const addUser = async (user: User): Promise<User> => {
+    return await registerUser(user);
+};
+
+// 사용자 로그인 서비스
+export const authenticateUser = async (username: string, password: string): Promise<string> => {
+    return await loginUser(username, password);
+};

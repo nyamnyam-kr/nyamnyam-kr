@@ -1,22 +1,17 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import {useRouter} from 'next/navigation';
-
-
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
     const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    
-    
 
     // 로그인 후 사용자 정보를 Context에 저장
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();    
+        e.preventDefault();
         try {
-            
             const response = await fetch('http://localhost:8080/api/user/login', {
                 method: 'POST',
                 headers: {
@@ -24,14 +19,17 @@ export default function Home() {
                 },
                 body: JSON.stringify({ username, password }),
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login successful:', data);
-    
-                // 사용자 정보를 로컬 스토리지에 저장
-                localStorage.setItem('user', JSON.stringify(data));
-    
+
+                // JWT 토큰을 로컬 스토리지에 저장
+                localStorage.setItem('token', data.token);
+
+                // 사용자 정보를 로컬 스토리지에 저장 (선택적)
+                localStorage.setItem('user', JSON.stringify(data.user)); // 예: 사용자 정보가 data.user에 포함되어 있을 때
+
                 // 로그인 성공 후 리디렉션
                 router.push("/"); // 로그인 후 이동할 페이지
             } else {
