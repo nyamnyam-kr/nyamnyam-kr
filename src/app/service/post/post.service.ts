@@ -1,28 +1,28 @@
-import { deletePost, detailsPost, getPostById, getPostsByRestaurant, insertPost, updatePost } from "src/app/api/post/post.api";
+import { deletePost, getPostById, getPostsByRestaurant, insertPost, updatePost } from "src/app/api/post/post.api";
 import { getLikeCount, hasLikedPost } from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
 import { getImageService } from "../image/image.service";
 import { deleteImageById, getImage, getImageByPostId, uploadPostImages } from "src/app/api/image/image.api";
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
- try{
-  await updatePost(postId, postData); 
+  try {
+    await updatePost(postId, postData);
 
-  if(imagesToDelete.length > 0) {
-    const imageIds = await getImageByPostId(postId); 
-    for(const imageId of imagesToDelete){
-      if(imageIds.includes(imageId)){
-        await deleteImageById(imageId);
+    if (imagesToDelete.length > 0) {
+      const imageIds = await getImageByPostId(postId);
+      for (const imageId of imagesToDelete) {
+        if (imageIds.includes(imageId)) {
+          await deleteImageById(imageId);
+        }
       }
     }
+    if (images.length > 0) {
+      await uploadPostImages(postId, images);
+    }
+  } catch (error) {
+    console.error('Error in updatePostService:', error);
+    throw error;
   }
-  if(images.length > 0) {
-    await uploadPostImages(postId, images);
-  }
- } catch(error){
-  console.error('Error in updatePostService:', error);
-  throw error;
- }
 }
 
 // 하나의 post 데이터 가져오기 
@@ -36,11 +36,11 @@ export const getPostDetails = async (id:number): Promise<PostModel> => {
   }
 }
 
-export const detailsPostAndImages = async (postId: number):  Promise<{ post: any; images: string[] }> => {
+export const detailsPostAndImages = async (postId: number): Promise<{ post: any; images: string[] }> => {
   try {
-    const post = await detailsPost(postId); 
+    const post = await getPostById(postId);
     const images = await getImage(postId);
-    return {post, images};
+    return { post, images };
   } catch (error) {
     console.error("Error loading post and images:", error);
     throw error;
