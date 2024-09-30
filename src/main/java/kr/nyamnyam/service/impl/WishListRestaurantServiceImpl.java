@@ -10,6 +10,7 @@ import kr.nyamnyam.model.repository.WishListRestaurantRepository;
 import kr.nyamnyam.service.WishListRestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,12 +52,18 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional
     @Override
     public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
-        if(wishListRestaurantRepository.existsByWishListIdAndRestaurantId(userId, restaurantId)) {
-            wishListRestaurantRepository.deleteById(restaurantId);
+        boolean exists  = wishListRestaurantRepository.deleteRestaurantFromWishList(userId, restaurantId);
+        if (!exists) {
+            return false; // 레코드가 존재하지 않으면 false 반환
         }
-        return wishListRestaurantRepository.existsByWishListIdAndRestaurantId(userId, restaurantId);
+       // boolean deletedCount = wishListRestaurantRepository.deleteRestaurantFromWishList(userId, restaurantId);
+        return true; // 삭제된 행이 있으면 true 반환
     }
+
+
 
 }

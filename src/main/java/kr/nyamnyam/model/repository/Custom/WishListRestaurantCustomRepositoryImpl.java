@@ -6,6 +6,7 @@ import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QWishListRestaurantEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,19 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
                 .where(qWishListRestaurantEntity.userId.eq(userId)
                         .and(qWishListRestaurantEntity.wishListId.eq(wishListId)))
                 .fetch();
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
+        QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
+
+        long deletedCount = jpaQueryFactory.delete(wishListRestaurant)
+                .where(wishListRestaurant.userId.eq(userId)
+                        .and(wishListRestaurant.restaurantId.eq(restaurantId)))
+                .execute();
+
+        return deletedCount > 0;
     }
 
 

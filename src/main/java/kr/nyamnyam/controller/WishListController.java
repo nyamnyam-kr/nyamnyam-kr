@@ -56,8 +56,9 @@ public class WishListController {
     }
 
     @DeleteMapping
-    public boolean deleteWishList(@RequestHeader Long userId , @RequestParam Long restaurantId) {
-         return  wishListRestaurantService.deleteRestaurantFromWishList(userId, restaurantId);
+    public ResponseEntity<Boolean> deleteWishList(@RequestHeader Long userId , @RequestParam Long restaurantId) {
+        boolean deleted = wishListRestaurantService.deleteRestaurantFromWishList(userId, restaurantId);
+        return ResponseEntity.ok(deleted);
     }
 
 

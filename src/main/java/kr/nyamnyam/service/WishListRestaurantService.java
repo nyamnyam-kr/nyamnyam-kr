@@ -2,6 +2,7 @@ package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.WishListRestaurantEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,5 +12,7 @@ public interface WishListRestaurantService {
 
     List<RestaurantModel> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId);
 
+    @Transactional
     boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
+
 }
