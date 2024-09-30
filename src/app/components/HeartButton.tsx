@@ -74,7 +74,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'userId': userId.toString(), // userId를 헤더로 포함
+                        'userId': userId.toString(), 
                     },
                 });
     
@@ -98,13 +98,13 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
         if (!newWishListName) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/wishList`, {
+            const response = await fetch(`http://localhost:8080/api/wishList?name=${newWishListName}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'userId': userId.toString(),
                 },
-                body: JSON.stringify({ name: newWishListName }),
+         
             });
 
             if (!response.ok) {
@@ -155,6 +155,12 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
         }
     };
 
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            handleAddWishList();
+        }
+    };
+
     return (
         <>
             <button onClick={handleToggleFavorite} className="focus:outline-none">
@@ -179,7 +185,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     <ul className="space-y-4">
                         {wishList.map((item) => (
                             <button key={item.id} onClick={() => handleAddRestaurantToWishList(item.id)} className="text-green-500">
-                                <li className="flex justify-between items-center p-4 border rounded-lg shadow-sm">
+                                <li className="flex justify-between items-center p-4 border rounded-lg shadow-sm" style={{marginLeft:'10%'}}>
                                     <div>
                                         <h3 className="text-lg font-semibold">{item.name}   +</h3>
                                     </div>
@@ -197,6 +203,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     type="text"
                     value={newWishListName}
                     onChange={(e) => setNewWishListName(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className="border rounded p-2 mb-4 w-full"
                     placeholder="위시리스트 이름"
                 />
