@@ -10,7 +10,6 @@ import HeartButton from 'src/app/components/HeartButton';
 
 
 
-
 export default function Home() {
     const [restaurants, setRestaurants] = useState<RestaurantModel[]>([]);
     const { searchTerm } = useSearchContext();

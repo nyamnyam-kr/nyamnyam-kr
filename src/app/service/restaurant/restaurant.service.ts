@@ -1,5 +1,5 @@
 
-// restaurant/page.tsx api
+// restaurant/page.tsx의 service
 
 import {
     fetchAllAverage,

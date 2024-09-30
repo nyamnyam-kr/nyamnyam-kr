@@ -1,39 +1,157 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from './Modal'; // Modal 컴포넌트 임포트
 
 interface HeartButtonProps {
-    restaurantId: number; 
+    restaurantId: number | undefined;
 }
 
 const HeartButton = ({ restaurantId }: HeartButtonProps) => {
     const [isFavorited, setIsFavorited] = useState(false);
     const [wishList, setWishList] = useState<WishListModel[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const userId = 1; 
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 추가 모달 상태
+    const [newWishListName, setNewWishListName] = useState('');
+    const [message, setMessage] = useState<string | null>(null);
+    const userId = 4;
+
+    useEffect(() => {
+        const fetchFavoritedRestaurants = async () => {
+            try {
+                // 유저가 가지고 있는 모든 위시리스트의 모든 식당 가져와서 DB에 마운트된 전체 식당과 같은 아이디의 식당이 있으면 해당 식당은 하트 처리
+                const response = await fetch(`http://localhost:8080/api/wishList/getAll`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'userId': userId.toString(),
+                    },
+                });
+
+                if (!response.ok) {
+                    console.log('이미 추가한 레스토랑일 경우')
+                }
+
+                const favoritedRestaurants = await response.json();
+                console.log('Favorited Restaurants:', favoritedRestaurants);
+
+                const isFavorited = favoritedRestaurants.includes(restaurantId);
+                setIsFavorited(isFavorited);
+            } catch (error) {
+                console.error('Error fetching favorited restaurants:', error);
+            }
+        };
+
+        fetchFavoritedRestaurants();
+    }, [restaurantId]);
+
+
+
 
     const handleToggleFavorite = async (event: React.MouseEvent) => {
-        event.stopPropagation(); // 상세보기로 이동하는 원래 기본 클릭 이벤트 방지
-        setIsFavorited(!isFavorited);
+        event.stopPropagation();
+        const newFavoritedState = !isFavorited;
+        setIsFavorited(newFavoritedState);
 
-        // 위시리스트 가져오기
+        try {
+            if (newFavoritedState) {
+                const response = await fetch(`http://localhost:8080/api/wishList`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'userId': userId.toString(),
+                    },
+                });
+
+                if (!response.ok) {
+                    console.log('즐겨찾기한 식당 없음')
+                }
+
+                const wishListData = await response.json();
+                setWishList(wishListData);
+                setIsModalOpen(true);
+            }
+            else {
+                const deleteResponse = await fetch(`http://localhost:8080/api/wishList?restaurantId=${restaurantId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'userId': userId.toString(), // userId를 헤더로 포함
+                    },
+                });
+    
+                if (!deleteResponse.ok) {
+                    console.log('위시리스트에서 삭제 실패');
+                } else {
+                    console.log('식당이 위시리스트에서 삭제되었습니다.');
+                }
+            }
+            
+
+        } catch (error) {
+            console.error('Error fetching wish list:', error);
+        }
+    };
+
+
+
+
+    const handleAddWishList = async () => {
+        if (!newWishListName) return;
+
         try {
             const response = await fetch(`http://localhost:8080/api/wishList`, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'userId': userId.toString(), 
+                    'userId': userId.toString(),
+                },
+                body: JSON.stringify({ name: newWishListName }),
+            });
+
+            if (!response.ok) {
+                throw new Error('위시리스트를 추가하는 데 실패했습니다.');
+            }
+
+            const newWishList = await response.json();
+            setWishList((prev) => [...prev, newWishList]);
+            setNewWishListName('');
+            setIsAddModalOpen(false);
+        } catch (error) {
+            console.error('Error adding wish list:', error);
+        }
+    };
+
+    const handleAddRestaurantToWishList = async (wishListId: number) => {
+        if (!restaurantId) return;
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/wishList/${wishListId}?restaurantId=${restaurantId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'userId': userId.toString(),
                 },
             });
 
             if (!response.ok) {
-                throw new Error('위시리스트를 불러오는 데 실패했습니다.');
+                throw new Error('식당을 위시리스트에 추가하는 데 실패했습니다.');
             }
 
-            const wishListData = await response.json();
-            setWishList(wishListData);
-            setIsModalOpen(true); // 모달 열기
+            const newRestaurant = await response.json();
+            const addedWishListName = wishList.find(item => item.id === wishListId)?.name;
+            console.log('식당이 추가되었습니다:', newRestaurant);
+            setMessage(`식당이 ${addedWishListName} 에 추가되었습니다!`);
+
+            setTimeout(() => {
+                setMessage(null);
+            }, 1000);
+
         } catch (error) {
-            console.error('Error fetching wish list:', error);
+            console.error('Error adding restaurant to wish list:', error);
+            setMessage(`이미 추가된 식당입니다`);
+
+            setTimeout(() => {
+                setMessage(null);
+            }, 1000);
         }
     };
 
@@ -53,21 +171,43 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <h2 className="text-2xl font-bold mb-4">내 위시리스트</h2>
+                <button onClick={() => setIsAddModalOpen(true)} className="text-blue-500">+ 추가하기</button>
                 {wishList.length === 0 ? (
-                    <p>위시리스트에 항목이 없습니다.</p>
+                    <>
+                    </>
                 ) : (
                     <ul className="space-y-4">
                         {wishList.map((item) => (
-                            <li key={item.id} className="flex justify-between items-center p-4 border rounded-lg shadow-sm">
-                                <div>
-                                    <h3 className="text-lg font-semibold">{item.name}</h3>
-                        
-                                </div>
-                            </li>
+                            <button key={item.id} onClick={() => handleAddRestaurantToWishList(item.id)} className="text-green-500">
+                                <li className="flex justify-between items-center p-4 border rounded-lg shadow-sm">
+                                    <div>
+                                        <h3 className="text-lg font-semibold">{item.name}   +</h3>
+                                    </div>
+                                </li>
+                            </button>
                         ))}
                     </ul>
                 )}
             </Modal>
+
+            {/* 추가 모달 */}
+            <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+                <h2 className="text-2xl font-bold mb-4">위시리스트 추가하기</h2>
+                <input
+                    type="text"
+                    value={newWishListName}
+                    onChange={(e) => setNewWishListName(e.target.value)}
+                    className="border rounded p-2 mb-4 w-full"
+                    placeholder="위시리스트 이름"
+                />
+                <button onClick={handleAddWishList} className="bg-blue-500 text-white p-2 rounded">추가하기</button>
+            </Modal>
+
+            {message && (
+                <Modal isOpen={true} onClose={() => setMessage(null)}>
+                    <h2 className="text-xl font-bold mb-4">{message}</h2>
+                </Modal>
+            )}
         </>
     );
 };
