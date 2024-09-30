@@ -26,6 +26,7 @@ export const getPostById = async (id:number): Promise<PostModel> => {
 export const detailsPost = async (postId: number) => {
   try {
     const response = await instance.get(`${api.post}/${postId}`);
+    console.log("Response data: ", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch post details:", error);
@@ -43,12 +44,12 @@ export const insertPost = async (postData: Partial<PostModel>): Promise<number> 
   }
 }
 
-export const fetchPost = async (restaurantId: number) => {
+export const getPostsByRestaurant = async (restaurantId: number) => {
   try {
     const response = await instance.get(`${api.post}/${restaurantId}/group`);
     return response.data;
   } catch (error) {
-    console.error("fetchPosts API error:", error);
+    console.error("getPostsByRestaurant API error:", error);
     throw error;
   }
 }

@@ -1,5 +1,5 @@
 //src/app/service/reply/reply.service.ts
-import { deleteReply, fetchReply, insertReply, updateReply } from "src/app/api/reply/reply.api";
+import { deleteReply, getReply, insertReply, updateReply } from "src/app/api/reply/reply.api";
 import { initialReply, ReplyModel } from "src/app/model/reply.model";
 
 export const toggleReplyService = async (id: number, replyToggles: { [key: number]: boolean }) => {
@@ -8,7 +8,7 @@ export const toggleReplyService = async (id: number, replyToggles: { [key: numbe
     [id]: !replyToggles[id],
   };
   if (!replyToggles[id]) {
-    const data = await fetchReply(id); // API 호출
+    const data = await getReply(id); // API 호출
 
     return { toggled, replies: data || [] };
   }
@@ -24,10 +24,8 @@ export const submitReplyService = async (postId: number, replyContent: string, c
   };
   try {
     const newReply = await insertReply(replyData);
-    console.log("Service - New Reply: ", newReply);
 
-    if(!newReply || typeof newReply !== 'object'){
-      console.error("New reply is not returned properly.");
+    if(!newReply){
       return {success: false, toggled: replyToggles, newReply: null};
     }
 

@@ -1,4 +1,4 @@
-import { fetchImage, uploadPostImages } from "src/app/api/image/image.api";
+import { getImage, uploadPostImages } from "src/app/api/image/image.api";
 
 export async function insertImageService(postId: number, images: File[]): Promise<any | {status: number}> {
   try {
@@ -10,9 +10,9 @@ export async function insertImageService(postId: number, images: File[]): Promis
   }
 }
 
-export const fetchImageService = async (postId: number): Promise<string[]> => {
+export const getImageService = async (postId: number): Promise<string[]> => {
   try{
-    const imageURLs = await fetchImage(postId); 
+    const imageURLs = await getImage(postId); 
 
     return imageURLs;
   }catch(error){

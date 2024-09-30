@@ -48,12 +48,12 @@ export default function Home() {
 
 
     useEffect(() => {
-        console.log("가져온 검색어:", searchTerm); 
+        //console.log("가져온 검색어:", searchTerm); 
         const fetchData = async () => {
             try {
                 // 검색어로 레스토랑 데이터 가져오기
                 let data: Restaurant[] = await fetchRestaurantsBySearch(searchTerm || '');
-                console.log("가져온 검색어:", searchTerm); 
+                //console.log("가져온 검색어:", searchTerm); 
 
                 // 태그와 카테고리에 따른 필터링
                 if (selectedTags.length > 0) {

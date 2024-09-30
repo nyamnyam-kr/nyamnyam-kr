@@ -9,7 +9,7 @@ import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
 import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
 import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
-import { fetchImageService } from "src/app/service/image/image.service";
+import { getImageService } from "src/app/service/image/image.service";
 import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
 import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
 
@@ -79,7 +79,7 @@ export default function PostList() {
     };
 
     const fetchImage = async (postId: number) => {
-        const imageURLs = await fetchImageService(postId)
+        const imageURLs = await getImageService(postId)
 
         setImages(prevImages => ({
             ...prevImages,
@@ -104,7 +104,10 @@ export default function PostList() {
         const { toggled, replies } = await toggleReplyService(id, replyToggles);
         console.log("toggleReply: ", replies);
 
-        setReplyToggles(toggled);
+        setReplyToggles((prevToggles) => ({
+            ...prevToggles,
+            [id]: toggled[id],
+        }));
 
         setReplies(prevReplies => ({
             ...prevReplies,
@@ -117,40 +120,21 @@ export default function PostList() {
         e.preventDefault();
 
         const replyContent = replyInput[postId];
-
         if (!replyContent) {
             alert('댓글을 입력하세요.');
             return;
         }
-
-        // 댓글 작성 후 서비스 레이어에서 반환된 데이터 확인
         const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
 
         if (result && result.success) {
-            const { toggled, newReply } = result;
-
-            // 상태 업데이트를 위한 로그 확인
+            const { newReply } = result;
             console.log("New Reply added: ", newReply);
-            console.log("Updated toggled: ", toggled);
 
-            // 댓글 토글 상태 업데이트
-            setReplyToggles((prev) => ({
-                ...prev,
-                ...toggled,
-            }));
-
-            // 댓글 상태 즉시 반영
-            setReplies((prevReplies) => {
-                const updatedReplies = {
+            setReplies((prevReplies) => ({
                     ...prevReplies,
                     [postId]: [...(prevReplies[postId] || []), newReply],
-                };
+            }));
 
-                console.log("Updated replies: ", updatedReplies);
-                return updatedReplies;
-            });
-
-            // 댓글 입력창 비우기
             setReplyInput((prevInput) => ({
                 ...prevInput,
                 [postId]: '',

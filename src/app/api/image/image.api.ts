@@ -47,7 +47,7 @@ export const uploadPostImages = async (postId: number, images: File[]): Promise<
     }
 };
 
-export const fetchImage = async (postId: number): Promise<string[]> => {
+export const getImage = async (postId: number): Promise<string[]> => {
     try {
         const response = await instance.get(`${api.image}/post/${postId}`);
         return response.data.map((image: any) => image.uploadURL);
@@ -55,5 +55,4 @@ export const fetchImage = async (postId: number): Promise<string[]> => {
         console.error("Image fetch fail:", error);
         throw error;
     }
-
-}
+};

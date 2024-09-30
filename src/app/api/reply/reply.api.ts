@@ -3,7 +3,7 @@
 import { instance } from "../axios";
 import { api } from "../request";
 
-export const fetchReply = async (postId: number) => {
+export const getReply = async (postId: number) => {
   try {
     const response = await instance.get(`${api.reply}/post/${postId}`);
     return response.data;
@@ -15,10 +15,10 @@ export const fetchReply = async (postId: number) => {
 
 export const insertReply = async (replyData: any) => {
   try{
-    const response = await instance.post(api.reply, replyData) // 고정 경로
+    const response = await instance.post(`${api.reply}`, replyData) // 고정 경로
     return response.data;
   } catch(error) {
-    console.error("reply insert fail: ", error);
+    console.error("reply insert failed: ", error);
     throw error;
   }
 };

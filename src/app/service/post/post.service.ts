@@ -1,8 +1,8 @@
-import { deletePost, detailsPost, fetchPost, getPostById, insertPost, updatePost } from "src/app/api/post/post.api";
+import { deletePost, detailsPost, getPostById, getPostsByRestaurant, insertPost, updatePost } from "src/app/api/post/post.api";
 import { getLikeCount, hasLikedPost } from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
-import { fetchImageService } from "../image/image.service";
-import { deleteImageById, fetchImage, getImageByPostId, uploadPostImages } from "src/app/api/image/image.api";
+import { getImageService } from "../image/image.service";
+import { deleteImageById, getImage, getImageByPostId, uploadPostImages } from "src/app/api/image/image.api";
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
  try{
@@ -39,7 +39,7 @@ export const getPostDetails = async (id:number): Promise<PostModel> => {
 export const detailsPostAndImages = async (postId: number):  Promise<{ post: any; images: string[] }> => {
   try {
     const post = await detailsPost(postId); 
-    const images = await fetchImage(postId);
+    const images = await getImage(postId);
     return {post, images};
   } catch (error) {
     console.error("Error loading post and images:", error);
@@ -63,12 +63,12 @@ export const insertPostService = async (postData: Partial<PostModel>, images: Fi
 
 export const fetchPostService = async (restaurantId: number) => {
   try {
-    const posts: PostModel[] = await fetchPost(restaurantId);
+    const posts: PostModel[] = await getPostsByRestaurant(restaurantId);
 
     const likeStatusPromise = posts.map(async (post) => {
       const liked = await hasLikedPost({ id: 0, giveId: 1, postId: post.id, haveId: 0 });
       const count = await getLikeCount(post.id);
-      const images = await fetchImageService(post.id);
+      const images = await getImageService(post.id);
 
       return { post, liked, count, images }
     })

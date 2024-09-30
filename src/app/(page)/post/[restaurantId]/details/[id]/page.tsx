@@ -17,11 +17,16 @@ export default function PostDetail() {
     loadData();
   }, [id]);
 
+  console.log("post data: ", post); // 확인용
+
   const loadData = async () => {
     if(!id) return; 
     try {
       const postId = Array.isArray(id) ? Number(id[0]) : Number(id);
       const {post, images} = await detailsPostAndImages(postId);
+
+      console.log("Post data with nickname and restaurantId:", post); // 데이터를 확인
+      console.log("Image data:", images);
 
       setPost(post); 
       setImages(images);
