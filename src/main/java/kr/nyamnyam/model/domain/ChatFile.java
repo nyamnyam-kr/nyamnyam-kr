@@ -1,18 +1,20 @@
 package kr.nyamnyam.model.domain;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "chatFiles")
+@Document(collection = "chatFiles") // MongoDB 컬렉션과 매핑
 public class ChatFile {
     @Id
-    private String id; // MongoDB에서 사용되는 ObjectId
+    private String id;
 
     private String chatRoomId;
     private String sender;
