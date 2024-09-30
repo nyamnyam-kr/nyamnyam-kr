@@ -81,7 +81,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public Boolean update(Long id, ReplyModel model) {
+    public ReplyModel update(Long id, ReplyModel model) {
         ReplyEntity existingEntity = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reply not found with id: " + id));
 
@@ -89,15 +89,15 @@ public class ReplyServiceImpl implements ReplyService {
         existingEntity.setModifyDate(LocalDateTime.now());
 
         repository.save(existingEntity);
-        return true;
+        return model;
     }
 
     @Override
-    public Boolean save(ReplyModel model) {
+    public ReplyModel save(ReplyModel model) {
         ReplyEntity entity = convertToEntity(model);
         entity.setEntryDate(LocalDateTime.now());
         repository.save(entity);
-        return true;
+        return model;
     }
 
     private ReplyModel convertToModel(ReplyEntity entity) {

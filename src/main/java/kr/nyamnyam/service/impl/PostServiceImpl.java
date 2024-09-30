@@ -130,6 +130,7 @@ public class PostServiceImpl implements PostService {
     private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
         PostModel postModel = convertToModel(postEntity);
         postModel.setNickname(nickname);
+        postModel.setRestaurantId(postEntity.getRestaurant().getId());
         return postModel;
     }
 

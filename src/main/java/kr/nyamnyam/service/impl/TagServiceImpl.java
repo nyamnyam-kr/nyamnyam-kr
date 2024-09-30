@@ -84,6 +84,20 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public Boolean updateTag(String name, TagModel model) {
+        Optional<TagEntity> existingTagOpt = repository.findByName(name);
+        if(existingTagOpt.isEmpty()) {
+            return false;
+        }
+        TagEntity existingTag = existingTagOpt.get();
+        existingTag.setTagCategory(model.getTagCategory());
+        existingTag.setName(model.getName());
+
+        repository.save(existingTag);
+        return null;
+    }
+
+    @Override
     public Boolean save(TagModel model) {
         TagEntity entity = convertToEntity(model);
         return repository.save(entity) != null;

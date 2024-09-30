@@ -46,14 +46,14 @@ public class TagController {
         return ResponseEntity.ok(service.existsByName(name));
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<Boolean> deleteByName(@RequestParam String name) {
+    @DeleteMapping("/{name}")
+    public ResponseEntity<Boolean> deleteByName(@PathVariable String name) {
         return ResponseEntity.ok(service.deleteByName(name));
     }
 
-    @PutMapping("")
-    public ResponseEntity<Boolean> update(@RequestParam String name, @RequestBody TagModel model) {
-        return ResponseEntity.ok(service.save(model));
+    @PutMapping("/{name}")
+    public ResponseEntity<Boolean> update(@PathVariable String name, @RequestBody TagModel model) {
+        return ResponseEntity.ok(service.updateTag(name,model));
     }
 
     @PostMapping("")

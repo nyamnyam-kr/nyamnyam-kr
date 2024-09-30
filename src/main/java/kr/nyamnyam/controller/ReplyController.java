@@ -48,17 +48,12 @@ public class ReplyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Boolean> update(@PathVariable Long id, @RequestBody ReplyModel model) {
-       boolean updated = service.update(id, model);
-       if(updated){
-           return ResponseEntity.ok(true);
-       } else {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-       }
+    public ResponseEntity<ReplyModel> update(@PathVariable Long id, @RequestBody ReplyModel model) {
+      return ResponseEntity.ok(service.update(id, model));
     }
 
     @PostMapping("")
-    public ResponseEntity<Boolean> insertReply(@RequestBody ReplyModel model) {
+    public ResponseEntity<ReplyModel> insertReply(@RequestBody ReplyModel model) {
         return ResponseEntity.ok(service.save(model));
     }
 }
