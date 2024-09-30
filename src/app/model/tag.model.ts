@@ -3,3 +3,9 @@ export interface TagModel{
     tagCategory:string;
     postTags: PostTagModel[];
 }
+
+export const initialTag: TagModel = {
+    name: '',
+    tagCategory: '',
+    postTags: []
+}

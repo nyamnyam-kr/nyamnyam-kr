@@ -5,8 +5,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import Star from 'src/app/(page)/star/page';
 import { initialPost, PostModel } from 'src/app/model/post.model';
 import { TagModel } from 'src/app/model/tag.model';
-import { insertImageService } from 'src/app/service/image/image.service';
-import { detailsPostAndImages, getPostDetails, updatePostService } from 'src/app/service/post/post.service';
+import { getPostDetails, updatePostService } from 'src/app/service/post/post.service';
 import { fetchTagData } from 'src/app/service/tag/tag.service';
 
 export default function PostUpdate() {
@@ -17,31 +16,39 @@ export default function PostUpdate() {
   const [images, setImages] = useState<File[]>([]);
   const [prevImages, setPrevImages] = useState<ImageModel[]>([]);
   const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
-
   const [formData, setFormData] = useState<PostModel>(initialPost);
 
   useEffect(() => {
-    console.log("currentId: ", id);
-    if(id){
+    console.log("useEffect 내부 ID: ", id, "타입: ", typeof id);
+    if (typeof id === 'string' && id) {
+      console.log("유효한 ID: ", id);
       loadData(Number(id));
     } else {
-      console.error("invalid ID: ", id)
+      console.error("invalid ID: ", id);
     }
   }, [id]);
 
+  useEffect(()=> {
+    console.log("allTags 상태 변경되었습니다.: ", allTags); 
+  },[allTags]);
+
   const loadData = async (id: number) => {
+    console.log("loadData 함수가 호출되었습니다. Id: ", id);
     try {
       const post = await getPostDetails(id);
+      console.log("post 데이터: ", post);
+
       const uniqueTags = Array.isArray(post.tags) ? Array.from(new Set(post.tags)) : [];
 
-      setFormData({...post, tags: uniqueTags});
-      setTags(uniqueTags); 
+      setFormData({ ...post, tags: uniqueTags });
+      setTags(uniqueTags);
       setPrevImages(post.images || []);
 
       const tagList = await fetchTagData();
       console.log("TagList: ", tagList)
       setAllTags(tagList);
-    } catch(error){
+
+    } catch (error) {
       console.error("Error loading data:", error);
     }
   }
@@ -143,25 +150,29 @@ export default function PostUpdate() {
         </div>
         <div>
           <h2 className="font-bold">[음식점 키워드]</h2>
-          {Object.keys(allTags).map(category => (
-            <div key={category} className="mb-4">
-              <h3>{category}</h3>
-              <div className="flex flex-wrap gap-4">
-                {(allTags[category] as TagModel[]).map(t => (
-                  <div key={t.name} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={t.name}
-                      name={t.name}
-                      checked={tags.includes(t.name)}
-                      onChange={() => handleTagSelect(t.name)}
-                    />
-                    <label htmlFor={t.name} className="ml-2">{t.name}</label>
-                  </div>
-                ))}
+          {Object.keys(allTags).length > 0 ? (
+            Object.keys(allTags).map(category => (
+              <div key={category} className="mb-4">
+                <h3>{category}</h3>
+                <div className="flex flex-wrap gap-4">
+                  {(allTags[category] as TagModel[]).map(t => (
+                    <div key={t.name} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={t.name}
+                        name={t.name}
+                        checked={tags.includes(t.name)}
+                        onChange={() => handleTagSelect(t.name)}
+                      />
+                      <label htmlFor={t.name} className="ml-2">{t.name}</label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>태그가 없습니다.</p>
+          )}
         </div>
         <div>
           <label className="font-bold">[방문후기]</label>

@@ -1,9 +1,6 @@
 //src/app/service/reply/reply.service.ts
-import { Dispatch } from "@reduxjs/toolkit";
 import { deleteReply, fetchReply, insertReply, updateReply } from "src/app/api/reply/reply.api";
 import { initialReply, ReplyModel } from "src/app/model/reply.model";
-import { addReplies, getReplies } from "src/lib/features/reply.slice";
-import { AppDispatch } from "src/lib/store";
 
 export const toggleReplyService = async (id: number, replyToggles: { [key: number]: boolean }) => {
   const toggled = {
@@ -27,17 +24,19 @@ export const submitReplyService = async (postId: number, replyContent: string, c
   };
   try {
     const newReply = await insertReply(replyData);
+    console.log("Service - New Reply: ", newReply);
 
-    if (newReply) {
-      const {toggled, replies} = await toggleReplyService(postId, replyToggles);
-      return {success:true, toggled, replies: replies || []};
-    } else {
-      return { success: false, toggled: replyToggles, replies:[]};
+    if(!newReply || typeof newReply !== 'object'){
+      console.error("New reply is not returned properly.");
+      return {success: false, toggled: replyToggles, newReply: null};
     }
+
+    return {success: true, toggled: { ...replyToggles, [postId]: true }, newReply, };
   } catch (error) {
-    return { success: false, toggled: replyToggles, replies:[]};
+    console.error("댓글 작성 중 오류 발생:", error);
+    return { success: false, toggled: replyToggles, newReply:null };
   }
-}
+};
 
 export const editSaveReplyService = async (replyId: number, postId: number, updateContent: string, currentUserId: number) => {
   const replyData = {

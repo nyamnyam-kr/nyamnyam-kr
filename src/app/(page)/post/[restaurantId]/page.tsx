@@ -7,10 +7,7 @@ import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { insertReply } from "src/app/api/reply/reply.api";
 import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
-import { UpvoteModel } from "src/app/model/upvote.model";
-import { hasLikedPost, likePost, unLikePost } from "src/app/api/upvote/upvote.api";
 import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
 import { fetchImageService } from "src/app/service/image/image.service";
 import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
@@ -29,7 +26,6 @@ const reportReasons = [
 
 export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
-    const [postId, setPostId] = useState<number | null>(null);
     const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [images, setImages] = useState<{ [key: number]: string[] }>({});
     const [likedPost, setLikedPosts] = useState<number[]>([]);
@@ -49,26 +45,26 @@ export default function PostList() {
             fetchPosts(Number(restaurantId));
             fetchRestaurant();
         }
-    }, [restaurantId]);
+    }, [restaurantId, replies]);
 
     const fetchPosts = async (restaurantId: number) => {
         try {
             const postData = await fetchPostService(restaurantId);
 
-            setPosts(postData.map((data) => data.post)); 
-            setLikedPosts(postData.filter((data) => data.liked).map((data)=> data.post.id));
+            setPosts(postData.map((data) => data.post));
+            setLikedPosts(postData.filter((data) => data.liked).map((data) => data.post.id));
 
             setLikeCounts(
                 postData.reduce((acc, data) => {
-                    acc[data.post.id] = data.count; 
-                    return acc; 
-                }, {} as { [key: number]: number})
+                    acc[data.post.id] = data.count;
+                    return acc;
+                }, {} as { [key: number]: number })
             );
             setImages(
                 postData.reduce((acc, data) => {
-                    acc[data.post.id] = data.images; 
+                    acc[data.post.id] = data.images;
                     return acc;
-                }, {} as { [key:number]:string[]})
+                }, {} as { [key: number]: string[] })
             );
         } catch (error) {
             console.error("loadPosts error:", error);
@@ -106,11 +102,13 @@ export default function PostList() {
     // 댓글 버튼 
     const toggleReply = async (id: number) => {
         const { toggled, replies } = await toggleReplyService(id, replyToggles);
+        console.log("toggleReply: ", replies);
+
         setReplyToggles(toggled);
 
         setReplies(prevReplies => ({
             ...prevReplies,
-            [id]: replies,
+            [id]: replies || prevReplies[id],
         }));
     }
 
@@ -125,23 +123,41 @@ export default function PostList() {
             return;
         }
 
+        // 댓글 작성 후 서비스 레이어에서 반환된 데이터 확인
         const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
 
         if (result && result.success) {
-            const { toggled, replies } = result;
+            const { toggled, newReply } = result;
 
-            setReplyToggles(toggled);
-            setReplies(prevReplies => ({
-                ...prevReplies,
-                [postId]: replies,
+            // 상태 업데이트를 위한 로그 확인
+            console.log("New Reply added: ", newReply);
+            console.log("Updated toggled: ", toggled);
+
+            // 댓글 토글 상태 업데이트
+            setReplyToggles((prev) => ({
+                ...prev,
+                ...toggled,
             }));
 
-            setReplyInput(prevInput => ({
+            // 댓글 상태 즉시 반영
+            setReplies((prevReplies) => {
+                const updatedReplies = {
+                    ...prevReplies,
+                    [postId]: [...(prevReplies[postId] || []), newReply],
+                };
+
+                console.log("Updated replies: ", updatedReplies);
+                return updatedReplies;
+            });
+
+            // 댓글 입력창 비우기
+            setReplyInput((prevInput) => ({
                 ...prevInput,
                 [postId]: '',
             }));
         }
     };
+
     // 댓글 작성 & 수정 
     const replyInputChange = (id: number, content: string, isEdit: boolean) => {
         if (isEdit) { // 댓글 작성 (postId)
@@ -173,16 +189,12 @@ export default function PostList() {
     const replyEditSave = async (replyId: number, postId: number) => {
         const updateReply = await editSaveReplyService(replyId, postId, editInput[replyId], currentUserId);
         if (updateReply) {
-            setReplies((prevReplies) => {
-                const updatedReplies = { ...prevReplies };
-
-                if (updatedReplies[postId]) {
-                    updatedReplies[postId] = updatedReplies[postId].map((reply) =>
-                        reply.id === replyId ? updateReply : reply
-                    );
-                }
-                return updatedReplies;
-            });
+            setReplies((prevReplies) => ({
+                ...prevReplies,
+                [postId]: prevReplies[postId]?.map((reply) =>
+                    reply.id === replyId ? updateReply : reply
+                ),
+            }));
 
             setEditReply((prevEditReply) => ({
                 ...prevEditReply,
@@ -390,7 +402,7 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] !== undefined ? editInput[reply.id] : reply.content}
+                                                                                value={editInput[reply.id] || reply.content}
                                                                                 onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}

@@ -1,50 +1,53 @@
-import { tagCategoryApi } from "src/app/api/tag/tag.api";
+
+import { deleteTag, fetchTagsByCategories, insertTag } from "src/app/api/tag/tag.api";
 import { TagModel } from "src/app/model/tag.model";
 
-export async function insertTag(tag: TagModel): Promise<any | { status: number }> {
-    try {
-        const body = {
-            name: tag.name,
-            tagCategory: tag.tagCategory
-        }
-        const response = await fetch('http://localhost:8080/api/tags', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body),
-        });
-
-        const contentType =
-            response.headers.get('content-type');
-
-        if (response.ok && contentType?.includes('application.json')) {
-            const data: any = await response.json();
-            return data;
-        } else {
-            const errorMessage = await response.text();
-            throw new Error(`Server returned non-JSON response: ${errorMessage}`);
-        }
-    } catch (error) {
-        console.error('Error occurred while inserting tag:', error);
-        return { status: 500 };
-    }
+export const insertTagService = async (formData:TagModel) => {
+  const data = await insertTag(formData); 
+  return data; 
 }
 
-export const fetchTagData = async (): Promise<{ [category: string]: TagModel[] }> => {
-    try {
-        const tags = await tagCategoryApi();
-        console.log("fetchTagData: ", tags);
-        const categorizedTags = tags.reduce((acc: { [category: string]: TagModel[] }, tag: TagModel) => {
-            const category = tag.tagCategory || '기타';
-            if (!acc[category]) acc[category] = [];
-            acc[category].push(tag);
-            return acc;
-        }, {});
-        console.log("Categorized Tags:", categorizedTags);
-        return categorizedTags;
-    } catch (error) {
-        console.error("Error in fetchTagsData:", error);
-        throw error;
-    }
+export const deleteTagService = async (name: string, tags: { [category: string]: TagModel[] }) => {
+  try {
+    await deleteTag(name);
+
+    const updatedTags: { [category: string]: TagModel[] } = Object.entries(tags).reduce(
+      (acc, [category, tagList]) => {
+        acc[category] = Array.isArray(tagList) ? tagList.filter((tag) => tag.name !== name) : [];
+        return acc;
+      },
+      {} as { [category: string]: TagModel[] }
+    );
+
+    return updatedTags;
+  } catch (error) {
+    console.error("태그 삭제 중 문제가 발생했습니다:", error);
+    return null;
+  }
 };
+
+export const fetchTagData = async (): Promise<{ [category: string]: TagModel[] }> => {
+  try {
+    const tags = await fetchTagsByCategories();
+    console.log("fetchTagData에서 받은 tags (Object 형태):", tags);
+
+    if (!tags || Object.keys(tags).length === 0) { // 데이터를 배열로 변환
+      console.error("태그 데이터가 비어 있습니다.");
+      return {};
+    }
+
+    const categorizedTags: { [category: string]: TagModel[] } = {};
+    Object.entries(tags).forEach(([category, tagList]) => {
+      if (Array.isArray(tagList)) {
+        categorizedTags[category] = tagList;
+      }
+    });
+
+    console.log("Categorized Tags:", categorizedTags);
+    return categorizedTags;
+  } catch (error) {
+    console.error("Error in fetchTagsData:", error);
+    throw error;
+  }
+};
+

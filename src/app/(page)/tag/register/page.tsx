@@ -1,41 +1,28 @@
 "use client";
 
-import { insertTag } from "@/app/service/tag/tag.api";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { fetchCategoryNames } from "src/app/api/tag/tag.api";
+import { initialTag, TagModel } from "src/app/model/tag.model";
+import { insertTagService } from "src/app/service/tag/tag.service";
 
 export default function TagRegister() {
   const router = useRouter();
-  // tagCategory의 초기값을 빈 배열로 설정합니다.
   const [tagCategory, setTagCategory] = useState<string[]>([]);
-  const [formData, setFormData] = useState<TagModel>({
-    name: '',
-    tagCategory: '',
-    postTags: []
-  });
+  const [formData, setFormData] = useState<TagModel>(initialTag);
 
   useEffect(() => {
-    const fetchTagCategory = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/tags/tag-category'); // 카테고리 API URL
-        const data = await response.json();
-        // tagCategory 배열에 데이터가 없을 경우 빈 배열로 설정
-        if (Array.isArray(data)) {
-          setTagCategory(data); 
-        } else {
-          setTagCategory([]); // 배열이 아닌 값이 들어오면 빈 배열로 설정
-        }
-      } catch (error) {
-        console.error("태그 카테고리를 불러오는데 실패했습니다.", error);
-        setTagCategory([]); // 오류 발생 시 빈 배열로 설정
-      }
-    };
     fetchTagCategory();
   }, []); 
 
+  const fetchTagCategory = async () => {
+    const data = await fetchCategoryNames(); 
+    setTagCategory(data);
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await insertTag(formData); 
+    await insertTagService(formData); 
     router.push('/tag/tags'); 
   };
 
