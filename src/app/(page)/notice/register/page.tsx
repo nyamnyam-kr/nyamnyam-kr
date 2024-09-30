@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import {NoticeModel} from "src/app/model/notice.model";
+import {fetchNoticeRegister} from "src/app/service/notice/notice.service";
 
 export default function InsertNotice() {
     const [title, setTitle] = useState<string>('');
@@ -9,19 +11,16 @@ export default function InsertNotice() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const newNotice: NoticeModel = {
+            id: 0,
+            title,
+            content,
+            date: new Date().toISOString(),
+            hits: 0
+        };
+
         try {
-            const response = await fetch(`http://localhost:8080/api/notice`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, content }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to create notice");
-            }
-
+            await fetchNoticeRegister(newNotice);
             alert('공지사항이 성공적으로 추가되었습니다!');
             router.push('/notice');
         } catch (error) {

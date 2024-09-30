@@ -1,9 +1,7 @@
 "use client";
-import "/src/app/globals.css";
-import Link from "next/link";
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Search from '../Search'; // Search 컴포넌트 import
-import { SearchProvider } from '../SearchContext'; // SearchContext import
+import Search from 'src/app/components/Search';
 
 interface User {
   id: number;
@@ -14,6 +12,7 @@ export default function Header() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // 로컬 스토리지에서 사용자 정보 가져오기
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -26,7 +25,6 @@ export default function Header() {
   };
 
   return (
-    <SearchProvider>
       <header className="page-header">
         <div className="page-header__inner">
           <div className="page-header__sidebar">
@@ -49,54 +47,32 @@ export default function Header() {
                   <Link href="/" className="hover:bg-blue-600 px-3 py-2 rounded">홈</Link>
                 </li>
                 {user ? (
-                  <>
-                    <li
-                      className="hover:bg-blue-600 px-3 py-2 rounded"
-                      style={{
-                        color: "#F46119",
-                        fontSize: "16px",
-                        fontFamily: "Nunito",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {user.nickname}님, 환영합니다!
-                    </li>
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="hover:bg-blue-600 px-3 py-2 rounded"
-                        style={{
-                          color: "#F46119",
-                          fontSize: "16px",
-                          fontFamily: "Nunito",
-                          fontWeight: 700,
-                        }}
-                      >
-                        로그아웃
-                      </button>
-                    </li>
-                    <li>
-                      <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">
-                        유저 목록
-                      </Link>
-                    </li>
-                  </>
+                    <>
+                      <li className="hover:bg-blue-600 px-3 py-2 rounded" style={{ color: "#F46119", fontSize: "16px", fontFamily: "Nunito", fontWeight: 700 }}>
+                        {user.nickname}님, 환영합니다!
+                      </li>
+                      <li>
+                        <button onClick={handleLogout} className="hover:bg-blue-600 px-3 py-2 rounded" style={{ color: "#F46119", fontSize: "16px", fontFamily: "Nunito", fontWeight: 700 }}>
+                          로그아웃
+                        </button>
+                      </li>
+                      <li>
+                        <Link href="/user/list" className="hover:bg-blue-600 px-3 py-2 rounded">
+                          유저 목록
+                        </Link>
+
+                      </li>
+                    </>
                 ) : (
-                  <li>
-                    <Link href="/user/login" className="hover:bg-blue-600 px-3 py-2 rounded">
-                      로그인
-                    </Link>
-                  </li>
+                    <li>
+                      <Link href="/user/login" className="hover:bg-blue-600 px-3 py-2 rounded">로그인</Link>
+                    </li>
                 )}
                 <li>
-                  <Link href="/tag/tags" className="hover:bg-blue-600 px-3 py-2 rounded">
-                    Tag
-                  </Link>
+                  <Link href="/tag/tags" className="hover:bg-blue-600 px-3 py-2 rounded">Tag</Link>
                 </li>
                 <li>
-                  <Link href="/user/mypage" className="hover:bg-blue-600 px-3 py-2 rounded">
-                    MyPage
-                  </Link>
+                  <Link href="/user/mypage" className="hover:bg-blue-600 px-3 py-2 rounded">MyPage</Link>
                 </li>
               </ul>
               <div className="page-header__action">
@@ -104,11 +80,11 @@ export default function Header() {
                   <i className="ico_message"></i>
                   <span className="animation-ripple-delay1"></span>
                 </Link>
-                <Link href="/07_friends" className="action-btn">
+                <Link href="/notice" className="action-btn">
                   <i className="ico_notification"></i>
                   <span className="animation-ripple-delay2"></span>
                 </Link>
-                <Link href="/08_wallet" className="profile">
+                <Link href="/user/mypage" className="profile">
                   <img src="/assets/img/profile.png" alt="profile" />
                 </Link>
               </div>
@@ -116,6 +92,5 @@ export default function Header() {
           </div>
         </div>
       </header>
-    </SearchProvider>
   );
 }

@@ -1,134 +1,181 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-    <component name="AutoImportSettings">
-        <option name="autoReloadType" value="SELECTIVE" />
-    </component>
-    <component name="ChangeListManager">
-        <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
-            <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/src/app/components/common/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/common/Header.tsx" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-            <change beforePath="$PROJECT_DIR$/src/app/service/notice/notice.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/notice/notice.api.ts" afterDir="false" />
-        </list>
-        <option name="SHOW_DIALOG" value="false" />
-        <option name="HIGHLIGHT_CONFLICTS" value="true" />
-        <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
-        <option name="LAST_RESOLUTION" value="IGNORE" />
-    </component>
-    <component name="FileTemplateManagerImpl">
-        <option name="RECENT_TEMPLATES">
-            <list>
-                <option value="TypeScript File" />
-            </list>
-        </option>
-    </component>
-    <component name="Git.Settings">
-        <option name="RECENT_BRANCH_BY_REPOSITORY">
-            <map>
-                <entry key="$PROJECT_DIR$" value="nyamnyam-ad" />
-            </map>
-        </option>
-        <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    </component>
-    <component name="KubernetesApiPersistence">{}</component>
-    <component name="KubernetesApiProvider">{
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/public/assets/js/pages/_document.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(page)/admin/example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/admin/admin.api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/opinion/opinion.api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/post/post.api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/user/user.api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/model/dash.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/service/admin/admin.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/service/notice/notice.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/service/opinion/opinion.serivce.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/types/global.style.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/registry.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/axios.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/axios.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/request.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/components/SideBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/SideBar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/components/common/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/common/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/model/opinion.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/opinion.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page copy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/.swcrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/service/notice/notice.api.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/service/post/post.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/post/post.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/service/user/user.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/user/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/hooks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="nyamnyam-ad" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
         &quot;isMigrated&quot;: true
         }</component>
-    <component name="ProjectColorInfo">{
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
         &quot;associatedIndex&quot;: 8
         }</component>
-    <component name="ProjectId" id="2mKXWhchfbj0WfBytJDO1CpkFBN" />
-    <component name="ProjectViewState">
-        <option name="flattenPackages" value="true" />
-        <option name="hideEmptyMiddlePackages" value="true" />
-        <option name="showLibraryContents" value="true" />
-    </component>
-    <component name="PropertiesComponent">{
-        &quot;keyToString&quot;: {
-        &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-        &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-        &quot;git-widget-placeholder&quot;: &quot;nyamnyam-admin&quot;,
-        &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-        &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-        &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Documents/nyamnyam/nyamnyam-front&quot;,
-        &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-        &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-        &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-        &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-        &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-        &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-        &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\USER\\Documents\\nyamnyam\\nyamnyam-front\\node_modules\\typescript\\lib&quot;,
-        &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
-        }
-        }</component>
-    <component name="RecentsManager">
-        <key name="CopyFile.RECENT_KEYS">
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\notice\details\[id]" />
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\model" />
-        </key>
-        <key name="MoveFile.RECENT_KEYS">
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\calendar\[id]" />
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\calendars\[id]" />
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\wallet\[id]" />
-            <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\admin" />
-        </key>
-    </component>
-    <component name="SharedIndexes">
-        <attachedChunks>
-            <set>
-                <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
-                <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
-            </set>
-        </attachedChunks>
-    </component>
-    <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-    <component name="TaskManager">
-        <task active="true" id="Default" summary="Default task">
-            <changelist id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="" />
-            <created>1726826275100</created>
-            <option name="number" value="Default" />
-            <option name="presentableId" value="Default" />
-            <updated>1726826275100</updated>
-            <workItem from="1726826276195" duration="7708000" />
-            <workItem from="1726883651419" duration="452000" />
-            <workItem from="1726884541066" duration="591000" />
-            <workItem from="1726885225455" duration="17262000" />
-            <workItem from="1726928348308" duration="5001000" />
-            <workItem from="1726934266646" duration="126000" />
-            <workItem from="1726978994191" duration="8737000" />
-            <workItem from="1727138171568" duration="608000" />
-            <workItem from="1727156412037" duration="2245000" />
-            <workItem from="1727161906772" duration="196000" />
-            <workItem from="1727162275180" duration="665000" />
-            <workItem from="1727166685124" duration="4376000" />
-            <workItem from="1727171750349" duration="3804000" />
-            <workItem from="1727181552545" duration="269000" />
-            <workItem from="1727181945480" duration="197000" />
-            <workItem from="1727248575980" duration="5153000" />
-            <workItem from="1727253855505" duration="4692000" />
-            <workItem from="1727264452344" duration="1877000" />
-            <workItem from="1727312951267" duration="989000" />
-            <workItem from="1727314537784" duration="3069000" />
-            <workItem from="1727321346256" duration="7732000" />
-            <workItem from="1727335764802" duration="1921000" />
-            <workItem from="1727338669380" duration="10868000" />
-            <workItem from="1727397485463" duration="13618000" />
-        </task>
-        <servers />
-    </component>
-    <component name="TypeScriptGeneratedFilesManager">
-        <option name="version" value="3" />
-    </component>
-    <component name="Vcs.Log.Tabs.Properties">
-        <option name="TAB_STATES">
-            <map>
-                <entry key="MAIN">
-                    <value>
-                        <State />
-                    </value>
-                </entry>
-            </map>
-        </option>
-    </component>
+  <component name="ProjectId" id="2mKXWhchfbj0WfBytJDO1CpkFBN" />
+  <component name="ProjectViewState">
+    <option name="flattenPackages" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;nyamnyam-admin&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/OneDrive/문서/카카오톡 받은 파일/anvogue-multipurpose-ecommerce-react-nextjs-2024-09-16-03-36-23-utc/Main/anvogue&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\USER\\Documents\\nyamnyam\\nyamnyam-front\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\notice\details\[id]" />
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\model" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\public\assets\js\pages" />
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)" />
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front" />
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app" />
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\calendar\[id]" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="" />
+      <created>1726826275100</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1726826275100</updated>
+      <workItem from="1726826276195" duration="7708000" />
+      <workItem from="1726883651419" duration="452000" />
+      <workItem from="1726884541066" duration="591000" />
+      <workItem from="1726885225455" duration="17262000" />
+      <workItem from="1726928348308" duration="5001000" />
+      <workItem from="1726934266646" duration="126000" />
+      <workItem from="1726978994191" duration="8737000" />
+      <workItem from="1727138171568" duration="608000" />
+      <workItem from="1727156412037" duration="2245000" />
+      <workItem from="1727161906772" duration="196000" />
+      <workItem from="1727162275180" duration="665000" />
+      <workItem from="1727166685124" duration="4376000" />
+      <workItem from="1727171750349" duration="3804000" />
+      <workItem from="1727181552545" duration="269000" />
+      <workItem from="1727181945480" duration="197000" />
+      <workItem from="1727248575980" duration="5153000" />
+      <workItem from="1727253855505" duration="4692000" />
+      <workItem from="1727264452344" duration="1877000" />
+      <workItem from="1727312951267" duration="989000" />
+      <workItem from="1727314537784" duration="3069000" />
+      <workItem from="1727321346256" duration="7732000" />
+      <workItem from="1727335764802" duration="1921000" />
+      <workItem from="1727338669380" duration="10868000" />
+      <workItem from="1727397485463" duration="13618000" />
+      <workItem from="1727417905390" duration="10638000" />
+      <workItem from="1727431581536" duration="5519000" />
+      <workItem from="1727511640401" duration="1100000" />
+      <workItem from="1727657137573" duration="23270000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
 </project>

@@ -1,5 +1,15 @@
-
-export const apiReply = "/api/replies";
-export const apiPost = "/api/posts";
-export const apiRestaurant = "/api/restaurant";
-export const apiNotice = "/api/notice";
+export const api = {
+    admin: "/api/admin",
+    category: "/category",
+    follow: "/api/follow",
+    image: "/api/images",
+    notice: "/api/notice",
+    opinion: "/api/opinion",
+    post: "/api/posts",
+    receipt : "/api/receipt",
+    reply: "/api/replies",
+    report: "/api/report",
+    restaurant: "/api/restaurant",
+    tag: "/api/tags",
+    user: "/api/user"
+}

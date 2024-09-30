@@ -5,23 +5,12 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, Categ
 import styles from "./mypage.module.css";
 import axios from "axios";
 import Link from "next/link";
+import {fetchShowCount} from "src/app/service/admin/admin.service";
+import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale); // ArcElement 등록
 
-interface CountItem {
-    nickname: string;
-    count: number;
-}
 
-interface Area {
-    area: string;
-    total: number;
-}
-
-interface RestaurantList {
-    restaurantName: string;
-    total: number;
-}
 
 const DashBoard = () => {
     const [count, setCount] = useState<CountItem[]>([]);
@@ -29,18 +18,12 @@ const DashBoard = () => {
     const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
 
     useEffect(() => {
-        const showCount = async () => {
-            try {
-                const resp = await axios.get("http://localhost:8080/api/admin/countUserList");
-                if (resp.status === 200) {
-                    setCount(resp.data);
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+        const countList = async () => {
+            const data = await fetchShowCount();
+            setCount(data);
         };
-        showCount();
-    }, [count]);
+        countList();
+    }, []);
 
     useEffect(() => {
         const showArea = async () => {
@@ -71,14 +54,13 @@ const DashBoard = () => {
         showRestaurant();
     }, [restaurant]);
 
-    const top5Count = count.slice(0 , 5);
 
     const countData = {
-        labels: top5Count.map(item => item.nickname),
+        labels: count.map(item => item.nickname),
         datasets: [
             {
                 label: 'UserRank',
-                data: top5Count.map(item => item.count),
+                data: count.map(item => item.count),
                 backgroundColor: 'rgba(255, 159, 64, 0.2)',
                 borderColor: 'rgba(255, 159, 64, 1)',
                 borderWidth: 1,

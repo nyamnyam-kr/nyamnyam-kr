@@ -1,3 +1,4 @@
+"use client"
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Context의 타입 정의
@@ -17,9 +18,9 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <SearchContext.Provider value={{ searchTerm, setSearchTerm }}>
-      {children}
-    </SearchContext.Provider>
+      <SearchContext.Provider value={{ searchTerm, setSearchTerm }}>
+        {children}
+      </SearchContext.Provider>
   );
 };
 

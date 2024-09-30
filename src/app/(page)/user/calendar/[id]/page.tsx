@@ -18,7 +18,7 @@ interface CalendarEvent {
     extendedProps?: Todo; // extendedProps 타입을 Todo로 변경
 }
 
-const Calendars: React.FC = () => {
+const MyCalendar: React.FC = () => {
     const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
     const [wallet, setWallet] = useState<ReceiptModel[]>([]);
     const { id } = useParams();
@@ -93,4 +93,4 @@ const Calendars: React.FC = () => {
     );
 };
 
-export default Calendars;
+export default MyCalendar;

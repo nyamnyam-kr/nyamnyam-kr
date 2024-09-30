@@ -43,3 +43,8 @@ body {
   display: inline-block;
   height: 100%;
 }
+
+.logo {
+  width: 100px;
+  height: auto;
+}

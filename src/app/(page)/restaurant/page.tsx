@@ -86,13 +86,13 @@ export default function Home() {
     };
 
     return (
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto ">
             <div className="container mx-auto px-4 py-4 flex">
-                <div className="w-64">
+                <div className="w-64 mt-8">
                     <Sidebar onFilterChange={handleFilterChange} />
                 </div>
 
-                <div className="flex-grow ml-4">
+                <div className="flex-grow ml-4 mt-20">
                     {/* <div className="w-full max-w-lg mx-auto mb-6">
                         <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
                     </div> */}
