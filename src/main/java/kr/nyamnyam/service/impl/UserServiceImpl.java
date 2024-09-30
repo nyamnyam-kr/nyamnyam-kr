@@ -28,14 +28,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found"))); // 사용자 없을 때 예외 처리
+        return userRepository.findByUsername(username);
     }
+
 
     @Override
     public Mono<User> findById(String id) {
-        return userRepository.findById(id)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found"))); // 사용자 없을 때 예외 처리
+        return userRepository.findById(id);
     }
 
     @Override
@@ -95,8 +94,7 @@ public class UserServiceImpl implements UserService {
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
-                .flatMap(user -> tokenService.createAndSaveToken(user.getId(), user.getRole())) // TokenService 사용
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid credentials")));
+                .flatMap(user -> tokenService.createAndSaveToken(user.getId())); // 사용자 ID로 토큰 생성
     }
 
 }

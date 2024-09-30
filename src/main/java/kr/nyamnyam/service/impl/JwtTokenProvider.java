@@ -9,8 +9,6 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 @Component
@@ -22,19 +20,18 @@ public class JwtTokenProvider {
     @Value("${jwt.validity.in.milliseconds}")
     private long validityInMilliseconds;
 
-    // 비밀 키 생성
-    private SecretKey generateKey() throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] key = digest.digest(secretKey.getBytes(StandardCharsets.UTF_8));
-        return Keys.hmacShaKeyFor(key);
+    // 비밀 키 생성 (직접 사용)
+    private SecretKey generateKey() {
+        // 비밀 키를 직접 사용하여 SecretKey 객체 생성
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    // JWT 토큰 생성 (비동기)
-    public Mono<String> createToken(String username, String role) {
+    public Mono<String> createToken(String userId, String username, String role) {
         return Mono.fromCallable(() -> {
             try {
                 Claims claims = Jwts.claims().setSubject(username);
                 claims.put("role", role);
+                claims.put("userId", userId);
 
                 Date now = new Date();
                 Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -47,7 +44,7 @@ public class JwtTokenProvider {
                         .setExpiration(validity)
                         .signWith(key)
                         .compact();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (Exception e) {
                 throw new RuntimeException("Error generating JWT key", e);
             }
         });
@@ -55,24 +52,40 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 사용자 정보 추출
     public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser()
+                .setSigningKey(generateKey()) // 비밀 키 사용
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     // JWT 토큰에서 사용자 권한 추출
     public String getRole(String token) {
-        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role");
+        return (String) Jwts.parser()
+                .setSigningKey(generateKey()) // 비밀 키 사용
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role");
     }
 
-    // JWT 토큰의 유효성 및 만료 확인
+    // JWT 토큰에서 사용자 ID 추출
+    public String getUserId(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(generateKey()) // 비밀 키 사용
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId"); // userId 추출
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parser()
+                    .setSigningKey(generateKey())
+                    .parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.SignatureException | io.jsonwebtoken.ExpiredJwtException e) {
-            return false;
         } catch (Exception e) {
             return false;
         }
     }
-}
 
+}

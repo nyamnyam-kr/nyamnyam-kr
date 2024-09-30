@@ -5,6 +5,7 @@ import kr.nyamnyam.model.repository.TokenRepository;
 import kr.nyamnyam.model.repository.UserRepository;
 import kr.nyamnyam.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -16,23 +17,29 @@ public class TokenServiceImpl implements TokenService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
-    private long validityInMilliseconds; // 유효 기간 주입
     private final UserRepository userRepository;
 
-    @Override
-    public Mono<String> createAndSaveToken(String userId, String role) {
-        return jwtTokenProvider.createToken(userId, role) // Mono<String> 반환
-                .flatMap(token -> {
-                    Token tokenEntity = Token.builder()
-                            .userId(userId)
-                            .token(token)
-                            .expirationDate(new Date(System.currentTimeMillis() + validityInMilliseconds))
-                            .isValid(true)
-                            .build();
-                    return tokenRepository.save(tokenEntity).then(Mono.just(token)); // 토큰 저장 후, 저장된 토큰 반환
-                });
-    }
+    @Value("${jwt.validity.in.milliseconds}")
+    private long validityInMilliseconds; // 유효 기간 주입
 
+    @Override
+    public Mono<String> createAndSaveToken(String userId) { // username 매개변수 제거
+        return userRepository.findById(userId)
+                .flatMap(user -> {
+                    // 사용자 정보를 가져와서 토큰 생성
+                    return jwtTokenProvider.createToken(userId, user.getUsername(), user.getRole()) // username 사용
+                            .flatMap(token -> {
+                                Token tokenEntity = Token.builder()
+                                        .userId(userId)
+                                        .token(token)
+                                        .expirationDate(new Date(System.currentTimeMillis() + validityInMilliseconds))
+                                        .isValid(true)
+                                        .build();
+                                return tokenRepository.save(tokenEntity).then(Mono.just(token)); // 토큰 저장 후, 저장된 토큰 반환
+                            });
+                })
+                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+    }
 
     @Override
     public Mono<Boolean> validateToken(String token) {
@@ -61,7 +68,7 @@ public class TokenServiceImpl implements TokenService {
                     if (storedToken.getIsValid() && !storedToken.getExpirationDate().before(new Date())) {
                         // 사용자 역할을 UserRepository에서 조회
                         return userRepository.findById(storedToken.getUserId())
-                                .flatMap(user -> jwtTokenProvider.createToken(user.getUsername(), user.getRole())
+                                .flatMap(user -> jwtTokenProvider.createToken(storedToken.getUserId(), user.getUsername(), user.getRole())
                                         .flatMap(newToken -> {
                                             storedToken.setIsValid(false);
                                             return tokenRepository.save(storedToken)
@@ -78,5 +85,4 @@ public class TokenServiceImpl implements TokenService {
                     }
                 });
     }
-
 }

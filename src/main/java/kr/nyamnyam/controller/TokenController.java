@@ -13,8 +13,8 @@ public class TokenController {
     private final TokenService tokenService;
 
     @PostMapping("/create")
-    public Mono<String> createToken(@RequestParam String userId, @RequestParam String role) {
-        return tokenService.createAndSaveToken(userId, role);
+    public Mono<String> createToken(@RequestParam String userId) {
+        return tokenService.createAndSaveToken(userId);
     }
 
     @PostMapping("/validate")
