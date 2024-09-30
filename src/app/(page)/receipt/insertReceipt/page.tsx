@@ -69,12 +69,12 @@ export default function InsertReceipt() {
     };
 
     return (
-        <div>
+        <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <img
                 src="/images/save.jpg"
                 alt="사진 첨부"
                 onClick={handleImageClick}
-                style={{ cursor: 'pointer' }}
+                style={{cursor: 'pointer'}}
                 width={200}
                 height={200}
             />
@@ -88,10 +88,13 @@ export default function InsertReceipt() {
             {preview && (
                 <div>
                     <h3>미리보기:</h3>
-                    <img src={preview} alt="미리보기" style={{ width: '200px', height: 'auto' }} />
+                    <img src={preview} alt="미리보기" style={{width: '200px', height: 'auto'}}/>
                 </div>
             )}
-            <button onClick={sendReceipt} disabled={isUploading}>사진 첨부</button>
+            <button
+                type="submit"
+                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200" onClick={sendReceipt} disabled={isUploading}
+            >사진 첨부</button>
         </div>
-    );
+);
 }

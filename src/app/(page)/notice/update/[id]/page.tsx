@@ -2,17 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {fetchNoticeOne, fetchNoticeUpdate} from "src/app/service/notice/notice.service";
+import {NoticeModel} from "src/app/model/notice.model";
 
-interface Notice {
-    id: number;
-    title: string;
-    content: string;
-    date: string;
-    hits: number;
-}
+
 
 export default function UpdateNotice() {
-    const [notice, setNotice] = useState<Notice | null>(null);
+    const [notice, setNotice] = useState<NoticeModel | null>(null);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const router = useRouter();
@@ -43,7 +38,7 @@ export default function UpdateNotice() {
             return;
         }
 
-        const updatedNotice: Notice = {
+        const updatedNotice: NoticeModel = {
             id: Number(id),
             title,
             content,

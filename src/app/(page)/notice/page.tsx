@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { NoticeModel } from "src/app/model/notice.model";
 import { fetchNoticeList } from "src/app/service/notice/notice.service";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function ShowNotice() {
     const [notice, setNotice] = useState<NoticeModel[]>([]);

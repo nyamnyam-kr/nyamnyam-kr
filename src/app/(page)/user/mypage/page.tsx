@@ -5,18 +5,22 @@ import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import {fetchShowCount} from "src/app/service/admin/admin.service";
-import {CountItem} from "src/app/model/dash.model";
+import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
 import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale} from "chart.js";
 import styles from "src/app/(page)/admin/dashboard/mypage.module.css";
-import {Bar} from "react-chartjs-2";
+import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
+import InsertReceipt from "src/app/(page)/receipt/insertReceipt/page";
+import axios from "axios";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
 
 export default function MyPage() {
     const [count, setCount] = useState<CountItem[]>([]);
+    const [region, setRegion] = useState<Area[]>([]);
+    const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
 
     const [activeTab, setActiveTab] = useState<string | undefined>('dashboard')
     const [activeAddress, setActiveAddress] = useState<string | null>('billing')
@@ -30,7 +34,36 @@ export default function MyPage() {
             setCount(data);
         };
         countList();
-    }, []);
+    }, [count]);
+
+    useEffect(() => {
+        const showArea = async () => {
+            try {
+                const resp = await axios.get('http://localhost:8080/api/admin/countAreaList');
+                if (resp.status === 200) {
+                    setRegion(resp.data);
+                }
+            } catch (error) {
+                console.error("Error fetching count data", error);
+            }
+        };
+        showArea();
+    }, [region]);
+
+    useEffect(() => {
+        const showRestaurant = async () => {
+            try {
+                const resp = await axios.get('http://localhost:8080/api/admin/countPostList');
+                console.log(resp.data);
+                if (resp.status === 200) {
+                    setRestaurant(resp.data)
+                }
+            } catch (error) {
+                console.error("Error fetching count data", error);
+            }
+        };
+        showRestaurant();
+    }, [restaurant]);
 
 
     const handleActiveAddress = (order: string) => {
@@ -88,6 +121,29 @@ export default function MyPage() {
         ],
     };
 
+    const areaData = {
+        labels: region.map(item => item.area),
+        datasets: [{
+            data: region.map(item => item.total),
+            backgroundColor: ["red", "orange", "yellow", "green", "blue"],
+            borderColor: ["#fff", "#fff", "#fff", "#fff", "#fff"],
+            borderWidth: 1,
+        }],
+    };
+
+
+    const restaurantData = {
+        labels: restaurant.map(item => item.restaurantName),
+        datasets: [{
+
+            label: 'RestaurantRank',
+            data: restaurant.map(item => item.total),
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+        }],
+    };
+
     return (
         <>
 
@@ -117,25 +173,25 @@ export default function MyPage() {
                                           className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white ${activeTab === 'dashboard' ? 'active' : ''}`}
                                           onClick={() => setActiveTab('dashboard')}>
                                         <Icon.HouseLine size={20}/>
-                                        <strong className="heading6">Dashboard</strong>
+                                        <strong className="heading6">MyPage</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
                                           className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'orders' ? 'active' : ''}`}
                                           onClick={() => setActiveTab('orders')}>
-                                        <Icon.Package size={20}/>
-                                        <strong className="heading6">My Wallet</strong>
+                                        <Icon.Wallet size={20}/>
+                                        <strong className="heading6">MyWallet</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
                                           className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'address' ? 'active' : ''}`}
                                           onClick={() => setActiveTab('address')}>
-                                        <Icon.Tag size={20}/>
-                                        <strong className="heading6">My Opinion</strong>
+                                        <Icon.Clipboard size={20}/>
+                                        <strong className="heading6">MyOpinion</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
                                           className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'setting' ? 'active' : ''}`}
                                           onClick={() => setActiveTab('setting')}>
-                                        <Icon.GearSix size={20}/>
-                                        <strong className="heading6">Setting</strong>
+                                        <Icon.ChartDonut size={20}/>
+                                        <strong className="heading6">Dashboard</strong>
                                     </Link>
                                     <Link href={'/login'}
                                           className="item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5">
@@ -147,33 +203,20 @@ export default function MyPage() {
                         </div>
                         <div className="right md:w-2/3 w-full pl-2.5">
                             <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
-                                <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
-                                <div className={styles.cardBody}>
-                                    <div className={styles.chartContainer}>
-                                        <Bar
-                                            data={countData}
-                                            options={{
-                                                responsive: true,
-                                                maintainAspectRatio: false,
-                                                scales: {
-                                                    x: {title: {display: true, text: 'Nickname'}},
-                                                    y: {title: {display: true, text: 'Count'}},
-                                                },
-                                            }}
-                                        />
-                                    </div>
-                                </div>
+
                             </div>
                             <div
                                 className={`tab text-content w-full ${activeTab === 'dashboard' ? 'block' : 'hidden'}`}>
-                                <div className="overview grid sm:grid-cols-3 gap-5 mt-7">
+                                <div className="overview grid sm:grid-cols-3 gap-5 mt-7 ">
                                     <div
-                                        className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
-                                        <div className="counter">
-                                            <span className="tese">Awaiting Pickup</span>
-                                            <h5 className="heading5 mt-1">4</h5>
-                                        </div>
-                                        <Icon.HourglassMedium className='text-4xl'/>
+                                        className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs w-full ">
+                                        <Link href="/receipt/insertReceipt">
+                                            <div className="counter">
+                                                <span className="tese text-orange-700">Cancelled Orders</span>
+                                                <h5 className="heading5 mt-1">insert</h5>
+                                            </div>
+                                        </Link>
+                                        <Icon.Receipt className='text-4xl'/>
                                     </div>
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
@@ -193,6 +236,22 @@ export default function MyPage() {
                                     </div>
                                 </div>
                                 <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
+                                    <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                                    <div className={styles.cardBody}>
+                                        <div className={styles.chartContainer}>
+                                            <Bar
+                                                data={countData}
+                                                options={{
+                                                    responsive: true,
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        x: {title: {display: true, text: 'Nickname'}},
+                                                        y: {title: {display: true, text: 'Count'}},
+                                                    },
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                     <h6 className="heading6">Recent Orders</h6>
                                     <div className="list overflow-x-auto w-full mt-5">
                                         <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px]">
@@ -362,7 +421,8 @@ export default function MyPage() {
                                 <MyCalendar/>
 
                             </div>
-                            <div className={`tab_address text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'address' ? 'block' : 'hidden'}`}>
+                            <div
+                                className={`tab_address text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'address' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Opinion</h6>
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
                                 <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
@@ -381,6 +441,51 @@ export default function MyPage() {
                                     >제출
                                     </button>
                                 </form>
+                            </div>
+                            <div
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'setting' ? 'block' : 'hidden'}`}>
+                                <h6 className="heading6">Dashboard</h6>
+                                <div className={styles.cardHeader}>음식점 랭킹</div>
+                                <div className={styles.cardBody}>
+                                    <div className={styles.chartContainer}>
+                                        <Bar
+                                            data={restaurantData}
+                                            options={{
+                                                responsive: true,
+                                                maintainAspectRatio: false,
+                                                scales: {
+                                                    x: {title: {display: true, text: 'Restaurant'}},
+                                                    y: {title: {display: true, text: 'Count'}},
+                                                },
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+
+                                <div className={styles.cardHeader}>음식점 많은 지역 랭킹</div>
+                                <div className={styles.cardBody}>
+                                    <div className={styles.chartContainer}>
+                                        <Doughnut data={areaData} options={{
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                tooltip: {
+                                                    callbacks: {
+                                                        label: (context) => {
+                                                            const label = context.label || '';
+                                                            const value = context.raw || 0;
+                                                            return `${label}: ${value}`;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }}/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
