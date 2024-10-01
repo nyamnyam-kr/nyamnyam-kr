@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { fetchCategoryNames } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import { initialTag, TagModel } from "src/app/model/tag.model";
 import { insertTagService } from "src/app/service/tag/tag.service";
 
@@ -16,7 +16,7 @@ export default function TagRegister() {
   }, []); 
 
   const fetchTagCategory = async () => {
-    const data = await fetchCategoryNames(); 
+    const data = await tag.getCategoryNames(); 
     setTagCategory(data);
   }
 

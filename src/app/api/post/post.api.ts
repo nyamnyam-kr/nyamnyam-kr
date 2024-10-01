@@ -26,4 +26,5 @@ const remove = async (postId: number) => {
     const response = await strategy.DELETE(`${api.post}/${postId}`);
     return response;
 };
+
 export const post = { getById, getByRestaurant, insert, update, remove };

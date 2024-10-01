@@ -13,7 +13,6 @@ export async function insertImageService(postId: number, images: File[]): Promis
 export const getImageService = async (postId: number): Promise<string[]> => {
   try{
     const imageURLs = await image.getByPostId(postId); 
-
     return imageURLs;
   }catch(error){
     console.error("Error fetching images:", error);

@@ -35,7 +35,7 @@ export default function PostList() {
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
     const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
-    const currentUserId = 1; // giveId : 테스트로 1값 설정
+    const currentUserId = 1; // 확인용
     const router = useRouter();
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
@@ -45,7 +45,7 @@ export default function PostList() {
             fetchPosts(Number(restaurantId));
             fetchRestaurant();
         }
-    }, [restaurantId, replies]);
+    }, [restaurantId]);
 
     const fetchPosts = async (restaurantId: number) => {
         try {
@@ -60,12 +60,14 @@ export default function PostList() {
                     return acc;
                 }, {} as { [key: number]: number })
             );
-            setImages(
-                postData.reduce((acc, data) => {
-                    acc[data.post.id] = data.images;
-                    return acc;
-                }, {} as { [key: number]: string[] })
-            );
+
+            const updatedImages: { [key: number]: string[] } = {};
+            for (const data of postData) {
+                const imageURLs = await getImageService(data.post.id);
+                updatedImages[data.post.id] = imageURLs;
+            }
+            setImages(updatedImages);
+
         } catch (error) {
             console.error("loadPosts error:", error);
         }
@@ -128,11 +130,10 @@ export default function PostList() {
 
         if (result && result.success) {
             const { newReply } = result;
-            console.log("New Reply added: ", newReply);
 
             setReplies((prevReplies) => ({
-                    ...prevReplies,
-                    [postId]: [...(prevReplies[postId] || []), newReply],
+                ...prevReplies,
+                [postId]: [...(prevReplies[postId] || []), newReply],
             }));
 
             setReplyInput((prevInput) => ({
@@ -275,11 +276,12 @@ export default function PostList() {
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 ">
-
-            {restaurant && (
+            {restaurant ? (
                 <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 mb-4">
                     <h1 className="text-2xl font-bold">{restaurant.name}</h1>
                 </div>
+            ) : (
+                <p>Loading...</p>
             )}
 
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
@@ -360,7 +362,8 @@ export default function PostList() {
                                         )}
                                     </div>
                                     <div className="flex justify-between items-center mb-2 text-gray-500">
-                                        <p>{formatDate(p.entryDate)}</p>
+                                        <p>{formatDate(
+                                            p.entryDate)}</p>
                                         <button
                                             onClick={() => toggleReply(p.id)}
                                             className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded">
@@ -373,51 +376,49 @@ export default function PostList() {
                                                 {replies[p.id] && replies[p.id].length > 0 ? (
                                                     <ul>
                                                         {replies[p.id].map((reply, index) => (
-                                                            <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
-                                                                <div className="flex items-center">
-                                                                    <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
-                                                                        {reply.nickname}
-                                                                    </span>
-                                                                    {editReply[reply.id] ? (
-                                                                        <span
-                                                                            className="ml-2"
-                                                                            style={{ width: "600px", display: "inline-block", whiteSpace: "nowrap" }}
-                                                                        >
-                                                                            <textarea
-                                                                                name="content"
-                                                                                id="content"
-                                                                                value={editInput[reply.id] || reply.content}
-                                                                                onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
-                                                                                className="border rounded p-2 w-full"
-                                                                                style={{ minHeight: "50px", width: "100%" }}
-                                                                            />
+                                                            <li key={index} className="mb-2 border-b border-gray-200 pb-2">
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="flex items-center">
+                                                                        <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">
+                                                                            {reply.nickname}
                                                                         </span>
-                                                                    ) : (
-                                                                        <span
-                                                                            className="ml-2"
-                                                                            style={{ width: "auto", display: "inline-block", whiteSpace: "nowrap" }}
-                                                                        >
-                                                                            {reply.content}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                                <div className="text-gray-500">{formatDate(reply.entryDate)}</div>
-                                                                {reply.userId === currentUserId && (
-                                                                    <div className="flex space-x-2 mt-2 justify-end">
-                                                                        <button
-                                                                            className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
-                                                                            onClick={() => editReply[reply.id] ? replyEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
-                                                                        >
-                                                                            {editReply[reply.id] ? '저장' : '수정'}
-                                                                        </button>
-                                                                        <button
-                                                                            className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
-                                                                            onClick={() => reply.id && replyDelete(reply.id, p.id)}
-                                                                        >
-                                                                            삭제
-                                                                        </button>
+                                                                        {editReply[reply.id] ? (
+                                                                            <span className="ml-2" style={{ width: "600px", display: "inline-block", whiteSpace: "nowrap" }}>
+                                                                                <textarea
+                                                                                    name="content"
+                                                                                    id="content"
+                                                                                    value={editInput[reply.id] || reply.content}
+                                                                                    onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
+                                                                                    className="border rounded p-2 w-full"
+                                                                                    style={{ minHeight: "50px", width: "100%" }}
+                                                                                />
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="ml-2" style={{ width: "auto", display: "inline-block", whiteSpace: "nowrap" }}>
+                                                                                {reply.content}
+                                                                            </span>
+                                                                        )}
                                                                     </div>
-                                                                )}
+                                                                    <div className="flex items-center">
+                                                                        <span className="text-gray-500 mr-4">{formatDate(reply.entryDate)}</span>
+                                                                        {reply.userId === currentUserId && (
+                                                                            <div className="flex space-x-2">
+                                                                                <button
+                                                                                    className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
+                                                                                    onClick={() => editReply[reply.id] ? replyEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
+                                                                                >
+                                                                                    {editReply[reply.id] ? '저장' : '수정'}
+                                                                                </button>
+                                                                                <button
+                                                                                    className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
+                                                                                    onClick={() => reply.id && replyDelete(reply.id, p.id)}
+                                                                                >
+                                                                                    삭제
+                                                                                </button>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
                                                             </li>
                                                         ))}
                                                     </ul>

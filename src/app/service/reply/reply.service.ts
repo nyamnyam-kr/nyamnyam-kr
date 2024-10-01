@@ -8,7 +8,7 @@ export const toggleReplyService = async (id: number, replyToggles: { [key: numbe
     [id]: !replyToggles[id],
   };
   if (!replyToggles[id]) {
-    const data = await reply.getById(id); // API 호출
+    const data = await reply.getById(id);
 
     return { toggled, replies: data || [] };
   }
@@ -20,8 +20,9 @@ export const submitReplyService = async (postId: number, replyContent: string, c
     ...initialReply,
     postId: postId,
     content: replyContent,
-    userId: currentId
+    userId: currentId,
   };
+
   try {
     const newReply = await reply.insert(replyData);
 

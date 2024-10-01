@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState, useRef} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import Star from "@/app/(page)/star/page";
+import Star from 'src/app/components/Star';
 
 interface Restaurant {
     id: number;

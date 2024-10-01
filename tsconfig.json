@@ -5,8 +5,9 @@
       "dom.iterable",
       "esnext"
     ],
+    "target": "ES2020",
     "allowJs": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,

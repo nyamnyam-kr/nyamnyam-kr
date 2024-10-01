@@ -1,3 +1,4 @@
+import { strategy } from "../api.strategy";
 import instance from "../axios";
 import { api } from "../request";
 
@@ -24,7 +25,7 @@ export const fetchRestaurantsByCategory = async (categories: string[]) => {
 // post에 restaurant 정보 불러오기 
 export const fetchRestaurant = async (restaurantId: number) => {
     try{
-        const response = await instance.get(`${api.restaurant}/${restaurantId}`);
+        const response = await strategy.GET(`${api.restaurant}/${restaurantId}`);
         return response.data;
     } catch (error){
     console.error('post restaurant failed:', error);

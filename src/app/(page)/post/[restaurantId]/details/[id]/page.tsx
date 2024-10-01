@@ -11,13 +11,11 @@ export default function PostDetail() {
   const [images, setImages] = useState<string[]>([]);
   const { id, restaurantId } = useParams();
   const router = useRouter();
-  const currentUserId = 1; // 수정 필요 !!! 
+  const currentUserId = 1; // 확인용
 
   useEffect(() => {
     loadData();
   }, [id]);
-
-  console.log("post data: ", post); // 확인용
 
   const loadData = async () => {
     if(!id) return; 
