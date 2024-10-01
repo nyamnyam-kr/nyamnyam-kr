@@ -7,4 +7,6 @@ import java.util.List;
 public interface WishListCustomRepository {
 
     List<WishListEntity> getWishLists(Long userId);
+
+    boolean deleteWishList(Long userId, Long id);
 }

@@ -4,6 +4,7 @@ package kr.nyamnyam.service.impl;
 import kr.nyamnyam.model.domain.WishListModel;
 import kr.nyamnyam.model.entity.WishListEntity;
 import kr.nyamnyam.model.repository.WishListRepository;
+import kr.nyamnyam.model.repository.WishListRestaurantRepository;
 import kr.nyamnyam.service.WishListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishListServiceImpl implements WishListService {
     private final WishListRepository wishListRepository;
+    private final WishListRestaurantRepository wishListRestaurantRepository;
 
 
     @Override
@@ -42,11 +44,13 @@ public class WishListServiceImpl implements WishListService {
 
     @Transactional
     @Override
-    public boolean deleteWishList(Long userId, Long id) {
-        if (wishListRepository.existsById(id)) {
-            wishListRepository.deleteByUserIdAndId(userId, id);
-            return true;
-        }
-        return false;
+    public boolean deleteWishList(Long userId, Long wishListId) {
+        boolean isDeleted = wishListRepository.deleteWishList(userId, wishListId);
+        return isDeleted;
     }
+
+
+
+
+
 }
