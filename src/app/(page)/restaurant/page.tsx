@@ -5,8 +5,9 @@ import Link from 'next/link';
 import Sidebar from 'src/app/components/SideBar';
 import ScrollToTop from 'src/app/components/ScrollToTop';
 import { SearchProvider, useSearchContext } from 'src/app/components/SearchContext';
-import { fetchRestaurantsByCategory, fetchRestaurantsBySearch, fetchRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
-import HeartButton from 'src/app/components/HeartButton';
+import { getRestaurantsByCategory, getRestaurantsBySearch, getRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
+import HeartButton from 'src/app/components/AddHeart';
+
 
 
 
@@ -20,15 +21,15 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let data: RestaurantModel[] = await fetchRestaurantsBySearch(searchTerm || '');
+                let data: RestaurantModel[] = await getRestaurantsBySearch(searchTerm || '');
 
                 if (selectedTags.length > 0) {
-                    const tagData = await fetchRestaurantsByTag(selectedTags);
+                    const tagData = await getRestaurantsByTag(selectedTags);
                     data = data.filter(restaurant => tagData.some((tagged: { id: number; }) => tagged.id === restaurant.id));
                 }
 
                 if (selectedCategories.length > 0) {
-                    const categoryData = await fetchRestaurantsByCategory(selectedCategories);
+                    const categoryData = await getRestaurantsByCategory(selectedCategories);
                     data = data.filter(restaurant => categoryData.some((categorized: { id: number; }) => categorized.id === restaurant.id));
                 }
 

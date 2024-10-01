@@ -1,19 +1,34 @@
-export const fetchRestaurantsBySearch = async (keyword: string) => {
-    const res = await fetch(`http://localhost:8080/api/restaurant/search?q=${keyword}`);
-    if (!res.ok) throw new Error('Failed to fetch data');
-    return res.json();
+
+// restaurant/page.tsx의 service
+
+import {
+    fetchAllAverage,
+    fetchRestaurantById,
+    fetchRestaurantsByCategory,
+    fetchRestaurantsBySearch,
+    fetchRestaurantsByTag,
+    fetchTopTags
+
+} from "src/app/api/restaurant/restaurant.api";
+
+export const getRestaurantsBySearch = async (keyword: string) => {
+    return await fetchRestaurantsBySearch(keyword);
 };
 
-export const fetchRestaurantsByTag = async (tags: string[]) => {
-    const tagQuery = tags.length > 0 ? `name=${tags.join(',')}` : '';
-    const res = await fetch(`http://localhost:8080/api/restaurant/tag?${tagQuery}`);
-    if (!res.ok) throw new Error('Failed to fetch data');
-    return res.json();
+export const getRestaurantsByTag = async (tags: string[]) => {
+    return await fetchRestaurantsByTag(tags);
 };
 
-export const fetchRestaurantsByCategory = async (categories: string[]) => {
-    const categoryQuery = categories.length > 0 ? `category=${categories.join(',')}` : '';
-    const res = await fetch(`http://localhost:8080/api/restaurant/category?${categoryQuery}`);
-    if (!res.ok) throw new Error('Failed to fetch data');
-    return res.json();
+export const getRestaurantsByCategory = async (categories: string[]) => {
+    return await fetchRestaurantsByCategory(categories);
+};
+
+
+// restaurant/[id]/page.tsx api
+
+export const getRestaurantDetails = async (id: number) => {
+    const restaurant = await fetchRestaurantById(id);
+    const allAverage = await fetchAllAverage(id);
+    const tags = await fetchTopTags(id);
+    return { restaurant, allAverage, tags };
 };
