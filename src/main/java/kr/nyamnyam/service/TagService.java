@@ -25,4 +25,6 @@ public interface TagService {
     List<String> getTagRestaurant(Long restaurantId);
 
     List<String> getTagCategory();
+
+    Boolean updateTag(String name, TagModel model);
 }

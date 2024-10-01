@@ -16,15 +16,13 @@ public interface ImageService {
 
     Boolean existsById(Long id);
 
-    Long count();
-
     Boolean deleteById(Long id);
 
     Boolean save(ImageEntity entity);
 
     String getFileName(String fileName);
 
-    List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, String uploadPath, Long postId);
+    List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, Long postId);
 
     ImageModel insertReceipt(MultipartFile file);
 

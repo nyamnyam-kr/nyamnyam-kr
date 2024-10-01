@@ -18,18 +18,16 @@ import java.util.Optional;
 @RequestMapping("/api/images")
 public class ImageController{
     private final ImageService service;
-    private final PostService postService;
 
     @GetMapping("/fileName")
     public ResponseEntity<String> getFileName(@RequestParam String fileName) {
         return ResponseEntity.ok(service.getFileName(fileName));
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestParam("files") List<MultipartFile> multipartFiles,
-                                                        @RequestParam String uploadPath,
-                                                        @RequestParam Long postId) {
-        return ResponseEntity.ok(service.uploadFiles(multipartFiles, uploadPath, postId));
+    @PostMapping("/upload/{postId}")
+    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestPart("files") List<MultipartFile> multipartFiles,
+                                                        @PathVariable Long postId) {
+        return ResponseEntity.ok(service.uploadFiles(multipartFiles, postId));
     }
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
@@ -48,20 +46,17 @@ public class ImageController{
     public ResponseEntity<Boolean> existsById(@PathVariable Long postId) {
         return ResponseEntity.ok(service.existsById(postId));
     }
-    @DeleteMapping("")
-    public ResponseEntity<Boolean> deleteById(@RequestParam Long imgId) {
-        return ResponseEntity.ok(service.deleteById(imgId));
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long imageId) {
+        return ResponseEntity.ok(service.deleteById(imageId));
     }
     @GetMapping("/group")
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
-    @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(service.count());
-    }
-    @PutMapping("")
-    public ResponseEntity<Boolean> updateImages(@RequestParam Long postId,@RequestParam("files") List<MultipartFile> multipartFiles) {
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
         return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
     }
 }

@@ -18,9 +18,9 @@ public interface ReplyService {
 
     Boolean deleteById(Long id);
 
-    Boolean save(ReplyModel model);
+    ReplyModel save(ReplyModel model);
 
-    Boolean update(Long id, ReplyModel model);
+    ReplyModel update(Long id, ReplyModel model);
 
     List<ReplyModel> findAllByPostId(Long postId);
 
