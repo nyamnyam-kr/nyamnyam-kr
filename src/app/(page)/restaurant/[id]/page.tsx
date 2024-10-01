@@ -1,9 +1,9 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Star from '../../star/page';
 import { useSearchContext } from 'src/app/components/SearchContext';
 import { getRestaurantDetails } from 'src/app/service/restaurant/restaurant.service';
+import Star from '../../../components/Star';
 
 
 
@@ -79,7 +79,7 @@ export default function Restaurant() {
     }, [restaurant]);
 
 
-  
+
 
 
 
@@ -122,7 +122,7 @@ export default function Restaurant() {
     };
 
     return (
-        <div className="bg-gray-100">
+        <div className="bg-gray-100 mt-20">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
                 {filteredRestaurants.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -155,7 +155,7 @@ export default function Restaurant() {
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
-                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
+                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
 
                                     />
@@ -163,7 +163,7 @@ export default function Restaurant() {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
                                         />
                                     )}
