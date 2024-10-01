@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Star from "src/app/(page)/star/page";
+import Star from "src/app/components/Star";
 import { PostModel } from "src/app/model/post.model";
 import { deletePostService, detailsPostAndImages } from "src/app/service/post/post.service";
 

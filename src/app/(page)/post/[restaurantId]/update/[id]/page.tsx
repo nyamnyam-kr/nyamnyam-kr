@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import Star from 'src/app/(page)/star/page';
+import Star from 'src/app/components/Star';
 import { initialPost, PostModel } from 'src/app/model/post.model';
 import { TagModel } from 'src/app/model/tag.model';
 import { getPostDetails, updatePostService } from 'src/app/service/post/post.service';

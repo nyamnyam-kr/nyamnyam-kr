@@ -1,7 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Star from "../../../star/page";
+import Star from "../../../../components/Star";
 import { PostModel } from "src/app/model/post.model";
 import { insertPostService } from "src/app/service/post/post.service";
 import { tag } from "src/app/api/tag/tag.api";

@@ -1,7 +1,7 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Star from "../../star/page";
+import Star from "../../../components/Star";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
