@@ -1,15 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from "chart.js"; // ArcElement 추가
+import React, {useEffect, useState} from "react";
+import {Bar, Doughnut} from "react-chartjs-2";
+import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale} from "chart.js"; // ArcElement 추가
 import styles from "src/css/mypage.module.css";
 import axios from "axios";
 import Link from "next/link";
-import {fetchShowCount} from "src/app/service/admin/admin.service";
+import {fetchShowArea, fetchShowCount, fetchShowRestaurant} from "src/app/service/admin/admin.service";
 import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale); // ArcElement 등록
-
 
 
 const DashBoard = () => {
@@ -27,32 +26,19 @@ const DashBoard = () => {
 
     useEffect(() => {
         const showArea = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countAreaList');
-                if (resp.status === 200) {
-                    setRegion(resp.data);
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowArea();
+            setRegion(data);
         };
         showArea();
-    }, [region]);
+    }, []);
 
     useEffect(() => {
         const showRestaurant = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countPostList');
-                console.log(resp.data);
-                if (resp.status === 200) {
-                    setRestaurant(resp.data)
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowRestaurant();
+            setRestaurant(data);
         };
         showRestaurant();
-    }, [restaurant]);
+    }, []);
 
 
     const countData = {
@@ -88,7 +74,6 @@ const DashBoard = () => {
             borderWidth: 1,
         }],
     };
-
 
 
     return (

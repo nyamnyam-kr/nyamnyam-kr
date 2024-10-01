@@ -7,12 +7,12 @@ import * as Icon from "@phosphor-icons/react/dist/ssr";
 import {fetchShowCount} from "src/app/service/admin/admin.service";
 import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
-import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale} from "chart.js";
+import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
 import styles from "src/css/mypage.module.css";
 import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
-import InsertReceipt from "src/app/(page)/receipt/insertReceipt/page";
 import axios from "axios";
+import MyWallet from "src/app/(page)/user/wallet/[id]/page";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
@@ -34,7 +34,7 @@ export default function MyPage() {
             setCount(data);
         };
         countList();
-    }, [count]);
+    }, []);
 
     useEffect(() => {
         const showArea = async () => {
@@ -48,7 +48,7 @@ export default function MyPage() {
             }
         };
         showArea();
-    }, [region]);
+    }, []);
 
     useEffect(() => {
         const showRestaurant = async () => {
@@ -63,7 +63,7 @@ export default function MyPage() {
             }
         };
         showRestaurant();
-    }, [restaurant]);
+    }, []);
 
 
     const handleActiveAddress = (order: string) => {
@@ -144,6 +144,8 @@ export default function MyPage() {
         }],
     };
 
+
+
     return (
         <>
 
@@ -212,7 +214,7 @@ export default function MyPage() {
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs w-full ">
                                         <Link href="/receipt/insertReceipt">
                                             <div className="counter">
-                                                <span className="tese text-orange-700">Cancelled Orders</span>
+                                                <span className="tese text-orange-700">Receipt</span>
                                                 <h5 className="heading5 mt-1">insert</h5>
                                             </div>
                                         </Link>
@@ -236,7 +238,10 @@ export default function MyPage() {
                                     </div>
                                 </div>
                                 <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
+                                    <div>
                                     <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                                        <div></div>
+                                    </div>
                                     <div className={styles.cardBody}>
                                         <div className={styles.chartContainer}>
                                             <Bar
@@ -252,7 +257,7 @@ export default function MyPage() {
                                             />
                                         </div>
                                     </div>
-                                    <h6 className="heading6">Recent Orders</h6>
+                                    <h6 className="heading6"> MY POST </h6>
                                     <div className="list overflow-x-auto w-full mt-5">
                                         <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px]">
                                             <thead className="border-b border-line">
@@ -274,142 +279,21 @@ export default function MyPage() {
                                             <tbody>
                                             <tr className="item duration-300 border-b border-line">
                                                 <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
+                                                    <strong className="text-title">postId</strong>
                                                 </th>
                                                 <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Contrasting sweatshirt'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
                                                         <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Contrasting
-                                                                sweatshirt</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
+                                                            <strong className="product_name text-button">postcontent</strong>
+                                                            <span className="product_tag caption1 text-secondary"></span>
                                                         </div>
-                                                    </Link>
                                                 </td>
-                                                <td className="py-3 price">$45.00</td>
+                                                <td className="py-3 price">restaurantname</td>
                                                 <td className="py-3 text-right">
                                                     <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">Pending</span>
+                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">뭐넣지</span>
                                                 </td>
                                             </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Faux-leather trousers'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Faux-leather
-                                                                trousers</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-purple text-purple caption1 font-semibold">Delivery</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='V-neck knitted top'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">V-neck knitted
-                                                                top</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-success text-success caption1 font-semibold">Completed</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Contrasting sweatshirt'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Contrasting
-                                                                sweatshirt</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">Pending</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Faux-leather trousers'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Faux-leather
-                                                                trousers</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-purple text-purple caption1 font-semibold">Delivery</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='V-neck knitted top'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">V-neck knitted
-                                                                top</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-red text-red caption1 font-semibold">Canceled</span>
-                                                </td>
-                                            </tr>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -418,8 +302,8 @@ export default function MyPage() {
                             <div
                                 className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'orders' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Wallet</h6>
-                                <MyCalendar/>
-
+                                <div className="mb-10"><MyCalendar/> </div>
+                                <div><MyWallet/></div>
                             </div>
                             <div
                                 className={`tab_address text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'address' ? 'block' : 'hidden'}`}>

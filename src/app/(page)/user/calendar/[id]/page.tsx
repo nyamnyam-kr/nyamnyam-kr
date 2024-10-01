@@ -113,12 +113,7 @@ const MyCalendar: React.FC = () => {
 
 
     return (
-        <div style={{marginTop: '10rem'}}>
-            <div className="bg-blue-600 text-white">
-                <div className="py-3 px-4 border-b">지출합계 : {totalExpenditure}</div>
-                <div>현재 선택된 월: {currentMonth} {currentYear}</div>
-            </div>
-
+        <div>
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
