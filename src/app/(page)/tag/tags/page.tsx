@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { tag } from "src/app/api/tag/tag.api";
+import {initialTag, TagModel } from "src/app/model/tag.model";
+import { deleteTagService } from "src/app/service/tag/tag.service";
 
 export default function TagList() {
-  const [tags, setTags] = useState<TagModel[]>([]);
+  const [tags, setTags] = useState<{[category: string]: TagModel[]}>({});
   const [selectTags, setSelectTags] = useState<string[]>([]);
   const router = useRouter();
 
@@ -14,16 +17,11 @@ export default function TagList() {
   }, []);
 
   const fetchTag = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/tags/group");
-      if (!response.ok) throw new Error("Network response was not ok");
-  
-      const data = await response.json();
+      const data = await tag.getAllTags(); 
       setTags(data.sort((a: TagModel, b: TagModel) => a.tagCategory.localeCompare(b.tagCategory)));
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
   };
+
+  const allTags: TagModel[] = Object.values(tags).flat(); // 태그 객체를 배열로 변환
 
   const handleCheck = (name: string) => {
     setSelectTags((prevSelected) =>
@@ -37,27 +35,30 @@ export default function TagList() {
     router.push(`tags/details/${name}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectTags.length === 0) {
       alert("삭제할 태그를 선택해주세요.");
       return;
     }
+  
+    const name = selectTags[0];
+    if (!name) {
+      alert("삭제할 태그 이름이 올바르지 않습니다.");
+      return;
+    }
+  
     if (window.confirm("선택한 태그를 삭제하시겠습니까?")) {
-      Promise.all(
-        selectTags.map((name) =>
-          fetch(`http://localhost:8080/api/tags/${name}`, {
-            method: "DELETE",
-          })
-        )
-      )
-        .then(() => {
+      try {
+        const updatedTags = await deleteTagService(name, tags);
+        if (updatedTags) {
+          setTags(updatedTags);
           alert("태그가 삭제되었습니다.");
           setSelectTags([]);
           fetchTag();
-        })
-        .catch((error) => {
-          alert("삭제 중 오류가 발생했습니다.");
-        });
+        }
+      } catch (error) {
+        console.error("태그 삭제 중 문제가 발생했습니다:", error);
+      }
     }
   };
 
@@ -73,7 +74,7 @@ export default function TagList() {
             </tr>
           </thead>
           <tbody>
-            {tags.map((t) => (
+            {allTags.map((t) => (
               <tr key={t.name} className="border border-indigo-600">
                 <td className="py-3 px-4 border-b">
                   <input

@@ -1,4 +1,5 @@
-
+import instance from "../axios";
+import { api } from "../request";
 // restaurant/page.tsx api
 
 export const fetchRestaurantsBySearch = async (keyword: string) => {
@@ -19,6 +20,17 @@ export const fetchRestaurantsByCategory = async (categories: string[]) => {
     const res = await fetch(`http://localhost:8080/api/restaurant/category?${categoryQuery}`);
     if (!res.ok) throw new Error('Failed to fetch data');
     return res.json();
+};
+
+// post에 restaurant 정보 불러오기
+export const fetchRestaurant = async (restaurantId: number) => {
+    try{
+        const response = await instance.get(`${api.restaurant}/${restaurantId}`);
+        return response.data;
+    } catch (error){
+    console.error('post restaurant failed:', error);
+    throw error;
+    }
 };
 
 

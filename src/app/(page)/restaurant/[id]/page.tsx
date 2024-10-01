@@ -1,9 +1,9 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Star from '../../star/page';
 import { useSearchContext } from 'src/app/components/SearchContext';
 import { getRestaurantDetails } from 'src/app/service/restaurant/restaurant.service';
+import Star from '../../../components/Star';
 
 
 
@@ -79,7 +79,7 @@ export default function Restaurant() {
     }, [restaurant]);
 
 
-  
+
 
 
 
@@ -155,7 +155,7 @@ export default function Restaurant() {
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
-                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
+                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
 
                                     />
@@ -163,7 +163,7 @@ export default function Restaurant() {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
                                         />
                                     )}

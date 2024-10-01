@@ -1,35 +1,21 @@
 "use client";
-import { error } from "console";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { tag } from "src/app/api/tag/tag.api";
+import { TagModel } from "src/app/model/tag.model";
 
 export default function TagDetail() {
   const [tags, setTags] = useState<TagModel | null>(null);
-  const { id } = useParams();
+  const { name } = useParams() as {name:string};
   const router = useRouter();
 
   useEffect(() => {
-    if (id) {
-      fetch(`http://localhost:8080/api/tags/${id}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch tag details");
-          }
-          return response.json();
-        })
-        .then((data) => setTags(data))
-        .catch((error) => {
-          console.error("Fetch error:", error);
-        })
-    }
-  }, [id]);
+    fetchTag(name);
+  }, [name]);
 
-  const handleUpdate = () => {
-    router.push(`/tag/update/${id}`);
-  }
-
-  const handleTagList = () => {
-    router.push('/tag/tags');
+  const fetchTag = async (name: string) => {
+    const data = await tag.getTagByName(name);
+    setTags(data);
   }
 
   return (
@@ -42,15 +28,15 @@ export default function TagDetail() {
         </div>
       </div>
       <div className="mt-4">
-        <button
+        {/* <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={handleUpdate}
+          onClick={() => router.push(`/tag/update/${name}`)}
         >
           수정하기
-        </button>
+        </button> */}
         <button
           className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-          onClick={handleTagList}
+          onClick={() => router.push(`/tag/tags`)}
         >
           목록
         </button>

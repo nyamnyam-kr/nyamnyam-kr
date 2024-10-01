@@ -1,14 +1,17 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Star from "../../star/page";
+import Star from "../../../components/Star";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
-import { getLikeCount, hasLikedPost, likePost, unLikePost } from "../../upvote/page";
-import {PostModel} from "src/app/model/post.model";
+import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { insertReply } from "src/app/api/reply/reply.api";
+import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
+import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
+import { getImageService } from "src/app/service/image/image.service";
+import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
+import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
 
 const reportReasons = [
     "광고글이에요",
@@ -23,7 +26,6 @@ const reportReasons = [
 
 export default function PostList() {
     const [posts, setPosts] = useState<PostModel[]>([]);
-    const [postId, setPostId] = useState<number | null>(null);
     const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [images, setImages] = useState<{ [key: number]: string[] }>({});
     const [likedPost, setLikedPosts] = useState<number[]>([]);
@@ -40,159 +42,122 @@ export default function PostList() {
 
     useEffect(() => {
         if (restaurantId) {
-            fetchPosts();
+            fetchPosts(Number(restaurantId));
             fetchRestaurant();
         }
-    }, [restaurantId]);
+    }, [restaurantId, replies]);
 
-    const fetchPosts = () => {
-        fetch(`http://localhost:8080/api/posts/${restaurantId}/group`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(async (data) => {
-                setPosts(data);
+    const fetchPosts = async (restaurantId: number) => {
+        try {
+            const postData = await fetchPostService(restaurantId);
 
-                const likeStatus = data.map(async (post: PostModel) => {
-                    const liked = await checkLikedStatus(post.id);
-                    const count = await getLikeCount(post.id);
-                    await fetchImage(post.id);
-                    return { postId: post.id, liked, count };
-                });
+            setPosts(postData.map((data) => data.post));
+            setLikedPosts(postData.filter((data) => data.liked).map((data) => data.post.id));
 
-                const result = await Promise.all(likeStatus);
-
-                const likedPostId = result
-                    .filter(result => result.liked)
-                    .map(result => result.postId);
-
-                const likeCountMap = result.reduce((acc, result) => {
-                    acc[result.postId] = result.count;
+            setLikeCounts(
+                postData.reduce((acc, data) => {
+                    acc[data.post.id] = data.count;
                     return acc;
-                }, {} as { [key: number]: number });
-
-                setLikedPosts(likedPostId);
-                setLikeCounts(likeCountMap);
-            })
-            .catch((error) => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+                }, {} as { [key: number]: number })
+            );
+            setImages(
+                postData.reduce((acc, data) => {
+                    acc[data.post.id] = data.images;
+                    return acc;
+                }, {} as { [key: number]: string[] })
+            );
+        } catch (error) {
+            console.error("loadPosts error:", error);
+        }
     };
 
-    const fetchRestaurant = () => {
-        fetch(`http://localhost:8080/api/restaurant/${restaurantId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Restaurant fetch fail')
-                }
-                return response.json();
-            })
-            .then(async (data) => {
-                setRestaurant(data);
-            })
+    const fetchRestaurant = async () => {
+        if (restaurantId) {
+            const data = await fetchRestaurantService(Number(restaurantId));
+            if (data) setRestaurant(data);
+        }
     };
 
-    const fetchImage = (postId: number) => {
-        fetch(`http://localhost:8080/api/images/post/${postId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Image fetch fail')
-                }
-                return response.json();
-            })
-            .then(async (data) => {
+    const fetchImage = async (postId: number) => {
+        const imageURLs = await getImageService(postId)
 
-                const imageURLs = data.map((image: any) => image.uploadURL);
-                setImages(prevImages => ({
-                    ...prevImages,
-                    [postId]: imageURLs,
-                }));
-            })
+        setImages(prevImages => ({
+            ...prevImages,
+            [postId]: imageURLs,
+        }));
     }
 
-    const handleDelete = (postId: number) => {
+    const handleDelete = async (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
-            fetch(`http://localhost:8080/api/posts/${postId}`, { method: 'DELETE' })
-                .then(() => {
-                    alert("게시글이 삭제되었습니다.");
-                    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-                    router.push(`/post/${restaurantId}`);
-                })
-                .catch(error => {
-                    console.error('Delete operation failed:', error);
-                    alert("삭제 중 오류가 발생했습니다.");
-                });
+            const success = await deletePostService(postId);
+
+            if (success) {
+                alert("게시글이 삭제되었습니다.");
+                setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+                router.push(`/post/${restaurantId}`);
+            }
         }
     };
 
-    useEffect(() => {
-        if (postId) {
-            fetchReply(postId);
-        }
-    }, [postId]);
+    // 댓글 버튼 
+    const toggleReply = async (id: number) => {
+        const { toggled, replies } = await toggleReplyService(id, replyToggles);
+        console.log("toggleReply: ", replies);
 
-    const handleReplySubmit = async (postId: number, e: FormEvent) => {
+        setReplyToggles((prevToggles) => ({
+            ...prevToggles,
+            [id]: toggled[id],
+        }));
+
+        setReplies(prevReplies => ({
+            ...prevReplies,
+            [id]: replies || prevReplies[id],
+        }));
+    }
+
+    // 댓글 작성 (서버 연결)
+    const replySubmit = async (postId: number, e: FormEvent) => {
         e.preventDefault();
 
         const replyContent = replyInput[postId];
-
         if (!replyContent) {
             alert('댓글을 입력하세요.');
             return;
         }
+        const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
 
-        const replyData = {
-            id: 0,
-            content: replyContent,
-            postId: postId,
-            userId: currentUserId
-        };
+        if (result && result.success) {
+            const { newReply } = result;
+            console.log("New Reply added: ", newReply);
 
-        try {
-            const newReply = await insertReply(replyData);
+            setReplies((prevReplies) => ({
+                    ...prevReplies,
+                    [postId]: [...(prevReplies[postId] || []), newReply],
+            }));
 
-            if (newReply) {
-                fetchReply(postId);
-
-                setReplyInput((prevInput) => ({
-                    ...prevInput,
-                    [postId]: '',
-                }));
-            } else {
-                console.log('댓글 등록 실패');
-            }
-        } catch (error) {
-            console.error('댓글 등록 중 오류:', error);
+            setReplyInput((prevInput) => ({
+                ...prevInput,
+                [postId]: '',
+            }));
         }
     };
 
-    const fetchReply = (postId: number) => {
-        fetch(`http://localhost:8080/api/replies/post/${postId}`)
-            .then((response) => response.json())
-            .then(data => {
-                setReplies(prevReplies => ({
-                    ...prevReplies,
-                    [postId]: data,
-                }));
-                console.log("setReplies: ", data);
-            })
-            .catch((error) => console.error("reply fetch fail:", error));
+    // 댓글 작성 & 수정 
+    const replyInputChange = (id: number, content: string, isEdit: boolean) => {
+        if (isEdit) { // 댓글 작성 (postId)
+            setReplyInput((prevInput) => ({
+                ...prevInput,
+                [id]: content,
+            }));
+        } else { // 댓글 수정 (replyId)
+            setEditInput((prevInput) => ({
+                ...prevInput,
+                [id]: content,
+            }));
+        }
     }
 
-    const toggleReply = (id: number) => {
-        setReplyToggles(prevToggles => ({
-            ...prevToggles,
-            [id]: !prevToggles[id],
-        }));
-
-        if (!replyToggles[id]) {
-            fetchReply(id);
-        }
-    };
-
+    // 수정 & 저장 버튼 
     const replyEditClick = (replyId: number, currentContent: string) => {
         setEditReply((prevEdit) => ({
             ...prevEdit,
@@ -204,86 +169,41 @@ export default function PostList() {
         }));
     };
 
-    const replyInputChange = (id:number, content: string, isEdit: boolean) => {
-        if(isEdit){ // 댓글 작성 (postId)
-            setReplyInput((prevInput)=>({
-                ...prevInput,
-                [id]: content,
+    // 수정내용 저장 (서버연결)
+    const replyEditSave = async (replyId: number, postId: number) => {
+        const updateReply = await editSaveReplyService(replyId, postId, editInput[replyId], currentUserId);
+        if (updateReply) {
+            setReplies((prevReplies) => ({
+                ...prevReplies,
+                [postId]: prevReplies[postId]?.map((reply) =>
+                    reply.id === replyId ? updateReply : reply
+                ),
             }));
-        } else { // 댓글 수정 (replyId)
-            setEditInput((prevInput)=>({
-                ...prevInput,
-                [id]: content,
+
+            setEditReply((prevEditReply) => ({
+                ...prevEditReply,
+                [replyId]: false,
             }));
-        }
-    }
-
-    const handleEditSave = async (replyId: number, postId: number) => {
-        const updateReply = {
-            id: replyId,
-            content: editInput[replyId],
-            postId: postId,
-            userId: currentUserId
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateReply)
-            });
-
-            if (response.ok) {
-                const updateReplyData = await response.json();
-                setReplies((prevReplies) => {
-                    const updateReplies = { ...prevReplies };
-                    if (updateReplies[postId]) {
-                        updateReplies[postId] = updateReplies[postId].map((reply) =>
-                            reply.id === replyId ? updateReplyData : reply
-                        );
-                    }
-                    fetchReply(postId);
-                    return updateReplies;
-                });
-                setEditReply((prevEditReply) => ({
-                    ...prevEditReply,
-                    [replyId]: false,
-                }));
-            } else {
-                console.error('댓글 수정 실패 ');
-            }
-        } catch (error) {
-            console.error("댓글 수정 중 에러 발생:", error);
+        } else {
+            console.log("댓글 수정 실패");
         }
     };
 
-    const handleReplyDelete = async (replyId: number, postId: number) => {
-        if (window.confirm("삭제하시겠습니까?")) {
-            try {
-                const response = await fetch(`http://localhost:8080/api/replies/${replyId}`, {
-                    method: 'DELETE'
-                });
+    // 댓글 삭제 
+    const replyDelete = async (replyId: number, postId: number) => {
+        if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
-                if (response.ok) {
-                    setReplies(prevReplies => {
-                        return {
-                            ...prevReplies,
-                            [postId]: prevReplies[postId].filter((reply) => reply.id !== replyId)
-                        };
-                    });
-                    alert("댓글이 삭제되었습니다.");
-                    fetchPosts();
-                } else {
-                    alert("댓글 삭제에 실패했습니다.");
-                }
-            } catch {
-                alert("댓글 삭제 중 문제가 발생했습니다.");
-            }
+        const updatedReplies = await deleteReplyService(replyId, postId, replies);
+
+        if (updatedReplies) {
+            setReplies(prevReplies => ({
+                ...prevReplies,
+                [postId]: updatedReplies
+            }));
         }
     };
 
+    // 날짜 포맷 지정 
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
 
@@ -295,54 +215,22 @@ export default function PostList() {
         return `${year}년 ${month}월 ${day}일`;
     };
 
+    // 좋아요 상태 확인 
     const checkLikedStatus = async (postId: number) => {
-        const upvote: UpvoteModel = {
-            id: 0,
-            giveId: currentUserId,
-            haveId: 0,
-            postId: postId
-        }
-        return await hasLikedPost(upvote) ? postId : null;
+        const isLiked = await checkLikedService(postId, currentUserId);
+        return isLiked ? postId : null;
     };
 
+    // 좋아요 & 취소 & count
     const handleLike = async (postId: number) => {
-        const upvote: UpvoteModel = {
-            id: 0,
-            giveId: currentUserId,
-            haveId: 0,
-            postId: postId
-        };
+        const result = await toggleLikeService(postId, currentUserId, likedPost);
 
-        if (likedPost.includes(postId)) {
-            setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
-            setLikeCounts(prevCounts => ({
+        if (result) {
+            setLikedPosts(result.likedPost);
+            setLikeCounts((prevCounts) => ({
                 ...prevCounts,
-                [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
-            }));
-
-            const success = await unLikePost(upvote);
-            if (!success) {
-                setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
-                setLikeCounts(prevCounts => ({
-                    ...prevCounts,
-                    [postId]: (prevCounts[postId] || 0) + 1
-                }));
-            }
-        } else {
-            setLikedPosts(prevLikedPosts => [...prevLikedPosts, postId]);
-            setLikeCounts(prevCounts => ({
-                ...prevCounts,
-                [postId]: (prevCounts[postId] || 0) + 1
-            }));
-
-            const success = await likePost(upvote);
-            if (!success) {
-                setLikedPosts(prevLikedPosts => prevLikedPosts.filter(id => id !== postId));
-                setLikeCounts(prevCounts => ({
-                    ...prevCounts,
-                    [postId]: Math.max((prevCounts[postId] || 0) - 1, 0)
-                }));
-            }
+                [postId]: (prevCounts[postId] || 0) + result.likeCountDelta,
+            }))
         }
     };
 
@@ -387,18 +275,6 @@ export default function PostList() {
 
     return (
         <main className="flex min-h-screen flex-col items-center p-6 ">
-            <div className="w-full flex justify-end mb-4">
-                <button
-                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                    onClick={() => router.push(`/post/register/${restaurantId}`)}>
-                    등록하기
-                </button>
-                <button
-                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
-                    onClick={() => router.push(`/restaurant/${restaurantId}`)}>
-                    뒤로가기
-                </button>
-            </div>
 
             {restaurant && (
                 <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 mb-4">
@@ -428,8 +304,8 @@ export default function PostList() {
                                             <span className="ml-2">{likeCount[p.id] || 0}</span>
                                         </button>
                                     </div>
-                                    <div className="flex space-x-2 mb-2 items-center" style={{whiteSpace: "nowrap"}}>
-                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating}/>
+                                    <div className="flex space-x-2 mb-2 items-center" style={{ whiteSpace: "nowrap" }}>
+                                        <Star w="w-4" h="h-4" readonly={true} rate={p.averageRating} />
                                         <p>{p.averageRating.toFixed(1)} / 5</p>
                                     </div>
 
@@ -510,7 +386,7 @@ export default function PostList() {
                                                                             <textarea
                                                                                 name="content"
                                                                                 id="content"
-                                                                                value={editInput[reply.id] !== undefined? editInput[reply.id] : reply.content}
+                                                                                value={editInput[reply.id] || reply.content}
                                                                                 onChange={(e) => replyInputChange(reply.id, e.target.value, false)}
                                                                                 className="border rounded p-2 w-full"
                                                                                 style={{ minHeight: "50px", width: "100%" }}
@@ -530,13 +406,13 @@ export default function PostList() {
                                                                     <div className="flex space-x-2 mt-2 justify-end">
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-3 border border-blue-500 hover:border-transparent rounded"
-                                                                            onClick={() => editReply[reply.id] ? handleEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
+                                                                            onClick={() => editReply[reply.id] ? replyEditSave(reply.id, p.id) : replyEditClick(reply.id, reply.content)}
                                                                         >
                                                                             {editReply[reply.id] ? '저장' : '수정'}
                                                                         </button>
                                                                         <button
                                                                             className="text-xs bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-3 border border-red-500 hover:border-transparent rounded"
-                                                                            onClick={() => reply.id && handleReplyDelete(reply.id, p.id)}
+                                                                            onClick={() => reply.id && replyDelete(reply.id, p.id)}
                                                                         >
                                                                             삭제
                                                                         </button>
@@ -549,7 +425,7 @@ export default function PostList() {
                                                     <p>댓글 없음</p>
                                                 )}
                                             </div>
-                                            <form onSubmit={(e) => handleReplySubmit(p.id, e)} className="my-4 flex space-x-4">
+                                            <form onSubmit={(e) => replySubmit(p.id, e)} className="my-4 flex space-x-4">
                                                 <input
                                                     type="text"
                                                     placeholder="댓글을 입력하세요."
@@ -590,6 +466,18 @@ export default function PostList() {
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className="w-full flex justify-end mt-4">
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                    onClick={() => router.push(`/post/register/${restaurantId}`)}>
+                    등록하기
+                </button>
+                <button
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                    onClick={() => router.push(`/restaurant/${restaurantId}`)}>
+                    뒤로가기
+                </button>
             </div>
         </main>
     );

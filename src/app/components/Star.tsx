@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa6";
 
 export default function Star({ w, h, readonly, rate, onChange }: StarModel) {
     const [rating, setRating] = useState(rate || 0);
@@ -24,14 +23,15 @@ export default function Star({ w, h, readonly, rate, onChange }: StarModel) {
         }
     };
 
-    const calculateRate = (rate: number, index: number) => {
+    // 조건문 위치 변경
+    const calculateRate = (rate: number, index: number):number => {
         if (rate >= index) {
-            return "100%";
-        } else if (rate < index - 1) {
-            return "0%";
-        } else {
+            return 100;
+        } else if (rate > index - 1) {
             const decimal = rate - Math.floor(rate);
-            return `${decimal * 100}%`;
+            return decimal * 100;
+        } else {
+            return 0;
         }
     };
 
@@ -44,22 +44,23 @@ export default function Star({ w, h, readonly, rate, onChange }: StarModel) {
                     style={{ position: 'relative', display: 'inline-block' }}
                     onClick={() => handleClickStar(index)}
                 >
-                    <FaStar className={`${w} ${h} text-gray-300`} style={{ position: 'absolute', top: 0, left: 0 }} />
-
-                    <div
-                        style={{
-                            width: calculateRate(rating, index + 1), // 별의 채워질 비율만큼 너비 설정
-                            overflow: "hidden",
-                            position: "absolute", // 부모 컨테이너의 위치에 맞게 겹치도록 설정
-                            top: 0,
-                            left: 0,
-                            height: "100%", // 전체 높이 차지
-                            display: "flex",
-                            alignItems: "center", // 세로 중앙 정렬
-                        }}
+                    <svg
+                        className={`${w} ${h}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ display: 'block' }}
                     >
-                        <FaStar className={`${w} ${h} text-yellow-500`} />
-                    </div>
+                        <polygon
+                            points="12,2 15,10 22,10 17,14 19,22 12,17 5,22 7,14 2,10 9,10"
+                            fill="gray"
+                        />
+                        <polygon
+                            points="12,2 15,10 22,10 17,14 19,22 12,17 5,22 7,14 2,10 9,10"
+                            fill="#FFD700"
+                            clipPath={`inset(0 ${100 - calculateRate(rating, index + 1)}% 0 0)`}
+                        />
+                    </svg>
                 </div>
             ))}
         </div>

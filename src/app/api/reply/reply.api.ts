@@ -1,37 +1,28 @@
 // src/app/api/reply/reply.api.ts
 
-import { instance } from "../axios";
+import { strategy } from "../api.strategy";
 import { api } from "../request";
 
-export const fetchReply = async (postId: number) => {
-  try {
-    const response = await instance.get(`${api.reply}/post/${postId}`);
+export const getById = async (postId: number) => {
+    const response = await strategy.GET(`${api.reply}/post/${postId}`);
     return response.data;
-  } catch (error) {
-    console.error("reply fetch fail:", error);
-    throw error;
-  }
 };
 
-export const insertReply = async (replyData: any) => {
-  try{
-    const response = await instance.post(api.reply, replyData) // 고정 경로
+export const insert = async (replyData: any) => {
+    const response = await strategy.POST(api.reply, replyData)
     return response.data;
-  } catch(error) {
-    console.error("reply insert fail: ", error);
-    throw error;
-  }
 };
 
-export const deleteReply = async (replyId: number) => {
-  try{
-    const response = await instance.delete(`${api.reply}/${replyId}`);
+export const update= async (replyId: number, replyData: any) => {
+    const response = await strategy.PUT(`${api.reply}/${replyId}`, replyData);
+    return response.data;
+};
+
+export const remove = async (replyId: number) => {
+    const response = await strategy.DELETE(`${api.reply}/${replyId}`);
     return response;
-  } catch(error) {
-    console.error("reply delete fail: ", error);
-    throw error;
-  }
 };
 
+export const reply = {getById, insert, update, remove};
 
 
