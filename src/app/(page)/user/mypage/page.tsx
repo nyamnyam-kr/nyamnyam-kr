@@ -8,7 +8,7 @@ import {fetchShowCount} from "src/app/service/admin/admin.service";
 import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
 import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale} from "chart.js";
-import styles from "src/app/(page)/admin/dashboard/mypage.module.css";
+import styles from "src/css/mypage.module.css";
 import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
 import InsertReceipt from "src/app/(page)/receipt/insertReceipt/page";

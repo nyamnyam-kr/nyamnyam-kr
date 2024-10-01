@@ -15,7 +15,7 @@ interface CalendarEvent {
     title: string;
     date: string;
     color?: string;
-    extendedProps?: Todo; // extendedProps 타입을 Todo로 변경
+    extendedProps?: Todo;
 }
 
 const MyCalendar: React.FC = () => {
@@ -23,7 +23,8 @@ const MyCalendar: React.FC = () => {
     const [wallet, setWallet] = useState<ReceiptModel[]>([]);
     const { id } = useParams();
 
-    const totalExpenditure = wallet.reduce((sum, item) => sum + item.price, 0);
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
     const handleToggle = (eventId: string) => {
         setOpenDropdowns(prevState => ({
@@ -54,13 +55,13 @@ const MyCalendar: React.FC = () => {
         date: item.date,
         color: '#e4693b',
         extendedProps: {
-            todo: [`지출: ${item.price}`] // 예시로 가격을 todo 배열로 추가
+            todo: [`지출: ${item.price}`]
         }
     }));
 
     const renderEventContent = (eventInfo: EventContentArg) => {
         const todos = eventInfo.event.extendedProps?.todo || [];
-        const eventId = eventInfo.event.title; // 고유 ID 또는 제목 사용
+        const eventId = eventInfo.event.title;
 
         return (
             <Dropdown show={openDropdowns[eventId]} onToggle={() => handleToggle(eventId)}>
@@ -76,19 +77,58 @@ const MyCalendar: React.FC = () => {
         );
     };
 
+    const handleDateChange = (dateInfo: { start: Date; end: Date }) => {
+        const month = dateInfo.start.getMonth() + 1; // 0부터 시작하므로 1을 더해줌
+        const year = dateInfo.start.getFullYear();
+        setCurrentMonth(month);
+        setCurrentYear(year);
+    };
+
+    useEffect(() => {
+        const today = new Date();
+        setCurrentMonth(today.getMonth() + 1);
+        setCurrentYear(today.getFullYear());
+    }, []);
+
+    const totalExpenditure = wallet.reduce((sum, item) => {
+        if (!item.date) return sum; // item.date가 유효하지 않은 경우, 현재 합계 반환
+
+        const itemDate = new Date(item.date + 'T00:00:00+09:00'); // 한국 시간으로 설정
+        const itemMonth = itemDate.getMonth() + 1; // 월을 1부터 시작
+        const itemYear = itemDate.getFullYear(); // 연도 가져오기
+
+        // 현재 월과 연도가 일치하는 경우에만 합계 계산
+        if (itemMonth === currentMonth && itemYear === currentYear) {
+            return sum + item.price;
+        }
+        return sum;
+    }, 0);
+
+
+    const currentMonthEvents: CalendarEvent[] = events.filter(event => {
+        const eventDate = new Date(event.date + 'T00:00:00+09:00');
+        return eventDate.getMonth() + 1 === currentMonth && eventDate.getFullYear() === currentYear;
+    });
+
+
+
     return (
-        <div className="mt-20">
+        <div style={{marginTop: '10rem'}}>
+            <div className="bg-blue-600 text-white">
+                <div className="py-3 px-4 border-b">지출합계 : {totalExpenditure}</div>
+                <div>현재 선택된 월: {currentMonth} {currentYear}</div>
+            </div>
+
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
-                events={events}
+                events={currentMonthEvents}
                 eventContent={renderEventContent}
                 editable={true}
                 droppable={true}
+                datesSet={handleDateChange}
+                fixedWeekCount={false}
             />
-            <div className="bg-blue-600 text-white">
-                <div className="py-3 px-4 border-b">지출합계 : {totalExpenditure}</div>
-            </div>
         </div>
     );
 };

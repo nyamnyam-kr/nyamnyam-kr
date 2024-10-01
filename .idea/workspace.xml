@@ -5,49 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/assets/js/pages/_document.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(page)/admin/example" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/admin/admin.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/opinion/opinion.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/post/post.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/user/user.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/model/dash.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/admin/admin.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/notice/notice.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/opinion/opinion.serivce.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/types/global.style.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/registry.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/css/mypage.module.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/mypage.module.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/axios.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/axios.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/request.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/SideBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/SideBar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/common/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/common/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/model/opinion.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/opinion.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page copy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/.swcrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/notice/notice.api.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/post/post.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/post/post.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/user/user.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/user/user.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/hooks.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/model/dash.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/dash.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +43,7 @@
         &quot;isMigrated&quot;: true
         }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
         &quot;associatedIndex&quot;: 8
@@ -86,35 +54,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;nyamnyam-admin&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/OneDrive/문서/카카오톡 받은 파일/anvogue-multipurpose-ecommerce-react-nextjs-2024-09-16-03-36-23-utc/Main/anvogue&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\USER\\Documents\\nyamnyam\\nyamnyam-front\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "nyamnyam-admin",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/USER/Documents/nyamnyam/nyamnyam-front/src/app/(page)/user/wallet/[id]",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "ts.external.directory.path": "C:\\Users\\USER\\Documents\\nyamnyam\\nyamnyam-front\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\wallet\[id]" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\notice\details\[id]" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\model" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\css" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\public\assets\js\pages" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app" />
-      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\calendar\[id]" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -160,7 +129,8 @@
       <workItem from="1727417905390" duration="10638000" />
       <workItem from="1727431581536" duration="5519000" />
       <workItem from="1727511640401" duration="1100000" />
-      <workItem from="1727657137573" duration="23270000" />
+      <workItem from="1727657137573" duration="33462000" />
+      <workItem from="1727743511403" duration="13810000" />
     </task>
     <servers />
   </component>

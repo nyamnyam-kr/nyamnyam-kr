@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import styles from "src/app/(page)/admin/dashboard/mypage.module.css";
+import styles from "src/css/mypage.module.css";
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale } from "chart.js";
 import {Bar, Doughnut} from "react-chartjs-2";
 import Link from "next/link";
