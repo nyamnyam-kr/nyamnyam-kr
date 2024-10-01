@@ -49,6 +49,7 @@ public class PostEntity {
     private List<PostTagEntity> postTags = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ImageEntity> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

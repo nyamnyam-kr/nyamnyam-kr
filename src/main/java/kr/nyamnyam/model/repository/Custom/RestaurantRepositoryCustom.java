@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.repository.Custom;
 
+
 import kr.nyamnyam.model.domain.Chart.AreaModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;

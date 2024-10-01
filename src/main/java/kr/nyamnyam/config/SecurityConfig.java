@@ -29,7 +29,7 @@
 //                .csrf(csrf -> csrf.disable())  // CSRF 비활성화
 //                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정
 //                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/user/**", "/").permitAll()
+//                        .requestMatchers("/**").permitAll()
 //                        .anyRequest().authenticated())
 //                .formLogin(form -> form
 //                        .loginProcessingUrl("/user/auth")

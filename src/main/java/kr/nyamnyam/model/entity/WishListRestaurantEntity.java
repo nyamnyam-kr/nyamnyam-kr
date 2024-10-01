@@ -1,11 +1,8 @@
 package kr.nyamnyam.model.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -13,13 +10,14 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "wishLists")
-public class WishListEntity {
+@Table(name = "wishListsRestaurants")
+public class WishListRestaurantEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Long wishListId;
+    private Long restaurantId;
     private Long userId;
 
 

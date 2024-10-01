@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
+
 import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
 
 @RequiredArgsConstructor
@@ -138,12 +139,16 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         QPostEntity post = QPostEntity.postEntity;
         QPostTagEntity postTag = QPostTagEntity.postTagEntity;
 
+        long tagCount = tagNames.size();
+
         return jpaQueryFactory
                 .selectFrom(restaurant)
                 .distinct()
                 .join(restaurant.posts, post)
                 .join(post.postTags, postTag)
                 .where(postTag.tag.name.in(tagNames))
+                .groupBy(restaurant.id)
+                .having(Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", postTag.tag.name).eq(tagCount))
                 .fetch();
     }
 
@@ -154,13 +159,14 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
 
         BooleanExpression categoryExpression = categories.stream()
-                .map(category -> getCategoryCondition(restaurant.menu, category))
+                .map(category -> getCategoryCondition(restaurant.type, category))
                 .filter(Objects::nonNull)
                 .reduce(BooleanExpression::or)
                 .orElse(null);
 
         return jpaQueryFactory
                 .select(restaurant)
+                .distinct()
                 .from(restaurant)
                 .where(categoryExpression)
                 .fetch();
