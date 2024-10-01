@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { deleteChatRoomsService, getChatRoomData, getChatRoomDetails, insertChatRoom } from "src/app/service/chatRoom/chatRoom.api";
 import { sendMessageService, subscribeMessages } from "src/app/service/chat/chat.api";
+import axios from "axios";
 
 
 
@@ -21,6 +22,8 @@ export default function Home1() {
   const [messages, setMessages] = useState<ChatModel[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sender, setSender] = useState(""); // 사용자 ID
+  const [newMessageCounts, setNewMessageCounts] = useState<Record<string, { newMessageCount: number; totalMessageCount: number }>>({});
+
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
@@ -173,17 +176,17 @@ export default function Home1() {
     e.preventDefault(); // 페이지 새로고침 방지
 
     // ChatRoom 객체 생성
-    const newChatRoom: ChatRoomModel = {
-      name: chatRoomName, // 입력된 채팅방 이름
-      participants: [...participantNames, newParticipantName.trim()], // 초기 참가자 목록에 입력된 참가자 추가
+    const newChatRoomData = {
+      name: chatRoomName,
+      participants: [...participantNames, newParticipantName.trim()],
     };
 
     // 참가자 목록 체크
-    const participantsList = newChatRoom.participants.length > 0
-      ? newChatRoom.participants.join(", ")
+    const participantsList = newChatRoomData.participants.length > 0
+      ? newChatRoomData.participants.join(", ")
       : "참가자가 없습니다"; // 참가자가 없을 경우 기본 메시지
 
-    const result = await insertChatRoom(newChatRoom);
+    const result = await insertChatRoom(newChatRoomData);
 
     if (result.status === 200) {
       alert("채팅방이 성공적으로 생성되었습니다.");
@@ -199,7 +202,51 @@ export default function Home1() {
     setNewParticipantName(""); // 입력 필드 초기화
   };
 
+  const fetchNewMessageCounts = async () => {
+    try {
+      const counts = await Promise.all(
+        chatRooms.map(async (room) => {
+          const lastSeenMessageId = localStorage.getItem(`lastSeenMessageId_${room.id}`) || "";
 
+          // 새로운 메시지 수 요청
+          const newMessageResponse = await axios.get(`http://localhost:8081/api/chatRoom/${room.id}/newMessages`, {
+            params: { lastSeenMessageId },
+          });
+
+          // 총 메시지 수 요청
+          const messageCountResponse = await axios.get(`http://localhost:8081/api/chatRoom/${room.id}/messageCount`);
+
+          return {
+            roomId: room.id,
+            newMessageCount: newMessageResponse.data,
+            totalMessageCount: messageCountResponse.data,
+          };
+        })
+      );
+
+      // 새로운 메시지 수와 총 메시지 수를 상태에 저장
+      const countsObj = counts.reduce((acc, { roomId, newMessageCount, totalMessageCount }) => {
+        if (roomId) {
+          acc[roomId] = {
+            newMessageCount,
+            totalMessageCount,
+          };
+        }
+        return acc;
+      }, {} as Record<string, { newMessageCount: number; totalMessageCount: number }>);
+
+      // 상태 업데이트
+      setNewMessageCounts(countsObj);
+    } catch (error) {
+      console.error("Error fetching new message counts:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (chatRooms.length > 0) {
+      fetchNewMessageCounts(); // 채팅방 목록이 로드되었을 때 호출
+    }
+  }, [chatRooms]);
 
 
   return (
@@ -311,6 +358,14 @@ export default function Home1() {
                             >
                               <div className="user-item__name">
                                 {room.name}
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <span style={{ color: 'red', fontWeight: 'bold' }}>
+                                  {newMessageCounts[room.id]?.newMessageCount || 0} new
+                                </span>
+                                <span style={{ marginLeft: '10px', color: 'gray' }}>
+                                  {newMessageCounts[room.id]?.totalMessageCount || 0} total
+                                </span>
                               </div>
                             </a>
                             {/* 참가자 목록: 1 비율로 출력 */}

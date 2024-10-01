@@ -1,6 +1,6 @@
 import { deleteChatRoomApi, fetchChatRoomById, fetchChatRoomCount, fetchChatRooms } from "src/app/api/chatRoom/chatRoom.api";
 
-export async function insertChatRoom(chatRoom: ChatRoomModel): Promise<any | { status: number }> {
+export async function insertChatRoom(chatRoom: any): Promise<any | { status: number }> {
   try {
 
 
