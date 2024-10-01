@@ -7,6 +7,7 @@ import kr.nyamnyam.model.repository.WishListRepository;
 import kr.nyamnyam.service.WishListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,5 +40,13 @@ public class WishListServiceImpl implements WishListService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional
+    @Override
+    public boolean deleteWishList(Long userId, Long id) {
+        if (wishListRepository.existsById(id)) {
+            wishListRepository.deleteByUserIdAndId(userId, id);
+            return true;
+        }
+        return false;
+    }
 }
