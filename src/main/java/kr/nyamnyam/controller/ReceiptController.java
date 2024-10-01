@@ -1,5 +1,6 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
@@ -46,7 +47,7 @@ public class ReceiptController {
     }
 
     @GetMapping("/wallet/cost/{id}")
-    public ResponseEntity<List<?>> costList(@PathVariable Long id) {
+    public ResponseEntity<List<CostModel>> costList(@PathVariable Long id) {
         return ResponseEntity.ok(receiptService.costModelList(id));
     }
 

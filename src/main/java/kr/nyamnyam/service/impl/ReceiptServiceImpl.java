@@ -57,8 +57,6 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     @Transactional
     public List<CostModel> costModelList(Long userId) {
-        List<CostModel> costModels = repository.costList(userId);
-        System.out.println(costModels);
         return repository.costList(userId);
     }
 

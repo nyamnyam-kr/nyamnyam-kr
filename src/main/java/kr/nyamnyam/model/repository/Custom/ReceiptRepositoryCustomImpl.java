@@ -64,19 +64,20 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
 
         List<Tuple> results = jpaQueryFactory
                 .select(
-                        Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m").as("formatted_month"),
-                        sum(receiptEntity.price).as("total_price_sum")
+                        Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"),
+                        receiptEntity.price.sum()
+
                 )
                 .from(receiptEntity)
                 .where(receiptEntity.userId.eq(userId))
-                .groupBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m")) // 그룹화할 때 포맷된 날짜 사용
+                .groupBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"))
                 .fetch();
 
         return results.stream()
                 .map(tuple -> {
                     CostModel costModel = new CostModel();
-                    costModel.setDate(tuple.get(0, String.class)); // 포맷된 월
-                    costModel.setPrice(tuple.get(1, Long.class)); // 총 가격 합계
+                    costModel.setDate(tuple.get(0, String.class));
+                    costModel.setPrice(tuple.get(1, Long.class));
                     return costModel;
                 })
                 .collect(Collectors.toList());

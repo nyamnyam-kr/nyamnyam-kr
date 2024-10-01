@@ -31,5 +31,7 @@ public interface PostService {
     Long createPost(PostModel model);
 
     Boolean updatePost(Long id, PostModel model);
+
+    List<PostModel> findByUserId(Long userId);
 }
 

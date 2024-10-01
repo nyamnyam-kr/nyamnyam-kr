@@ -190,6 +190,15 @@ public class PostServiceImpl implements PostService {
         return true;
     }
 
+    @Override
+    public List<PostModel> findByUserId(Long userId) {
+        List<PostEntity> postEntityList = repository.findByUserId(userId);
+        return postEntityList.stream()
+                .map(this::convertToModel)
+                .collect(Collectors.toList());
+    }
+
+
     private void updateTags(List<String> tags, PostEntity postEntity) {
         List<PostTagEntity> existPostTags = postTagRepository.findByPost(postEntity);
         List<PostTagEntity> newPostTags = tags.stream()
