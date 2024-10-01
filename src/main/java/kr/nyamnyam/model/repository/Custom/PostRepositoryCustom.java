@@ -11,6 +11,9 @@ public interface PostRepositoryCustom {
 
     List<Tuple> findAllByRestaurantWithNickname(Long restaurantId);
 
+    // 단일 post에 nickname 불러오기
+    Tuple findPostWithNicknameById(Long postId);
+
     List<CountModel> findNicknamesWithCounts();
 
     List<String> postUpvote();

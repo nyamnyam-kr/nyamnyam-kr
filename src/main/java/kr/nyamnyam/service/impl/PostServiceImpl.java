@@ -56,8 +56,21 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
 
         List<ImageEntity> images = postEntity.getImages();
+        Tuple postWithNickname = repository.findPostWithNicknameById(postId);
+        String nickname = postWithNickname != null ? postWithNickname.get(QUsersEntity.usersEntity.nickname) : "닉네임 없음";
 
-        return convertToModel(postEntity);
+        PostModel postModel = convertToModelWithNickname(postEntity, nickname);
+        postModel.setImages(postEntity.getImages().stream()
+                .map(image -> ImageModel.builder()
+                        .id(image.getId())
+                        .originalFilename(image.getOriginalFileName())
+                        .storedFileName(image.getStoredFileName())
+                        .extension(image.getExtension())
+                        .uploadURL(image.getUploadURL())
+                        .build())
+                .collect(Collectors.toList()));
+
+        return postModel;
     }
 
     @Override
@@ -128,8 +141,8 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
-        PostModel postModel = convertToModel(postEntity);
-        postModel.setNickname(nickname);
+        PostModel postModel = convertToModel(postEntity, nickname);
+        //postModel.setNickname(nickname);
         postModel.setRestaurantId(postEntity.getRestaurant().getId());
         return postModel;
     }
@@ -234,8 +247,12 @@ public class PostServiceImpl implements PostService {
             postTagRepository.saveAll(postTags);
         }
     }
+    // convertToModel 오버로딩
+    private PostModel convertToModel(PostEntity entity){
+        return convertToModel(entity, null);
+    }
 
-    private PostModel convertToModel(PostEntity entity) {
+    private PostModel convertToModel(PostEntity entity, String nickname) {
         return PostModel.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
@@ -245,6 +262,8 @@ public class PostServiceImpl implements PostService {
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
                 .userId(entity.getUserId())
+                .nickname(nickname) // 닉네임 추가
+                .restaurantId(entity.getRestaurant().getId()) // restaurantId 추가
                 .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()
                         .map(postTagEntity -> postTagEntity.getTag().getName())

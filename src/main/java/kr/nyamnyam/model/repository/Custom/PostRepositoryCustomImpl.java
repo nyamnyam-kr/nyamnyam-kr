@@ -19,7 +19,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // post에 nickname 불러오기
+    // 레스토랑ID 기반으로 여러 개의 post에 nickname 불러오기
     @Override
     public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
         QPostEntity postEntity = QPostEntity.postEntity;
@@ -31,6 +31,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
+    }
+    // 단일 post에 nickname 불러오기
+    @Override
+    public Tuple findPostWithNicknameById(Long postId){
+        QPostEntity postEntity = QPostEntity.postEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
+
+        return jpaQueryFactory
+                .select(postEntity, usersEntity.nickname)
+                .from(postEntity)
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .where(postEntity.id.eq(postId))
+                .fetchOne();
     }
 
     // 가장 많은 post 쓴 사람 순위 뽑아내기
