@@ -111,6 +111,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     }
 
+
+    // 포스트가 가장 많은 음식점 list
     @Override
     public List<TotalModel> countRestaurantList() {
         QPostEntity postEntity = QPostEntity.postEntity;

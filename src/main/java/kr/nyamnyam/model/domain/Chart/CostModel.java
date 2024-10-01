@@ -6,14 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
-public class CheckModel {
-    String name;
-    String menu;
-    String address;
-    String tel;
+public class CostModel {
+    String date;
     Long price;
-    Long restaurantId;
-    Long check;
 
 }

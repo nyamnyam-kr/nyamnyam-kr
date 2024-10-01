@@ -29,7 +29,7 @@ public class OpinionController {
     }
 
 
-   @PostMapping("/save")
+   @PostMapping("")
     public ResponseEntity<OpinionEntity> save(@RequestBody OpinionModel model) {
        System.out.println("model = " + model);
         return ResponseEntity.ok(opinionService.save(model));

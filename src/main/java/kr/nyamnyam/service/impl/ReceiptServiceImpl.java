@@ -1,6 +1,8 @@
 package kr.nyamnyam.service.impl;
 
+import jakarta.transaction.Transactional;
 import kr.nyamnyam.config.RestTemplateConfig;
+import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
@@ -47,13 +49,17 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
 
-
-
-
     @Override
     public List<TotalModel> showTotalCount() {
-        System.out.println(repository.totalCountFromName());
         return repository.totalCountFromName();
+    }
+
+    @Override
+    @Transactional
+    public List<CostModel> costModelList(Long userId) {
+        List<CostModel> costModels = repository.costList(userId);
+        System.out.println(costModels);
+        return repository.costList(userId);
     }
 
     @Override

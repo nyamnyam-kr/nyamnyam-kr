@@ -27,31 +27,24 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
+    @Transactional
     public NoticeEntity findById(Long id) {
+        noticeRepository.updateHits(id);
         return noticeRepository.findById(id).orElse(null);
     }
 
-//    @Override
-//    public NoticeEntity findById(Long id) {
-//        updateHits(id);
-//        return noticeRepository.findById(id).orElse(null);
-//    }
+
 
 
     @Override
     public Boolean existsById(Long id) {
         if (noticeRepository.existsById(id)) {
-            noticeRepository.deleteById(id);
+            return true;
         }
         return false;
     }
 
-//    @Override
-//    @Transactional
-//    public Boolean updateHits(Long id) {
-//        noticeRepository.updateHits(id);
-//        return true;
-//    }
+
 
     @Override
     public Long count() {

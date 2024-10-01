@@ -45,6 +45,11 @@ public class ReceiptController {
         return ResponseEntity.ok(receiptService.deleteById(id));
     }
 
+    @GetMapping("/wallet/cost/{id}")
+    public ResponseEntity<List<?>> costList(@PathVariable Long id) {
+        return ResponseEntity.ok(receiptService.costModelList(id));
+    }
+
 
     //total 가격을 넣은 List desc 정렬
     @GetMapping("/total")
@@ -102,7 +107,10 @@ public class ReceiptController {
         int endDateIndex = result.indexOf("가맹점");
 
         String date = result.subList(startDateIndex, endDateIndex).stream()
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(""));
+        if (date.length() > 10) {
+            date = date.substring(0, 10) + " " + date.substring(10);
+        }
 
 
         ReceiptEntity receipt = ReceiptEntity.builder()
@@ -123,6 +131,14 @@ public class ReceiptController {
     public ResponseEntity<ReceiptEntity> show(@RequestBody ReceiptEntity receipt) {
         return ResponseEntity.ok(receiptService.show(receipt));
     }
+
+
+
+
+
+
+
+
 
 
 
