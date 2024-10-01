@@ -1,5 +1,6 @@
 package kr.nyamnyam.service.impl;
 
+import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.RestaurantRepository;
@@ -87,8 +88,10 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .collect(Collectors.toList());
     }
 
-    
-
+    @Override
+    public List<TotalModel> recommendByAge(Long age) {
+        return restaurantRepository.restaurantsByAge(age);
+    }
 
 
 }

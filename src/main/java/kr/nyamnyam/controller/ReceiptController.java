@@ -6,6 +6,7 @@ import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.ocr.NaverOcrApi;
 import kr.nyamnyam.service.ImageService;
 import kr.nyamnyam.service.ReceiptService;
+import kr.nyamnyam.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class ReceiptController {
     private final NaverOcrApi naverOcrApi;
     private final ImageService imageService;
     private final ReceiptService receiptService;
+    private final RestaurantService restaurantService;
 
 
     @Value("${naver.service.secretKey}")
@@ -43,6 +45,11 @@ public class ReceiptController {
         return ResponseEntity.ok(receiptService.deleteById(id));
     }
 
+    @GetMapping("/wallet/cost/{id}")
+    public ResponseEntity<List<?>> costList(@PathVariable Long id) {
+        return ResponseEntity.ok(receiptService.costModelList(id));
+    }
+
 
     //total 가격을 넣은 List desc 정렬
     @GetMapping("/total")
@@ -52,7 +59,7 @@ public class ReceiptController {
 
 
     @PostMapping("/insert")
-    public ResponseEntity<RestaurantModel> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
         ImageModel imageModel = imageService.insertReceipt(file);
         String storedFileName = imageModel.getStoredFileName();
 
@@ -100,7 +107,10 @@ public class ReceiptController {
         int endDateIndex = result.indexOf("가맹점");
 
         String date = result.subList(startDateIndex, endDateIndex).stream()
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(""));
+        if (date.length() > 10) {
+            date = date.substring(0, 10) + " " + date.substring(10);
+        }
 
 
         ReceiptEntity receipt = ReceiptEntity.builder()
@@ -111,9 +121,26 @@ public class ReceiptController {
                 .entryDate(LocalDateTime.now())
                 .build();
 
+
+
         System.out.println("menu = " + menu + " name =" + name + " price =" + price + " date =" + date);
         return ResponseEntity.ok(receiptService.save(receipt));
     }
+
+    @GetMapping("show")
+    public ResponseEntity<ReceiptEntity> show(@RequestBody ReceiptEntity receipt) {
+        return ResponseEntity.ok(receiptService.show(receipt));
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

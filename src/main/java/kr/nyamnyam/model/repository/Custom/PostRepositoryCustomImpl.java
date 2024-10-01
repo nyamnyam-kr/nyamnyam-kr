@@ -42,7 +42,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         JPAQuery<Tuple> query = jpaQueryFactory
                 .select(usersEntity.nickname, postEntity.count())
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id)) // 수정: 올바른 조인 조건
+                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
                 .groupBy(usersEntity.nickname)
                 .orderBy(postEntity.count().desc());
 
@@ -111,6 +111,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     }
 
+
+    // 포스트가 가장 많은 음식점 list
     @Override
     public List<TotalModel> countRestaurantList() {
         QPostEntity postEntity = QPostEntity.postEntity;
@@ -137,7 +139,5 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 })
                 .collect(Collectors.toList());
     }
-
-
 
 }

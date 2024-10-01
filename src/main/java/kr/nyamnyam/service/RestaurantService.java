@@ -1,5 +1,6 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +21,6 @@ public interface RestaurantService {
     ResponseEntity<RestaurantModel> getOneRestaurant(@PathVariable Long id);
     List<RestaurantModel> getRestaurantsByTag(List<String> tagNames);
     List<RestaurantModel> findByCategory(List<String> categories);
+
+    List<TotalModel> recommendByAge(Long age);
 }

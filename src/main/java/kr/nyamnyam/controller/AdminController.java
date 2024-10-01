@@ -31,16 +31,20 @@ public class AdminController {
         return ResponseEntity.ok(adminService.postUpvote());
     }
 
+
     @GetMapping("/countUserList")
     public ResponseEntity<List<?>> countUserList() {
         return ResponseEntity.ok(adminService.countUserList());
     }
 
+    // 레스토랑이 많이 등록된 지역 list
     @GetMapping("/countAreaList")
     public ResponseEntity<List<?>> countAreaList() {
         return ResponseEntity.ok(adminService.countAreaList());
     }
 
+
+    // 포스트가 가장 많은 음식점 list
     @GetMapping("/countPostList")
     public ResponseEntity<List<?>> countPostList() {
         return ResponseEntity.ok(adminService.countPostList());

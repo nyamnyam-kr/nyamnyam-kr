@@ -19,6 +19,7 @@ public class AdminServiceImpl implements AdminService {
     private final RestaurantRepository restaurantRepository;
 
 
+    //
     @Override
     public List<CountModel> countUserList() {
         return postRepository.findNicknamesWithCounts();
@@ -30,21 +31,26 @@ public class AdminServiceImpl implements AdminService {
         return postRepository.postUpvote();
     }
 
+    // 제일 좋아요를 많이 USER
     @Override
     public List<String> findNicknameFromUpvote() {
         return postRepository.findNicknameFromUpvote();
     }
 
+    // 제일 좋아요를 많이 받은 음식점
     @Override
     public List<String> findRestaurantFromUpvote() {
         return postRepository.findRestaurantFromUpvote();
     }
 
+    // 레스토랑이 많이 등록된 지역 list
     @Override
     public List<AreaModel> countAreaList() {
         return restaurantRepository.countAreaList();
     }
 
+
+    // post가 많은 레스토랑
     @Override
     public List<TotalModel> countPostList() {
         return postRepository.countRestaurantList();
