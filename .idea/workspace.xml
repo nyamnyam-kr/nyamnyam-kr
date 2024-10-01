@@ -5,102 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/assets/js/pages/_document.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/apexcharts.amd.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/apexcharts.common.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/apexcharts.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/apexcharts.esm.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/apexcharts.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ar.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ca.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/cs.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/de.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/el.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/en.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/es.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/fi.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/fr.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/he.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/hi.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/hr.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/hu.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/hy.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/id.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/it.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ja.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ka.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ko.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/lt.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/nb.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/nl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/pl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/pt-br.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/pt.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/rs.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ru.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/se.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/sk.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/sl.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/sq.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/th.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/tr.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/ua.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/libs/apexcharts/locales/zh-cn.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(page)/admin/example" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/admin/admin.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/opinion/opinion.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/user/user.api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/model/dash.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/admin/admin.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/notice/notice.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/opinion/opinion.serivce.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/service/user/user.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/types/global.style.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/css/mypage.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/features/notice.slice.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/registry.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/type/ProductType.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/app-calendar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/dashboard.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/form-editor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/form-inputmask.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/maps-vector.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/table-gridjs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/libs/fullcalendar/index.cjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/libs/fullcalendar/index.global.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/libs/fullcalendar/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/libs/node-waves/waves.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/libs/node-waves/waves.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/mypage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/mypage.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/details/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/notice/update/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/receipt/insertReceipt/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/receipt/insertReceipt/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/receipt/receiptRestaurant/[restaurantId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/receipt/receiptRestaurant/[restaurantId]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/star/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/star/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/calendar/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/calendars/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/calendars/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/SearchContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/common/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/common/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/model/notice.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/notice.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/model/opinion.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/model/opinion.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page copy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/.swcrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/user/user.api.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/hooks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/hooks.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +46,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Merging release0.05",
+    "git-widget-placeholder": "release0.05",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/bitcamp/team/release/nyamnyam-front",

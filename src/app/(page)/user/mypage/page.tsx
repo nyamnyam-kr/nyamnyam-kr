@@ -34,7 +34,7 @@ export default function MyPage() {
             setCount(data);
         };
         countList();
-    }, [count]);
+    }, []);
 
     useEffect(() => {
         const showArea = async () => {
@@ -54,7 +54,7 @@ export default function MyPage() {
         const showRestaurant = async () => {
             try {
                 const resp = await axios.get('http://localhost:8080/api/admin/countPostList');
-                console.log(resp.data);
+                // console.log(resp.data);
                 if (resp.status === 200) {
                     setRestaurant(resp.data)
                 }
