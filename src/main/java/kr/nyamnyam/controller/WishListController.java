@@ -1,7 +1,6 @@
 package kr.nyamnyam.controller;
 
 
-import jakarta.websocket.server.PathParam;
 import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.domain.WishListModel;
 import kr.nyamnyam.model.entity.WishListEntity;
@@ -22,18 +21,22 @@ public class WishListController {
     private final WishListService wishListService;
     private final WishListRestaurantService wishListRestaurantService;
 
+
+    // 위시리스트 항목 새로 추가
     @PostMapping
     public ResponseEntity<WishListEntity> createWishList(@RequestHeader Long userId, @RequestParam String name) {
         WishListEntity wishList = wishListService.createWishList(name, userId);
         return ResponseEntity.ok(wishList);
     }
 
+    // 추가된 항목에 식당 추가
     @PostMapping("/{wishListId}")
     public ResponseEntity<WishListRestaurantEntity> addRestaurantToWishList(@RequestHeader Long userId, @PathVariable Long wishListId, @RequestParam Long restaurantId) {
         WishListRestaurantEntity wishListRestaurantEntity = wishListRestaurantService.addRestaurantToWishList(userId, wishListId, restaurantId);
         return ResponseEntity.ok(wishListRestaurantEntity);
     }
 
+    // 전체 항목 목록 가져오기
     @GetMapping
     public List<WishListModel> getWishLists(@RequestHeader Long userId) {
         return wishListService.getWishLists(userId);
@@ -47,13 +50,29 @@ public class WishListController {
         return ResponseEntity.ok(restaurants);
     }*/
 
-    @GetMapping("/{wishListName}/restaurants")
+    // 선택한 위시리스트에 들어있는 식당들 가져오기
+    @GetMapping("/restaurants")
     public ResponseEntity<List<RestaurantModel>> getRestaurants(
             @RequestHeader Long userId,
             @RequestParam Long wishListId) {
         List<RestaurantModel> restaurants = wishListRestaurantService.findRestaurantsByUserIdAndWishListId(userId, wishListId);
         return ResponseEntity.ok(restaurants);
     }
+
+
+    // 식당 위시리스트에서 해제시키기
+    @DeleteMapping
+    public ResponseEntity<Boolean> deleteWishList(@RequestHeader Long userId , @RequestParam Long restaurantId) {
+        boolean deleted = wishListRestaurantService.deleteRestaurantFromWishList(userId, restaurantId);
+        return ResponseEntity.ok(deleted);
+    }
+
+    // 해당 유저가 위시리스트에(항목 상관없이) 추가한 식당 전체(하트 상태 유지 위해)
+    @GetMapping("/getAll")
+    public List<Long> getRestaurants(@RequestHeader Long userId) {
+        return wishListRestaurantService.getDistinctRestaurantsByUserId(userId);
+    }
+
 
 
 }

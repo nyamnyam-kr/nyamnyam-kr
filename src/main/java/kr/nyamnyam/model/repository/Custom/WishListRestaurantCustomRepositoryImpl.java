@@ -6,6 +6,7 @@ import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QWishListRestaurantEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,30 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
                 .fetch();
     }
 
+    @Transactional
+    @Override
+    public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
+        QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
 
+        long deletedCount = jpaQueryFactory.delete(wishListRestaurant)
+                .where(wishListRestaurant.userId.eq(userId)
+                        .and(wishListRestaurant.restaurantId.eq(restaurantId)))
+                .execute();
+
+        return deletedCount > 0;
+    }
+
+    @Override
+    public List<Long> getDistinctRestaurantIdsByUserId(Long userId) {
+        QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
+
+        return jpaQueryFactory
+                .select(wishListRestaurant.restaurantId)
+                .distinct()
+                .from(wishListRestaurant)
+                .where(wishListRestaurant.userId.eq(userId))
+                .orderBy(wishListRestaurant.restaurantId.asc())
+                .fetch();
+    }
 
 }

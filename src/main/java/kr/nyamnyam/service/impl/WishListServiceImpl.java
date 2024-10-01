@@ -30,6 +30,7 @@ public class WishListServiceImpl implements WishListService {
         return wishListRepository.save(wishList);
     }
 
+
     @Override
     public List<WishListModel> getWishLists(Long userId) {
         List<WishListEntity> wishLists = wishListRepository.getWishLists(userId);
@@ -37,4 +38,6 @@ public class WishListServiceImpl implements WishListService {
                 .map(WishListModel::toDto)
                 .collect(Collectors.toList());
     }
+
+
 }
