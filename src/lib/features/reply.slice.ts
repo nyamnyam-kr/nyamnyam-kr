@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from  '@reduxjs/toolkit' 
 import  type { RootState } from  '../store'
-import { ReplyModel } from 'src/app/model/reply.model';
+import { initialReply, ReplyModel } from 'src/app/model/reply.model';
 
 
 interface ReplyState{
@@ -9,6 +9,7 @@ interface ReplyState{
   editReply: {[key:number]: boolean};
   editInput: {[key:number]: string};
 }
+initialReply
 
 const initialState: ReplyState = {
   replies: {}, 

@@ -1,15 +1,29 @@
-import StoreProvider from './StoreProvider';
-import Home from "src/app/(page)/restaurant/page";
+"use client"
+import Home from 'src/app/(page)/restaurant/page';
 import './globals.css'
-import {GlobalStyle} from "src/app/types/global.style";
-import {Provider} from "react-redux";
-import {store} from "src/lib/store";
+import StoreProvider from './StoreProvider';
+import { SearchProvider, useSearchContext } from './components/SearchContext';
+import { useEffect } from 'react';
+import Header from './components/common/Header';
+
 
 
 const Page = () => {
+    // const { setSearchTerm } = useSearchContext();
+
+    // useEffect(() => {
+    //     const params = new URLSearchParams(window.location.search);
+    //     const term = params.get('search');
+    //     if (term) {
+    //         setSearchTerm(term);
+    //     }
+    // }, [setSearchTerm]);
+
+
+    
     return (
         <StoreProvider>
-            <Home/>
+            <Home />
         </StoreProvider>
     );
 };

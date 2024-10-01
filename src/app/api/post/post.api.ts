@@ -1,67 +1,29 @@
-import axios from "axios";
 import { PostModel } from "src/app/model/post.model";
-import instance from "../axios";
 import { api } from "../request";
+import { strategy } from "../api.strategy";
 
-export const updatePost = async (id: number, postData: any): Promise<any> => {
-    try{
-        const response = await instance.put(`${api.post}/${id}`, postData)
-        return response.data;
-    } catch(error){
-        console.error("Failed to update post:", error);
-        throw error;
-    }
-}
-
-export const getPostById = async (id:number): Promise<PostModel> => {
-    try{
-        const response = await instance.get(`${api.post}/${id}`);
-        return response.data;
-    }catch(error) {
-        console.error("Failed to fetch post details:", error);
-        throw error;
-    }
-}
-
-export const detailsPost = async (postId: number) => {
-    try {
-        const response = await instance.get(`${api.post}/${postId}`);
-        return response.data;
-    } catch (error) {
-        console.error("Failed to fetch post details:", error);
-        throw error;
-    }
-}
-
-export const insertPost = async (postData: Partial<PostModel>): Promise<number> => {
-    try {
-        const response = await instance.post(api.post, postData); // 고정경로
-        return response.data;
-    } catch (error) {
-        console.error('Post insert failed:', error);
-        throw error;
-    }
-}
-
-export const fetchPost = async (restaurantId: number) => {
-    try {
-        const response = await instance.get(`${api.post}/${restaurantId}/group`);
-        return response.data;
-    } catch (error) {
-        console.error("fetchPosts API error:", error);
-        throw error;
-    }
-}
-
-export const deletePost = async (postId: number) => {
-    try {
-        const response = await instance.delete(`${api.post}/${postId}`);
-        return response;
-    } catch (error) {
-        console.error('Delete operation failed:', error);
-        throw error;
-    }
+const getById = async (id:number): Promise<PostModel> =>{
+    const response = await strategy.GET(`${api.post}/${id}`)
+    return response.data;
 };
 
+const getByRestaurant = async (restaurantId: number) => {
+    const response = await strategy.GET(`${api.post}/${restaurantId}/group`);
+    return response.data;
+};
 
-// likeCount, likeChecked, getimg 한번에 가져오기
+const insert = async (postData: Partial<PostModel>): Promise<number> => {
+  const response = await strategy.POST(api.post, postData); // 고정경로
+  return response.data;
+};
+
+const update = async (id: number, postData: any): Promise<PostModel> => {
+  const response = await strategy.PUT(`${api.post}/${id}`, postData);
+  return response.data;
+};
+
+const remove = async (postId: number) => {
+    const response = await strategy.DELETE(`${api.post}/${postId}`);
+    return response;
+};
+export const post = { getById, getByRestaurant, insert, update, remove };

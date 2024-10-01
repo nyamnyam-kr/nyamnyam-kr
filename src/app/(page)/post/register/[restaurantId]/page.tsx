@@ -1,54 +1,42 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import Star from "../../../star/page";
-import { PostModel } from "@/app/model/post.model";
+import Star from "../../../../components/Star";
+import { PostModel } from "src/app/model/post.model";
+import { insertPostService } from "src/app/service/post/post.service";
+import { tag } from "src/app/api/tag/tag.api";
+import { TagModel } from "src/app/model/tag.model";
+
 
 export default function PostRegister() {
   const router = useRouter();
   const { restaurantId } = useParams();
-  const [formData, setFormData] = useState<PostModel>({
-    id: 0,
-    content: '',
-    taste: 0,
-    clean: 0,
-    service: 0,
-    entryDate: '',
-    modifyDate: '',
-    averageRating: 0,
-    tags: [],
-    images: [],
-    restaurantId: Number(restaurantId) || 0,
-    userId: 1 // 수정 필요!!!!
-  });
+  const [formData, setFormData] = useState<PostModel>({} as PostModel);
 
   const [tagsByCategory, setTagsCategory] = useState<{ [key: string]: TagModel[] }>({});
-  const [selectTags, setSelectTags] = useState<string[]>([]);
-  const [selectImages, setSelectImages] = useState<File[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
+
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      restaurantId: Number(restaurantId)
+    }));
+    fetchTagCategory();
+  }, [restaurantId]);
 
   const fetchTagCategory = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/tags/category');
-      const data = await response.json();
-      setTagsCategory(data);
-      setSelectTags([]);
+      const result = await tag.getByCategories();
+      setTagsCategory(result);
+      setTags([]);
     } catch (error) {
       console.error("태그 목록을 불러오는데 실패했습니다.", error);
     }
   };
 
-  useEffect(() => {
-    if(restaurantId){
-      setFormData((prevData)=>({
-        ...prevData,
-        restaurantId: Number(restaurantId)
-      }));
-    }
-    fetchTagCategory();
-  }, [restaurantId]);
-
   const handleTagSelect = (tag: string) => {
-    setSelectTags(prevSelected =>
+    setTags(prevSelected =>
       prevSelected.includes(tag)
         ? prevSelected.filter(t => t !== tag)
         : [...prevSelected, tag]
@@ -74,65 +62,36 @@ export default function PostRegister() {
 
   const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setSelectImages(Array.from(e.target.files));
+      setImages(Array.from(e.target.files));
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const data = {
-      content: formData.content,
-      taste: formData.taste,
-      clean: formData.clean,
-      service: formData.service,
-      tags: selectTags,
-      images: formData.images,
-      restaurantId: formData.restaurantId
-    };
-
-    const response = await fetch('http://localhost:8080/api/posts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (response.ok) {
-      const postId = await response.json();
-
-      if (selectImages.length > 0) {
-        const imageData = new FormData();
-        selectImages.forEach((file) => {
-          imageData.append('files', file);
-        });
-        imageData.append('postId', postId);
-
-
-        console.log("업로드할 이미지 데이터: ", imageData);
-
-        const imageResponse = await fetch(`http://localhost:8080/api/images/upload/${postId}`, {
-          method: 'POST',
-          body: imageData
-        });
-
-        if (!imageResponse.ok) {
-          console.error('Image upload failed:', imageResponse.statusText);
-        }
+    try {
+      const postId: number = await insertPostService({
+        content: formData.content,
+        taste: formData.taste,
+        clean: formData.clean,
+        service: formData.service,
+        tags: tags,
+        restaurantId: formData.restaurantId
+      }, images);  
+  
+      if (postId) { 
+        setTags([]); 
+        router.push(`/post/${restaurantId}/details/${postId}`);
       }
-      await fetchTagCategory();
-      setSelectTags([]);
-      router.push(`/post/${restaurantId}/details/${postId}`);
-    } else {
-      console.error('Post creation failed:', response.statusText);
+    } catch (error) {
+      console.error('Post submission failed:', error);
     }
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h3 className="font-bold text-xl">[평가하기]</h3>
-      <form onSubmit={handleSubmit} className="space-y-4 p-4"  encType="multipart/form-data">
+      <form onSubmit={handleSubmit} className="space-y-4 p-4" encType="multipart/form-data">
         <div>
           <h2 className="font-bold">[항목별 평점]</h2>
         </div>
@@ -214,11 +173,12 @@ export default function PostRegister() {
         </button>
       </form>
       <button
-          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-          onClick={() => router.push(`/post/${restaurantId}`)}>
-          뒤로가기
-        </button>
+        className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        onClick={() => router.push(`/post/${restaurantId}`)}>
+        뒤로가기
+      </button>
     </main>
 
   );
 }
+
