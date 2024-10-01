@@ -48,11 +48,14 @@ export default function Star({ w, h, readonly, rate, onChange }: StarModel) {
 
                     <div
                         style={{
-                            width: calculateRate(rating, index + 1),
+                            width: calculateRate(rating, index + 1), // 별의 채워질 비율만큼 너비 설정
                             overflow: "hidden",
-                            position: "absolute",
+                            position: "absolute", // 부모 컨테이너의 위치에 맞게 겹치도록 설정
                             top: 0,
                             left: 0,
+                            height: "100%", // 전체 높이 차지
+                            display: "flex",
+                            alignItems: "center", // 세로 중앙 정렬
                         }}
                     >
                         <FaStar className={`${w} ${h} text-yellow-500`} />

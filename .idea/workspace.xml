@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="" />
+    <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/star/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/star/page.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,14 +48,14 @@
     "git-widget-placeholder": "release0.05",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/USER/Documents/nyamnyam/nyamnyam-front",
+    "last_opened_file_path": "C:/Users/bitcamp/team/release/nyamnyam-front",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "ts.external.directory.path": "C:\\Users\\bitcamp\\Desktop\\nyamnyam-chat\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\bitcamp\\team\\release\\nyamnyam-front\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -98,6 +101,7 @@
       <workItem from="1727181552545" duration="269000" />
       <workItem from="1727181945480" duration="197000" />
       <workItem from="1727248575980" duration="3339000" />
+      <workItem from="1727760431335" duration="1482000" />
     </task>
     <servers />
   </component>
