@@ -1,30 +1,17 @@
 "use client";
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Star from '../../star/page';
+import { useSearchContext } from 'src/app/components/SearchContext';
+import { getRestaurantDetails } from 'src/app/service/restaurant/restaurant.service';
+import Star from '../../../components/Star';
 
 
-interface Restaurant {
-    id: number;
-    name: string;
-    type: string;
-    address: string;
-    tel: string;
-    rate: number;
-    menu: string;
-    operation: string;
-    thumbnailImageUrl: string;
-    subImageUrl: string;
-    lat: number;
-    lng: number;
-}
 
 export default function Restaurant() {
     const { id } = useParams();
-    const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+    const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([]);
+    const [filteredRestaurants, setFilteredRestaurants] = useState<RestaurantModel[]>([]);
     const [allAverage, setAllAverage] = useState<number | null>(null);
     const [tags, setTags] = useState<string[]>([]);
     const router = useRouter();
@@ -32,17 +19,10 @@ export default function Restaurant() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [restaurantRes, allAverageRes, tagsRes] = await Promise.all([
-                    fetch(`http://localhost:8080/api/restaurant/${id}`),
-                    fetch(`http://localhost:8080/api/posts/${id}/allAverage`),
-                    fetch(`http://localhost:8080/api/tags/top5/${id}`)
-                ]);
-                const restaurantData = await restaurantRes.json();
-                const allAverageData = await allAverageRes.json();
-                const tagsData = await tagsRes.json();
-                setRestaurant(restaurantData);
-                setAllAverage(allAverageData);
-                setTags(tagsData);
+                const { restaurant, allAverage, tags } = await getRestaurantDetails(Number(id));
+                setRestaurant(restaurant);
+                setAllAverage(allAverage);
+                setTags(tags);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -54,7 +34,6 @@ export default function Restaurant() {
             fetchData();
         }
     }, [id]);
-
     useEffect(() => {
         if (restaurant && restaurant.address) {
             const mapScript = document.createElement('script');
@@ -99,19 +78,9 @@ export default function Restaurant() {
         }
     }, [restaurant]);
 
-    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
 
-        if (e.target.value) {
-            const res = await fetch(`http://localhost:8080/api/restaurant/search?q=${e.target.value}`);
-            const data = await res.json();
-            setFilteredRestaurants(data);
-        } else {
-            setFilteredRestaurants([]);
-        }
-    };
 
-  
+
 
 
     if (loading) return <div className="text-center py-4">Loading...</div>;
@@ -153,7 +122,7 @@ export default function Restaurant() {
     };
 
     return (
-        <div className="bg-gray-100">
+        <div className="bg-gray-100 mt-20">
             <div className="container mx-auto px-4 py-4 bg-white shadow-lg rounded-lg">
                 {filteredRestaurants.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -180,13 +149,13 @@ export default function Restaurant() {
                             {restaurant.name}
                         </h1>
                         <div className="flex mb-4">
-                            <div className="w-2/3 pr-4"> {/* 레스토랑 정보 영역의 너비를 조정 */}
+                            <div className="w-2/3 pr-4">
 
                                 <div className="flex mb-4">
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
-                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
+                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
 
                                     />
@@ -194,7 +163,7 @@ export default function Restaurant() {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }}
 
                                         />
                                     )}

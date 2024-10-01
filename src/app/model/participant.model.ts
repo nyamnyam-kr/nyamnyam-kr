@@ -1,4 +1,5 @@
 interface ParticipantModel {
     id?: String;
-    nickname: string
+    nickname: string;
+    chatRoomName: string;
 }

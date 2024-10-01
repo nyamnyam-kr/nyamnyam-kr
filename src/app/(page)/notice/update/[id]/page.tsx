@@ -1,61 +1,53 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import {fetchNoticeOne, fetchNoticeUpdate} from "src/app/service/notice/notice.service";
+import {NoticeModel} from "src/app/model/notice.model";
 
-interface Notice {
-    id: number;
-    title: string;
-    content: string;
-    date: string;
-    hits: number;
-}
+
 
 export default function UpdateNotice() {
-    const [notice, setNotice] = useState<Notice | null>(null);
+    const [notice, setNotice] = useState<NoticeModel | null>(null);
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const router = useRouter();
     const { id } = useParams();
 
     useEffect(() => {
-        const fetchNotice = async () => {
-            if (!id) return; // ID가 null이 아닐 때만 실행
+        const fetchNotice = async (id: number) => {
+            if (!id) return;
             try {
-                const response = await fetch(`http://localhost:8080/api/notice/${id}`, { method: 'GET' });
-                if (!response.ok) {
-                    throw new Error("Failed to fetch notice details");
-                }
-                const data : Notice = await response.json();
-                setNotice(data);
-                setTitle(data.title);
-                setContent(data.content);
+                const response = await fetchNoticeOne(id);
+                setNotice(response);
+                setTitle(response.title); // 제목 초기화
+                setContent(response.content); // 내용 초기화
             } catch (error) {
                 console.error("Fetch error:", error);
             }
         };
 
-        fetchNotice();
+        if (id) {
+            fetchNotice(Number(id));
+        }
     }, [id]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!id) {
             console.error("Notice ID is missing");
-            return; // ID가 없으면 제출을 막음
+            return;
         }
+
+        const updatedNotice: NoticeModel = {
+            id: Number(id),
+            title,
+            content,
+            date: new Date().toISOString(), // 현재 날짜를 ISO 형식으로
+            hits: notice?.hits || 0 // 기존 조회수를 유지
+        };
+
         try {
-            const response = await fetch(`http://localhost:8080/api/notice/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id, title, content }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update notice");
-            }
-
+            await fetchNoticeUpdate(updatedNotice); // fetchNoticeUpdate 호출
             alert('공지사항이 성공적으로 업데이트되었습니다!');
             router.push(`/notice/details/${id}`);
         } catch (error) {

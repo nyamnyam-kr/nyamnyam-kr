@@ -1,7 +1,6 @@
 "use client";
 import React, {useEffect, useState, useRef} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import Star from "@/app/(page)/star/page";
 
 interface Restaurant {
     id: number;
@@ -158,14 +157,7 @@ export default function showRestaurant() {
                     <p><strong>유형:</strong> {restaurant.type}</p>
                     <p><strong>주소:</strong> {restaurant.address}</p>
                     <p><strong>전화번호:</strong> {restaurant.tel}</p>
-                    <div><strong>네이버 평점:</strong>
-                        <div className="flex items-center">
-                            <Star w="w-6" h="h-6" readonly={true} rate={restaurant.rate} onChange={() => {
-                            }}/>
-                            <div className="ml-2">{restaurant.rate.toFixed(1)} / 5</div>
-                        </div>
-                    </div>
-                    <p><strong>메뉴:</strong></p>
+                    <p><strong>이용하신 메뉴: </strong></p>
                     <div className="whitespace-pre-line">
                         {renderMenu(restaurant.menu)}
                     </div>
