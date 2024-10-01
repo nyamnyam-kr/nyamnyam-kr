@@ -1,4 +1,4 @@
-import { deletePost, getPostById, getPostsByRestaurant, insertPost, updatePost } from "src/app/api/post/post.api";
+import { post} from "src/app/api/post/post.api";
 import { getLikeCount, hasLikedPost } from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
 import { getImageService } from "../image/image.service";
@@ -6,7 +6,7 @@ import { deleteImageById, getImage, getImageByPostId, uploadPostImages } from "s
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
   try {
-    await updatePost(postId, postData);
+    await post.update(postId, postData);
 
     if (imagesToDelete.length > 0) {
       const imageIds = await getImageByPostId(postId);
@@ -28,19 +28,19 @@ export const updatePostService = async (postId: number, postData: any, images: F
 // 하나의 post 데이터 가져오기 
 export const getPostDetails = async (id:number): Promise<PostModel> => {
   try{
-    const post = await getPostById(id); 
-    return post;
+    const postData = await post.getById(id); 
+    return postData;
   }catch(error){
     console.error("Error in fetchPostData:", error);
     throw error;
   }
 }
 
-export const detailsPostAndImages = async (postId: number): Promise<{ post: any; images: string[] }> => {
+export const detailsPostAndImages = async (postId: number): Promise<{ postData: any; images: string[] }> => {
   try {
-    const post = await getPostById(postId);
+    const postData = await post.getById(postId);
     const images = await getImage(postId);
-    return { post, images };
+    return { postData, images };
   } catch (error) {
     console.error("Error loading post and images:", error);
     throw error;
@@ -49,7 +49,7 @@ export const detailsPostAndImages = async (postId: number): Promise<{ post: any;
 
 export const insertPostService = async (postData: Partial<PostModel>, images: File[]): Promise<number> => {
   try {
-    const postId = await insertPost(postData);
+    const postId = await post.insert(postData);
 
     if (images && images.length > 0) {
       await uploadPostImages(postId, images);
@@ -63,7 +63,7 @@ export const insertPostService = async (postData: Partial<PostModel>, images: Fi
 
 export const fetchPostService = async (restaurantId: number) => {
   try {
-    const posts: PostModel[] = await getPostsByRestaurant(restaurantId);
+    const posts: PostModel[] = await post.getByRestaurant(restaurantId);
 
     const likeStatusPromise = posts.map(async (post) => {
       const liked = await hasLikedPost({ id: 0, giveId: 1, postId: post.id, haveId: 0 });
@@ -82,7 +82,7 @@ export const fetchPostService = async (restaurantId: number) => {
 
 export const deletePostService = async (postId: number) => {
   try {
-    const response = await deletePost(postId);
+    const response = await post.remove(postId);
     if (response.status === 200 || response.status === 204) {
       return true;
     }
