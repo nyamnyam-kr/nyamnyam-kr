@@ -12,4 +12,6 @@ public interface WishListRestaurantCustomRepository {
 
     @Transactional
     boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
+
+    List<Long> getDistinctRestaurantIdsByUserId(Long userId);
 }

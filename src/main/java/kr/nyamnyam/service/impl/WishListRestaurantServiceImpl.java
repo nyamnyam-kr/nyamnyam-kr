@@ -2,6 +2,7 @@ package kr.nyamnyam.service.impl;
 
 
 import kr.nyamnyam.model.domain.RestaurantModel;
+import kr.nyamnyam.model.domain.WishListRestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.entity.WishListRestaurantEntity;
 import kr.nyamnyam.model.repository.RestaurantRepository;
@@ -63,6 +64,12 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
        // boolean deletedCount = wishListRestaurantRepository.deleteRestaurantFromWishList(userId, restaurantId);
         return true; // 삭제된 행이 있으면 true 반환
     }
+
+    @Override
+    public List<Long> getDistinctRestaurantsByUserId(Long userId) {
+        return wishListRestaurantRepository.getDistinctRestaurantIdsByUserId(userId);
+    }
+
 
 
 

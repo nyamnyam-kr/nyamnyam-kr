@@ -15,4 +15,6 @@ public interface WishListService {
     WishListEntity createWishList(String name, Long userId);
 
     List<WishListModel> getWishLists(Long userId);
+
+
 }

@@ -40,6 +40,17 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
         return deletedCount > 0;
     }
 
+    @Override
+    public List<Long> getDistinctRestaurantIdsByUserId(Long userId) {
+        QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
 
+        return jpaQueryFactory
+                .select(wishListRestaurant.restaurantId)
+                .distinct()
+                .from(wishListRestaurant)
+                .where(wishListRestaurant.userId.eq(userId))
+                .orderBy(wishListRestaurant.restaurantId.asc())
+                .fetch();
+    }
 
 }

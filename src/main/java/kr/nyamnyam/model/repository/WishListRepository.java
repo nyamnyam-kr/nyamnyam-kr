@@ -4,6 +4,8 @@ package kr.nyamnyam.model.repository;
 import kr.nyamnyam.model.entity.WishListEntity;
 import kr.nyamnyam.model.repository.Custom.WishListCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 
@@ -15,4 +17,6 @@ public interface WishListRepository extends JpaRepository<WishListEntity, Long>,
     boolean existsByIdAndUserId(Long wishListId, Long userId);
 
     boolean existsByNameAndUserId(String name, Long userId);
+
+
 }

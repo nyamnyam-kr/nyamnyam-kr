@@ -1,6 +1,7 @@
 package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.RestaurantModel;
+import kr.nyamnyam.model.domain.WishListRestaurantModel;
 import kr.nyamnyam.model.entity.WishListRestaurantEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,4 +16,5 @@ public interface WishListRestaurantService {
     @Transactional
     boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
 
+    List<Long> getDistinctRestaurantsByUserId(Long userId);
 }
