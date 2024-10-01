@@ -181,7 +181,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <h2 className="text-2xl font-bold mb-4">내 위시리스트</h2>
-                <button onClick={() => setIsAddModalOpen(true)} className="text-blue-500">+ 추가하기</button>
+                <button onClick={() => setIsAddModalOpen(true)} className="text-blue-500">+ 새로 추가하기</button>
                 {wishList.length === 0 ? (
                     <>
                     </>

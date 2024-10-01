@@ -149,13 +149,13 @@ export default function Restaurant() {
                             {restaurant.name}
                         </h1>
                         <div className="flex mb-4">
-                            <div className="w-2/3 pr-4"> {/* 레스토랑 정보 영역의 너비를 조정 */}
+                            <div className="w-2/3 pr-4">
 
                                 <div className="flex mb-4">
                                     <img
                                         src={restaurant.thumbnailImageUrl || '/default-thumbnail.jpg'}
                                         alt={restaurant.name}
-                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
+                                        style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
 
 
                                     />
@@ -163,7 +163,7 @@ export default function Restaurant() {
                                         <img
                                             src={restaurant.subImageUrl || '/default-subimage.jpg'}
                                             alt={restaurant.name}
-                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} // 고정된 높이 추가
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover' }} 
 
                                         />
                                     )}

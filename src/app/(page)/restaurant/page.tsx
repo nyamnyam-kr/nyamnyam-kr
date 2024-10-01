@@ -6,7 +6,9 @@ import Sidebar from 'src/app/components/SideBar';
 import ScrollToTop from 'src/app/components/ScrollToTop';
 import { SearchProvider, useSearchContext } from 'src/app/components/SearchContext';
 import { getRestaurantsByCategory, getRestaurantsBySearch, getRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
-import HeartButton from 'src/app/components/HeartButton';
+import HeartButton from 'src/app/components/AddHeart';
+
+
 
 
 
