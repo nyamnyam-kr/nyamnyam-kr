@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useModalWishlistContext } from '../context/ModalWishlistContext'
-import { useWishlist } from '../context/WishlistContext'
+import React, { useEffect, useState } from 'react';
+import { useModalWishlistContext } from '../context/ModalWishlistContext';
 import * as Icon from "@phosphor-icons/react/dist/ssr";
+import ModalWishlistDetail from './ModalWishlistDetail';
 
 
 const pastelColors = [
@@ -14,12 +13,15 @@ const pastelColors = [
 
 const ModalWishlist = () => {
     const { isModalOpen, closeModalWishlist } = useModalWishlistContext();
-    const { removeFromWishlist } = useWishlist();
-    const [wishlistItems, setWishlistItems] = useState<string[]>([]);
+    const [wishList, setWishList] = useState<WishListModel[]>([]);
+    const [selectedWishlistId, setSelectedWishlistId] = useState<number | null>(null);
+    const [selectedWishlistName, setSelectedWishlistName] = useState<string | null>(null);
+    const [showDetail, setShowDetail] = useState(false); // 모달 전환 상태
+
+    const userId = 1;
 
     useEffect(() => {
         const fetchWishlist = async () => {
-            const userId = '4';
             const response = await fetch(`http://localhost:8080/api/wishList`, {
                 method: 'GET',
                 headers: {
@@ -29,9 +31,8 @@ const ModalWishlist = () => {
             });
 
             if (response.ok) {
-                const data: WishListModel[] = await response.json();
-                const names = data.map(item => item.name);
-                setWishlistItems(names);
+                const wishListData = await response.json();
+                setWishList(wishListData);
             }
         };
 
@@ -39,6 +40,34 @@ const ModalWishlist = () => {
             fetchWishlist();
         }
     }, [isModalOpen]);
+
+    const removeFromWishlist = async (wishlist: WishListModel) => {
+        const response = await fetch(`http://localhost:8080/api/wishList/delete/wishList?id=${wishlist.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'userId': userId.toString(),
+            },
+        });
+
+        if (response.ok) {
+            setWishList(prevItems => prevItems.filter(item => item.id !== wishlist.id));
+        } else {
+            console.error('Failed to delete item from wishlist');
+        }
+    };
+
+    const openDetailsModal = (wishlistId: number, wishlistName: string) => {
+        setSelectedWishlistId(wishlistId);
+        setSelectedWishlistName(wishlistName);
+        setShowDetail(true); // 디테일 모달 열기
+    };
+
+    const closeDetailsModal = () => {
+        setShowDetail(false); // 디테일 모달 닫기
+        setSelectedWishlistId(null); 
+        setSelectedWishlistName(null); 
+    };
 
     if (!isModalOpen) return null;
 
@@ -48,38 +77,45 @@ const ModalWishlist = () => {
             <div className={`modal-wishlist-block`}>
                 <div className={`modal-wishlist-main`} onClick={(e) => { e.stopPropagation() }}>
                     <div className="heading flex items-center justify-between p-4">
-                        <div className="heading5 ">Wishlist</div>
+                        <div className="heading5 text-center" style={{ fontSize: '24px', fontWeight: 'bold' }}>Wishlist</div>
                         <div className="close-btn cursor-pointer" onClick={closeModalWishlist}>
                             <Icon.X size={24} />
                         </div>
                     </div>
-                    <div className="list-product p-4 flex justify-center flex-wrap">
-                        {wishlistItems.map((wishName, index) => (
-                            <div
-                                key={index}
-                                className='item flex flex-col items-center justify-center border-b'
-                                style={{
-                                    backgroundColor: pastelColors[index % pastelColors.length],
-                                    width: '200px',
-                                    height: '200px',
-                                    borderRadius: '8px',
-                                    padding: '10px',
-                                    margin: '5px',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <div className="product-info" style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <div className="name text-button" style={{ fontSize: '22px', fontWeight: 'bold' }}>{wishName}</div>
+                    {showDetail ? (
+                        <ModalWishlistDetail
+                            userId={userId}
+                            wishlistId={selectedWishlistId!}
+                            wishlistName={selectedWishlistName!}
+                            closeDetails={closeDetailsModal} 
+                        />
+                    ) : (
+                        <div className="list-product p-4 flex justify-center flex-wrap">
+                            {wishList.map((wishlist, index) => (
+                                <div
+                                    key={index}
+                                    className='item flex flex-col items-center justify-center border-b cursor-pointer'
+                                    style={{
+                                        backgroundColor: pastelColors[index % pastelColors.length],
+                                        width: '200px',
+                                        height: '200px',
+                                        borderRadius: '8px',
+                                        padding: '10px',
+                                        margin: '5px',
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    <div className="product-info cursor-pointer" style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => openDetailsModal(wishlist.id, wishlist.name)}>
+                                        <div className="name text-button" style={{ fontSize: '22px', fontWeight: 'bold' }}>{wishlist.name}</div>
+                                    </div>
+                                    <div className="remove-wishlist-btn text-red underline cursor-pointer" style={{ fontSize: '14px' }} onClick={() => removeFromWishlist(wishlist)}>
+                                        Remove
+                                    </div>
                                 </div>
-
-                                <div className="remove-wishlist-btn text-red underline cursor-pointer" style={{ fontSize: '14px' }} onClick={() => removeFromWishlist(wishName)}>
-                                    Remove
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="footer-modal p-4 border-t text-center">
-                       
                         <div onClick={closeModalWishlist} className="text-button mt-4 cursor-pointer">Or continue</div>
                     </div>
                 </div>
@@ -118,10 +154,9 @@ const ModalWishlist = () => {
                     align-items: center;
                     justify-content: center;
                 }
-                
             `}</style>
         </>
-    )
-}
+    );
+};
 
 export default ModalWishlist;

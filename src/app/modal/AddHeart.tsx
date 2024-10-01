@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Modal from './Modal'; // Modal 컴포넌트 임포트
+import Modal from '../components/Modal'; // Modal 컴포넌트 임포트
 
 interface HeartButtonProps {
     restaurantId: number | undefined;
@@ -12,7 +12,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 추가 모달 상태
     const [newWishListName, setNewWishListName] = useState('');
     const [message, setMessage] = useState<string | null>(null);
-    const userId = 4;
+    const userId = 1;
 
     useEffect(() => {
         const fetchFavoritedRestaurants = async () => {

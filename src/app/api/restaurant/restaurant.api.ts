@@ -23,6 +23,7 @@ export const fetchRestaurantsByCategory = async (categories: string[]) => {
 
 
 
+
 // restaurant/[id]/page.tsx api
 export const fetchRestaurantById = async (id: number) => {
     const response = await fetch(`http://localhost:8080/api/restaurant/${id}`);
