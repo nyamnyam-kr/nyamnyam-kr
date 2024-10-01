@@ -1,11 +1,15 @@
 import instance from "./axios"
 
 const getStrategy = async (url: string, params?: any) => {
-    return await instance.get(url, {params});
+    return await instance.get(url, { params });
 };
 
 const postStrategy = async (url: string, data: any) => {
     return await instance.post(url, data);
+};
+
+const postWithParamsStrategy = async (url: string, params?: any, data: any = {}) => {
+    return await instance.post(url, data, { params });
 };
 
 const putStrategy = async (url: string, data: any) => {
@@ -19,6 +23,7 @@ const deleteStrategy = async (url: string) => {
 export const strategy = {
     GET: getStrategy,
     POST: postStrategy,
+    POST_PARAMS: postWithParamsStrategy,
     PUT: putStrategy,
-    DELETE: deleteStrategy
+    DELETE: deleteStrategy,
 };

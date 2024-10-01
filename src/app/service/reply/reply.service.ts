@@ -1,5 +1,5 @@
 //src/app/service/reply/reply.service.ts
-import { deleteReply, getReply, insertReply, updateReply } from "src/app/api/reply/reply.api";
+import {reply} from "src/app/api/reply/reply.api";
 import { initialReply, ReplyModel } from "src/app/model/reply.model";
 
 export const toggleReplyService = async (id: number, replyToggles: { [key: number]: boolean }) => {
@@ -8,7 +8,7 @@ export const toggleReplyService = async (id: number, replyToggles: { [key: numbe
     [id]: !replyToggles[id],
   };
   if (!replyToggles[id]) {
-    const data = await getReply(id); // API 호출
+    const data = await reply.getById(id); // API 호출
 
     return { toggled, replies: data || [] };
   }
@@ -23,7 +23,7 @@ export const submitReplyService = async (postId: number, replyContent: string, c
     userId: currentId
   };
   try {
-    const newReply = await insertReply(replyData);
+    const newReply = await reply.insert(replyData);
 
     if(!newReply){
       return {success: false, toggled: replyToggles, newReply: null};
@@ -45,7 +45,7 @@ export const editSaveReplyService = async (replyId: number, postId: number, upda
     userId: currentUserId
   }; 
   try{
-    const updateReplyData = await updateReply(replyId, replyData);
+    const updateReplyData = await reply.update(replyId, replyData);
     return updateReplyData;
 
   }catch(error){
@@ -56,7 +56,7 @@ export const editSaveReplyService = async (replyId: number, postId: number, upda
 
 export const deleteReplyService = async (replyId: number, postId: number, replies: { [key: number]: ReplyModel[] }) => {
     try {
-      await deleteReply(replyId);
+      await reply.remove(replyId);
 
       const updateReplies = replies[postId].filter((reply) => reply.id !== replyId);
 

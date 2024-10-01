@@ -1,23 +1,23 @@
 import { post} from "src/app/api/post/post.api";
-import { getLikeCount, hasLikedPost } from "src/app/api/upvote/upvote.api";
+import { getLikeCount, upvote} from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
 import { getImageService } from "../image/image.service";
-import { deleteImageById, getImage, getImageByPostId, uploadPostImages } from "src/app/api/image/image.api";
+import { image } from "src/app/api/image/image.api";
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
   try {
     await post.update(postId, postData);
 
     if (imagesToDelete.length > 0) {
-      const imageIds = await getImageByPostId(postId);
+      const imageIds = await image.getByImgId(postId);
       for (const imageId of imagesToDelete) {
         if (imageIds.includes(imageId)) {
-          await deleteImageById(imageId);
+          await image.remove(imageId);
         }
       }
     }
     if (images.length > 0) {
-      await uploadPostImages(postId, images);
+      await image.upload(postId, images);
     }
   } catch (error) {
     console.error('Error in updatePostService:', error);
@@ -39,7 +39,7 @@ export const getPostDetails = async (id:number): Promise<PostModel> => {
 export const detailsPostAndImages = async (postId: number): Promise<{ postData: any; images: string[] }> => {
   try {
     const postData = await post.getById(postId);
-    const images = await getImage(postId);
+    const images = await image.getByPostId(postId);
     return { postData, images };
   } catch (error) {
     console.error("Error loading post and images:", error);
@@ -52,7 +52,7 @@ export const insertPostService = async (postData: Partial<PostModel>, images: Fi
     const postId = await post.insert(postData);
 
     if (images && images.length > 0) {
-      await uploadPostImages(postId, images);
+      await image.upload(postId, images);
     }
     return postId;
   } catch (error) {
@@ -66,7 +66,7 @@ export const fetchPostService = async (restaurantId: number) => {
     const posts: PostModel[] = await post.getByRestaurant(restaurantId);
 
     const likeStatusPromise = posts.map(async (post) => {
-      const liked = await hasLikedPost({ id: 0, giveId: 1, postId: post.id, haveId: 0 });
+      const liked = await upvote.hasLiked({ id: 0, giveId: 1, postId: post.id, haveId: 0 });
       const count = await getLikeCount(post.id);
       const images = await getImageService(post.id);
 

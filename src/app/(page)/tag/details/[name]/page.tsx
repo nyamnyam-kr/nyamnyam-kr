@@ -1,7 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchTagByName } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import { TagModel } from "src/app/model/tag.model";
 
 export default function TagDetail() {
@@ -14,7 +14,7 @@ export default function TagDetail() {
   }, [name]);
 
   const fetchTag = async (name: string) => {
-    const data = await fetchTagByName(name);
+    const data = await tag.getTagByName(name);
     setTags(data);
   }
 

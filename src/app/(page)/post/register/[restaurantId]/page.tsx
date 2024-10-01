@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../../star/page";
 import { PostModel } from "src/app/model/post.model";
 import { insertPostService } from "src/app/service/post/post.service";
-import { fetchTagsByCategories } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import { TagModel } from "src/app/model/tag.model";
 
 
@@ -27,7 +27,7 @@ export default function PostRegister() {
 
   const fetchTagCategory = async () => {
     try {
-      const result = await fetchTagsByCategories();
+      const result = await tag.getByCategories();
       setTagsCategory(result);
       setTags([]);
     } catch (error) {

@@ -23,12 +23,12 @@ export default function PostDetail() {
     if(!id) return; 
     try {
       const postId = Array.isArray(id) ? Number(id[0]) : Number(id);
-      const {post, images} = await detailsPostAndImages(postId);
+      const {postData, images} = await detailsPostAndImages(postId);
 
-      console.log("Post data with nickname and restaurantId:", post); // 데이터를 확인
+      console.log("Post data with nickname and restaurantId:", postData); // 데이터를 확인
       console.log("Image data:", images);
 
-      setPost(post); 
+      setPost(postData); 
       setImages(images);
     }catch(error) {
       console.error("Error loading data:", error);

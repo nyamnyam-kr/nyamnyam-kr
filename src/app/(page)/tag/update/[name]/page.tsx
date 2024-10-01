@@ -1,7 +1,7 @@
 "use client"
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { fetchTagByName, updateTag } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import { initialTag, TagModel } from "src/app/model/tag.model";
 
 export default function TagUpdate() {
@@ -14,13 +14,13 @@ export default function TagUpdate() {
   }, [name]);
 
   const fetchTag = async (name: string) => {
-    const data = await fetchTagByName(name);
+    const data = await tag.getTagByName(name);
     setFormData(data);
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await updateTag(name, formData);
+    await tag.update(name, formData);
     router.push(`/tag/details/${name}`);
   }
 

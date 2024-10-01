@@ -1,15 +1,15 @@
 
-import { deleteTag, fetchTagsByCategories, insertTag } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import { TagModel } from "src/app/model/tag.model";
 
 export const insertTagService = async (formData:TagModel) => {
-  const data = await insertTag(formData); 
+  const data = await tag.insert(formData); 
   return data; 
 }
 
 export const deleteTagService = async (name: string, tags: { [category: string]: TagModel[] }) => {
   try {
-    await deleteTag(name);
+    await tag.remove(name);
 
     const updatedTags: { [category: string]: TagModel[] } = Object.entries(tags).reduce(
       (acc, [category, tagList]) => {
@@ -28,7 +28,7 @@ export const deleteTagService = async (name: string, tags: { [category: string]:
 
 export const fetchTagData = async (): Promise<{ [category: string]: TagModel[] }> => {
   try {
-    const tags = await fetchTagsByCategories();
+    const tags = await tag.getByCategories();
     console.log("fetchTagData에서 받은 tags (Object 형태):", tags);
 
     if (!tags || Object.keys(tags).length === 0) { // 데이터를 배열로 변환

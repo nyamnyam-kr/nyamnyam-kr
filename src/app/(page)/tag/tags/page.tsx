@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { deleteTag, fetchAllTags } from "src/app/api/tag/tag.api";
+import { tag } from "src/app/api/tag/tag.api";
 import {initialTag, TagModel } from "src/app/model/tag.model";
 import { deleteTagService } from "src/app/service/tag/tag.service";
 
@@ -17,7 +17,7 @@ export default function TagList() {
   }, []);
 
   const fetchTag = async () => {
-      const data = await fetchAllTags(); 
+      const data = await tag.getAllTags(); 
       setTags(data.sort((a: TagModel, b: TagModel) => a.tagCategory.localeCompare(b.tagCategory)));
   };
 

@@ -1,8 +1,8 @@
-import { getImage, uploadPostImages } from "src/app/api/image/image.api";
+import { image } from "src/app/api/image/image.api";
 
 export async function insertImageService(postId: number, images: File[]): Promise<any | {status: number}> {
   try {
-    await uploadPostImages(postId, images); 
+    await image.upload(postId, images); 
     return {status: 200};
   } catch (error) {
     console.error('Error occurred while inserting image:', error);
@@ -12,7 +12,7 @@ export async function insertImageService(postId: number, images: File[]): Promis
 
 export const getImageService = async (postId: number): Promise<string[]> => {
   try{
-    const imageURLs = await getImage(postId); 
+    const imageURLs = await image.getByPostId(postId); 
 
     return imageURLs;
   }catch(error){
