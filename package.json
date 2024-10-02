@@ -43,6 +43,7 @@
     "sass-loader": "^16.0.2",
     "style-loader": "^4.0.0",
     "styled-components": "^6.1.13",
+    "swiper": "^11.1.14",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

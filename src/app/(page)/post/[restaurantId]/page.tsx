@@ -40,18 +40,6 @@ export default function PostList() {
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
-    // 로그인 정보 불러오기 
-    // const [user, setUser] = useState<string[]>(()=> {
-    //     if(typeof window !== 'undefined'){
-    //         const storedUser = localStorage.getItem('user'); // 로컬스토리지에서 token 가져오기 
-    //         if(storedUser){
-    //             const parsedUser = JSON.parse(storedUser);
-    //             return [parsedUser.nickname];
-    //         }
-    //     }
-    //     return [];
-    // })
-
     useEffect(() => {
         if (restaurantId) {
             fetchPosts(Number(restaurantId));
@@ -301,9 +289,13 @@ export default function PostList() {
                     등록하기
                 </button>
                 <button
-                    className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded"
+                    className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
                     onClick={() => router.push(`/restaurant/${restaurantId}`)}>
                     뒤로가기
+                </button><button
+                    className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded"
+                    onClick={() => router.push(`/post/${restaurantId}/default`)}>
+                    CSS
                 </button>
             </div>
 
@@ -494,4 +486,4 @@ export default function PostList() {
 
         </main>
     );
-}
+};

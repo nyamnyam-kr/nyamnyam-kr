@@ -80,9 +80,6 @@ export default function Restaurant() {
 
 
 
-
-
-
     if (loading) return <div className="text-center py-4">Loading...</div>;
     if (!restaurant) return <div className="text-center py-4">Restaurant not found.</div>;
 
