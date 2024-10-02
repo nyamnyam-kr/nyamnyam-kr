@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Search from 'src/app/components/Search';
 
@@ -10,6 +11,7 @@ interface User {
 
 export default function Header() {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // 로컬 스토리지에서 사용자 정보 가져오기
@@ -22,6 +24,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    router.push('/');
   };
 
   return (
