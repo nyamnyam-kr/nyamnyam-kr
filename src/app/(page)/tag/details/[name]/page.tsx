@@ -19,7 +19,7 @@ export default function TagDetail() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center" style={{ marginTop: '30px' }}>
       <h1 className="text-2xl font-bold mb-6">Tag 상세화면</h1>
       <div className="bg-white shadow-md rounded p-6 w-full max-w-2xl">
         <div className="space-y-4">

@@ -35,7 +35,7 @@ export default function TagRegister() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center" style={{ marginTop: '30px' }}>
       <h1>[태그 등록]</h1>
       <form onSubmit={handleSubmit} className="space-y-4 p-4">
       <div>
@@ -68,7 +68,7 @@ export default function TagRegister() {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
         >
           등록하기
         </button>

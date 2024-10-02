@@ -1,3 +1,5 @@
+//src/app/(page)/post/register/[restaurantId]
+
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -77,10 +79,10 @@ export default function PostRegister() {
         service: formData.service,
         tags: tags,
         restaurantId: formData.restaurantId
-      }, images);  
-  
-      if (postId) { 
-        setTags([]); 
+      }, images);
+
+      if (postId) {
+        setTags([]);
         router.push(`/post/${restaurantId}/details/${postId}`);
       }
     } catch (error) {
@@ -89,7 +91,7 @@ export default function PostRegister() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-6">
+    <main className="flex min-h-screen flex-col items-center p-6" style={{ marginTop: '30px' }}>
       <h3 className="font-bold text-xl">[평가하기]</h3>
       <form onSubmit={handleSubmit} className="space-y-4 p-4" encType="multipart/form-data">
         <div>
@@ -131,17 +133,23 @@ export default function PostRegister() {
                 {category === "분위기" && "◦ 이 식당의 분위기를 선택해주세요."}
                 {category === "편의시설" && "◦ 이 식당은 어떤 편의시설이 있나요?"}
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-2">
                 {tagsByCategory[category].map(tag => (
-                  <div key={tag.name} className="flex items-center">
+                  <div key={tag.name} className="flex items-center mr-1 mb-1">
                     <input
                       type="checkbox"
                       id={tag.name}
                       name={tag.name}
                       value={tag.name}
                       onChange={() => handleTagSelect(tag.name)}
+                      className="absolute opacity-0 peer"
                     />
-                    <label htmlFor={tag.name} className="ml-2">{tag.name}</label>
+                    <label
+                      htmlFor={tag.name}
+                      className="peer-checked:bg-[#F46119] peer-checked:text-white !peer-checked:text-white flex items-center justify-center cursor-pointer rounded-full border border-[#F46119] bg-white text-[#F46119] px-3 py-1 transition duration-200 ease-in-out"
+                    >
+                      {tag.name}
+                    </label>
                   </div>
                 ))}
               </div>
@@ -162,21 +170,23 @@ export default function PostRegister() {
           <label className="font-bold">[이미지 첨부]</label>
           <input
             type="file"
-            multiple
-            accept="image/*"
+            multiple accept="image/*"
             onChange={uploadImage}
             className="border rounded p-2 w-full"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-4">
-          등록하기
-        </button>
+        <div className="flex mt-4">
+          <button type="submit" className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2">
+            등록하기
+          </button>
+          <button
+            type="button"
+            className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
+            onClick={() => router.push(`/post/${restaurantId}`)}>
+            뒤로가기
+          </button>
+        </div>
       </form>
-      <button
-        className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-        onClick={() => router.push(`/post/${restaurantId}`)}>
-        뒤로가기
-      </button>
     </main>
 
   );

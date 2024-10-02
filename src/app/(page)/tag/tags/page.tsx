@@ -63,11 +63,11 @@ export default function TagList() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center" style={{ marginTop: '30px' }}>
       <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
         <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
-            <tr className="bg-blue-600 text-white">
+            <tr className="bg-[#F46119] text-white">
               <th className="py-3 px-4 border-b"></th>
               <th className="py-3 px-4 border-b">Tag Category</th>
               <th className="py-3 px-4 border-b">Tag Name</th>
@@ -75,7 +75,7 @@ export default function TagList() {
           </thead>
           <tbody>
             {allTags.map((t) => (
-              <tr key={t.name} className="border border-indigo-600">
+              <tr key={t.name} className="border border-[#F46119]">
                 <td className="py-3 px-4 border-b">
                   <input
                     type="checkbox"
@@ -89,7 +89,7 @@ export default function TagList() {
                 <td className="py-3 px-4 border-b">
                   <Link
                     href={`/tag/details/${t.name}`}
-                    className="text-blue-600 hover:underline"
+                    className="text-[#F46119] hover:underline"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDetails(t.name);
@@ -104,13 +104,13 @@ export default function TagList() {
         </table>
         <div className="mt-4">
           <button
-            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+            className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300"
             onClick={() => router.push("/tag/register")}
           >
             등록하기
           </button>
           <button
-            className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+           className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300"
             onClick={handleDelete}
           >
             삭제하기

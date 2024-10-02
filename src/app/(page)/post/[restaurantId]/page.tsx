@@ -287,7 +287,7 @@ export default function PostList() {
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center p-6 " style={{ marginTop: '80px' }}>
+        <main className="flex min-h-screen flex-col items-center p-6 " style={{ marginTop: '30px' }}>
             {restaurant && (
                 <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-3 mb-2 items-center h-16">
                     <h1 className="text-2xl font-bold">{restaurant.name}</h1>
@@ -296,12 +296,12 @@ export default function PostList() {
 
             <div className="w-full max-w-4xl flex justify-end mt-4">
                 <button
-                     className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
+                    className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
                     onClick={() => router.push(`/post/register/${restaurantId}`)}>
                     등록하기
                 </button>
                 <button
-                     className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded"
+                    className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded"
                     onClick={() => router.push(`/restaurant/${restaurantId}`)}>
                     뒤로가기
                 </button>
@@ -373,12 +373,11 @@ export default function PostList() {
                                             <ul className="flex flex-wrap gap-2 ml-2 items-center">
                                                 {p.tags.map((tag, index) => (
                                                     <li
-                                                        key={index}
-                                                        className="rounded-full border border-[#F46119] px-2 py-1 text-[#4B2D1F]"
-                                                        style={{background: '#FF8A50 !important'}}
-                                                    >
-                                                        {tag}
-                                                    </li>
+                                                    key={index}
+                                                    className="rounded-full border border-[#F46119] px-3 py-1 text-[#F46119] font-semibold"
+                                                  >
+                                                    {tag}
+                                                  </li>
                                                 ))}
                                             </ul>
                                         ) : (
@@ -467,9 +466,9 @@ export default function PostList() {
                                         </>
                                     )}
                                     {p.userId === currentUserId && (
-                                        <div className="mt-2">
+                                        <div className="flex justify-end mt-2">
                                             <button
-                                                className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2"
+                                                className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
                                                 onClick={() => {
                                                     router.push(`/post/${restaurantId}/update/${p.id}`);
                                                 }}
@@ -477,7 +476,7 @@ export default function PostList() {
                                                 수정
                                             </button>
                                             <button
-                                                className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded mr-2"
+                                                className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded mr-2"
                                                 onClick={() => {
                                                     handleDelete(p.id);
                                                 }}
