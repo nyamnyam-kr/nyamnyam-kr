@@ -1,4 +1,4 @@
-import { fetchRestaurant } from "src/app/api/restaurant/restaurant.api";
+import {fetchRestaurant, restaurant} from "src/app/api/restaurant/restaurant.api";
 // restaurant/page.tsx의 service
 
 import {
@@ -10,6 +10,9 @@ import {
     fetchTopTags
 
 } from "src/app/api/restaurant/restaurant.api";
+import {number} from "prop-types";
+import {NoticeModel} from "src/app/model/notice.model";
+import {notice} from "src/app/api/notice/notice.api";
 
 export const getRestaurantsBySearch = async (keyword: string) => {
     return await fetchRestaurantsBySearch(keyword);
@@ -44,3 +47,11 @@ export const fetchRestaurantService = async (restaurantId: number): Promise<Rest
       return null;
     }
   };
+
+export const fetchRestaurantOne = async (id: number): Promise<RestaurantModel> => {
+    const data: RestaurantModel = await restaurant.showRestaurant(id);
+    return data;
+}
+
+
+

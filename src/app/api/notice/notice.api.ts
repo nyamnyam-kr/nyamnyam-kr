@@ -1,11 +1,11 @@
-import instance from "../axios";
 import {api} from "../request";
 import {NoticeModel} from "src/app/model/notice.model";
+import {strategy} from "src/app/api/api.strategy";
 
 
-export const noticeAll = async () => {
+const noticeAll = async () => {
     try {
-    const response = await instance.get(`${api.notice}`);
+    const response = await strategy.GET(`${api.notice}`);
     return response.data;
     }
     catch (error) {
@@ -16,9 +16,9 @@ export const noticeAll = async () => {
 
 
 
-export const showNotice = async (id: number): Promise<NoticeModel> => {
+const showNotice = async (id: number): Promise<NoticeModel> => {
     try {
-        const response = await instance.get(`${api.notice}/${id}`);
+        const response = await strategy.GET(`${api.notice}/${id}`);
         return response.data; // 데이터 반환
     } catch (error) {
         console.error("Failed to fetch notice details:", error);
@@ -26,9 +26,9 @@ export const showNotice = async (id: number): Promise<NoticeModel> => {
     }
 }
 
-export const noticeRegister = async (notice: NoticeModel): Promise<NoticeModel> => {
+const noticeRegister = async (notice: NoticeModel): Promise<NoticeModel> => {
     try {
-        const resp = await instance.post(`${api.notice}`, notice);
+        const resp = await strategy.POST(`${api.notice}`, notice);
         return resp.data;
     } catch (error) {
         console.error("Failed to register notice:", error);
@@ -36,9 +36,9 @@ export const noticeRegister = async (notice: NoticeModel): Promise<NoticeModel> 
     }
 };
 
-export const updateNotice = async (notice: NoticeModel) => {
+const updateNotice = async (notice: NoticeModel) => {
     try {
-        const resp = await instance.put(`${api.notice}`, notice);
+        const resp = await strategy.PUT(`${api.notice}`, notice);
         return resp.data;
     } catch (error) {
         console.error("Failed to register notice:", error);
@@ -46,5 +46,7 @@ export const updateNotice = async (notice: NoticeModel) => {
     }
 
 }
+
+export const notice = {noticeAll, showNotice, noticeRegister, updateNotice}
 
 

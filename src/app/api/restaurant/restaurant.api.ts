@@ -1,5 +1,8 @@
 import instance from "../axios";
 import { api } from "../request";
+import {NoticeModel} from "src/app/model/notice.model";
+import {strategy} from "src/app/api/api.strategy";
+import {ex} from "@fullcalendar/core/internal-common";
 // restaurant/page.tsx api
 
 export const fetchRestaurantsBySearch = async (keyword: string) => {
@@ -59,3 +62,15 @@ export const searchRestaurants = async (query: string) => {
     if (!response.ok) throw new Error("Failed to search restaurants");
     return await response.json();
 };
+
+const showRestaurant = async (id: number): Promise<RestaurantModel> => {
+    try {
+        const response = await strategy.GET(`${api.restaurant}/randomByUserId/${id}`);
+        return response.data; // 데이터 반환
+    } catch (error) {
+        console.error("Failed to fetch notice details:", error);
+        throw new Error("Failed to fetch notice details");
+    }
+}
+
+export const restaurant = {showRestaurant}

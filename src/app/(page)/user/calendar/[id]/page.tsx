@@ -21,7 +21,7 @@ interface CalendarEvent {
 const MyCalendar: React.FC = () => {
     const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
     const [wallet, setWallet] = useState<ReceiptModel[]>([]);
-    const { id } = useParams();
+    const  id= 1;
 
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -90,19 +90,6 @@ const MyCalendar: React.FC = () => {
         setCurrentYear(today.getFullYear());
     }, []);
 
-    const totalExpenditure = wallet.reduce((sum, item) => {
-        if (!item.date) return sum; // item.date가 유효하지 않은 경우, 현재 합계 반환
-
-        const itemDate = new Date(item.date + 'T00:00:00+09:00'); // 한국 시간으로 설정
-        const itemMonth = itemDate.getMonth() + 1; // 월을 1부터 시작
-        const itemYear = itemDate.getFullYear(); // 연도 가져오기
-
-        // 현재 월과 연도가 일치하는 경우에만 합계 계산
-        if (itemMonth === currentMonth && itemYear === currentYear) {
-            return sum + item.price;
-        }
-        return sum;
-    }, 0);
 
 
     const currentMonthEvents: CalendarEvent[] = events.filter(event => {

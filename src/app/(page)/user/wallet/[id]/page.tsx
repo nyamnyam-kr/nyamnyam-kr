@@ -11,7 +11,7 @@ Chart.register(...registerables);
 
 export default function MyWallet() {
     const [cost, setCost] = useState<CountCost[]>([]);
-    const { id } = useParams();
+    const id  = 1;
 
     useEffect(() => {
         const Count = async () => {

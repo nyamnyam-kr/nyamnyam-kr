@@ -13,6 +13,7 @@ import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
 import axios from "axios";
 import MyWallet from "src/app/(page)/user/wallet/[id]/page";
+import Modal from "src/app/components/Modal";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
@@ -26,6 +27,8 @@ export default function MyPage() {
     const [activeAddress, setActiveAddress] = useState<string | null>('billing')
     const [activeOrders, setActiveOrders] = useState<string | undefined>('all')
     const [openDetail, setOpenDetail] = useState<boolean | undefined>(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
 
     useEffect(() => {
@@ -224,7 +227,7 @@ export default function MyPage() {
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
                                             <span className="tese">Cancelled Orders</span>
-                                            <h5 className="heading5 mt-1">12</h5>
+                                            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}> </Modal>
                                         </div>
                                         <Icon.ReceiptX className='text-4xl'/>
                                     </div>
@@ -300,7 +303,7 @@ export default function MyPage() {
                                 </div>
                             </div>
                             <div
-                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'orders' ? 'block' : 'hidden'}`}>
+                                className={`tab text-content overflow-hidden w-full h-auto p-7 mt-7 border border-line rounded-xl ${activeTab === 'orders' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Wallet</h6>
                                 <div className="mb-10"><MyCalendar/> </div>
                                 <div><MyWallet/></div>
