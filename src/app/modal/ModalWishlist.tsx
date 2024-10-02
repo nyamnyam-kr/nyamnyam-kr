@@ -1,9 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import { useModalWishlistContext } from '../context/ModalWishlistContext';
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import * as Icon from "@phosphor-icons/react/dist/ssr";
+import { useModalWishlistContext } from '../context/ModalWishlistContext';
+import { useWishlist } from '../context/WishlistContext';
 import ModalWishlistDetail from './ModalWishlistDetail';
+
 
 
 const pastelColors = [
@@ -11,12 +15,14 @@ const pastelColors = [
     '#D4A5A5', '#392F5A', '#F7B7A3', '#D5AAFF', '#A9DEF9'
 ];
 
+
 const ModalWishlist = () => {
     const { isModalOpen, closeModalWishlist } = useModalWishlistContext();
+    // const { wishlistState, removeFromWishlist } = useWishlist()
     const [wishList, setWishList] = useState<WishListModel[]>([]);
     const [selectedWishlistId, setSelectedWishlistId] = useState<number | null>(null);
     const [selectedWishlistName, setSelectedWishlistName] = useState<string | null>(null);
-    const [showDetail, setShowDetail] = useState(false); // 모달 전환 상태
+    const [showDetail, setShowDetail] = useState(false);
 
     const userId = 1;
 
@@ -40,6 +46,7 @@ const ModalWishlist = () => {
             fetchWishlist();
         }
     }, [isModalOpen]);
+
 
     const removeFromWishlist = async (wishlist: WishListModel) => {
         const response = await fetch(`http://localhost:8080/api/wishList/delete/wishList?id=${wishlist.id}`, {
@@ -65,21 +72,25 @@ const ModalWishlist = () => {
 
     const closeDetailsModal = () => {
         setShowDetail(false); // 디테일 모달 닫기
-        setSelectedWishlistId(null); 
-        setSelectedWishlistName(null); 
+        setSelectedWishlistId(null);
+        setSelectedWishlistName(null);
     };
 
-    if (!isModalOpen) return null;
 
     return (
         <>
-            <div className={`modal-wishlist-overlay`} onClick={closeModalWishlist}></div>
-            <div className={`modal-wishlist-block`}>
-                <div className={`modal-wishlist-main`} onClick={(e) => { e.stopPropagation() }}>
-                    <div className="heading flex items-center justify-between p-4">
-                        <div className="heading5 text-center" style={{ fontSize: '24px', fontWeight: 'bold' }}>Wishlist</div>
-                        <div className="close-btn cursor-pointer" onClick={closeModalWishlist}>
-                            <Icon.X size={24} />
+            <div className={`modal-wishlist-block`} onClick={closeModalWishlist}>
+                <div
+                    className={`modal-wishlist-main py-6 ${isModalOpen ? 'open' : ''}`}
+                    onClick={(e) => { e.stopPropagation() }}
+                >
+                    <div className="heading px-6 pb-3 flex items-center justify-between relative">
+                        <div className="heading5">Wishlist</div>
+                        <div
+                            className="close-btn absolute right-6 top-0 w-6 h-6 rounded-full bg-surface flex items-center justify-center duration-300 cursor-pointer hover:bg-black hover:text-white"
+                            onClick={closeModalWishlist}
+                        >
+                            <Icon.X size={14} />
                         </div>
                     </div>
                     {showDetail ? (
@@ -87,21 +98,20 @@ const ModalWishlist = () => {
                             userId={userId}
                             wishlistId={selectedWishlistId!}
                             wishlistName={selectedWishlistName!}
-                            closeDetails={closeDetailsModal} 
+                            closeDetails={closeDetailsModal}
                         />
                     ) : (
-                        <div className="list-product p-4 flex justify-center flex-wrap">
+                        <div className="list-product px-6 grid grid-cols-2 gap-4">
                             {wishList.map((wishlist, index) => (
                                 <div
                                     key={index}
                                     className='item flex flex-col items-center justify-center border-b cursor-pointer'
                                     style={{
                                         backgroundColor: pastelColors[index % pastelColors.length],
-                                        width: '200px',
+                                        width: '100%', // Changed to '100%' to fill the column
                                         height: '200px',
                                         borderRadius: '8px',
                                         padding: '10px',
-                                        margin: '5px',
                                         textAlign: 'center'
                                     }}
                                 >
@@ -114,49 +124,16 @@ const ModalWishlist = () => {
                                 </div>
                             ))}
                         </div>
+
                     )}
-                    <div className="footer-modal p-4 border-t text-center">
-                        <div onClick={closeModalWishlist} className="text-button mt-4 cursor-pointer">Or continue</div>
+                    <div className="footer-modal p-6 border-t bg-white border-line absolute bottom-0 left-0 w-full text-center">
+
+                        <div onClick={closeModalWishlist} className="text-button-uppercase mt-4 text-center has-line-before cursor-pointer inline-block">Or continue shopping</div>
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-                .modal-wishlist-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.5);
-                    z-index: 999;
-                }
-
-                .modal-wishlist-block {
-                    position: fixed;
-                    top: 0;
-                    right: 0;
-                    width: 400px;
-                    height: 100%;
-                    background: white;
-                    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-                    z-index: 1000;
-                }
-
-                .modal-wishlist-main {
-                    height: 100%;
-                    overflow-y: auto;
-                }
-
-                .close-btn {
-                    padding: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            `}</style>
         </>
-    );
-};
+    )
+}
 
-export default ModalWishlist;
+export default ModalWishlist

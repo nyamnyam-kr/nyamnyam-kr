@@ -12,9 +12,7 @@ interface ModalWishlistContextValue {
     closeModalWishlist: () => void;
 }
 
-export const ModalWishlistContext = createContext<ModalWishlistContextValue | undefined>(undefined);
-
-
+const ModalWishlistContext = createContext<ModalWishlistContextValue | undefined>(undefined);
 
 export const useModalWishlistContext = (): ModalWishlistContextValue => {
     const context = useContext(ModalWishlistContext);
@@ -28,12 +26,10 @@ export const ModalWishlistProvider: React.FC<ModalWishlistContextProps> = ({ chi
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModalWishlist = () => {
-        console.log("Opening Wishlist Modal");
         setIsModalOpen(true);
     };
 
     const closeModalWishlist = () => {
-        console.log("Closing Wishlist Modal"); 
         setIsModalOpen(false);
     };
 
@@ -49,4 +45,3 @@ export const ModalWishlistProvider: React.FC<ModalWishlistContextProps> = ({ chi
         </ModalWishlistContext.Provider>
     );
 };
-

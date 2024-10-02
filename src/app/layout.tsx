@@ -10,6 +10,10 @@ import { WishlistProvider } from './context/WishlistContext';
 import ModalWishlist from './modal/ModalWishlist';
 import GlobalProvider from './GlobalProvider';
 
+import '@/styles/styles.scss'
+
+
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

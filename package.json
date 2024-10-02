@@ -58,4 +58,5 @@
     "yarn": "^1.22.22"
   },
   "proxy": "http://localhost:8080"
+  
 }

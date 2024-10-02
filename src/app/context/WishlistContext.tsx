@@ -2,9 +2,9 @@
 
 // WishlistContext.tsx
 import React, { createContext, useContext, useState, useReducer, useEffect } from 'react';
+import { ProductType } from '@/type/ProductType';
 
-
-interface WishlistItem extends WishListModel {
+interface WishlistItem extends ProductType {
 }
 
 interface WishlistState {
@@ -12,13 +12,13 @@ interface WishlistState {
 }
 
 type WishlistAction =
-    | { type: 'ADD_TO_WISHLIST'; payload: WishListModel }
+    | { type: 'ADD_TO_WISHLIST'; payload: ProductType }
     | { type: 'REMOVE_FROM_WISHLIST'; payload: string }
     | { type: 'LOAD_WISHLIST'; payload: WishlistItem[] }
 
 interface WishlistContextProps {
     wishlistState: WishlistState;
-    addToWishlist: (item: WishListModel) => void;
+    addToWishlist: (item: ProductType) => void;
     removeFromWishlist: (itemId: string) => void;
 }
 
@@ -35,7 +35,7 @@ const WishlistReducer = (state: WishlistState, action: WishlistAction): Wishlist
         case 'REMOVE_FROM_WISHLIST':
             return {
                 ...state,
-                
+                wishlistArray: state.wishlistArray.filter((item) => item.id !== action.payload),
             };
         case 'LOAD_WISHLIST':
             return {
@@ -50,7 +50,7 @@ const WishlistReducer = (state: WishlistState, action: WishlistAction): Wishlist
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [wishlistState, dispatch] = useReducer(WishlistReducer, { wishlistArray: [] });
 
-    const addToWishlist = (item: WishListModel) => {
+    const addToWishlist = (item: ProductType) => {
         dispatch({ type: 'ADD_TO_WISHLIST', payload: item });
     };
 
