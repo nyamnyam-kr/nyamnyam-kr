@@ -67,7 +67,7 @@ const ModalWishlistDetail: React.FC<ModalWishlistDetailProps> = ({ userId, wishl
                                     textAlign: 'center'
                                 }}
                             >
-                                <Link href={`/restaurant/${restaurant.id}`} passHref>
+                                <Link href={`/restaurant/${restaurant.id}`}>
                                     <div onClick={closeDetails} style={{ textDecoration: 'none', color: 'black', width: '100%', height: '100%' }}>
                                         <img src={restaurant.thumbnailImageUrl} alt={restaurant.name} style={{ borderRadius: '8px', width: '100%', height: 'auto' }} />
                                         <div

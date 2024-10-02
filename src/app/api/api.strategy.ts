@@ -20,10 +20,15 @@ const deleteStrategy = async (url: string) => {
     return await instance.delete(url);
 };
 
+const deleteWithParamStrategy = async (url: string, params?: any) => {
+    return await instance.delete(url, { params });
+};
+
 export const strategy = {
     GET: getStrategy,
     POST: postStrategy,
     POST_PARAMS: postWithParamsStrategy,
     PUT: putStrategy,
     DELETE: deleteStrategy,
+    DELETE_PARAMS: deleteWithParamStrategy
 };

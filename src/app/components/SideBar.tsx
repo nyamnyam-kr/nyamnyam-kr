@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import 'rc-slider/assets/index.css'
+import 'src\styles'
 
 interface SectionProps {
   title: string;
@@ -39,7 +41,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         ? prev.filter((tag) => tag !== item)
         : [...prev, item];
 
-      onFilterChange(updatedTags, selectedCategories); 
+      onFilterChange(updatedTags, selectedCategories);
       return updatedTags;
     });
   };
@@ -51,15 +53,57 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         ? prev.filter((category) => category !== item)
         : [...prev, item];
 
-      onFilterChange(selectedTags, updatedCategories); 
+      onFilterChange(selectedTags, updatedCategories);
       return updatedCategories;
     });
   };
 
   return (
 
-    <div className="w-64 pt-10 bg-gray-100 h-screen fixed top-500 left-0 shadow-lg rounded-lg overflow-y-auto">
-      <Section
+    <>
+      {/* <div className="filter-size">
+        <div className="heading6">Size</div>
+        <div className="list-size flex items-center flex-wrap gap-3 gap-y-4 mt-4">
+          {
+            ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map((item, index) => (
+              <div
+                key={index}
+                className={`size-item text-button w-[44px] h-[44px] flex items-center justify-center rounded-full border border-line ${size === item ? 'active' : ''}`}
+                onClick={() => handleSize(item)}
+              >
+                {item}
+              </div>
+            ))
+          }
+          <div
+            className={`size-item text-button px-4 py-2 flex items-center justify-center rounded-full border border-line ${size === 'freesize' ? 'active' : ''}`}
+            onClick={() => handleSize('freesize')}
+          >
+            Freesize
+          </div>
+        </div>
+      </div> */}
+
+      <div className="shop-product breadcrumb1 lg:py-20 md:py-14 py-10">
+        <div className="container">
+          <div className="list-product-block relative">
+            <div className="filter-size">
+              <div className="heading6">Cuisine</div>
+              <div className="list-size flex items-center flex-wrap gap-3 gap-y-4 mt-4">
+                {['한식', '일식', '중식', '양식', '아시아', '해산물', '술집', '카페'].map((item, index) => (
+                  <div
+                    key={index}
+                    className={`size-item text-button w-[44px] h-[44px] flex items-center justify-center rounded-full border border-line ${selectedCategories.includes(item) ? 'active' : ''}`}
+                    onClick={() => handleCategoryToggle(item)}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+
+            {/* <Section
         title="이용자층"
         items={['20대', '30대', '40대', '50대', '60대 이상']}
         selectedItems={selectedTags}
@@ -71,7 +115,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         selectedItems={selectedCategories}
         onItemToggle={handleCategoryToggle}
       />
-        <Section
+      <Section
         title="방문목적"
         items={['가족 모임', '관광', '기념일', '데이트', '출장', '친구 모임', '특별 이벤트', '혼밥', '회식', '휴식']}
         selectedItems={selectedTags}
@@ -88,8 +132,13 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         items={['고급스러움', '로맨틱', '소박함', '조용함', '아늑함', '유니크함', '전통적', '캐주얼', '현대적', '활기참']}
         selectedItems={selectedTags}
         onItemToggle={handleTagToggle}
-      />
-    </div>
+      /> */}
+          </div>
+        </div>
+      </div>
+    </>
+
+
   );
 };
 

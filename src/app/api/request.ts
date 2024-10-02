@@ -11,7 +11,8 @@ export const api = {
     receipt : "/api/receipt",
     reply: "/api/replies",
     report: "/api/report",
-    restaurant: "http://localhost:8080/api/restaurant",
+    restaurant: "api/restaurant",
     tag: "/api/tags",
-    user: "/api/user"
+    user: "/api/user",
+    wishList: "/api/wishList"
 }
