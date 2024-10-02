@@ -79,7 +79,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
       />
       <Section
         title="편의시설"
-        items={['드라이브 스루', '무료 Wi-Fi', '바 테이블', '배달 서비스', '아동 시설', '유니크함', '애완동물 출입 가능', '예약 가능', '주차장', '테라스 좌석', '휠체어 접근 가능']}
+        items={['드라이브 스루', '무료 Wi-Fi', '바 테이블', '배달 서비스', '아동 시설', '애완동물 출입 가능', '예약 가능', '주차장', '테라스 좌석', '휠체어 접근 가능']}
         selectedItems={selectedTags}
         onItemToggle={handleTagToggle}
       />

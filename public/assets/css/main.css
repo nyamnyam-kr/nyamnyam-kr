@@ -1521,9 +1521,10 @@ a:hover {
 
 
 .page-header__logo img {
-    max-width: 30px;
+    max-width: 100px;
     height: auto;
     margin-right: 12px;
+    margin-left: 40px;
 }
 
 .page-header__logo_text {

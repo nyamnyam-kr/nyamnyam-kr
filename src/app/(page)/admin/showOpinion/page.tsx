@@ -1,22 +1,22 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {router} from "next/client";
+import {fetchShowOpinion} from "src/app/service/opinion/opinion.serivce";
+import {OpinionModel} from "src/app/model/opinion.model";
 
 export default function showOpinion() {
     const [opinion, setOpinion] = useState<OpinionModel[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/opinion')
-            .then((resp) => {
-                if(!resp.ok) {
-                    throw new Error("Failed to fetch group details");
+        const loadOpinions = async() => {
+            try {
+                const opinions = await fetchShowOpinion();
+                setOpinion(opinions);
+            } catch (error) {
+                console.error("공지사항을 불러오는 데 오류가 발생했습니다:", error);
+            }
 
-                }
-                return resp.json();
-            })
-            .then((data) => {
-                setOpinion(data)
-            })
+        }
+        loadOpinions()
     }, []);
 
 

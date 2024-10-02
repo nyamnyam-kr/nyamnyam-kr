@@ -4,6 +4,11 @@ import React from 'react';
 import Header from 'src/app/components/common/Header';
 import StoreProvider from 'src/app/StoreProvider';
 import { SearchProvider } from './components/SearchContext';
+import { ModalWishlistProvider } from './context/ModalWishlistContext';
+
+import { WishlistProvider } from './context/WishlistContext';
+import ModalWishlist from './modal/ModalWishlist';
+import GlobalProvider from './GlobalProvider';
 
 export default function RootLayout({
   children,
@@ -30,14 +35,20 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet" />
       </head>
       <body>
-        {/* SearchContext를 전체 페이지에 적용 */}
-        <SearchProvider>
-          {/* 헤더 컴포넌트 추가 */}
+        {/* <SearchProvider>
+          <WishlistProvider>
+            <ModalWishlistProvider>
+              <Header />
+              <ModalWishlist />
+              <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
+            </ModalWishlistProvider>
+          </WishlistProvider>
+        </SearchProvider> */}
+        <GlobalProvider>
           <Header />
-
-          {/* 메인 컨텐츠 렌더링 */}
-          <main>{children}</main>
-        </SearchProvider>
+          <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
+          <ModalWishlist />
+        </GlobalProvider>
       </body>
     </html>
   );
