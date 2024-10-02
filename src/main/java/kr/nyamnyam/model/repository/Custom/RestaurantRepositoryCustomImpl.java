@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.domain.Chart.AreaModel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.Objects;
 
 
+import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
 
 @RequiredArgsConstructor
@@ -69,6 +71,33 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                     return areaModel;
                 })
                 .collect(Collectors.toList());
+    }
+
+    // 랜덤레스토랑
+    @Override
+    public RestaurantEntity randomRestaurant(Long userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+
+         String type = jpaQueryFactory
+                 .select(restaurant.type)
+                 .from(post)
+                 .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                 .where(post.userId.eq(userId))
+                 .groupBy(restaurant.type)
+                 .orderBy(post.count().desc())
+                 .limit(1)
+                 .fetchOne();
+
+        RestaurantEntity randomRestaurant = jpaQueryFactory
+                .selectFrom(restaurant)
+                .where(restaurant.type.eq(type))
+                .orderBy(numberTemplate(Double.class, "function('RAND')").asc())
+                .limit(1)
+                .fetchOne();
+
+        return randomRestaurant;
+
     }
 
     @Override
@@ -148,7 +177,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .join(post.postTags, postTag)
                 .where(postTag.tag.name.in(tagNames))
                 .groupBy(restaurant.id)
-                .having(Expressions.numberTemplate(Long.class, "COUNT(DISTINCT {0})", postTag.tag.name).eq(tagCount))
+                .having(numberTemplate(Long.class, "COUNT(DISTINCT {0})", postTag.tag.name).eq(tagCount))
                 .fetch();
     }
 

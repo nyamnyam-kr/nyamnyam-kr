@@ -23,4 +23,6 @@ public interface RestaurantService {
     List<RestaurantModel> findByCategory(List<String> categories);
 
     List<TotalModel> recommendByAge(Long age);
+
+    RestaurantEntity randomRestaurantByUserId(Long userId);
 }

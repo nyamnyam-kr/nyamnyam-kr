@@ -93,5 +93,10 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantRepository.restaurantsByAge(age);
     }
 
+    @Override
+    public RestaurantEntity randomRestaurantByUserId(Long userId) {
+        return restaurantRepository.randomRestaurant(userId);
+    }
+
 
 }
