@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 
+import kr.nyamnyam.model.domain.Chat;
 import kr.nyamnyam.model.domain.ChatRoom;
 import kr.nyamnyam.model.repository.ChatRoomRepository;
 import kr.nyamnyam.pattern.proxy.Pagination;
@@ -21,6 +22,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ChatRoomServiceImpl implements ChatRoomService {
+
     private final ChatRoomRepository chatRoomRepository;
 
     @Override
@@ -29,13 +31,29 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Flux<ChatRoom> findAll() {
-        return chatRoomRepository.findAll();
+    public Flux<ChatRoom> findAllByNickname(String nickname) {
+        // nickname이 null이면 전체 ChatRoom 조회, 아니면 nickname으로 필터링하여 조회
+        if (nickname == null || nickname.isEmpty()) {
+            return chatRoomRepository.findAll();
+        }
+        return chatRoomRepository.findByParticipantsContains(nickname);
     }
+
 
     @Override
     public Mono<ChatRoom> findById(String id) {
         return chatRoomRepository.findById(id);
+    }
+
+    @Override
+    public Mono<ChatRoom> updateChatRoom(String id, ChatRoom chatRoom) {
+        return chatRoomRepository.findById(id)
+                .flatMap(existingChatRoom -> {
+                    existingChatRoom.setName(chatRoom.getName());
+                    existingChatRoom.setParticipants(chatRoom.getParticipants());
+                    existingChatRoom.setMessages(chatRoom.getMessages());
+                    return chatRoomRepository.save(existingChatRoom);
+                });
     }
 
     @Override
@@ -61,6 +79,3 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
 
 }
-
-
-
