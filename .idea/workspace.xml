@@ -6,25 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="49786053-a601-4996-9fe6-17ac685f1975" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.swcrc" beforeDir="false" afterPath="$PROJECT_DIR$/src/babel.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/_document.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/_document.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/dash/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/showOpinion/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/admin/totalCount/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/post/[restaurantId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/post/[restaurantId]/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/restaurant/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/calendar/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/login/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/mypage/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(page)/user/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/register/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(page)/user/wallet/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/GlobalProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/GlobalProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/admin/admin.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/admin/admin.api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/notice/notice.api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/opinion/opinion.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/opinion/opinion.api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/post/post.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/post/post.api.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/api/restaurant/restaurant.api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/restaurant/restaurant.api.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/components/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/Modal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/admin/admin.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/admin/admin.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/notice/notice.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/notice/notice.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/service/opinion/opinion.serivce.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/opinion/opinion.serivce.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/components/common/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/components/common/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/service/post/post.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/post/post.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/service/restaurant/restaurant.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/service/restaurant/restaurant.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
@@ -71,7 +66,7 @@
     &quot;git-widget-placeholder&quot;: &quot;nyamnyam-admin&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Documents/nyamnyam/nyamnyam-front/src/app/(page)/user/wallet/[id]&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/Documents/nyamnyam/nyamnyam-front/src/app/(page)/admin/dash&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -84,6 +79,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\admin\dash" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\user\wallet\[id]" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\(page)\notice\details\[id]" />
       <recent name="C:\Users\USER\Documents\nyamnyam\nyamnyam-front\src\app\model" />
@@ -143,6 +139,8 @@
       <workItem from="1727743511403" duration="21257000" />
       <workItem from="1727830144256" duration="12830000" />
       <workItem from="1727853945929" duration="1107000" />
+      <workItem from="1727855491335" duration="16121000" />
+      <workItem from="1727938315813" duration="2311000" />
     </task>
     <servers />
   </component>

@@ -39,6 +39,9 @@ export default function PostList() {
     const router = useRouter();
     const { restaurantId } = useParams();
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
+    const [reportingPostId, setReportingPostId] = useState<number | null>(null);
+    const [reportReason, setReportReason] = useState<string>("");
+
 
     useEffect(() => {
         if (restaurantId) {
@@ -273,6 +276,19 @@ export default function PostList() {
         }
     };
 
+    const handleReportClick = (postId: number) => {
+        setReportingPostId(postId);
+        setReportReason(""); // 새 신고 시 사유 초기화
+    };
+
+    const handleReportSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        if (reportingPostId !== null) {
+            await postReport(reportingPostId);
+            setReportingPostId(null); // 제출 후 신고 모달 닫기
+        }
+    };
+
     return (
         <main className="flex min-h-screen flex-col items-center p-6 ">
 
@@ -366,13 +382,48 @@ export default function PostList() {
                                             className="bg-transparent hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded">
                                             댓글
                                         </button>
+                                        <button
+                                            onClick={() => handleReportClick(p.id)}
+                                            className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                                            신고
+                                        </button>
                                     </div>
+                                    {reportingPostId === p.id && (
+                                        <div className="mt-4">
+                                            <form onSubmit={handleReportSubmit} className="flex flex-col">
+                                                <label className="text-gray-700 mb-2">신고 사유를 선택하세요:</label>
+                                                <select
+                                                    value={reportReason}
+                                                    onChange={(e) => setReportReason(e.target.value)}
+                                                    className="border rounded p-2 mb-4"
+                                                >
+                                                    <option value="">선택하세요</option>
+                                                    {reportReasons.map((reason, index) => (
+                                                        <option key={index} value={reason}>{reason}</option>
+                                                    ))}
+                                                </select>
+                                                <button
+                                                    type="submit"
+                                                    className="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600"
+                                                >
+                                                    신고하기
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setReportingPostId(null)}
+                                                    className="mt-2 bg-transparent hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 border border-gray-300 rounded"
+                                                >
+                                                    취소
+                                                </button>
+                                            </form>
+                                        </div>
+                                    )}
                                     {replyToggles[p.id] && (
                                         <>
                                             <div className="mt-4 w-full">
                                                 {replies[p.id] && replies[p.id].length > 0 ? (
                                                     <ul>
-                                                        {replies[p.id].map((reply, index) => (
+                                                    {replies[p.id].map((reply, index) => (
                                                             <li key={index} className="mb-2 border-b border-gray-200 pb-2 flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <span className="inline-block rounded-full bg-gray-300 px-3 py-1 text-sm font-semibold text-gray-700">

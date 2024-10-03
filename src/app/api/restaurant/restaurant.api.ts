@@ -26,7 +26,7 @@ export const fetchRestaurantsByCategory = async (categories: string[]) => {
 };
 
 // post에 restaurant 정보 불러오기
-export const fetchRestaurant = async (restaurantId: number) => {
+const fetchRestaurant = async (restaurantId: number) => {
     try{
         const response = await instance.get(`${api.restaurant}/${restaurantId}`);
         return response.data;
@@ -57,7 +57,7 @@ export const fetchTopTags = async (id: number) => {
     return await response.json();
 };
 
-export const searchRestaurants = async (query: string) => {
+const searchRestaurants = async (query: string) => {
     const response = await fetch(`http://localhost:8080/api/restaurant/search?q=${query}`);
     if (!response.ok) throw new Error("Failed to search restaurants");
     return await response.json();
@@ -73,4 +73,4 @@ const showRestaurant = async (id: number): Promise<RestaurantModel> => {
     }
 }
 
-export const restaurant = {showRestaurant}
+export const restaurant = {showRestaurant, searchRestaurants, fetchRestaurant}

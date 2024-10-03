@@ -3,6 +3,8 @@ import { getLikeCount, upvote} from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
 import { getImageService } from "../image/image.service";
 import { image } from "src/app/api/image/image.api";
+import {NoticeModel} from "src/app/model/notice.model";
+import {notice} from "src/app/api/notice/notice.api";
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
   try {
@@ -91,4 +93,10 @@ export const deletePostService = async (postId: number) => {
     console.error('Error in deletePostService:', error);
     return false;
   }
+};
+
+
+export const fetchPostList = async (userId : number) => {
+  const data: PostModel[] = await post.listById(userId);
+  return data;
 };

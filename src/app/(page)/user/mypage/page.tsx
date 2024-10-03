@@ -4,7 +4,7 @@ import {fetchInsertOpinion} from "src/app/service/opinion/opinion.serivce";
 import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import {fetchShowCount} from "src/app/service/admin/admin.service";
+import {fetchShowArea, fetchShowCount, fetchShowRestaurant} from "src/app/service/admin/admin.service";
 import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
 import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
@@ -14,6 +14,8 @@ import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
 import axios from "axios";
 import MyWallet from "src/app/(page)/user/wallet/[id]/page";
 import Modal from "src/app/components/Modal";
+import {fetchPostList} from "src/app/service/post/post.service";
+import {PostModel} from "src/app/model/post.model";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
@@ -22,60 +24,43 @@ export default function MyPage() {
     const [count, setCount] = useState<CountItem[]>([]);
     const [region, setRegion] = useState<Area[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
-
-    const [activeTab, setActiveTab] = useState<string | undefined>('dashboard')
-    const [activeAddress, setActiveAddress] = useState<string | null>('billing')
-    const [activeOrders, setActiveOrders] = useState<string | undefined>('all')
-    const [openDetail, setOpenDetail] = useState<boolean | undefined>(false)
+    const [post, setPost] = useState<PostModel[]>([]);
+    const [activeTab, setActiveTab] = useState<string | undefined>('myPage')
     const [isModalOpen, setIsModalOpen] = useState(false);
-
 
 
     useEffect(() => {
         const countList = async () => {
             const data = await fetchShowCount();
-            setCount(data);
+            setCount(data)
         };
-        countList();
+        countList()
     }, []);
 
     useEffect(() => {
         const showArea = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countAreaList');
-                if (resp.status === 200) {
-                    setRegion(resp.data);
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowArea();
+            setRegion(data)
         };
-        showArea();
+        showArea()
     }, []);
 
     useEffect(() => {
         const showRestaurant = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countPostList');
-                // console.log(resp.data);
-                if (resp.status === 200) {
-                    setRestaurant(resp.data)
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowRestaurant();
+            setRestaurant(data)
         };
-        showRestaurant();
+        showRestaurant()
     }, []);
 
 
-    const handleActiveAddress = (order: string) => {
-        setActiveAddress(prevOrder => prevOrder === order ? null : order)
-    }
-
-    const handleActiveOrders = (order: string) => {
-        setActiveOrders(order)
-    }
+    useEffect(() => {
+        const showPostListByUserId = async () => {
+            const data = await fetchPostList(userId)
+            setPost(data)
+        }
+        showPostListByUserId()
+    })
 
 
     const [content, setContent] = useState("");
@@ -148,7 +133,6 @@ export default function MyPage() {
     };
 
 
-
     return (
         <>
 
@@ -175,26 +159,26 @@ export default function MyPage() {
                                 </div>
                                 <div className="menu-tab w-full max-w-none lg:mt-10 mt-6">
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white ${activeTab === 'dashboard' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('dashboard')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white ${activeTab === 'myPage' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('myPage')}>
                                         <Icon.HouseLine size={20}/>
                                         <strong className="heading6">MyPage</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'orders' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('orders')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'myWallet' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('myWallet')}>
                                         <Icon.Wallet size={20}/>
                                         <strong className="heading6">MyWallet</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'address' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('address')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'opinion' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('opinion')}>
                                         <Icon.Clipboard size={20}/>
                                         <strong className="heading6">MyOpinion</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'setting' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('setting')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'dash' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('dash')}>
                                         <Icon.ChartDonut size={20}/>
                                         <strong className="heading6">Dashboard</strong>
                                     </Link>
@@ -211,7 +195,7 @@ export default function MyPage() {
 
                             </div>
                             <div
-                                className={`tab text-content w-full ${activeTab === 'dashboard' ? 'block' : 'hidden'}`}>
+                                className={`tab text-content w-full ${activeTab === 'myPage' ? 'block' : 'hidden'}`}>
                                 <div className="overview grid sm:grid-cols-3 gap-5 mt-7 ">
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs w-full ">
@@ -226,7 +210,7 @@ export default function MyPage() {
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Cancelled Orders</span>
+                                            <span className="tese">Cancelled myWallet</span>
                                             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}> </Modal>
                                         </div>
                                         <Icon.ReceiptX className='text-4xl'/>
@@ -234,7 +218,7 @@ export default function MyPage() {
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Total Number of Orders</span>
+                                            <span className="tese">Total Number of myWallet</span>
                                             <h5 className="heading5 mt-1">200</h5>
                                         </div>
                                         <Icon.Package className='text-4xl'/>
@@ -242,7 +226,7 @@ export default function MyPage() {
                                 </div>
                                 <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
                                     <div>
-                                    <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                                        <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
                                         <div></div>
                                     </div>
                                     <div className={styles.cardBody}>
@@ -264,7 +248,7 @@ export default function MyPage() {
                                     <div className="list overflow-x-auto w-full mt-5">
                                         <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px]">
                                             <thead className="border-b border-line">
-                                            <tr>
+                                            <tr className={"text-center"}>
                                                 <th scope="col"
                                                     className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Order
                                                 </th>
@@ -272,30 +256,31 @@ export default function MyPage() {
                                                     className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Products
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Pricing
-                                                </th>
-                                                <th scope="col"
-                                                    className="pb-3 text-right text-sm font-bold uppercase text-secondary whitespace-nowrap">Status
+                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">작성날짜
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">postId</strong>
-                                                </th>
-                                                <td className="py-3">
+                                            {post.map(p => (
+                                                <tr key={p.id} className="item duration-300 border-b border-line">
+                                                    <th scope="row" className="py-3 text-left">
+                                                        <strong className="text-title">{p.id}</strong>
+                                                    </th>
+                                                    <td className="py-3">
                                                         <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">postcontent</strong>
-                                                            <span className="product_tag caption1 text-secondary"></span>
+                                                            {p.content}
                                                         </div>
-                                                </td>
-                                                <td className="py-3 price">restaurantname</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">뭐넣지</span>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td className="py-3 price">
+                                                        {new Intl.DateTimeFormat('ko-KR', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                            weekday: 'long'
+                                                        }).format(new Date(p.entryDate))}
+                                                    </td>
+                                                </tr>
+                                            ))}
 
                                             </tbody>
                                         </table>
@@ -303,13 +288,13 @@ export default function MyPage() {
                                 </div>
                             </div>
                             <div
-                                className={`tab text-content overflow-hidden w-full h-auto p-7 mt-7 border border-line rounded-xl ${activeTab === 'orders' ? 'block' : 'hidden'}`}>
+                                className={`tab text-content overflow-hidden w-full h-auto p-7 mt-7 border border-line rounded-xl ${activeTab === 'myWallet' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Wallet</h6>
-                                <div className="mb-10"><MyCalendar/> </div>
+                                <div className="mb-10"><MyCalendar/></div>
                                 <div><MyWallet/></div>
                             </div>
                             <div
-                                className={`tab_address text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'address' ? 'block' : 'hidden'}`}>
+                                className={`tab_opinion text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'opinion' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Opinion</h6>
                                 <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
                                 <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
@@ -330,8 +315,8 @@ export default function MyPage() {
                                 </form>
                             </div>
                             <div
-                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'setting' ? 'block' : 'hidden'}`}>
-                                <h6 className="heading6">Dashboard</h6>
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'dash' ? 'block' : 'hidden'}`}>
+                                <h6 className="heading6">DashBoard</h6>
                                 <div className={styles.cardHeader}>음식점 랭킹</div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.chartContainer}>

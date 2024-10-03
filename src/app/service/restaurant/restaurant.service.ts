@@ -1,4 +1,4 @@
-import {fetchRestaurant, restaurant} from "src/app/api/restaurant/restaurant.api";
+import {restaurant} from "src/app/api/restaurant/restaurant.api";
 // restaurant/page.tsx의 service
 
 import {
@@ -40,7 +40,7 @@ export const getRestaurantDetails = async (id: number) => {
 // post에 restautant 불러오기
 export const fetchRestaurantService = async (restaurantId: number): Promise<RestaurantModel | null> => {
     try {
-      const restaurantData = await fetchRestaurant(restaurantId);
+      const restaurantData = await restaurant.fetchRestaurant(restaurantId);
       return restaurantData;
     } catch (error) {
       console.error("Error fetching restaurant:", error);

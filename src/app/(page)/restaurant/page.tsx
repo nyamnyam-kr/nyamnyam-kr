@@ -73,7 +73,6 @@ export default function Home() {
                     <div className="w-64">
                         <Sidebar onFilterChange={handleFilterChange} />
                     </div>
-
                     <div className="flex-grow ml-4">
                         {restaurants.length > 0 ? (
                             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
