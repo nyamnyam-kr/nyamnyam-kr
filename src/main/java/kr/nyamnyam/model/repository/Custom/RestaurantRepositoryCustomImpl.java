@@ -134,7 +134,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
 
     @Override
-    public List<TotalModel> restaurantsByAge(Long age) {
+    public List<TotalModel> restaurantsByAge(Long userId) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
         QUsersEntity user = QUsersEntity.usersEntity;
@@ -144,7 +144,8 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
                 .from(restaurant)
                 .join(post).on(post.restaurant.id.eq(restaurant.id))
                 .join(user).on(user.id.eq(post.userId))
-                .where(user.age.like(age + "%"))
+                .join(user).on(user.id.eq(userId))
+                .where(user.age.like(user.age + "%"))
                 .groupBy(restaurant.id)
                 .orderBy(post.restaurant.count().desc())
                 .limit(5)

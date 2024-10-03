@@ -67,9 +67,9 @@ public class RestaurantController {
     }
 
     // user 연령별 추천
-    @GetMapping("/recommendByAge")
-    public ResponseEntity<List<?>> recommendByAge(@RequestParam Long age) {
-        return ResponseEntity.ok(restaurantService.recommendByAge(age));
+    @GetMapping("/recommendByAge/{id}")
+    public ResponseEntity<List<?>> recommendByAge(@RequestParam Long id) {
+        return ResponseEntity.ok(restaurantService.recommendByAge(id));
     }
 
     @GetMapping("/randomByUserId/{id}")

@@ -15,7 +15,7 @@ public interface RestaurantRepositoryCustom {
 
     List<RestaurantEntity> restaurantsByGender(String gender);
 
-    List<TotalModel> restaurantsByAge(Long age);
+    List<TotalModel> restaurantsByAge(Long userId);
 
     List<RestaurantEntity> findByTagName(List<String> tagNames);
 

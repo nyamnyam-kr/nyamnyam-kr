@@ -89,8 +89,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<TotalModel> recommendByAge(Long age) {
-        return restaurantRepository.restaurantsByAge(age);
+    public List<TotalModel> recommendByAge(Long userId) {
+        return restaurantRepository.restaurantsByAge(userId);
     }
 
     @Override
