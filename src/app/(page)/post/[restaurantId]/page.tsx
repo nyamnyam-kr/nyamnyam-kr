@@ -9,7 +9,7 @@ import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
 import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
 import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
-import { getImageService } from "src/app/service/image/image.service";
+import { imageService } from "src/app/service/image/image.service";
 import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
 import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
 
@@ -63,7 +63,7 @@ export default function PostList() {
 
             const updatedImages: { [key: number]: string[] } = {};
             for (const data of postData) {
-                const imageURLs = await getImageService(data.post.id);
+                const imageURLs = await imageService.getByPostId(data.post.id);
                 updatedImages[data.post.id] = imageURLs;
             }
             setImages(updatedImages);
@@ -81,7 +81,7 @@ export default function PostList() {
     };
 
     const fetchImage = async (postId: number) => {
-        const imageURLs = await getImageService(postId)
+        const imageURLs = await imageService.getByPostId(postId)
 
         setImages(prevImages => ({
             ...prevImages,

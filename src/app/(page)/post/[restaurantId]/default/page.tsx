@@ -1,8 +1,7 @@
 'use client'
 
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, use, useEffect, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import Rate from 'src/app/components/Rate'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs } from 'swiper/modules';
@@ -15,8 +14,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { ReplyModel } from 'src/app/model/reply.model'
 import { PostModel } from 'src/app/model/post.model'
 import { deletePostService, fetchPostService } from 'src/app/service/post/post.service'
-import { getImageService } from 'src/app/service/image/image.service'
-import { fetchRestaurantService } from 'src/app/service/restaurant/restaurant.service'
+import { imageService } from 'src/app/service/image/image.service'
+import { fetchRestaurantService, getRestaurantDetails } from 'src/app/service/restaurant/restaurant.service'
 import { checkLikedService, toggleLikeService } from 'src/app/service/upvote/upvote.service'
 import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from 'src/app/service/reply/reply.service'
 import Star from 'src/app/components/Star'
@@ -26,6 +25,7 @@ const Default = () => {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [images, setImages] = useState<{ [key: number]: string[] }>({});
+    const [allImages, setAllImages] = useState<string[]>([]);
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
@@ -33,12 +33,17 @@ const Default = () => {
     const [replyInput, setReplyInput] = useState<{ [key: number]: string }>({});
     const [editReply, setEditReply] = useState<{ [key: number]: boolean }>({});
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
+    const [allAverage, setAllAverage] = useState<number>(0);
+    const [tags, setTags] = useState<string[]>([]);
+    const [rating, setRating] = useState<{ [key: number]: number }>({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0, }); // 리뷰 갯수
+    const [totalRating, setTotalRating] = useState<number>(0);
     const currentUserId = 1; // 확인용
     const router = useRouter();
     const { restaurantId } = useParams();
+
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
-    // 스타일
+    // 공통 스타일
     const labelStyle = "text-sm font-medium mb-0 mr-1 leading-none align-middle";
     const starContainerStyle = "flex items-center";
 
@@ -46,6 +51,8 @@ const Default = () => {
         if (restaurantId) {
             fetchPosts(Number(restaurantId));
             fetchRestaurant();
+            fetchImgByRestaurant(Number(restaurantId));
+            fetchRestaurantDetails(Number(restaurantId));
         }
     }, [restaurantId]);
 
@@ -65,7 +72,7 @@ const Default = () => {
 
             const updatedImages: { [key: number]: string[] } = {};
             for (const data of postData) {
-                const imageURLs = await getImageService(data.post.id);
+                const imageURLs = await imageService.getByPostId(data.post.id);
                 updatedImages[data.post.id] = imageURLs;
             }
             setImages(updatedImages);
@@ -82,13 +89,24 @@ const Default = () => {
         }
     };
 
+    const fetchImgByRestaurant = async (restaurantId: number) => {
+        const imageURLs = await imageService.getByRestaurantId(restaurantId);
+        setAllImages(imageURLs);
+    }
+
     const fetchImage = async (postId: number) => {
-        const imageURLs = await getImageService(postId)
+        const imageURLs = await imageService.getByPostId(postId)
 
         setImages(prevImages => ({
             ...prevImages,
             [postId]: imageURLs,
         }));
+    }
+
+    const fetchRestaurantDetails = async (restaurantId: number) => {
+        const { allAverage, tags } = await getRestaurantDetails(restaurantId);
+        setAllAverage(allAverage);
+        setTags(tags);
     }
 
     const handleDelete = async (postId: number) => {
@@ -106,7 +124,6 @@ const Default = () => {
     // 댓글 버튼 
     const toggleReply = async (id: number) => {
         const { toggled, replies } = await toggleReplyService(id, replyToggles);
-        console.log("toggleReply: ", replies);
 
         setReplyToggles((prevToggles) => ({
             ...prevToggles,
@@ -254,67 +271,38 @@ const Default = () => {
                     <div className="top-overview flex justify-between py-6 max-md:flex-col gap-y-6">
                         <div className="rating lg:w-1/4 md:w-[30%] lg:pr-[75px] md:pr-[35px]">
                             <div className="heading flex items-center justify-center flex-wrap gap-3 gap-y-4">
-                                <div className="text-display">4.6</div>
+                                <div className="text-display">{allAverage.toFixed(1)}</div>
                                 <div className='flex flex-col items-center'>
-                                    <Rate currentRate={5} size={18} />
-                                    <div className='text-secondary text-center mt-1'>(1,968 Ratings)</div>
+                                    <Star w="w-4" h="h-4" readonly={true} rate={allAverage || 0} />
+                                    <div className='text-secondary text-center mt-1'>({posts.length} Ratings)</div>
                                 </div>
                             </div>
                             <div className="list-rating mt-3">
-                                <div className="item flex items-center justify-between gap-1.5">
-                                    <div className="flex items-center gap-1">
-                                        <div className="caption1">5</div>
-                                        <Icon.Star size={14} weight='fill' />
-                                    </div>
-                                    <div className="progress bg-line relative w-3/4 h-2">
-                                        <div className="progress-percent absolute bg-yellow w-[50%] h-full left-0 top-0"></div>
-                                    </div>
-                                    <div className="caption1">50%</div>
-                                </div>
-                                <div className="item flex items-center justify-between gap-1.5 mt-1">
-                                    <div className="flex items-center gap-1">
-                                        <div className="caption1">4</div>
-                                        <Icon.Star size={14} weight='fill' />
-                                    </div>
-                                    <div className="progress bg-line relative w-3/4 h-2">
-                                        <div className="progress-percent absolute bg-yellow w-[20%] h-full left-0 top-0"></div>
-                                    </div>
-                                    <div className="caption1">20%</div>
-                                </div>
-                                <div className="item flex items-center justify-between gap-1.5 mt-1">
-                                    <div className="flex items-center gap-1">
-                                        <div className="caption1">3</div>
-                                        <Icon.Star size={14} weight='fill' />
-                                    </div>
-                                    <div className="progress bg-line relative w-3/4 h-2">
-                                        <div className="progress-percent absolute bg-yellow w-[10%] h-full left-0 top-0"></div>
-                                    </div>
-                                    <div className="caption1">10%</div>
-                                </div>
-                                <div className="item flex items-center justify-between gap-1.5 mt-1">
-                                    <div className="flex items-center gap-1">
-                                        <div className="caption1">2</div>
-                                        <Icon.Star size={14} weight='fill' />
-                                    </div>
-                                    <div className="progress bg-line relative w-3/4 h-2">
-                                        <div className="progress-percent absolute bg-yellow w-[10%] h-full left-0 top-0"></div>
-                                    </div>
-                                    <div className="caption1">10%</div>
-                                </div>
-                                <div className="item flex items-center justify-between gap-1.5 mt-1">
-                                    <div className="flex items-center gap-2">
-                                        <div className="caption1">1</div>
-                                        <Icon.Star size={14} weight='fill' />
-                                    </div>
-                                    <div className="progress bg-line relative w-3/4 h-2">
-                                        <div className="progress-percent absolute bg-yellow w-[10%] h-full left-0 top-0"></div>
-                                    </div>
-                                    <div className="caption1">10%</div>
-                                </div>
+                                {Object.keys(rating).map((key) => {
+                                    const starCount = Number(key);
+                                    const count = rating[starCount]; 
+                                    const percent = totalRating > 0 ? (count / totalRating) * 100 : 0;
+
+                                    return ( // JSX 반환을 위해 return 명시
+                                        <div key={starCount} className="item flex items-center justify-between gap-1.5">
+                                            <div className="flex items-center gap-1">
+                                                <div className="caption1">{starCount}</div>
+                                                <Icon.Star size={14} weight="fill" />
+                                            </div>
+                                            <div className="progress bg-line relative w-3/4 h-2">
+                                                <div
+                                                    className="progress-percent absolute bg-yellow h-full left-0 top-0"
+                                                    style={{ width: `${percent}%` }} 
+                                                ></div>
+                                            </div>
+                                            <div className="caption1">{percent.toFixed(1)}%</div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                         <div className="list-img lg:w-3/4 md:w-[70%] lg:pl-[15px] md:pl-[15px]">
-                            <div className="heading5">All Image (128)</div>
+                            <div className="heading5">All Image ({allImages.length})</div>
                             <div className="list md:mt-6 mt-3">
                                 <Swiper
                                     spaceBetween={16}
@@ -329,26 +317,35 @@ const Default = () => {
                                             slidesPerView: 5,
                                             spaceBetween: 16,
                                         },
+                                        768: {
+                                            slidesPerView: 4,
+                                            spaceBetween: 16,
+                                        },
+                                        992: {
+                                            slidesPerView: 5,
+                                            spaceBetween: 20,
+                                        },
+                                        1100: {
+                                            slidesPerView: 5,
+                                            spaceBetween: 20,
+                                        },
+                                        1290: {
+                                            slidesPerView: 7,
+                                            spaceBetween: 20,
+                                        },
                                     }}
                                 >
-                                    <SwiperSlide>
-                                        <Image
-                                            src={'/images/product/1000x1000.png'}
-                                            width={400}
-                                            height={400}
-                                            alt=''
-                                            className='w-[120px] aspect-square object-cover rounded-lg'
-                                        />
-                                    </SwiperSlide>
-                                    <SwiperSlide>
-                                        <Image
-                                            src={'/images/product/1000x1000.png'}
-                                            width={400}
-                                            height={400}
-                                            alt=''
-                                            className='w-[120px] aspect-square object-cover rounded-lg'
-                                        />
-                                    </SwiperSlide>
+                                    {allImages.map((imageURL, index) => (
+                                        <SwiperSlide key={index}>
+                                            <Image
+                                                src={imageURL}
+                                                width={400}
+                                                height={400}
+                                                alt={`Restaurant Image ${index + 1}`}
+                                                className='w-[120px] aspect-square object-cover rounded-lg'
+                                            />
+                                        </SwiperSlide>
+                                    ))}
                                 </Swiper>
                             </div>
                             <div className="sorting flex items-center flex-wrap md:gap-5 gap-3 gap-y-3 mt-6">
@@ -417,13 +414,13 @@ const Default = () => {
                                         </div>
                                         <div className="body1 mt-3">{p.content}</div>
                                         <div className="mb-4 flex items-center">
-                                            <h2 className="text-lg font-bold mb-0 flex-shrink-0 self-center">태그:</h2>
                                             {p.tags && p.tags.length > 0 ? (
-                                                <ul className="flex flex-wrap gap-2 items-center">
+                                                <ul className="flex flex-wrap gap-2 items-center mt-2">
                                                     {p.tags.map((tag, index) => (
                                                         <li
                                                             key={index}
-                                                            className="rounded-full border border-gray-300 bg-white px-3 py-1 text-gray-600 font-semibold shadow-sm hover:bg-gray-100"
+                                                            style={{ marginLeft: index === 0 ? 0 : "9=8px" }}
+                                                            className="ml-2 rounded-full border border-gray-300 bg-white px-3 py-1 text-gray-600 font-semibold shadow-sm hover:bg-gray-100"
                                                         >
                                                             {tag}
                                                         </li>
@@ -433,7 +430,7 @@ const Default = () => {
                                                 <p className="ml-2 text-gray-500">태그 없음</p>
                                             )}
                                         </div>
-                                        <div className="action mt-3">
+                                        <div className="action mt-1">
                                             <div className="flex items-center gap-4">
                                                 <button
                                                     onClick={() => handleLike(p.id)}
@@ -450,7 +447,7 @@ const Default = () => {
                                             </div>
                                             {replyToggles[p.id] && (
                                                 <>
-                                                    <div className="mt-4 w-full">
+                                                    <div className="mt-2 w-full">
                                                         {replies[p.id] && replies[p.id].length > 0 ? (
                                                             <ul>
                                                                 {replies[p.id].map((reply, index) => (

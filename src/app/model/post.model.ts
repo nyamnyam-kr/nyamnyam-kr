@@ -1,3 +1,4 @@
+//src/app/model/post.model.ts
 export interface PostModel {
   id: number;  
   taste: number;

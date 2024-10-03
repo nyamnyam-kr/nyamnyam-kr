@@ -8,6 +8,9 @@ const nextConfig = {
     config.cache = false; // 캐시 비활성화
     return config;
   },
+  images: {
+    domains: ['kr.object.ncloudstorage.com'], // 외부 도메인 허용
+  },
 };
 
 

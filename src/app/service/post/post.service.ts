@@ -1,7 +1,7 @@
 import { post} from "src/app/api/post/post.api";
 import { getLikeCount, upvote} from "src/app/api/upvote/upvote.api";
 import { PostModel } from "src/app/model/post.model";
-import { getImageService } from "../image/image.service";
+import { imageService } from "../image/image.service";
 import { image } from "src/app/api/image/image.api";
 
 export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
@@ -68,7 +68,7 @@ export const fetchPostService = async (restaurantId: number) => {
     const likeStatusPromise = posts.map(async (post) => {
       const liked = await upvote.hasLiked({ id: 0, giveId: 1, postId: post.id, haveId: 0 });
       const count = await getLikeCount(post.id);
-      const images = await getImageService(post.id);
+      const images = await imageService.getByPostId(post.id);
 
       return { post, liked, count, images }
     })
