@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
@@ -139,17 +140,28 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         QPostEntity post = QPostEntity.postEntity;
         QUsersEntity user = QUsersEntity.usersEntity;
 
-        List<Tuple> results = jpaQueryFactory
-                .select(restaurant.name, post.restaurant.id.count())
-                .from(restaurant)
-                .join(post).on(post.restaurant.id.eq(restaurant.id))
-                .join(user).on(user.id.eq(post.userId))
-                .join(user).on(user.id.eq(userId))
-                .where(user.age.like(user.age + "%"))
-                .groupBy(restaurant.id)
-                .orderBy(post.restaurant.count().desc())
-                .limit(5)
-                .fetch();
+        Long age = jpaQueryFactory
+                .select(user.age)
+                .from(user)
+                .where(user.id.eq(userId))
+                .fetchOne();
+
+        List<Tuple> results = null;
+
+        if (age != null) {
+            // 10대, 20대, 30대 또는 40대에 따라 쿼리 실행
+            results = jpaQueryFactory
+                    .select(restaurant.name, post.restaurant.id.count())
+                    .from(restaurant)
+                    .join(post).on(post.restaurant.id.eq(restaurant.id))
+                    .join(user).on(user.id.eq(post.userId))
+                    .where(user.age.between(age < 20 ? 10 : (age < 30 ? 20 : (age < 40 ? 30 : 40)),
+                            age < 20 ? 19 : (age < 30 ? 29 : (age < 40 ? 39 : 49)))) // 나이에 따라 범위 설정
+                    .groupBy(restaurant.id)
+                    .orderBy(post.restaurant.id.count().desc())
+                    .limit(5)
+                    .fetch();
+        }
 
         return  results.stream()
                 .map(tuple -> {

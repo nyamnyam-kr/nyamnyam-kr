@@ -88,15 +88,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<TotalModel> recommendByAge(Long userId) {
-        return restaurantRepository.restaurantsByAge(userId);
-    }
 
-    @Override
-    public RestaurantEntity randomRestaurantByUserId(Long userId) {
-        return restaurantRepository.randomRestaurant(userId);
-    }
 
 
 }

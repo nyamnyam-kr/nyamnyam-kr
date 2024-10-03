@@ -9,11 +9,13 @@ import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.QReceiptEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.querydsl.core.group.GroupBy.sum;
+import static com.querydsl.core.types.dsl.Expressions.stringTemplate;
 
 
 @RequiredArgsConstructor
@@ -64,16 +66,41 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
 
         List<Tuple> results = jpaQueryFactory
                 .select(
-                        Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"),
+                        stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"),
                         receiptEntity.price.sum()
 
                 )
                 .from(receiptEntity)
                 .where(receiptEntity.userId.eq(userId))
-                .groupBy(Expressions.stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"))
+                .groupBy(stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.date, "%Y-%m"))
                 .fetch();
 
         return results.stream()
+                .map(tuple -> {
+                    CostModel costModel = new CostModel();
+                    costModel.setDate(tuple.get(0, String.class));
+                    costModel.setPrice(tuple.get(1, Long.class));
+                    return costModel;
+                })
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CostModel> receiptCount() {
+        QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;
+
+        List<Tuple> result = jpaQueryFactory
+                .select(
+                        stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.entryDate, "%Y-%m").as("month"),
+                        receiptEntity.count().as("count")
+                )
+                .from(receiptEntity)
+                .groupBy(stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.entryDate, "%Y-%m"))
+                .orderBy(stringTemplate("DATE_FORMAT({0}, {1})", receiptEntity.entryDate, "%Y-%m").asc())
+                .fetch();
+
+        return result.stream()
                 .map(tuple -> {
                     CostModel costModel = new CostModel();
                     costModel.setDate(tuple.get(0, String.class));

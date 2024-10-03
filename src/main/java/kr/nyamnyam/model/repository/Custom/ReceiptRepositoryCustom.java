@@ -13,4 +13,6 @@ public interface ReceiptRepositoryCustom {
 
     List<CostModel> costList(Long userId);
 
+    List<CostModel> receiptCount();
+
 }
