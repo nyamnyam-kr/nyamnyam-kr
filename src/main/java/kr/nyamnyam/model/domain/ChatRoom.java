@@ -28,4 +28,5 @@ public class ChatRoom {
     // 내장된 채팅 메시지 리스트
     private List<Chat> messages;
 
+
 }

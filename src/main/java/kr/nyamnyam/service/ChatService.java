@@ -21,5 +21,8 @@ public interface ChatService {
 
     Mono<Long> getParticipantsNotReadCount(String chatId);
 
+    Mono<Chat> markAsRead(String chatId, String nickname);
+
+    Mono<Chat> updateReadBy(String chatId, String nickname);
 
 }

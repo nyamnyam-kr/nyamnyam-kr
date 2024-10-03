@@ -21,6 +21,5 @@ public interface ChatRepository extends ReactiveMongoRepository<Chat, String> {
 
     Flux<Chat> findByChatRoomId(String chatRoomId);
 
-    Flux<Chat> findByChatRoomIdAndIdGreaterThan(String chatRoomId, String lastSeenMessageId);
 
 }

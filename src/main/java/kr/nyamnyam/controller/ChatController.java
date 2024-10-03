@@ -5,9 +5,11 @@ import kr.nyamnyam.model.domain.Chat;
 import kr.nyamnyam.model.domain.ChatFile;
 import kr.nyamnyam.model.repository.ChatRepository;
 import kr.nyamnyam.model.repository.ChatRoomRepository;
+import kr.nyamnyam.service.ChatRoomService;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
@@ -29,7 +31,7 @@ import java.time.LocalDateTime;
 public class ChatController {
 
     private final ChatService chatService;
-    private final ChatRepository chatRepository;
+    private final ChatRoomService chatRoomService;
 
 
     // 1대1??
@@ -45,7 +47,14 @@ public class ChatController {
         chat.setCreatedAt(LocalDateTime.now());
         chat.setChatRoomId(chatRoomId);
 
-        return chatService.saveMessage(chat);
+        // 채팅방 ID로 채팅방 정보를 가져옴
+        return chatRoomService.findById(chatRoomId)
+                .map(chatRoom -> {
+                    // 참가자 수를 가져와서 chat 객체에 설정
+                    chat.setTotalParticipants(chatRoom.getParticipants().stream().count());
+                    return chat; // 처리한 chat 객체 반환
+                })
+                .flatMap(chatService::saveMessage); // 채팅 메시지 저장
     }
 
     //얘는 보낸 메세지를 바로 채널에다가  뿌려주는 친구
@@ -74,5 +83,18 @@ public class ChatController {
     public Mono<Long> getNotReadParticipantsCount(@PathVariable String chatId) {
         return chatService.getParticipantsNotReadCount(chatId);
     }
+
+    @PatchMapping("/{chatId}/read/{nickname}")
+    public Mono<Chat> markMessageAsRead(@PathVariable String chatId, @PathVariable String nickname) {
+        return chatService.markAsRead(chatId, nickname);
+    }
+
+    @PutMapping("/{chatId}/read/{nickname}")
+    public Mono<ResponseEntity<Chat>> updateReadBy(@PathVariable String chatId, @PathVariable String nickname) {
+        return chatService.updateReadBy(chatId, nickname)
+                .map(updatedChat -> ResponseEntity.ok(updatedChat))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
 
 }
