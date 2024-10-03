@@ -3,12 +3,12 @@ package kr.nyamnyam.controller;
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.service.ImageService;
-import kr.nyamnyam.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +33,11 @@ public class ImageController{
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findByPostId(postId));
     }
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<String>> findImageByRestaurantId(@PathVariable Long restaurantId){
+        return ResponseEntity.ok(service.findImagesByRestaurantId(restaurantId));
+    }
+
     @GetMapping("/post/{postId}/imageIds")
     public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId){
         return ResponseEntity.ok(service.findImageIdsByPostId(postId));

@@ -8,6 +8,7 @@ import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.repository.ImageRepository;
+import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class ImageServiceImpl implements ImageService {
     private final ImageRepository repository;
     private final PostServiceImpl postService;
     private final AmazonS3 amazonS3;
+    private final PostRepository postRepository;
 
     @Value("${naver.storage.bucket}")
     private String bucketName;
@@ -94,6 +97,18 @@ public class ImageServiceImpl implements ImageService {
             s3files.add(imageModel);
         }
         return s3files;
+    }
+
+    @Override
+    public List<String> findImagesByRestaurantId(Long restaurantId) {
+        List<PostEntity> postEntity = postRepository.findByRestaurantId(restaurantId);
+        List<Long> postIds = postEntity.stream()
+                .map(PostEntity::getId)
+                .collect(Collectors.toList());
+
+        return repository.findByPostIdIn(postIds).stream()
+                .map(ImageEntity::getUploadURL)
+                .collect(Collectors.toList());
     }
 
     @Override

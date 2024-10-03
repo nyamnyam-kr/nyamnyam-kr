@@ -15,4 +15,6 @@ public interface ImageRepository extends JpaRepository<ImageEntity, Long>, Image
     Boolean existsByPostId(Long postId);
 
     Boolean deleteByPostId(Long postId);
+
+    List<ImageEntity> findByPostIdIn(List<Long> postIds);
 }

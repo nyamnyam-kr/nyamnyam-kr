@@ -32,4 +32,5 @@ public interface ImageService {
 
     Boolean updateImages(Long postId, List<MultipartFile> multipartFiles);
 
+    List<String> findImagesByRestaurantId(Long restaurantId);
 }
