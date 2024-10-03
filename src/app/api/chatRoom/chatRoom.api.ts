@@ -1,29 +1,41 @@
-import { ChatRoomModel } from "src/app/model/chatRoom.model";
-import { strategy1 } from "../api.strategy";
-import { api } from "../request";
-import axios from "axios";
-
+// /src/app/api/chatRoom/chatRoom.api.ts
 // 챗룸 출력(해당 유저가 참여한으로 수정 필요)
-const findAllByNickname = async (nickname: any): Promise<ChatRoomModel[]> => {
-  const response = await strategy1.GET(`${api.chatRoom}/findAll/${nickname}`);
-  
-  // 응답 데이터가 배열이 아닐 경우, 배열로 강제 변환
-  return Array.isArray(response.data) ? response.data : [response.data];
+export const fetchChatRooms = async (nickname:any) => {
+  const response = await fetch(`http://localhost:8081/api/chatRoom/findAll/${nickname}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json(); // ChatRooms 데이터 반환
 };
 
- const findById = async (chatRoomId: any): Promise<ChatRoomModel> => {
-  const reponse = await strategy1.GET(`${api.chatRoom}/${chatRoomId}`);
-  return reponse.data;
- }
+// 챗룸 갯수 세는건데 나중에 페이지 할까봐
+export const fetchChatRoomCount = async () => {
+  const response = await fetch('http://localhost:8081/api/chatRoom/count');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json(); // 채팅방 총 개수 반환
+};
+
+export const fetchChatRoomById = async (chatRoomId: any) => {
+  const response = await fetch(`http://localhost:8081/api/chatRoom/${chatRoomId}`);
+  if (!response.ok) {
+    throw new Error("채팅방 정보를 가져오는 중 오류 발생");
+  }
+  return response.json();
+};
 
 
- const deleteById = async (chatRoomId:string) => {
-  const reponse = await strategy1.DELETE(`${api.chatRoom}/deleteById/${chatRoomId}`);
- }
-
-
-
-
-
-
-export const chatRoom={findAllByNickname, findById,deleteById};
+// api/chatRoomApi.ts
+export const deleteChatRoomApi = async (chatRoomId: string) => {
+  const response = await fetch(`http://localhost:8081/api/chatRoom/deleteById/${chatRoomId}`, { method: 'DELETE' });
+  if (!response.ok) {
+    throw new Error("채팅방 삭제 실패");
+  }
+};
