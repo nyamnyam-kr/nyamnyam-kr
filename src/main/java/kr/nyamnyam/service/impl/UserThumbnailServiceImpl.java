@@ -1,6 +1,6 @@
 package kr.nyamnyam.service.impl;
 
-import jakarta.transaction.Transactional;
+
 import kr.nyamnyam.model.entity.UserEntity;
 import kr.nyamnyam.model.entity.UserThumbnailEntity;
 import kr.nyamnyam.model.repository.UserThumbnailRepository;

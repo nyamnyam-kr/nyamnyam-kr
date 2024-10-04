@@ -1,4 +1,7 @@
+import kr.nyamnyam.NyamnyamKrApplication;
 import org.springframework.boot.SpringApplication;
+
+
 
 public class test {
     public static void main(String[] args) {

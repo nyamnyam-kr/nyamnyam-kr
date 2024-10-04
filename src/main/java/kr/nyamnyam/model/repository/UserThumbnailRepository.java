@@ -1,8 +1,8 @@
 package kr.nyamnyam.model.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import kr.nyamnyam.model.entity.UserThumbnailEntity;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserThumbnailRepository extends JpaRepository<UserThumbnailEntity, Long> {
+public interface UserThumbnailRepository extends MongoRepository<UserThumbnailEntity, Long> {
 
 }

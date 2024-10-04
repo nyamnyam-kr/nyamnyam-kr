@@ -19,23 +19,24 @@ public class Pagination {
             pageCount, pageSize, startPage, endPage, pageNum,
             blockCount, prevBlock, nextBlock, blockNum;
     private final int BLOCK_SIZE = 5, PAGE_SIZE = 10;
-    public boolean existPrev, existNext;
+    private boolean existPrev, existNext;
 
-    public Pagination() {}
+    public Pagination() {
+    }
 
     public Pagination(int totalCount, int pageNum) {
-        this.totalCount = totalCount;
+
         this.pageNum = pageNum;
-
-        this.pageCount = (totalCount + PAGE_SIZE - 1) / PAGE_SIZE;
-
-        this.startPage = Math.max(1, pageNum - 2);
-        this.endPage = Math.min(pageCount, pageNum + 2);
-
-        this.existPrev = startPage > 1;
-        this.existNext = endPage < pageCount;
-
+        this.totalCount = totalCount;
+        this.pageCount = (totalCount % PAGE_SIZE == 0) ? totalCount / PAGE_SIZE : totalCount / PAGE_SIZE + 1;
+        this.blockCount = (pageCount + BLOCK_SIZE - 1) / BLOCK_SIZE;
         this.startRow = (pageNum - 1) * PAGE_SIZE;
-        this.endRow = Math.min(pageNum * PAGE_SIZE, totalCount);
+        this.endRow = (pageNum * PAGE_SIZE) - 1;
+        this.blockNum = (pageNum - 1) * BLOCK_SIZE;
+        this.startPage = (pageNum <= 3) ? 1 : pageNum - 2;
+        this.endPage = (endPage >= pageCount - 2) ? pageCount : pageNum + 2;
+        this.existPrev = (pageNum <= 1) ? false : true;
+        this.existNext = (pageNum == pageCount) ? false : true;
+
     }
 }

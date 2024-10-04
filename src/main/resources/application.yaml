@@ -1,24 +1,30 @@
 spring:
-  application:
-    name: nyamnyam_kr
-  datasource:
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    mongodb:
+      uri: mongodb://root:1234@211.188.50.33:27017/test
+      auto-index-creation: true
+
+
   jpa:
-    defer-datasource-initialization: true # ???? ??????? ??? ? ?? /resources/data.sql? ????? ??? ? ??
-    show-sql: true # SQL ?, Query? ??? ? ??
+    hibernate:
+      ddl-auto: update
     properties:
-      hibernate.format_sql: true # ??? ????? ??? ???? ??? ?????? ??
-      hibernate.default_batch_fetch_size: 100 # JPA?? ?? ??? ??? ????? ??? ?? ?? ??? ???? ? ? ??? ???? ??? ? ??
-    sql:
-      init:
-        mode: always
-    servlet:
-      multipart:
-        enabled: true
-        file-size-threshold: 2MB
-        max-file-size: 20MB
-        max-request-size: 20MB
-    server:
-      port: 8080
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        use_sql_comments: true
+      show-sql: true
+
+    timezone: UTC
+    mysql:
+      init-mode: always
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss'Z'
+    time-zone: UTC
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: 8081
