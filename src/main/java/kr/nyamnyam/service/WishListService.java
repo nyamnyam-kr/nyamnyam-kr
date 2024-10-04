@@ -17,4 +17,6 @@ public interface WishListService {
     List<WishListModel> getWishLists(Long userId);
 
 
+    @Transactional
+    boolean deleteWishList(Long userId, Long wishListId);
 }
