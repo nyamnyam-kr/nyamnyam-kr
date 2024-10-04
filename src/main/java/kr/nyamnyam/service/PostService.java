@@ -1,6 +1,7 @@
 package kr.nyamnyam.service;
 
 
+import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 
@@ -32,6 +33,6 @@ public interface PostService {
 
     Boolean updatePost(Long id, PostModel model);
 
-    List<PostModel> findByUserId(Long userId);
+    List<UserPostModel> findByUserId(Long userId);
 }
 

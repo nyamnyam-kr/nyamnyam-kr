@@ -8,4 +8,6 @@ public interface ReportRepository extends JpaRepository<ReportEntity, Long> {
 
     ReportEntity findByUserId(Long id);
 
+    ReportEntity findByPostId(Long postId);
+
 }

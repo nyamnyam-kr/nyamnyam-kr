@@ -31,6 +31,8 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
                 .fetchFirst();
     }
 
+
+
     @Override
     public List<CostModel> costList(Long userId) {
         QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;

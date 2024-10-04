@@ -14,7 +14,5 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostEntity, Long>, PostRepositoryCustom {
 
     List<PostEntity> findByRestaurantId(Long restaurantId);
-
-    List<PostEntity> findByUserId(Long userId);
 }
 

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
@@ -14,9 +16,14 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @PostMapping("/post")
+    @PostMapping("/save")
     public ResponseEntity<Boolean> reportComment(@RequestBody ReportModel reportModel) {
         return ResponseEntity.ok(reportService.save(reportModel));
 
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<?>> reportList() {
+        return ResponseEntity.ok(reportService.findAll());
     }
 }

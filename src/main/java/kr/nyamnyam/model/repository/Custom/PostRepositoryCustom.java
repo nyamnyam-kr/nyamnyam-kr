@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.domain.Chart.UserPostModel;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public interface PostRepositoryCustom {
     List<String> findRestaurantFromUpvote();
 
     List<TotalModel> countRestaurantList();
+
+    List<UserPostModel> findByUserId(Long userId);
 
 
 }
