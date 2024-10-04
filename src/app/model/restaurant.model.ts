@@ -1,11 +1,11 @@
 interface RestaurantModel {
-    id?: number;
-    name?: string;
+    id?: number|any;
+    name?: string|any;
     type?: string;
     address?: string;
     tel?: string;
     rate?: number;
-    thumbnailImageUrl?: string;
+    thumbnailImageUrl?: string|any;
     subImageUrl?: string;
     menu: string; 
     operation: string;  
