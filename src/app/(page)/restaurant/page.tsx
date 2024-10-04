@@ -1,33 +1,38 @@
-// app/page.tsx
 "use client";
-import { useState, useEffect, useRef } from 'react';
+// app/page.tsx
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Sidebar from 'src/app/components/SideBar';
 import ScrollToTop from 'src/app/components/ScrollToTop';
-import { SearchProvider, useSearchContext } from 'src/app/components/SearchContext';
+import { useSearchContext } from 'src/app/components/SearchContext';
 import { getRestaurantsByCategory, getRestaurantsBySearch, getRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
 import HeartButton from 'src/app/modal/AddHeart';
-
-
-
-
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Home() {
     const [restaurants, setRestaurants] = useState<RestaurantModel[]>([]);
     const { searchTerm } = useSearchContext();
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let data: RestaurantModel[] = await getRestaurantsBySearch(searchTerm || '');
+                const term = searchParams.get('search') || searchTerm; // 쿼리 파라미터에서 검색어 추출
 
+
+                let data: RestaurantModel[] = await getRestaurantsBySearch(term || '');
+
+                // 태그 필터링
                 if (selectedTags.length > 0) {
                     const tagData = await getRestaurantsByTag(selectedTags);
                     data = data.filter(restaurant => tagData.some((tagged: { id: number; }) => tagged.id === restaurant.id));
                 }
 
+                // 카테고리 필터링
                 if (selectedCategories.length > 0) {
                     const categoryData = await getRestaurantsByCategory(selectedCategories);
                     data = data.filter(restaurant => categoryData.some((categorized: { id: number; }) => categorized.id === restaurant.id));
@@ -40,14 +45,12 @@ export default function Home() {
         };
 
         fetchData();
-    }, [searchTerm, selectedTags, selectedCategories]);
+    }, [searchParams, searchTerm,  selectedTags, selectedCategories]); // 변경 사항에 따라 다시 fetch
 
     const handleFilterChange = (tags: string[], categories: string[]) => {
         setSelectedTags(tags);
         setSelectedCategories(categories);
     };
-
-
 
     return (
         <>
@@ -96,26 +99,25 @@ export default function Home() {
             </div>
 
             <style jsx>
-                {
-                    `.content-main {
-    display: flex;
-    justify-content: space-between; /* 사이드바와 오른쪽 컨텐츠의 공간을 최대한 활용 */
-    max-width: 100%; /* 전체 최대 너비 설정 */
-    margin: 0 auto; /* 중앙 정렬 */
-}
+                {`
+                    .content-main {
+                        display: flex;
+                        justify-content: space-between;
+                        max-width: 100%;
+                        margin: 0 auto;
+                    }
 
-.left {
-    flex: 0 0 250px; /* 사이드바의 너비를 고정 */
-    margin-right: 20px; /* 사이드바와 컨텐츠 사이의 간격 */
-}
+                    .left {
+                        flex: 0 0 250px;
+                        margin-right: 20px;
+                    }
 
-.right {
-    flex: 1; /* 오른쪽 영역은 남은 공간을 모두 차지 */
-    display: flex;
-    justify-content: center; /* 가운데 정렬 */
-}
-`
-                }
+                    .right {
+                        flex: 1;
+                        display: flex;
+                        justify-content: center;
+                    }
+                `}
             </style>
         </>
     );

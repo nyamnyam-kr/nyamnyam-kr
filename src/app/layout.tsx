@@ -1,5 +1,5 @@
 // src/app/(page)/restaurant/layout.tsx 또는 src/app/layout.tsx
-
+"use client"
 import React from 'react';
 import Header from 'src/app/components/common/Header';
 import StoreProvider from 'src/app/StoreProvider';

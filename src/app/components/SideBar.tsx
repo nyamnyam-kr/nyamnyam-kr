@@ -127,13 +127,15 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
       <div className="filter-size">
         <div className="heading6">편의시설</div>
         <div className="list-size flex items-center flex-wrap gap-3 gap-y-4 mt-4">
-          {['드라이브 스루', '무료 Wi-Fi', '바 테이블', '배달 서비스', '아동 시설', '애완동물 출입 가능', '예약 가능', '주차장', '테라스 좌석', '휠체어 접근 가능'].map((item, index) => (
+          {['바 테이블',  '아동 시설', '주차장','예약 가능', '배달 서비스', '테라스 좌석', '휠체어 접근 가능', '애완동물 출입 가능',
+            '무료 Wi-Fi', '드라이브 스루'
+          ].map((item, index) => (
             <div
               key={index}
               className={`size-item text-button ${item === '바 테이블' || item === '아동 시설' || item === '예약 가능' || item === '주차장'
                 ? 'px-4 py-2'
                 : 'w-[44px] h-[44px]'
-                }           } flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''} ${item === '드라이브 스루' || item === '무료 Wi-Fi' || item === '배달 서비스' || item === '애완동물 출입 가능' || item === '테라스 좌석' || item === '휠체어 접근 가능' ? 'w-[175px]' : ''} ${item === '애완동물 출입 가능' ? 'w-[200px]' : ''}`}
+                }           } flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''} ${item === '드라이브 스루' || item === '무료 Wi-Fi' || item === '배달 서비스' || item === '테라스 좌석'  ? 'w-[250px]' : ''} ${item === '애완동물 출입 가능' || item === '휠체어 접근 가능' ? 'w-[250px]' : ''}`}
               onClick={() => handleTagToggle(item)}
             >
               {item}
