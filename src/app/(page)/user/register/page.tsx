@@ -33,8 +33,8 @@ export default function Register() {
                 role: 'user', // 기본값으로 'user' 역할 설정
             };
 
-            const newUser = await addUser(user); // 사용자 등록 API 호출
-            console.log('User registered:', newUser);
+           // const newUser = await addUser(user); // 사용자 등록 API 호출
+           // console.log('User registered:', newUser);
             // 회원가입 후 로그인 페이지로 리디렉션
             router.push("/login");
         } catch (error) {

@@ -1,5 +1,5 @@
 import {receipt} from "src/app/api/receipt/receipt.api";
-import {CountCost} from "src/app/model/dash.model";
+import {CountCost, RestaurantList} from "src/app/model/dash.model";
 
 
 export const fetchReceiptRegister = async (formData: FormData): Promise<any> => {

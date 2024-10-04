@@ -12,6 +12,9 @@ import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upv
 import { getImageService } from "src/app/service/image/image.service";
 import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
 import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
+import {fetchReportRegister} from "src/app/service/report/report.service";
+import {fetchNoticeRegister} from "src/app/service/notice/notice.service";
+import {ReportModel} from "src/app/model/report.model";
 
 const reportReasons = [
     "광고글이에요",
@@ -238,38 +241,24 @@ export default function PostList() {
     };
 
     const postReport = async (postId: number) => {
-        const selectedReason = selectedReasons[postId];
+        const selectedReason = reportReason;
 
         if (!selectedReason) {
             alert("신고 사유를 선택해주세요.");
             return;
         }
 
-        const reportModel = {
+        const reportModel: ReportModel = {
             userId: currentUserId,
             postId: postId,
             reason: selectedReason
         };
 
+
         try {
-            const response = await fetch('http://localhost:8080/api/report/post', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(reportModel),
-            });
+            await fetchReportRegister(reportModel);
+            alert('신고가 성공적으로 제출되었습니다.');
 
-            if (!response.ok) {
-                throw new Error('신고 실패');
-            }
-
-            const result = await response.json();
-            if (result) {
-                alert('신고가 성공적으로 제출되었습니다.');
-            } else {
-                alert('신고 제출에 실패하였습니다.');
-            }
         } catch (error) {
             console.error('신고 중 오류 발생:', error);
             alert('신고 중 오류가 발생했습니다.');
@@ -278,14 +267,14 @@ export default function PostList() {
 
     const handleReportClick = (postId: number) => {
         setReportingPostId(postId);
-        setReportReason(""); // 새 신고 시 사유 초기화
+        setReportReason("");
     };
 
     const handleReportSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (reportingPostId !== null) {
             await postReport(reportingPostId);
-            setReportingPostId(null); // 제출 후 신고 모달 닫기
+            setReportingPostId(null);
         }
     };
 

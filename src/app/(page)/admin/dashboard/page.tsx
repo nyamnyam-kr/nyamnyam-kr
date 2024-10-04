@@ -29,6 +29,7 @@ const DashBoard = () => {
     const [region, setRegion] = useState<Area[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
     const [countRestaurant, setCountRestaurant] = useState<CountCost[]>([]);
+    const [sumList, setSumList] = useState<RestaurantList[]>([]);
 
 
     useEffect(() => {
@@ -54,6 +55,8 @@ const DashBoard = () => {
         };
         countRestaurant();
     }, []);
+
+
 
     const [content, setContent] = useState("");
     const userId = 1; // Replace this with the actual user ID
@@ -120,6 +123,29 @@ const DashBoard = () => {
                         </div>
                     </div>
                 </div>
+
+                <div className={styles.col}>
+                    <div className={styles.card}>
+                        <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                        <div className={styles.cardBody}>
+                            <div className={styles.chartContainer}>
+                                <Bar
+                                    data={restaurantData}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            x: {title: {display: true, text: 'Restaurant'}},
+                                            y: {title: {display: true, text: 'Count'}},
+                                        },
+                                        animation: false
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div className={`${styles.col} mb-10`}>
                     <div className={styles.card}>

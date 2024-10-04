@@ -1,6 +1,5 @@
 import {api} from "src/app/api/request";
 import {strategy} from "src/app/api/api.strategy";
-import axios from "axios";
 import {CountCost} from "src/app/model/dash.model";
 
 
@@ -20,8 +19,10 @@ const receiptCost = async (id: number) :Promise<CountCost[]> => {
         return resp.data;
     } catch (error) {
         console.error("Failed to register receipt:", error);
-        throw new Error("Failed to register receipt");
+        throw new Error("Failed");
     }
 }
+
+
 
 export const receipt = {receiptRegister, receiptCost}

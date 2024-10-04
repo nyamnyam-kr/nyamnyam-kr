@@ -1,17 +1,10 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {fetchInsertOpinion} from "src/app/service/opinion/opinion.serivce";
 import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import {
-    fetchReceiptList,
-    fetchShowArea,
-    fetchShowCount,
-    fetchShowRestaurant
-} from "src/app/service/admin/admin.service";
-import {Area, CountCost, CountItem, RestaurantList} from "src/app/model/dash.model";
-import {OpinionModel} from "src/app/model/opinion.model";
+import {fetchShowCount} from "src/app/service/admin/admin.service";
+import {CountItem} from "src/app/model/dash.model";
 import {
     ArcElement,
     BarElement,
@@ -25,7 +18,7 @@ import {
     Tooltip
 } from "chart.js";
 import styles from "src/css/mypage.module.css";
-import {Bar, Doughnut, Line} from "react-chartjs-2";
+import {Bar} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
 import Modal from "src/app/components/Modal";
 import ShowOpinion from "src/app/(page)/admin/showOpinion/page";

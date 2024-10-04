@@ -4,21 +4,14 @@ import {fetchInsertOpinion} from "src/app/service/opinion/opinion.serivce";
 import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import {
-    fetchShowArea,
-    fetchShowCount,
-    fetchShowRankByAge,
-    fetchShowRestaurant
-} from "src/app/service/admin/admin.service";
-import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
+import {fetchShowArea, fetchShowCount, fetchShowRankByAge} from "src/app/service/admin/admin.service";
+import {Area, CountItem, RestaurantList, UserPostModel} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
 import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
 import styles from "src/css/mypage.module.css";
 import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
-import axios from "axios";
 import MyWallet from "src/app/(page)/user/wallet/[id]/page";
-import Modal from "src/app/components/Modal";
 import {fetchPostList} from "src/app/service/post/post.service";
 import {PostModel} from "src/app/model/post.model";
 
@@ -29,7 +22,7 @@ export default function MyPage() {
     const [count, setCount] = useState<CountItem[]>([]);
     const [region, setRegion] = useState<Area[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
-    const [post, setPost] = useState<PostModel[]>([]);
+    const [post, setPost] = useState<UserPostModel[]>([]);
     const [activeTab, setActiveTab] = useState<string | undefined>('myPage')
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -137,6 +130,8 @@ export default function MyPage() {
         }],
     };
 
+    const totalPost = post.length;
+
 
     return (
         <>
@@ -176,16 +171,22 @@ export default function MyPage() {
                                         <strong className="heading6">MyWallet</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'dash' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('dash')}>
+                                        <Icon.ChartDonut size={20}/>
+                                        <strong className="heading6">Dashboard</strong>
+                                    </Link>
+                                    <Link href={'#!'} scroll={false}
                                           className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'opinion' ? 'active' : ''}`}
                                           onClick={() => setActiveTab('opinion')}>
                                         <Icon.Clipboard size={20}/>
                                         <strong className="heading6">MyOpinion</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'dash' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('dash')}>
-                                        <Icon.ChartDonut size={20}/>
-                                        <strong className="heading6">Dashboard</strong>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'edit' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('edit')}>
+                                        <Icon.Clipboard size={20}/>
+                                        <strong className="heading6">Edit</strong>
                                     </Link>
                                     <Link href={'/login'}
                                           className="item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5">
@@ -196,9 +197,6 @@ export default function MyPage() {
                             </div>
                         </div>
                         <div className="right md:w-2/3 w-full pl-2.5">
-                            <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
-
-                            </div>
                             <div
                                 className={`tab text-content w-full ${activeTab === 'myPage' ? 'block' : 'hidden'}`}>
                                 <div className="overview grid sm:grid-cols-3 gap-5 mt-7 ">
@@ -215,18 +213,18 @@ export default function MyPage() {
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Cancelled myWallet</span>
-                                            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}> </Modal>
+                                            <span className="tese">Total Post</span>
+                                            <h5 className="heading5 mt-1">{totalPost}</h5>
                                         </div>
-                                        <Icon.ReceiptX className='text-4xl'/>
+                                        <Icon.NotePencil className='text-4xl'/>
                                     </div>
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Total Number of myWallet</span>
+                                            <span className="tese">MY FOLLOWER</span>
                                             <h5 className="heading5 mt-1">200</h5>
                                         </div>
-                                        <Icon.Package className='text-4xl'/>
+                                        <Icon.UserCircle className='text-4xl'/>
                                     </div>
                                 </div>
                                 <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
@@ -251,38 +249,43 @@ export default function MyPage() {
                                     </div>
                                     <h6 className="heading6"> MY POST </h6>
                                     <div className="list overflow-x-auto w-full mt-5">
-                                        <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px]">
+                                        <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px] text-center text-sm">
                                             <thead className="border-b border-line">
-                                            <tr className={"text-center"}>
+                                            <tr className="text-center">
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Order
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">음식점
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Products
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">내용
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">작성날짜
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">작성날짜
+                                                </th>
+                                                <th scope="col"
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">좋아요 수
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {post.map(p => (
-                                                <tr key={p.id} className="item duration-300 border-b border-line">
-                                                    <th scope="row" className="py-3 text-left">
-                                                        <strong className="text-title">{p.id}</strong>
+                                                <tr key={p.postId} className="item duration-300 border-b border-line">
+                                                    <Link className=" text-sm text-secondary" href={`/restaurant/${p.restaurantId}`}>
+                                                    <th scope="row" className="py-3">
+                                                        <strong className="text-title">{p.name}</strong>
                                                     </th>
-                                                    <td className="py-3">
-                                                        <div className="info flex flex-col">
+                                                    </Link>
+                                                    <td className="py-3 text-left">
+                                                        <div className="info flex flex-col font-bold">
                                                             {p.content}
                                                         </div>
                                                     </td>
                                                     <td className="py-3 price">
-                                                        {new Intl.DateTimeFormat('ko-KR', {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            weekday: 'long'
-                                                        }).format(new Date(p.entryDate))}
+                                                        {new Date(p.entryDate).toISOString().slice(0, 19).replace('T', ' ')}
+                                                    </td>
+                                                    <td className="py-3">
+                                                        <div className="info flex flex-col">
+                                                            {p.upvoteCount}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -297,27 +300,6 @@ export default function MyPage() {
                                 <h6 className="heading6">My Wallet</h6>
                                 <div className="mb-10"><MyCalendar/></div>
                                 <div><MyWallet/></div>
-                            </div>
-                            <div
-                                className={`tab_opinion text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'opinion' ? 'block' : 'hidden'}`}>
-                                <h6 className="heading6">My Opinion</h6>
-                                <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
-                                <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
-                                <form onSubmit={handleSubmit}>
-                             <textarea
-                                 value={content}
-                                 onChange={(e) => setContent(e.target.value)}
-                                 placeholder="여기에 의견을 남겨주세요"
-                                 rows={4}
-                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                                 style={{borderBottom: '2px solid #ccc', marginBottom: '10px'}}
-                             />
-                                    <button
-                                        type="submit"
-                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-                                    >제출
-                                    </button>
-                                </form>
                             </div>
                             <div
                                 className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'dash' ? 'block' : 'hidden'}`}>
@@ -363,6 +345,31 @@ export default function MyPage() {
                                         }}/>
                                     </div>
                                 </div>
+                            </div>
+                            <div
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'opinion' ? 'block' : 'hidden'}`}>
+                                <h6 className="heading6">My Opinion</h6>
+                                <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
+                                <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
+                                <form onSubmit={handleSubmit}>
+                             <textarea
+                                 value={content}
+                                 onChange={(e) => setContent(e.target.value)}
+                                 placeholder="여기에 의견을 남겨주세요"
+                                 rows={4}
+                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
+                                 style={{borderBottom: '2px solid #ccc', marginBottom: '10px'}}
+                             />
+                                    <button
+                                        type="submit"
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+                                    >제출
+                                    </button>
+                                </form>
+                            </div>
+                            <div
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'edit' ? 'block' : 'hidden'}`}>
+
                             </div>
                         </div>
                     </div>
