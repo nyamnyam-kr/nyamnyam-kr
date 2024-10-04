@@ -53,11 +53,6 @@ public class ReceiptServiceImpl implements ReceiptService {
 
 
     @Override
-    public List<TotalModel> showTotalCount() {
-        return repository.totalCountFromName();
-    }
-
-    @Override
     @Transactional
     public List<CostModel> costModelList(Long userId) {
         return repository.costList(userId);

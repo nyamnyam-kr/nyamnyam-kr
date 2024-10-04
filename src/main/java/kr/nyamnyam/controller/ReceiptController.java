@@ -2,7 +2,6 @@ package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.ImageModel;
-import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.ocr.NaverOcrApi;
 import kr.nyamnyam.service.ImageService;
@@ -49,13 +48,6 @@ public class ReceiptController {
     @GetMapping("/wallet/cost/{id}")
     public ResponseEntity<List<CostModel>> costList(@PathVariable Long id) {
         return ResponseEntity.ok(receiptService.costModelList(id));
-    }
-
-
-    //total 가격을 넣은 List desc 정렬
-    @GetMapping("/total")
-    public ResponseEntity<List<?>> totalModelList() {
-        return ResponseEntity.ok(receiptService.showTotalCount());
     }
 
 

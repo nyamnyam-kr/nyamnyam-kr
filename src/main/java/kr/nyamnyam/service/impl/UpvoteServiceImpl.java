@@ -15,22 +15,10 @@ public class UpvoteServiceImpl implements UpvoteService {
 
     @Override
     public boolean like(Long postId, Long userId) {
-        if(!repository.existsByPostIdAndGiveId(postId, userId)){
-            Long haveId =2L; // 테스트로 haveId 고정값 2 설정 -> 연결 후 아래 코드 적용
+        UpvoteEntity save = repository.save(postId, userId);
+        System.out.println(save);
+        return true;
 
-            /*Long haveId = postRepository.findById(postId)
-                    .map(PostEntity::getUserId)
-                    .orElseThrow(() -> new RuntimeException("Post not found"));*/
-
-            UpvoteEntity upvote = UpvoteEntity.builder()
-                    .postId(postId)
-                    .giveId(userId)
-                    .haveId(haveId)
-                    .build();
-            repository.save(upvote);
-
-            return true;
-        } return false;
     }
 
     @Override

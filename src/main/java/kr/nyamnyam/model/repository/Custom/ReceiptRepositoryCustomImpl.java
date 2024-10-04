@@ -31,32 +31,6 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
                 .fetchFirst();
     }
 
-
-    // 가게 매출
-    @Override
-    public List<TotalModel> totalCountFromName() {
-        QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;
-
-        List<Tuple> results = jpaQueryFactory
-                .select(receiptEntity.name, receiptEntity.price.sum())
-                .from(receiptEntity)
-                .groupBy(receiptEntity.name)
-                .orderBy(receiptEntity.price.sum().desc())
-                .limit(5)
-                .fetch();
-
-        return results.stream()
-                .map(tuple -> {
-                    TotalModel totalModel = new TotalModel();
-                    totalModel.setRestaurantName(tuple.get(receiptEntity.name));
-                    totalModel.setTotal(tuple.get(receiptEntity.price.sum()));
-                    return totalModel;
-                })
-                .collect(Collectors.toList());
-
-
-    }
-
     @Override
     public List<CostModel> costList(Long userId) {
         QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;

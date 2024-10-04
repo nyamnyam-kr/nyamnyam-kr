@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    user: root
+    ports:
+      - "8080-8080"
+      - "50000-50000"
+    volumes:
+      - ./jenkins:/var/jenkins_home
+      - /var/run/docker_sock:/var/run/docker.sock
+    environment:
+      - TZ=Asia/Seoul
+    restart: on-failure
+    networks:
+      - jenkins
+

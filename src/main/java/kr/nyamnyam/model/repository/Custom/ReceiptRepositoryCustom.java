@@ -9,8 +9,6 @@ public interface ReceiptRepositoryCustom {
 
     Long findRestaurantId(String name);
 
-    List<TotalModel> totalCountFromName();
-
     List<CostModel> costList(Long userId);
 
     List<CostModel> receiptCount();
