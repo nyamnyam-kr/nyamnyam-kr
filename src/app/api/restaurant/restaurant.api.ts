@@ -1,4 +1,3 @@
-import { strategy } from "../api.strategy";
 import instance from "../axios";
 import { api } from "../request";
 import {NoticeModel} from "src/app/model/notice.model";
