@@ -10,6 +10,8 @@ import { sendMessageService, subscribeMessages } from "src/app/service/chat/chat
 import { ChatRoomModel } from "src/app/model/chatRoom.model";
 import { ChatModel } from "src/app/model/chat.model";
 import { getNotReadParticipantsCount, getUnreadCount, markMessageAsRead, updateReadBy } from "src/app/api/chat/chat.api";
+import { EmojiClickData } from "emoji-picker-react";
+import dynamic from "next/dynamic"; // Next.js의 dynamic import 사용
 
 export default function Home1() {
   const [chatRooms, setChatRooms] = useState<ChatRoomModel[]>([]);
@@ -19,6 +21,8 @@ export default function Home1() {
   const [searchTerm, setSearchTerm] = useState('');
   const [messages, setMessages] = useState<ChatModel[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
   const [sender, setSender] = useState<string>(""); // 사용자 ID
   const [unreadCount, setUnreadCount] = useState<number>(0); // 읽지 않은 메시지 수
   const [notReadParticipantsCount, setNotReadParticipantsCount] = useState<number>(0); // 읽지 않은 참가자 수
@@ -460,7 +464,7 @@ export default function Home1() {
                       >
                         Send
                       </button>
-                    </form>
+                    </form>  
                   </div>
                 </>
               ) : null}
