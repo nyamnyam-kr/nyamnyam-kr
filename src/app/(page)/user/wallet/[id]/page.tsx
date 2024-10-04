@@ -5,6 +5,7 @@ import { registerables, Chart } from "chart.js";
 import styles from "src/css/mypage.module.css";
 import axios from "axios";
 import { CountCost } from "src/app/model/dash.model";
+import {fetchReceiptCost} from "src/app/service/receipt/receipt.service";
 
 Chart.register(...registerables);
 
@@ -13,13 +14,13 @@ export default function MyWallet() {
     const id = 1;
 
     useEffect(() => {
-        const fetchCostData = async () => {
+        const fetchCostData = async ()  => {
             try {
-                const resp = await axios.get(`http://localhost:8080/api/receipt/wallet/cost/${id}`);
-                if (resp.status === 200) {
-                    setCost(resp.data);
-                    console.log(resp.data);
-                }
+                const resp = await fetchReceiptCost(id);
+               
+                    setCost(resp);
+                    console.log(resp);
+
             } catch (error) {
                 console.error("Error fetching cost data", error);
             }

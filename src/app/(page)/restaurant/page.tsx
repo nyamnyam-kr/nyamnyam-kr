@@ -7,7 +7,7 @@ import { SearchProvider, useSearchContext } from 'src/app/components/SearchConte
 import { getRestaurantsByCategory, getRestaurantsBySearch, getRestaurantsByTag } from 'src/app/service/restaurant/restaurant.service';
 import HeartButton from 'src/app/components/AddHeart';
 import Modal from "src/app/components/Modal";
-import { fetchRestaurantOne } from 'src/app/service/restaurant/restaurant.service'; // 함수 불러오기
+import {fetchRestaurantOne} from "src/app/service/admin/admin.service";
 
 export default function Home() {
     const [restaurants, setRestaurants] = useState<RestaurantModel[]>([]);

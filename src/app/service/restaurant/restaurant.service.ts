@@ -48,10 +48,7 @@ export const fetchRestaurantService = async (restaurantId: number): Promise<Rest
     }
   };
 
-export const fetchRestaurantOne = async (id: number): Promise<RestaurantModel> => {
-    const data: RestaurantModel = await restaurant.showRestaurant(id);
-    return data;
-}
+
 
 
 

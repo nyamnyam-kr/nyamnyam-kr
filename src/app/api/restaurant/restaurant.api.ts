@@ -63,14 +63,6 @@ const searchRestaurants = async (query: string) => {
     return await response.json();
 };
 
-const showRestaurant = async (id: number): Promise<RestaurantModel> => {
-    try {
-        const response = await strategy.GET(`${api.restaurant}/randomByUserId/${id}`);
-        return response.data; // 데이터 반환
-    } catch (error) {
-        console.error("Failed to fetch notice details:", error);
-        throw new Error("Failed to fetch notice details");
-    }
-}
 
-export const restaurant = {showRestaurant, searchRestaurants, fetchRestaurant}
+
+export const restaurant = {searchRestaurants, fetchRestaurant}

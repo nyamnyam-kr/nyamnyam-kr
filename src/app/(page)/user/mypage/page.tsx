@@ -4,7 +4,12 @@ import {fetchInsertOpinion} from "src/app/service/opinion/opinion.serivce";
 import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import {fetchShowArea, fetchShowCount, fetchShowRestaurant} from "src/app/service/admin/admin.service";
+import {
+    fetchShowArea,
+    fetchShowCount,
+    fetchShowRankByAge,
+    fetchShowRestaurant
+} from "src/app/service/admin/admin.service";
 import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
 import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
@@ -47,7 +52,7 @@ export default function MyPage() {
 
     useEffect(() => {
         const showRestaurant = async () => {
-            const data = await fetchShowRestaurant();
+            const data = await fetchShowRankByAge(userId);
             setRestaurant(data)
         };
         showRestaurant()
@@ -60,7 +65,7 @@ export default function MyPage() {
             setPost(data)
         }
         showPostListByUserId()
-    })
+    },[])
 
 
     const [content, setContent] = useState("");
@@ -317,7 +322,7 @@ export default function MyPage() {
                             <div
                                 className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'dash' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">DashBoard</h6>
-                                <div className={styles.cardHeader}>음식점 랭킹</div>
+                                <div className={styles.cardHeader}>연령 별 음식점 랭킹</div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.chartContainer}>
                                         <Bar

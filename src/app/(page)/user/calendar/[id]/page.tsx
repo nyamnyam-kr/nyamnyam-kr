@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { EventContentArg } from "@fullcalendar/core";
-import { Dropdown } from "react-bootstrap";
-import { ReceiptModel } from "src/app/model/receipt.model";
-import { useParams } from "next/navigation";
+import {EventContentArg} from "@fullcalendar/core";
+import {Dropdown} from "react-bootstrap";
+import {ReceiptModel} from "src/app/model/receipt.model";
 
 interface Todo {
     todo: string[];
@@ -48,7 +47,7 @@ const MyCalendar: React.FC = () => {
                 }));
                 setWallet(updatedData);
             });
-    }, [id]);
+    }, []);
 
     const events: CalendarEvent[] = wallet.map((item) => ({
         title: item.name,
