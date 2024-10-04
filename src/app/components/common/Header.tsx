@@ -73,10 +73,9 @@ export default function Header() {
                       <Icon.SignIn size={40}/>
                     </Link>
                 )}
-
-
-                <Link href="/tag/tags" className="action-btn">
-                  <Icon.Tag size={40}/>
+                <Link href="/admin/dash" className="action-btn">
+                  <Icon.LegoSmiley size={40}/>
+                  <span className="animation-ripple-delay2"></span>
                 </Link>
                 <Link href="/chatRoom" className="action-btn">
                   <i className="ico_message"></i>
@@ -89,7 +88,6 @@ export default function Header() {
                 <Link href="/user/mypage" className="profile">
                   <img src="/assets/img/profile.png" alt="profile"/>
                 </Link>
-
                 <button onClick={handleOpenModal} className="action-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" viewBox="0 0 256 256">
                     <path

@@ -1,70 +1,72 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import {Line} from "react-chartjs-2";
-import {registerables, Chart} from "chart.js"; // ArcElement 추가
+"use client"
+import React, { useEffect, useState, useMemo } from "react";
+import { Line } from "react-chartjs-2";
+import { registerables, Chart } from "chart.js";
 import styles from "src/css/mypage.module.css";
 import axios from "axios";
-import {CountCost} from "src/app/model/dash.model";
-import {useParams} from "next/navigation";
+import { CountCost } from "src/app/model/dash.model";
+import {fetchReceiptCost} from "src/app/service/receipt/receipt.service";
 
 Chart.register(...registerables);
 
 export default function MyWallet() {
     const [cost, setCost] = useState<CountCost[]>([]);
-    const {id}  = useParams();
-
+    const id = 1;
 
     useEffect(() => {
-        const Count = async () => {
+        const fetchCostData = async ()  => {
             try {
-                const resp = await axios.get(`http://localhost:8080/api/admin/wallet/cost/${id}`);
-                if (resp.status === 200) {
-                    setCost(resp.data);
-                    console.log(resp.data)
-                }
+                const resp = await fetchReceiptCost(id);
+               
+                    setCost(resp);
+                    console.log(resp);
+
             } catch (error) {
-                console.error("Error fetching count data", error);
+                console.error("Error fetching cost data", error);
             }
         };
-        Count();
+        fetchCostData();
     }, []);
 
-    const costData = {
-        labels: cost.map(item => item.date),
+    const predefinedOrder = Array.from({ length: 12 }, (_, i) => `2024-${String(i + 1).padStart(2, '0')}`);
+
+    // Memoize sorted cost data
+    const sortedCost = useMemo(() => {
+        return cost.sort((a, b) => predefinedOrder.indexOf(a.date) - predefinedOrder.indexOf(b.date));
+    }, [cost]);
+
+    const costData = useMemo(() => ({
+        labels: sortedCost.map(item => item.date),
         datasets: [
             {
-                label: 'UserRank',
-                data: cost.map(item => item.price),
+                label: 'Cost',
+                data: sortedCost.map(item => item.price),
+                fill: false,
                 backgroundColor: 'rgba(255, 159, 64, 0.2)',
                 borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 1,
+                tension: 0.1,
             }
         ],
-    };
-
-
-
+    }), [sortedCost]);
 
     return (
         <div className={styles.col}>
-            <div className={styles.card}>
-                <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
-                <div className={styles.cardBody}>
-                    <div className={styles.chartContainer}>
-                        <Line
-                            data={costData}
-                            options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    x: {title: {display: true, text: 'Nickname'}},
-                                    y: {title: {display: true, text: 'Count'}},
-                                },
-                            }}
-                        />
-                    </div>
+            <div className={styles.cardHeader}>TOTAL COST</div>
+            <div className={styles.cardBody}>
+                <div className={styles.chartContainer}>
+                    <Line
+                        data={costData}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { title: { display: true, text: 'Month' } },
+                                y: { title: { display: true, text: 'Cost' } },
+                            },
+                        }}
+                    />
                 </div>
             </div>
         </div>
-    )
+    );
 }

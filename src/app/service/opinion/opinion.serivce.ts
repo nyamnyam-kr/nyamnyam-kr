@@ -1,12 +1,9 @@
-import {insertOpinion, opinionAll} from "src/app/api/opinion/opinion.api";
-import showOpinion from "src/app/(page)/admin/showOpinion/page";
-import {NoticeModel} from "src/app/model/notice.model";
-import {noticeAll} from "src/app/api/notice/notice.api";
+import {opinion} from "src/app/api/opinion/opinion.api";
 import {OpinionModel} from "src/app/model/opinion.model";
 
-export const fetchInsertOpinion = async (opinion: OpinionModel): Promise<OpinionModel> => {
+export const fetchInsertOpinion = async (opinionModel: OpinionModel): Promise<OpinionModel> => {
     try {
-        const data = await insertOpinion(opinion);
+        const data = await opinion.insertOpinion(opinionModel);
 
         return data;
     } catch (error) {
@@ -17,6 +14,6 @@ export const fetchInsertOpinion = async (opinion: OpinionModel): Promise<Opinion
 
 
 export const fetchShowOpinion = async () => {
-        const data: OpinionModel[] = await opinionAll();
+        const data: OpinionModel[] = await opinion.opinionAll();
         return data;
 }

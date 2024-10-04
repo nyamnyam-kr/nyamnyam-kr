@@ -1,8 +1,6 @@
-import { SearchProvider } from "./components/SearchContext"
-import { ModalWishlistProvider } from "./context/ModalWishlistContext"
-import { WishlistProvider } from "./context/WishlistContext"
-
-
+import {SearchProvider} from "./components/SearchContext"
+import {ModalWishlistProvider} from "./context/ModalWishlistContext"
+import {WishlistProvider} from "./context/WishlistContext"
 
 
 const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

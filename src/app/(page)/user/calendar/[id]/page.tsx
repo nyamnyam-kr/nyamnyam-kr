@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { EventContentArg } from "@fullcalendar/core";
-import { Dropdown } from "react-bootstrap";
-import { ReceiptModel } from "src/app/model/receipt.model";
-import { useParams } from "next/navigation";
+import {EventContentArg} from "@fullcalendar/core";
+import {Dropdown} from "react-bootstrap";
+import {ReceiptModel} from "src/app/model/receipt.model";
 
 interface Todo {
     todo: string[];
@@ -21,7 +20,7 @@ interface CalendarEvent {
 const MyCalendar: React.FC = () => {
     const [openDropdowns, setOpenDropdowns] = useState<{ [key: string]: boolean }>({});
     const [wallet, setWallet] = useState<ReceiptModel[]>([]);
-    const { id } = useParams();
+    const  id= 1;
 
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -48,7 +47,7 @@ const MyCalendar: React.FC = () => {
                 }));
                 setWallet(updatedData);
             });
-    }, [id]);
+    }, []);
 
     const events: CalendarEvent[] = wallet.map((item) => ({
         title: item.name,
@@ -90,19 +89,6 @@ const MyCalendar: React.FC = () => {
         setCurrentYear(today.getFullYear());
     }, []);
 
-    const totalExpenditure = wallet.reduce((sum, item) => {
-        if (!item.date) return sum; // item.date가 유효하지 않은 경우, 현재 합계 반환
-
-        const itemDate = new Date(item.date + 'T00:00:00+09:00'); // 한국 시간으로 설정
-        const itemMonth = itemDate.getMonth() + 1; // 월을 1부터 시작
-        const itemYear = itemDate.getFullYear(); // 연도 가져오기
-
-        // 현재 월과 연도가 일치하는 경우에만 합계 계산
-        if (itemMonth === currentMonth && itemYear === currentYear) {
-            return sum + item.price;
-        }
-        return sum;
-    }, 0);
 
 
     const currentMonthEvents: CalendarEvent[] = events.filter(event => {
@@ -113,12 +99,7 @@ const MyCalendar: React.FC = () => {
 
 
     return (
-        <div style={{marginTop: '10rem'}}>
-            <div className="bg-blue-600 text-white">
-                <div className="py-3 px-4 border-b">지출합계 : {totalExpenditure}</div>
-                <div>현재 선택된 월: {currentMonth} {currentYear}</div>
-            </div>
-
+        <div>
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"

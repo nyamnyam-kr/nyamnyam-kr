@@ -1,25 +1,13 @@
 "use client";
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import Star from 'src/app/components/Star';
 
-interface Restaurant {
-    id: number;
-    name: string;
-    type: string;
-    address: string;
-    tel: string;
-    rate: number;
-    menu: string;
-    thumbnailImageUrl: string;
-    subImageUrl: string;
-    lat: number;
-    lng: number;
-}
+
 
 export default function showRestaurant() {
-    const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
-    const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([]);
+    const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
+    const [filteredRestaurants, setFilteredRestaurants] = useState<RestaurantModel[]>([]);
     const router = useRouter();
 
 

@@ -4,15 +4,16 @@ import {fetchInsertOpinion} from "src/app/service/opinion/opinion.serivce";
 import Image from 'next/image'
 import Link from "next/link";
 import * as Icon from "@phosphor-icons/react/dist/ssr";
-import {fetchShowCount} from "src/app/service/admin/admin.service";
-import {Area, CountItem, RestaurantList} from "src/app/model/dash.model";
+import {fetchShowArea, fetchShowCount, fetchShowRankByAge} from "src/app/service/admin/admin.service";
+import {Area, CountItem, RestaurantList, UserPostModel} from "src/app/model/dash.model";
 import {OpinionModel} from "src/app/model/opinion.model";
-import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale} from "chart.js";
+import {ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
 import styles from "src/css/mypage.module.css";
 import {Bar, Doughnut} from "react-chartjs-2";
 import MyCalendar from "src/app/(page)/user/calendar/[id]/page";
-import InsertReceipt from "src/app/(page)/receipt/insertReceipt/page";
-import axios from "axios";
+import MyWallet from "src/app/(page)/user/wallet/[id]/page";
+import {fetchPostList} from "src/app/service/post/post.service";
+import {PostModel} from "src/app/model/post.model";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, ArcElement, CategoryScale, LinearScale);
 
@@ -21,58 +22,43 @@ export default function MyPage() {
     const [count, setCount] = useState<CountItem[]>([]);
     const [region, setRegion] = useState<Area[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantList[]>([]);
-
-    const [activeTab, setActiveTab] = useState<string | undefined>('dashboard')
-    const [activeAddress, setActiveAddress] = useState<string | null>('billing')
-    const [activeOrders, setActiveOrders] = useState<string | undefined>('all')
-    const [openDetail, setOpenDetail] = useState<boolean | undefined>(false)
+    const [post, setPost] = useState<UserPostModel[]>([]);
+    const [activeTab, setActiveTab] = useState<string | undefined>('myPage')
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     useEffect(() => {
         const countList = async () => {
             const data = await fetchShowCount();
-            setCount(data);
+            setCount(data)
         };
-        countList();
+        countList()
     }, []);
 
     useEffect(() => {
         const showArea = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countAreaList');
-                if (resp.status === 200) {
-                    setRegion(resp.data);
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowArea();
+            setRegion(data)
         };
-        showArea();
-    }, [region]);
+        showArea()
+    }, []);
 
     useEffect(() => {
         const showRestaurant = async () => {
-            try {
-                const resp = await axios.get('http://localhost:8080/api/admin/countPostList');
-                // console.log(resp.data);
-                if (resp.status === 200) {
-                    setRestaurant(resp.data)
-                }
-            } catch (error) {
-                console.error("Error fetching count data", error);
-            }
+            const data = await fetchShowRankByAge(userId);
+            setRestaurant(data)
         };
-        showRestaurant();
-    }, [restaurant]);
+        showRestaurant()
+    }, []);
 
 
-    const handleActiveAddress = (order: string) => {
-        setActiveAddress(prevOrder => prevOrder === order ? null : order)
-    }
-
-    const handleActiveOrders = (order: string) => {
-        setActiveOrders(order)
-    }
+    useEffect(() => {
+        const showPostListByUserId = async () => {
+            const data = await fetchPostList(userId)
+            setPost(data)
+        }
+        showPostListByUserId()
+    },[])
 
 
     const [content, setContent] = useState("");
@@ -144,6 +130,9 @@ export default function MyPage() {
         }],
     };
 
+    const totalPost = post.length;
+
+
     return (
         <>
 
@@ -170,28 +159,34 @@ export default function MyPage() {
                                 </div>
                                 <div className="menu-tab w-full max-w-none lg:mt-10 mt-6">
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white ${activeTab === 'dashboard' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('dashboard')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white ${activeTab === 'myPage' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('myPage')}>
                                         <Icon.HouseLine size={20}/>
                                         <strong className="heading6">MyPage</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'orders' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('orders')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'myWallet' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('myWallet')}>
                                         <Icon.Wallet size={20}/>
                                         <strong className="heading6">MyWallet</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'address' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('address')}>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'dash' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('dash')}>
+                                        <Icon.ChartDonut size={20}/>
+                                        <strong className="heading6">Dashboard</strong>
+                                    </Link>
+                                    <Link href={'#!'} scroll={false}
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'opinion' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('opinion')}>
                                         <Icon.Clipboard size={20}/>
                                         <strong className="heading6">MyOpinion</strong>
                                     </Link>
                                     <Link href={'#!'} scroll={false}
-                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'setting' ? 'active' : ''}`}
-                                          onClick={() => setActiveTab('setting')}>
-                                        <Icon.ChartDonut size={20}/>
-                                        <strong className="heading6">Dashboard</strong>
+                                          className={`item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5 ${activeTab === 'edit' ? 'active' : ''}`}
+                                          onClick={() => setActiveTab('edit')}>
+                                        <Icon.Clipboard size={20}/>
+                                        <strong className="heading6">Edit</strong>
                                     </Link>
                                     <Link href={'/login'}
                                           className="item flex items-center gap-3 w-full px-5 py-4 rounded-lg cursor-pointer duration-300 hover:bg-white mt-1.5">
@@ -202,17 +197,14 @@ export default function MyPage() {
                             </div>
                         </div>
                         <div className="right md:w-2/3 w-full pl-2.5">
-                            <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
-
-                            </div>
                             <div
-                                className={`tab text-content w-full ${activeTab === 'dashboard' ? 'block' : 'hidden'}`}>
+                                className={`tab text-content w-full ${activeTab === 'myPage' ? 'block' : 'hidden'}`}>
                                 <div className="overview grid sm:grid-cols-3 gap-5 mt-7 ">
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs w-full ">
                                         <Link href="/receipt/insertReceipt">
                                             <div className="counter">
-                                                <span className="tese text-orange-700">Cancelled Orders</span>
+                                                <span className="tese text-orange-700">Receipt</span>
                                                 <h5 className="heading5 mt-1">insert</h5>
                                             </div>
                                         </Link>
@@ -221,22 +213,25 @@ export default function MyPage() {
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Cancelled Orders</span>
-                                            <h5 className="heading5 mt-1">12</h5>
+                                            <span className="tese">Total Post</span>
+                                            <h5 className="heading5 mt-1">{totalPost}</h5>
                                         </div>
-                                        <Icon.ReceiptX className='text-4xl'/>
+                                        <Icon.NotePencil className='text-4xl'/>
                                     </div>
                                     <div
                                         className="item flex items-center justify-between p-5 border border-line rounded-lg box-shadow-xs">
                                         <div className="counter">
-                                            <span className="tese">Total Number of Orders</span>
+                                            <span className="tese">MY FOLLOWER</span>
                                             <h5 className="heading5 mt-1">200</h5>
                                         </div>
-                                        <Icon.Package className='text-4xl'/>
+                                        <Icon.UserCircle className='text-4xl'/>
                                     </div>
                                 </div>
                                 <div className="recent_order pt-5 px-5 pb-2 mt-7 border border-line rounded-xl">
-                                    <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                                    <div>
+                                        <div className={styles.cardHeader}>TOTAL POST USER RANKING</div>
+                                        <div></div>
+                                    </div>
                                     <div className={styles.cardBody}>
                                         <div className={styles.chartContainer}>
                                             <Bar
@@ -252,200 +247,64 @@ export default function MyPage() {
                                             />
                                         </div>
                                     </div>
-                                    <h6 className="heading6">Recent Orders</h6>
+                                    <h6 className="heading6"> MY POST </h6>
                                     <div className="list overflow-x-auto w-full mt-5">
-                                        <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px]">
+                                        <table className="w-full max-[1400px]:w-[700px] max-md:w-[700px] text-center text-sm">
                                             <thead className="border-b border-line">
-                                            <tr>
+                                            <tr className="text-center">
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Order
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">음식점
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Products
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">내용
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-left text-sm font-bold uppercase text-secondary whitespace-nowrap">Pricing
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">작성날짜
                                                 </th>
                                                 <th scope="col"
-                                                    className="pb-3 text-right text-sm font-bold uppercase text-secondary whitespace-nowrap">Status
+                                                    className="pb-3 text-sm font-bold uppercase text-secondary whitespace-nowrap">좋아요 수
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Contrasting sweatshirt'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Contrasting
-                                                                sweatshirt</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
+                                            {post.map(p => (
+                                                <tr key={p.postId} className="item duration-300 border-b border-line">
+                                                    <Link className=" text-sm text-secondary" href={`/restaurant/${p.restaurantId}`}>
+                                                    <th scope="row" className="py-3">
+                                                        <strong className="text-title">{p.name}</strong>
+                                                    </th>
                                                     </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">Pending</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Faux-leather trousers'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Faux-leather
-                                                                trousers</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
+                                                    <td className="py-3 text-left">
+                                                        <div className="info flex flex-col font-bold">
+                                                            {p.content}
                                                         </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-purple text-purple caption1 font-semibold">Delivery</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='V-neck knitted top'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
+                                                    </td>
+                                                    <td className="py-3 price">
+                                                        {new Date(p.entryDate).toISOString().slice(0, 19).replace('T', ' ')}
+                                                    </td>
+                                                    <td className="py-3">
                                                         <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">V-neck knitted
-                                                                top</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
+                                                            {p.upvoteCount}
                                                         </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-success text-success caption1 font-semibold">Completed</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Contrasting sweatshirt'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Contrasting
-                                                                sweatshirt</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-yellow text-yellow caption1 font-semibold">Pending</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300 border-b border-line">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='Faux-leather trousers'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">Faux-leather
-                                                                trousers</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-purple text-purple caption1 font-semibold">Delivery</span>
-                                                </td>
-                                            </tr>
-                                            <tr className="item duration-300">
-                                                <th scope="row" className="py-3 text-left">
-                                                    <strong className="text-title">54312452</strong>
-                                                </th>
-                                                <td className="py-3">
-                                                    <Link href={'/product/default'}
-                                                          className="product flex items-center gap-3">
-                                                        <Image src={'/images/product/1000x1000.png'} width={400}
-                                                               height={400} alt='V-neck knitted top'
-                                                               className="flex-shrink-0 w-12 h-12 rounded"/>
-                                                        <div className="info flex flex-col">
-                                                            <strong className="product_name text-button">V-neck knitted
-                                                                top</strong>
-                                                            <span className="product_tag caption1 text-secondary">Women, Clothing</span>
-                                                        </div>
-                                                    </Link>
-                                                </td>
-                                                <td className="py-3 price">$45.00</td>
-                                                <td className="py-3 text-right">
-                                                    <span
-                                                        className="tag px-4 py-1.5 rounded-full bg-opacity-10 bg-red text-red caption1 font-semibold">Canceled</span>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+                                            ))}
+
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <div
-                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'orders' ? 'block' : 'hidden'}`}>
+                                className={`tab text-content overflow-hidden w-full h-auto p-7 mt-7 border border-line rounded-xl ${activeTab === 'myWallet' ? 'block' : 'hidden'}`}>
                                 <h6 className="heading6">My Wallet</h6>
-                                <MyCalendar/>
-
+                                <div className="mb-10"><MyCalendar/></div>
+                                <div><MyWallet/></div>
                             </div>
                             <div
-                                className={`tab_address text-content w-full text-center p-7 mt-7 border border-line rounded-xl ${activeTab === 'address' ? 'block' : 'hidden'}`}>
-                                <h6 className="heading6">My Opinion</h6>
-                                <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
-                                <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
-                                <form onSubmit={handleSubmit}>
-                             <textarea
-                                 value={content}
-                                 onChange={(e) => setContent(e.target.value)}
-                                 placeholder="여기에 의견을 남겨주세요"
-                                 rows={4}
-                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                                 style={{borderBottom: '2px solid #ccc', marginBottom: '10px'}}
-                             />
-                                    <button
-                                        type="submit"
-                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-                                    >제출
-                                    </button>
-                                </form>
-                            </div>
-                            <div
-                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'setting' ? 'block' : 'hidden'}`}>
-                                <h6 className="heading6">Dashboard</h6>
-                                <div className={styles.cardHeader}>음식점 랭킹</div>
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'dash' ? 'block' : 'hidden'}`}>
+                                <h6 className="heading6">DashBoard</h6>
+                                <div className={styles.cardHeader}>연령 별 음식점 랭킹</div>
                                 <div className={styles.cardBody}>
                                     <div className={styles.chartContainer}>
                                         <Bar
@@ -486,6 +345,31 @@ export default function MyPage() {
                                         }}/>
                                     </div>
                                 </div>
+                            </div>
+                            <div
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'opinion' ? 'block' : 'hidden'}`}>
+                                <h6 className="heading6">My Opinion</h6>
+                                <h2 className="text-lg font-semibold text-gray-800 mb-2">냠냠에 전하고 싶은 의견이 있나요?</h2>
+                                <h2 className="text-md text-gray-600 mb-4">00님의 소중한 의견을 꼼꼼히 읽어볼게요</h2>
+                                <form onSubmit={handleSubmit}>
+                             <textarea
+                                 value={content}
+                                 onChange={(e) => setContent(e.target.value)}
+                                 placeholder="여기에 의견을 남겨주세요"
+                                 rows={4}
+                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
+                                 style={{borderBottom: '2px solid #ccc', marginBottom: '10px'}}
+                             />
+                                    <button
+                                        type="submit"
+                                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+                                    >제출
+                                    </button>
+                                </form>
+                            </div>
+                            <div
+                                className={`tab text-content overflow-hidden w-full p-7 mt-7 border border-line rounded-xl ${activeTab === 'edit' ? 'block' : 'hidden'}`}>
+
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,9 @@
 import { strategy } from "../api.strategy";
 import instance from "../axios";
 import { api } from "../request";
+import {NoticeModel} from "src/app/model/notice.model";
+import {strategy} from "src/app/api/api.strategy";
+import {ex} from "@fullcalendar/core/internal-common";
 // restaurant/page.tsx api
 
 export const fetchRestaurantsBySearch = async (keyword: string) => {
@@ -24,7 +27,7 @@ export const fetchRestaurantsByCategory = async (categories: string[]) => {
 };
 
 // post에 restaurant 정보 불러오기
-export const fetchRestaurant = async (restaurantId: number) => {
+const fetchRestaurant = async (restaurantId: number) => {
     try{
         const response = await strategy.GET(`${api.restaurant}/${restaurantId}`);
         return response.data;
@@ -55,8 +58,12 @@ export const fetchTopTags = async (id: number) => {
     return await response.json();
 };
 
-export const searchRestaurants = async (query: string) => {
+const searchRestaurants = async (query: string) => {
     const response = await fetch(`http://localhost:8080/api/restaurant/search?q=${query}`);
     if (!response.ok) throw new Error("Failed to search restaurants");
     return await response.json();
 };
+
+
+
+export const restaurant = {searchRestaurants, fetchRestaurant}

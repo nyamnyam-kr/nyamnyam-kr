@@ -2,10 +2,6 @@
 import Home from 'src/app/(page)/restaurant/page';
 import './globals.css'
 import StoreProvider from './StoreProvider';
-import { SearchProvider, useSearchContext } from './components/SearchContext';
-import { useEffect } from 'react';
-import Header from './components/common/Header';
-
 
 
 const Page = () => {
