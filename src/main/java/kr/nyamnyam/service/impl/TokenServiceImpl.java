@@ -23,11 +23,11 @@ public class TokenServiceImpl implements TokenService {
     private long validityInMilliseconds; // 유효 기간 주입
 
     @Override
-    public Mono<String> createAndSaveToken(String userId) { // username 매개변수 제거
+    public Mono<String> createAndSaveToken(String userId) {
         return userRepository.findById(userId)
                 .flatMap(user -> {
                     // 사용자 정보를 가져와서 토큰 생성
-                    return jwtTokenProvider.createToken(userId, user.getUsername(), user.getRole()) // username 사용
+                    return jwtTokenProvider.createToken(user) // User 객체 전체를 사용
                             .flatMap(token -> {
                                 Token tokenEntity = Token.builder()
                                         .userId(userId)
@@ -40,6 +40,7 @@ public class TokenServiceImpl implements TokenService {
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
+
 
     @Override
     public Mono<Boolean> validateToken(String token) {
@@ -66,11 +67,11 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.findByToken(oldToken)
                 .flatMap(storedToken -> {
                     if (storedToken.getIsValid() && !storedToken.getExpirationDate().before(new Date())) {
-                        // 사용자 역할을 UserRepository에서 조회
+                        // 사용자 정보를 UserRepository에서 조회
                         return userRepository.findById(storedToken.getUserId())
-                                .flatMap(user -> jwtTokenProvider.createToken(storedToken.getUserId(), user.getUsername(), user.getRole())
+                                .flatMap(user -> jwtTokenProvider.createToken(user) // User 객체 전달
                                         .flatMap(newToken -> {
-                                            storedToken.setIsValid(false);
+                                            storedToken.setIsValid(false); // 기존 토큰 무효화
                                             return tokenRepository.save(storedToken)
                                                     .then(tokenRepository.save(Token.builder()
                                                             .userId(storedToken.getUserId())
@@ -78,11 +79,12 @@ public class TokenServiceImpl implements TokenService {
                                                             .expirationDate(new Date(System.currentTimeMillis() + validityInMilliseconds))
                                                             .isValid(true)
                                                             .build()))
-                                                    .then(Mono.just(newToken));
+                                                    .then(Mono.just(newToken)); // 새 토큰 반환
                                         }));
                     } else {
                         return Mono.error(new RuntimeException("Invalid token for refresh"));
                     }
                 });
     }
+
 }

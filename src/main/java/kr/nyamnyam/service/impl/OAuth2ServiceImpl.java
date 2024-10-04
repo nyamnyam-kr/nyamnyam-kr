@@ -85,12 +85,13 @@ public class OAuth2ServiceImpl implements OAuth2Service {
                                 return userRepository.save(newUser); // 새 사용자 저장
                             }))
                             .flatMap(user -> {
-                                // JWT 발급
-                                String jwtToken = jwtTokenProvider.createToken(user.getId(), user.getUsername(), user.getRole()).block();
+                                // JWT 발급 (User 객체 전달)
+                                String jwtToken = jwtTokenProvider.createToken(user).block();
                                 return Mono.just(jwtToken); // JWT 반환
                             });
                 });
     }
+
 
     private String parseAccessToken(String response) {
         try {

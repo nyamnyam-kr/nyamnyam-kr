@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter {
 
-    private final JwtTokenProvider jwtTokenProvider; // JwtTokenProvider 주입
+    private final JwtTokenProvider  jwtTokenProvider; // JwtTokenProvider 주입
     private final UserService userService; // UserService 주입
 
     @Override

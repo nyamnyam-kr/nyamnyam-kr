@@ -24,5 +24,6 @@ public class User {
     private String gender;
     private Boolean enabled;
     private Long imgId;
+    private Long rating;
 
 }

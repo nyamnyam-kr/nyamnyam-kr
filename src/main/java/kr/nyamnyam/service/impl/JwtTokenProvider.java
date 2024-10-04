@@ -3,6 +3,7 @@ package kr.nyamnyam.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import kr.nyamnyam.model.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -26,12 +27,20 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public Mono<String> createToken(String userId, String username, String role) {
+    public Mono<String> createToken(User user) {
         return Mono.fromCallable(() -> {
             try {
-                Claims claims = Jwts.claims().setSubject(username);
-                claims.put("role", role);
-                claims.put("userId", userId);
+                Claims claims = Jwts.claims().setSubject(user.getId()); // 주체를 userId로 설정
+                claims.put("username", user.getUsername()); // username 추가
+                claims.put("role", user.getRole()); // role 추가
+                claims.put("nickname", user.getNickname()); // nickname 추가
+                claims.put("name", user.getName()); // name 추가
+                claims.put("age", user.getAge()); // age 추가
+                claims.put("tel", user.getTel()); // tel 추가
+                claims.put("gender", user.getGender()); // gender 추가
+                claims.put("enabled", user.getEnabled()); // enabled 추가
+                claims.put("imgId", user.getImgId()); // imgId 추가
+                claims.put("rating", user.getRating()); // rating 추가
 
                 Date now = new Date();
                 Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -49,6 +58,7 @@ public class JwtTokenProvider {
             }
         });
     }
+
 
     // JWT 토큰에서 사용자 정보 추출
     public String getUsername(String token) {
