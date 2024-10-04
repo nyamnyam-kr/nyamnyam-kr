@@ -7,10 +7,10 @@ import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { PostModel } from "src/app/model/post.model";
 import { ReplyModel } from "src/app/model/reply.model";
-import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from "src/app/service/reply/reply.service";
-import { checkLikedService, toggleLikeService } from "src/app/service/upvote/upvote.service";
+import { replyService } from "src/app/service/reply/reply.service";
+import { upvoteService} from "src/app/service/upvote/upvote.service";
 import { imageService } from "src/app/service/image/image.service";
-import { deletePostService, fetchPostService } from "src/app/service/post/post.service";
+import { postService } from "src/app/service/post/post.service";
 import { fetchRestaurantService } from "src/app/service/restaurant/restaurant.service";
 
 const reportReasons = [
@@ -49,7 +49,7 @@ export default function PostList() {
 
     const fetchPosts = async (restaurantId: number) => {
         try {
-            const postData = await fetchPostService(restaurantId);
+            const postData = await postService.fetchPost(restaurantId);
 
             setPosts(postData.map((data) => data.post));
             setLikedPosts(postData.filter((data) => data.liked).map((data) => data.post.id));
@@ -91,7 +91,7 @@ export default function PostList() {
 
     const handleDelete = async (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
-            const success = await deletePostService(postId);
+            const success = await postService.remove(postId);
 
             if (success) {
                 alert("게시글이 삭제되었습니다.");
@@ -103,8 +103,7 @@ export default function PostList() {
 
     // 댓글 버튼 
     const toggleReply = async (id: number) => {
-        const { toggled, replies } = await toggleReplyService(id, replyToggles);
-        console.log("toggleReply: ", replies);
+        const { toggled, replies } = await replyService.toggle(id, replyToggles);
 
         setReplyToggles((prevToggles) => ({
             ...prevToggles,
@@ -126,7 +125,7 @@ export default function PostList() {
             alert('댓글을 입력하세요.');
             return;
         }
-        const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
+        const result = await replyService.submit(postId, replyContent, currentUserId, replyToggles);
 
         if (result && result.success) {
             const { newReply } = result;
@@ -172,7 +171,7 @@ export default function PostList() {
 
     // 수정내용 저장 (서버연결)
     const replyEditSave = async (replyId: number, postId: number) => {
-        const updateReply = await editSaveReplyService(replyId, postId, editInput[replyId], currentUserId);
+        const updateReply = await replyService.editSave(replyId, postId, editInput[replyId], currentUserId);
         if (updateReply) {
             setReplies((prevReplies) => ({
                 ...prevReplies,
@@ -194,7 +193,7 @@ export default function PostList() {
     const replyDelete = async (replyId: number, postId: number) => {
         if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
-        const updatedReplies = await deleteReplyService(replyId, postId, replies);
+        const updatedReplies = await replyService.remove(replyId, postId, replies);
 
         if (updatedReplies) {
             setReplies(prevReplies => ({
@@ -218,13 +217,13 @@ export default function PostList() {
 
     // 좋아요 상태 확인 
     const checkLikedStatus = async (postId: number) => {
-        const isLiked = await checkLikedService(postId, currentUserId);
+        const isLiked = await upvoteService.check(postId, currentUserId);
         return isLiked ? postId : null;
     };
 
     // 좋아요 & 취소 & count
     const handleLike = async (postId: number) => {
-        const result = await toggleLikeService(postId, currentUserId, likedPost);
+        const result = await upvoteService.toggle(postId, currentUserId, likedPost);
 
         if (result) {
             setLikedPosts(result.likedPost);

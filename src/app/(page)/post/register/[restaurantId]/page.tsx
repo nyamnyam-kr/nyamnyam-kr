@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Star from "../../../../components/Star";
 import { PostModel } from "src/app/model/post.model";
-import { insertPostService } from "src/app/service/post/post.service";
+import { postService } from "src/app/service/post/post.service";
 import { tag } from "src/app/api/tag/tag.api";
 import { TagModel } from "src/app/model/tag.model";
 
@@ -72,7 +72,7 @@ export default function PostRegister() {
     e.preventDefault();
 
     try {
-      const postId: number = await insertPostService({
+      const postId: number = await postService.insert({
         content: formData.content,
         taste: formData.taste,
         clean: formData.clean,

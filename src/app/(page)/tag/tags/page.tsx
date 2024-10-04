@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { tag } from "src/app/api/tag/tag.api";
 import {initialTag, TagModel } from "src/app/model/tag.model";
-import { deleteTagService } from "src/app/service/tag/tag.service";
+import { tagService } from "src/app/service/tag/tag.service";
 
 export default function TagList() {
   const [tags, setTags] = useState<{[category: string]: TagModel[]}>({});
@@ -49,7 +49,7 @@ export default function TagList() {
   
     if (window.confirm("선택한 태그를 삭제하시겠습니까?")) {
       try {
-        const updatedTags = await deleteTagService(name, tags);
+        const updatedTags = await tagService.remove(name, tags);
         if (updatedTags) {
           setTags(updatedTags);
           alert("태그가 삭제되었습니다.");

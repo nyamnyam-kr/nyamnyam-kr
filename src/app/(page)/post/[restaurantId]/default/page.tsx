@@ -2,9 +2,8 @@
 
 import React, { FormEvent, use, useEffect, useState } from 'react'
 import Image from 'next/image'
-import Rate from 'src/app/components/Rate'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import * as Icon from "@phosphor-icons/react/dist/ssr";
 import 'swiper/css';
@@ -13,19 +12,21 @@ import 'swiper/css/thumbs';
 import { useParams, useRouter } from 'next/navigation'
 import { ReplyModel } from 'src/app/model/reply.model'
 import { PostModel } from 'src/app/model/post.model'
-import { deletePostService, fetchPostService } from 'src/app/service/post/post.service'
+import { postService } from 'src/app/service/post/post.service'
 import { imageService } from 'src/app/service/image/image.service'
 import { fetchRestaurantService, getRestaurantDetails } from 'src/app/service/restaurant/restaurant.service'
-import { checkLikedService, toggleLikeService } from 'src/app/service/upvote/upvote.service'
-import { deleteReplyService, editSaveReplyService, submitReplyService, toggleReplyService } from 'src/app/service/reply/reply.service'
+import { upvoteService } from 'src/app/service/upvote/upvote.service'
+import { replyService } from 'src/app/service/reply/reply.service'
 import Star from 'src/app/components/Star'
-
+import { tag } from 'src/app/api/tag/tag.api';
+import { Modal } from 'react-bootstrap';
 
 const Default = () => {
     const [posts, setPosts] = useState<PostModel[]>([]);
     const [restaurant, setRestaurant] = useState<RestaurantModel | null>(null);
     const [images, setImages] = useState<{ [key: number]: string[] }>({});
     const [allImages, setAllImages] = useState<string[]>([]);
+    const [currentImg, setCurrentImg] = useState<string>('');
     const [likedPost, setLikedPosts] = useState<number[]>([]);
     const [likeCount, setLikeCounts] = useState<{ [key: number]: number }>({});
     const [replyToggles, setReplyToggles] = useState<{ [key: number]: boolean }>({});
@@ -35,12 +36,13 @@ const Default = () => {
     const [editInput, setEditInput] = useState<{ [key: number]: string }>({});
     const [allAverage, setAllAverage] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
+    const [top5Tags, setTop5Tags] = useState<string[]>([]);
     const [rating, setRating] = useState<{ [key: number]: number }>({ 5: 0, 4: 0, 3: 0, 2: 0, 1: 0, }); // 리뷰 갯수
     const [totalRating, setTotalRating] = useState<number>(0);
+    const [modal, setModal] = useState(false);
     const currentUserId = 1; // 확인용
     const router = useRouter();
     const { restaurantId } = useParams();
-
     const [selectedReasons, setSelectedReasons] = useState<{ [key: number]: string }>({});
 
     // 공통 스타일
@@ -53,12 +55,13 @@ const Default = () => {
             fetchRestaurant();
             fetchImgByRestaurant(Number(restaurantId));
             fetchRestaurantDetails(Number(restaurantId));
+            fetchTopTags(Number(restaurantId));
         }
     }, [restaurantId]);
 
     const fetchPosts = async (restaurantId: number) => {
         try {
-            const postData = await fetchPostService(restaurantId);
+            const postData = await postService.fetchPost(restaurantId);
 
             setPosts(postData.map((data) => data.post));
             setLikedPosts(postData.filter((data) => data.liked).map((data) => data.post.id));
@@ -94,24 +97,30 @@ const Default = () => {
         setAllImages(imageURLs);
     }
 
-    const fetchImage = async (postId: number) => {
-        const imageURLs = await imageService.getByPostId(postId)
-
-        setImages(prevImages => ({
-            ...prevImages,
-            [postId]: imageURLs,
-        }));
-    }
-
     const fetchRestaurantDetails = async (restaurantId: number) => {
         const { allAverage, tags } = await getRestaurantDetails(restaurantId);
         setAllAverage(allAverage);
         setTags(tags);
     }
 
+    const fetchTopTags = async (restaurantId: number) => {
+        const top5Tags = await tag.getTop5Tags(restaurantId);
+        setTop5Tags(top5Tags);
+    }
+
+    // 이미지 modal 
+    const openModal = (imageURL: string) => {
+        setCurrentImg(imageURL);
+        setModal(true);
+    }
+
+    const closeModal = () => {
+        setModal(false);
+    }
+
     const handleDelete = async (postId: number) => {
         if (window.confirm("게시글을 삭제하시겠습니까?")) {
-            const success = await deletePostService(postId);
+            const success = await postService.remove(postId);
 
             if (success) {
                 alert("게시글이 삭제되었습니다.");
@@ -123,7 +132,7 @@ const Default = () => {
 
     // 댓글 버튼 
     const toggleReply = async (id: number) => {
-        const { toggled, replies } = await toggleReplyService(id, replyToggles);
+        const { toggled, replies } = await replyService.toggle(id, replyToggles);
 
         setReplyToggles((prevToggles) => ({
             ...prevToggles,
@@ -145,7 +154,7 @@ const Default = () => {
             alert('댓글을 입력하세요.');
             return;
         }
-        const result = await submitReplyService(postId, replyContent, currentUserId, replyToggles);
+        const result = await replyService.submit(postId, replyContent, currentUserId, replyToggles);
 
         if (result && result.success) {
             const { newReply } = result;
@@ -191,7 +200,7 @@ const Default = () => {
 
     // 수정내용 저장 (서버연결)
     const replyEditSave = async (replyId: number, postId: number) => {
-        const updateReply = await editSaveReplyService(replyId, postId, editInput[replyId], currentUserId);
+        const updateReply = await replyService.editSave(replyId, postId, editInput[replyId], currentUserId);
         if (updateReply) {
             setReplies((prevReplies) => ({
                 ...prevReplies,
@@ -213,7 +222,7 @@ const Default = () => {
     const replyDelete = async (replyId: number, postId: number) => {
         if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
-        const updatedReplies = await deleteReplyService(replyId, postId, replies);
+        const updatedReplies = await replyService.remove(replyId, postId, replies);
 
         if (updatedReplies) {
             setReplies(prevReplies => ({
@@ -235,15 +244,9 @@ const Default = () => {
         return `${year}년 ${month}월 ${day}일`;
     };
 
-    // 좋아요 상태 확인 
-    const checkLikedStatus = async (postId: number) => {
-        const isLiked = await checkLikedService(postId, currentUserId);
-        return isLiked ? postId : null;
-    };
-
     // 좋아요 & 취소 & count
     const handleLike = async (postId: number) => {
-        const result = await toggleLikeService(postId, currentUserId, likedPost);
+        const result = await upvoteService.toggle(postId, currentUserId, likedPost);
 
         if (result) {
             setLikedPosts(result.likedPost);
@@ -278,24 +281,25 @@ const Default = () => {
                                 </div>
                             </div>
                             <div className="list-rating mt-3">
-                                {Object.keys(rating).map((key) => {
-                                    const starCount = Number(key);
-                                    const count = rating[starCount]; 
-                                    const percent = totalRating > 0 ? (count / totalRating) * 100 : 0;
+                                {top5Tags.map((tag, index) => {
+                                    const tagCount = [10, 8, 6, 4, 2];
+                                    const totalTag = tagCount.reduce((sum, count) => sum + count, 0);
+                                    const percent = totalTag > 0 ? (tagCount[index] / totalTag) * 100 : 0;
 
                                     return ( // JSX 반환을 위해 return 명시
-                                        <div key={starCount} className="item flex items-center justify-between gap-1.5">
+                                        <div key={index} className="item flex items-center justify-between gap-1.5">
                                             <div className="flex items-center gap-1">
-                                                <div className="caption1">{starCount}</div>
-                                                <Icon.Star size={14} weight="fill" />
+                                                <div className="rounded-full border border-gray-300 bg-white px-3 py-1 text-gray-600 font-semibold shadow-sm hover:bg-gray-100 mb-1"
+                                                    style={{ whiteSpace: 'nowrap', display: 'inline-flex' }}>
+                                                    {tag}</div>
                                             </div>
                                             <div className="progress bg-line relative w-3/4 h-2">
                                                 <div
                                                     className="progress-percent absolute bg-yellow h-full left-0 top-0"
-                                                    style={{ width: `${percent}%` }} 
+                                                    style={{ width: `${percent}%` }}
                                                 ></div>
                                             </div>
-                                            <div className="caption1">{percent.toFixed(1)}%</div>
+                                            <div className="caption1">{percent.toFixed(0)}%</div>
                                         </div>
                                     );
                                 })}
@@ -309,30 +313,12 @@ const Default = () => {
                                     slidesPerView={3}
                                     modules={[Navigation]}
                                     breakpoints={{
-                                        576: {
-                                            slidesPerView: 4,
-                                            spaceBetween: 16,
-                                        },
-                                        640: {
-                                            slidesPerView: 5,
-                                            spaceBetween: 16,
-                                        },
-                                        768: {
-                                            slidesPerView: 4,
-                                            spaceBetween: 16,
-                                        },
-                                        992: {
-                                            slidesPerView: 5,
-                                            spaceBetween: 20,
-                                        },
-                                        1100: {
-                                            slidesPerView: 5,
-                                            spaceBetween: 20,
-                                        },
-                                        1290: {
-                                            slidesPerView: 7,
-                                            spaceBetween: 20,
-                                        },
+                                        576: {slidesPerView: 4,spaceBetween: 16,},
+                                        640: {slidesPerView: 5,spaceBetween: 16,},
+                                        768: {slidesPerView: 4,spaceBetween: 16,},
+                                        992: {slidesPerView: 5,spaceBetween: 20,},
+                                        1100: {slidesPerView: 5,spaceBetween: 20,},
+                                        1290: {slidesPerView: 7,spaceBetween: 20,},
                                     }}
                                 >
                                     {allImages.map((imageURL, index) => (
@@ -343,19 +329,38 @@ const Default = () => {
                                                 height={400}
                                                 alt={`Restaurant Image ${index + 1}`}
                                                 className='w-[120px] aspect-square object-cover rounded-lg'
+                                                onClick={() => openModal(imageURL)}
                                             />
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
+                                <Modal
+                                    isOpen={modal}
+                                    onRequestClose={closeModal}
+                                    className="modal-quickview-main"
+                                    overlayClassName="modal-quickview-block"
+                                >
+                                    <div className='relative'>
+                                        <Image
+                                        src={currentImg}
+                                        alt="Modal Image"
+                                        width={800}
+                                        height={800}
+                                        className='rounded-lg'
+                                        />
+                                        <button
+                                        className="absolute top-2 right-2 text-white text-cl"
+                                        onClick={closeModal}
+                                        >
+                                        X
+                                        </button>
+                                    </div>
+                                </Modal>
                             </div>
                             <div className="sorting flex items-center flex-wrap md:gap-5 gap-3 gap-y-3 mt-6">
                                 <div className="text-button">Sort by</div>
                                 <div className="item bg-white px-4 py-1 border border-line rounded-full">Newest</div>
                                 <div className="item bg-white px-4 py-1 border border-line rounded-full">5 Star</div>
-                                <div className="item bg-white px-4 py-1 border border-line rounded-full">4 Star</div>
-                                <div className="item bg-white px-4 py-1 border border-line rounded-full">3 Star</div>
-                                <div className="item bg-white px-4 py-1 border border-line rounded-full">2 Star</div>
-                                <div className="item bg-white px-4 py-1 border border-line rounded-full">1 Star</div>
                             </div>
                         </div>
                     </div>

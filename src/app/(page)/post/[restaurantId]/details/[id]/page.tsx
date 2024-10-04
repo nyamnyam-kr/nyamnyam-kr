@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Star from "src/app/components/Star";
 import { PostModel } from "src/app/model/post.model";
-import { deletePostService, detailsPostAndImages } from "src/app/service/post/post.service";
+import { postService } from "src/app/service/post/post.service";
 
 export default function PostDetail() {
   const [post, setPost] = useState<PostModel | null>(null);
@@ -21,7 +21,7 @@ export default function PostDetail() {
     if(!id) return; 
     try {
       const postId = Array.isArray(id) ? Number(id[0]) : Number(id);
-      const {postData, images} = await detailsPostAndImages(postId);
+      const {postData, images} = await postService.detailsPostAndImages(postId);
 
       console.log("Post data with nickname and restaurantId:", postData); // 데이터를 확인
       console.log("Image data:", images);
@@ -44,7 +44,7 @@ export default function PostDetail() {
   const handleDelete = async () => {
     if (window.confirm("게시글을 삭제하시겠습니까?")) {
       const postId = Array.isArray(id) ? Number(id[0]) : Number(id);
-      const success = await deletePostService(postId);
+      const success = await postService.remove(postId);
 
       if (success) {
           alert("게시글이 삭제되었습니다.");

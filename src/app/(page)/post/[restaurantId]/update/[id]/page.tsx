@@ -5,8 +5,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import Star from 'src/app/components/Star';
 import { initialPost, PostModel } from 'src/app/model/post.model';
 import { TagModel } from 'src/app/model/tag.model';
-import { getPostDetails, updatePostService } from 'src/app/service/post/post.service';
-import { fetchTagData } from 'src/app/service/tag/tag.service';
+import {postService} from 'src/app/service/post/post.service';
+import { tagService } from 'src/app/service/tag/tag.service';
 
 export default function PostUpdate() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function PostUpdate() {
   const loadData = async (id: number) => {
     console.log("loadData 함수가 호출되었습니다. Id: ", id);
     try {
-      const post = await getPostDetails(id);
+      const post = await postService.getPostDetails(id);
       console.log("post 데이터: ", post);
 
       const uniqueTags = Array.isArray(post.tags) ? Array.from(new Set(post.tags)) : [];
@@ -44,7 +44,7 @@ export default function PostUpdate() {
       setTags(uniqueTags);
       setPrevImages(post.images || []);
 
-      const tagList = await fetchTagData();
+      const tagList = await tagService.fetchTag();
       console.log("TagList: ", tagList)
       setAllTags(tagList);
 
@@ -63,7 +63,7 @@ export default function PostUpdate() {
         tags: uniqueTags,
       };
 
-      await updatePostService(Number(id), updatePost, images, imagesToDelete);
+      await postService.update(Number(id), updatePost, images, imagesToDelete);
       router.push(`/post/${restaurantId}/details/${id}`);
 
     } catch (error) {

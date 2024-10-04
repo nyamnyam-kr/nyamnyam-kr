@@ -4,7 +4,7 @@ import { PostModel } from "src/app/model/post.model";
 import { imageService } from "../image/image.service";
 import { image } from "src/app/api/image/image.api";
 
-export const updatePostService = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
+const update = async (postId: number, postData: any, images: File[], imagesToDelete: number[]): Promise<void> => {
   try {
     await post.update(postId, postData);
 
@@ -26,7 +26,7 @@ export const updatePostService = async (postId: number, postData: any, images: F
 }
 
 // 하나의 post 데이터 가져오기 
-export const getPostDetails = async (id:number): Promise<PostModel> => {
+const getPostDetails = async (id:number): Promise<PostModel> => {
   try{
     const postData = await post.getById(id); 
     return postData;
@@ -36,7 +36,7 @@ export const getPostDetails = async (id:number): Promise<PostModel> => {
   }
 }
 
-export const detailsPostAndImages = async (postId: number): Promise<{ postData: any; images: string[] }> => {
+const detailsPostAndImages = async (postId: number): Promise<{ postData: any; images: string[] }> => {
   try {
     const postData = await post.getById(postId);
     const images = await image.getByPostId(postId);
@@ -47,7 +47,7 @@ export const detailsPostAndImages = async (postId: number): Promise<{ postData: 
   }
 }
 
-export const insertPostService = async (postData: Partial<PostModel>, images: File[]): Promise<number> => {
+const insert = async (postData: Partial<PostModel>, images: File[]): Promise<number> => {
   try {
     const postId = await post.insert(postData);
 
@@ -61,7 +61,7 @@ export const insertPostService = async (postData: Partial<PostModel>, images: Fi
   }
 }
 
-export const fetchPostService = async (restaurantId: number) => {
+const fetchPost = async (restaurantId: number) => {
   try {
     const posts: PostModel[] = await post.getByRestaurant(restaurantId);
 
@@ -80,7 +80,7 @@ export const fetchPostService = async (restaurantId: number) => {
   }
 }
 
-export const deletePostService = async (postId: number) => {
+const remove = async (postId: number) => {
   try {
     const response = await post.remove(postId);
     if (response.status === 200 || response.status === 204) {
@@ -92,3 +92,5 @@ export const deletePostService = async (postId: number) => {
     return false;
   }
 };
+
+export const postService = {update, getPostDetails, detailsPostAndImages, insert, fetchPost, remove};

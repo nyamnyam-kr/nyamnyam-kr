@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { tag } from "src/app/api/tag/tag.api";
 import { initialTag, TagModel } from "src/app/model/tag.model";
-import { insertTagService } from "src/app/service/tag/tag.service";
+import { tagService } from "src/app/service/tag/tag.service";
 
 export default function TagRegister() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function TagRegister() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await insertTagService(formData); 
+    await tagService.insert(formData); 
     router.push('/tag/tags'); 
   };
 
