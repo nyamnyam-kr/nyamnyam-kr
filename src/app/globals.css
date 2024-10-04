@@ -48,3 +48,8 @@ body {
   width: 100px;
   height: auto;
 }
+
+.heading6 {
+  font-size: 16px;
+  line-height: 24px;
+}

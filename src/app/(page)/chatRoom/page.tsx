@@ -10,7 +10,6 @@ import { sendMessageService, subscribeMessages } from "src/app/service/chat/chat
 import { ChatRoomModel } from "src/app/model/chatRoom.model";
 import { ChatModel } from "src/app/model/chat.model";
 import { getNotReadParticipantsCount, getUnreadCount, markMessageAsRead, updateReadBy } from "src/app/api/chat/chat.api";
-import { EmojiClickData } from "emoji-picker-react";
 import dynamic from "next/dynamic"; // Next.js의 dynamic import 사용
 
 export default function Home1() {

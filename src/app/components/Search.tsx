@@ -1,11 +1,15 @@
+"use client"
 // Search.tsx
+
 import React, { useEffect, useState } from 'react';
 import { useSearchContext } from './SearchContext';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Search: React.FC = () => {
   const { searchTerm, setSearchTerm } = useSearchContext(); // 검색어와 검색어 설정 함수 가져오기
   const [inputValue, setInputValue] = useState(searchTerm || '');
-
+  const router = useRouter();
+  const pathname = usePathname();
 
   // 검색어가 Context에서 변경될 때 로컬 상태를 업데이트하여 동기화
   useEffect(() => {
@@ -21,7 +25,8 @@ const Search: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchTerm(inputValue); // Context의 searchTerm 업데이트
-    window.history.pushState({}, '', `?search=${inputValue}`);
+    router.push(`${pathname}?search=${inputValue}`);
+    // window.history.pushState({}, '', `?search=${inputValue}`);
   };
 
 
@@ -33,12 +38,12 @@ const Search: React.FC = () => {
           type="search"
           name="search"
           placeholder="Search"
-          value={inputValue} // inputValue로 input 필드 상태 관리
-          onChange={handleSearchChange} // 변화 감지 핸들러
+          value={inputValue} 
+          onChange={handleSearchChange} 
         />
       </div>
       <div className="search__btn">
-        <button type="submit"> {/* 버튼 클릭 시 handleSearchSubmit 실행 */}
+        <button type="submit">
           <i className="ico_microphone"></i>
         </button>
       </div>

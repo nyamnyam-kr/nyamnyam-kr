@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import Modal from './Modal'; // Modal 컴포넌트 임포트
+import Modal from '../components/Modal'; // Modal 컴포넌트 임포트
+import { fetchWishListsService } from '../service/wishList/wishList.service';
 
 interface HeartButtonProps {
     restaurantId: number | undefined;
@@ -12,7 +13,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false); // 추가 모달 상태
     const [newWishListName, setNewWishListName] = useState('');
     const [message, setMessage] = useState<string | null>(null);
-    const userId = 4;
+    const userId = 1;
 
     useEffect(() => {
         const fetchFavoritedRestaurants = async () => {
@@ -43,7 +44,19 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
         fetchFavoritedRestaurants();
     }, [restaurantId]);
 
+    // useEffect(() => {
+    //     const fetchFavoritedRestaurants = async () => {
+    //         try {
+    //             const wishListData = await fetchWishListsService(userId); 
+    //             const isFavorited = wishListData.data
+    //             setIsFavorited(isFavorited);
+    //         } catch (error) {
+    //             console.error('Error fetching favorited restaurants:', error);
+    //         }
+    //     };
 
+    //     fetchFavoritedRestaurants();
+    // }, [restaurantId]);
 
 
     const handleToggleFavorite = async (event: React.MouseEvent) => {
@@ -74,10 +87,10 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'userId': userId.toString(), 
+                        'userId': userId.toString(),
                     },
                 });
-    
+
                 if (!deleteResponse.ok) {
                     console.log('위시리스트에서 삭제 실패');
                 } else {
@@ -85,8 +98,8 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     setIsFavorited(false);
                 }
             }
-            
-            
+
+
 
         } catch (error) {
             console.error('Error fetching wish list:', error);
@@ -106,7 +119,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     'Content-Type': 'application/json',
                     'userId': userId.toString(),
                 },
-         
+
             });
 
             if (!response.ok) {
@@ -142,8 +155,8 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
             const addedWishListName = wishList.find(item => item.id === wishListId)?.name;
             console.log('식당이 추가되었습니다:', newRestaurant);
             setMessage(`식당이 ${addedWishListName} 에 추가되었습니다!`);
-            
-            setIsFavorited(true); 
+
+            setIsFavorited(true);
 
             setTimeout(() => {
                 setMessage(null);
@@ -189,7 +202,7 @@ const HeartButton = ({ restaurantId }: HeartButtonProps) => {
                     <ul className="space-y-4">
                         {wishList.map((item) => (
                             <button key={item.id} onClick={() => handleAddRestaurantToWishList(item.id)} className="text-green-500">
-                                <li className="flex justify-between items-center p-4 border rounded-lg shadow-sm" style={{marginLeft:'10%'}}>
+                                <li className="flex justify-between items-center p-4 border rounded-lg shadow-sm" style={{ marginLeft: '10%' }}>
                                     <div>
                                         <h3 className="text-lg font-semibold">{item.name}   +</h3>
                                     </div>
