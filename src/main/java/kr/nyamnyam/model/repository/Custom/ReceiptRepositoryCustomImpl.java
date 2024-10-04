@@ -1,20 +1,16 @@
 package kr.nyamnyam.model.repository.Custom;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.QReceiptEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.querydsl.core.group.GroupBy.sum;
 import static com.querydsl.core.types.dsl.Expressions.stringTemplate;
 
 
@@ -26,12 +22,13 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
     public Long findRestaurantId(String name) {
         QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;
         QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
+        System.out.println(name);
 
         return jpaQueryFactory.select(restaurantEntity.id)
                 .from(receiptEntity)
-                .join(restaurantEntity).on(restaurantEntity.name.eq(name))
-                .where(receiptEntity.id.eq(receiptEntity.id))
-                .fetchOne();
+                .join(restaurantEntity).on(restaurantEntity.name.eq(receiptEntity.name))
+                .where(restaurantEntity.name.eq(name))
+                .fetchFirst();
     }
 
 
@@ -110,6 +107,8 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
                 .collect(Collectors.toList());
 
     }
+
+
 
 
 }
