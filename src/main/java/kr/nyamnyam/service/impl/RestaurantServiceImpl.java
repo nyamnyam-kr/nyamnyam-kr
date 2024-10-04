@@ -88,10 +88,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<TotalModel> recommendByAge(Long age) {
-        return restaurantRepository.restaurantsByAge(age);
-    }
+
 
 
 }

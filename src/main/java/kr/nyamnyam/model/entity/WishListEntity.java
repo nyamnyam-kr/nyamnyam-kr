@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "wishLists")
+@Table(name = "wishlists")
 public class WishListEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

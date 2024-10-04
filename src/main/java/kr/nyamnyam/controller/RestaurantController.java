@@ -66,10 +66,7 @@ public class RestaurantController {
         return restaurantService.findByCategory(category);
     }
 
-    @GetMapping("/recommendByAge")
-    public ResponseEntity<List<?>> recommendByAge(@RequestParam Long age) {
-        return ResponseEntity.ok(restaurantService.recommendByAge(age));
-    }
+
 
 
 }

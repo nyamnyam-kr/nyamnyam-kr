@@ -33,9 +33,12 @@ public class ReceiptServiceImpl implements ReceiptService {
         }
         ReceiptEntity savedReceipt = repository.save(receipt);
         String restaurantName = savedReceipt.getName();
+        System.out.println(restaurantName);
 
         Long restaurantId = repository.findRestaurantId(restaurantName);
         Optional<RestaurantEntity> restaurantEntity = restaurantRepository.findById(restaurantId);
+
+        System.out.println(restaurantEntity);
 
         return restaurantEntity.map(RestaurantModel::toDto).orElse(null);
     }
@@ -50,15 +53,8 @@ public class ReceiptServiceImpl implements ReceiptService {
 
 
     @Override
-    public List<TotalModel> showTotalCount() {
-        return repository.totalCountFromName();
-    }
-
-    @Override
     @Transactional
     public List<CostModel> costModelList(Long userId) {
-        List<CostModel> costModels = repository.costList(userId);
-        System.out.println(costModels);
         return repository.costList(userId);
     }
 

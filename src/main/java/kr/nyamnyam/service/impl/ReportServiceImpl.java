@@ -14,6 +14,7 @@ import kr.nyamnyam.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,31 +29,27 @@ public class ReportServiceImpl implements ReportService {
         Long userId = model.getUserId();
         Long postId = model.getPostId();
 
-        if (model.getId() == null) {
+        ReportEntity byPostId = reportRepository.findByPostId(postId);
 
+        if(byPostId != null && byPostId.getUserId().equals(userId)) {
+            byPostId.setReason(model.getReason());
+            reportRepository.save(byPostId);
+
+        } else {
             ReportEntity reportEntity = ReportEntity.builder()
                     .userId(userId)
                     .postId(postId)
                     .reason(model.getReason())
                     .build();
             reportRepository.save(reportEntity);
-        } else {
-
-            ReportEntity reportEntity = reportRepository.findByUserId(userId);
-
-            if (reportEntity != null && reportEntity.getPostId().equals(postId)) {
-                reportEntity.setReason(model.getReason());
-                reportRepository.save(reportEntity);
-            } else {
-                ReportEntity report = ReportEntity.builder()
-                        .userId(userId)
-                        .postId(postId)
-                        .reason(model.getReason())
-                        .build();
-                reportRepository.save(report);
-            }
         }
+
         return true;
+    }
+
+    @Override
+    public List<ReportEntity> findAll() {
+        return reportRepository.findAll();
     }
 
 }

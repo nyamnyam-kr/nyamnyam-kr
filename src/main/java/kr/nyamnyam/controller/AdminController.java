@@ -1,11 +1,14 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.Chart.CostModel;
+import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.service.AdminService;
 import kr.nyamnyam.service.OpinionService;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,6 +51,22 @@ public class AdminController {
     @GetMapping("/countPostList")
     public ResponseEntity<List<?>> countPostList() {
         return ResponseEntity.ok(adminService.countPostList());
+    }
+
+    // user 연령별 추천
+    @GetMapping("/recommendByAge/{id}")
+    public ResponseEntity<List<?>> recommendByAge(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.recommendByAge(id));
+    }
+
+    @GetMapping("/randomByUserId/{id}")
+    public ResponseEntity<RestaurantEntity> randomByUserId(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.randomRestaurantByUserId(id));
+    }
+
+    @GetMapping("/receiptCount")
+    public ResponseEntity<List<CostModel>> receiptCount() {
+        return ResponseEntity.ok(adminService.receiptRestaurant());
     }
 
 

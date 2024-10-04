@@ -1,9 +1,12 @@
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.domain.Chart.AreaModel;
+import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.PostRepository;
+import kr.nyamnyam.model.repository.ReceiptRepository;
 import kr.nyamnyam.model.repository.RestaurantRepository;
 import kr.nyamnyam.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final PostRepository postRepository;
     private final RestaurantRepository restaurantRepository;
+    private final ReceiptRepository receiptRepository;
 
 
     //
@@ -56,5 +60,19 @@ public class AdminServiceImpl implements AdminService {
         return postRepository.countRestaurantList();
     }
 
+    @Override
+    public List<TotalModel> recommendByAge(Long userId) {
+        return restaurantRepository.restaurantsByAge(userId);
+    }
+
+    @Override
+    public RestaurantEntity randomRestaurantByUserId(Long userId) {
+        return restaurantRepository.randomRestaurant(userId);
+    }
+
+    @Override
+    public List<CostModel> receiptRestaurant() {
+        return receiptRepository.receiptCount();
+    }
 
 }

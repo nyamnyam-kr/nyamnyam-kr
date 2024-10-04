@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.domain;
 
+import kr.nyamnyam.model.entity.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,5 @@ public class PostModel {
     public double averageRating() {
         return (this.taste + this.clean + this.service) / 3.0;
     }
-
-//    private Long imgId;   => 없어도 에러 x
 
 }
