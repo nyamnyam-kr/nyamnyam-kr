@@ -6,6 +6,10 @@ export const instance  = axios.create ({
     baseURL : process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL || "http://localhost:8080", 
 }); 
 
+export const instance1  = axios.create ({
+    baseURL : process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL || "http://localhost:8081", 
+}); 
+
 // JWT 토큰 헤더에 포함하기(리덕스 axios instance 설정)
 // instance.interceptors.request.use(
 //     // 요청을 보내기 전 수행되는 함수

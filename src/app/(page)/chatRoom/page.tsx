@@ -3,90 +3,97 @@
 import Head from "next/head";
 import Link from "next/link";
 import Image from 'next/image';
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // 이 라인은 이제 필요 없을 수 있습니다.
 import { useEffect, useState } from "react";
 import { deleteChatRoomsService, getChatRoomData, getChatRoomDetails, insertChatRoom } from "src/app/service/chatRoom/chatRoom.api";
 import { sendMessageService, subscribeMessages } from "src/app/service/chat/chat.api";
-
-
-
-
+import { ChatRoomModel } from "src/app/model/chatRoom.model";
+import { ChatModel } from "src/app/model/chat.model";
+import { getNotReadParticipantsCount, getUnreadCount, markMessageAsRead, updateReadBy } from "src/app/api/chat/chat.api";
+import { EmojiClickData } from "emoji-picker-react";
+import dynamic from "next/dynamic"; // Next.js의 dynamic import 사용
 
 export default function Home1() {
   const [chatRooms, setChatRooms] = useState<ChatRoomModel[]>([]);
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState(String || null);
-  const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoomModel | null>(null); // 채팅방 정보
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(null);
+  const [selectedChatRoom, setSelectedChatRoom] = useState<ChatRoomModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [messages, setMessages] = useState<ChatModel[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [sender, setSender] = useState(""); // 사용자 ID
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
-
+  const [sender, setSender] = useState<string>(""); // 사용자 ID
+  const [unreadCount, setUnreadCount] = useState<number>(0); // 읽지 않은 메시지 수
+  const [notReadParticipantsCount, setNotReadParticipantsCount] = useState<number>(0); // 읽지 않은 참가자 수
   const [selectChatRooms, setSelectChatRooms] = useState<any[]>([]);
-  const router = useRouter();
-
-
   const [user, setUser] = useState(null);
   const [chatRoomName, setChatRoomName] = useState<string>(""); // 채팅방 이름
   const [participantNames, setParticipantNames] = useState<string[]>(() => {
-    if (typeof window !== 'undefined') { // 클라이언트에서만 접근
+    if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
-        const parsedUser = JSON.parse(storedUser); // 유저 정보를 JSON으로 파싱
-        return [parsedUser.nickname]; // 닉네임만 배열로 반환
+        const parsedUser = JSON.parse(storedUser);
+        return [parsedUser.nickname];
       }
     }
-    return []; // 서버 사이드에서는 빈 배열 반환
+    return [];
   });
   const [newParticipantName, setNewParticipantName] = useState<string>(""); // 입력받은 참가자 이름
+  const [readBy, setReadBy] = useState<{ [key: string]: boolean }>({}); // 메시지 읽음 상태 관리
 
-
-
-  // 기본 상태
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       setSender(parsedUser.nickname); // 로그인된 사용자의 닉네임으로 sender 초기화
-      fetchData(parsedUser.nickname); // user.nickname으로 파라미터 전달
+      fetchData(parsedUser.nickname);
     }
   }, []);
 
-
-
   const fetchData = async (nickname: string) => {
-    if (!nickname) return; // 닉네임이 없으면 함수 종료
-    setLoading(true); // 로딩 상태 시작
-
+    if (!nickname) return;
+    setLoading(true);
     try {
-      const { chatRooms, totalPages } = await getChatRoomData(nickname); // 유저 닉네임을 파라미터로 전달
+      const { chatRooms } = await getChatRoomData(nickname);
       setChatRooms(chatRooms);
-      setTotalPages(totalPages);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false); // 로딩 상태 종료
+      setLoading(false);
     }
   };
 
-  // 디테일 원
-  const handleDetails = (id: any) => {
-    router.push('/channel/details/${id}');
+  // 로그인한 사용자가 참여하고 있는 모든 채팅방의 읽지 않은 메시지 수 가져오기
+  useEffect(() => {
+    if (!sender) return;
+
+    const fetchUnreadCounts = async () => {
+      try {
+        const updatedChatRooms = await Promise.all(
+          chatRooms.map(async (room) => {
+            const unreadCountResult = await getUnreadCount(room.id, sender);
+            return { ...room, unreadCount: unreadCountResult };
+          })
+        );
+
+        setChatRooms(updatedChatRooms);
+      } catch (error) {
+        console.error('읽지 않은 메시지 수를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchUnreadCounts();
+  }, [sender, chatRooms]);
+
+  // 읽지 않은 참가자 수를 계산하는 함수
+  const countNotReadParticipants = (message: ChatModel) => {
+    const readByCount = Object.keys(message.readBy).length; // 읽은 참가자 수
+    return message.totalParticipants - readByCount; // 읽지 않은 참가자 수
   };
 
-  const handleCheck = (id: any) => {
-    setSelectChatRooms((prevSelected: string[]) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((channelId: string) => channelId !== id)
-        : [...prevSelected, id]
-    )
-  };
-
-
+  // 선택된 채팅방의 메시지를 가져오고 읽음 상태 처리하기
   useEffect(() => {
     if (!selectedChatRoomId) return;
 
@@ -94,45 +101,97 @@ export default function Home1() {
     getChatRoomDetails(selectedChatRoomId)
       .then((data) => {
         setSelectedChatRoom(data);
+        setMessages(data.messages || []); // 초기 메시지 설정
+        setUnreadCount(0); // 채팅방 열 때 unreadCount를 0으로 설정
+
+        // 읽지 않은 메시지 수를 0으로 설정
+        setChatRooms((prevRooms) =>
+          prevRooms.map((room) =>
+            room.id === selectedChatRoomId ? { ...room, unreadCount: 0 } : room
+          )
+        );
       })
       .catch((error) => console.error(error));
 
     // 메시지 스트리밍 구독
-    const eventSource = subscribeMessages(selectedChatRoomId, (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
+    const eventSource = new EventSource(`http://localhost:8081/api/chats/${selectedChatRoomId}`);
+
+    eventSource.onmessage = async (event) => {
+      const newMessage = JSON.parse(event.data);
+
+      setMessages((prevMessages) => {
+        // 새 메시지가 이미 존재하는지 확인
+        const messageExists = prevMessages.some(msg => msg.id === newMessage.id);
+        if (!messageExists) {
+          // 새 메시지를 기존 메시지 목록에 추가
+          const updatedMessages = [...prevMessages, newMessage];
+
+          // 메시지를 읽음으로 마킹 처리
+          const isRead = newMessage.readBy ? newMessage.readBy[sender] : false; // null 체크
+          if (!isRead) {
+            markMessageAsRead(newMessage.id, sender)
+              .then(() => {
+                // 읽음 상태 업데이트
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === newMessage.id
+                      ? { ...msg, isRead: true, readBy: { ...msg.readBy, [sender]: true } }
+                      : msg
+                  )
+                );
+                // 채팅방의 unreadCount를 업데이트
+                setChatRooms((prevChatRooms) =>
+                  prevChatRooms.map((room) =>
+                    room.id === selectedChatRoomId
+                      ? { ...room, unreadCount: Math.max(room.unreadCount - 1, 0) } // unreadCount 감소
+                      : room
+                  )
+                );
+              })
+              .catch((error) => console.error('Failed to mark message as read:', error));
+          }
+
+          return updatedMessages; // 새 메시지 추가
+        }
+        return prevMessages; // 메시지가 이미 존재하면 상태를 그대로 반환
+      });
+    };
+
+    eventSource.onerror = (event) => {
+      console.error("EventSource 에러:", event);
+      eventSource.close(); // 에러 발생 시 EventSource 종료
+    };
 
     return () => {
       eventSource.close(); // 컴포넌트 언마운트 시 EventSource 닫기
     };
   }, [selectedChatRoomId]);
 
-  const sendMessage = async () => {
+
+
+  // 메시지 전송 함수
+  // sendMessage 함수에서 새로운 메시지를 보낼 때 호출
+  const sendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newMessageData = {
+      sender,
+      message: newMessage,
+      readBy: { [sender]: true }, // 보낸 사용자의 읽음 상태 추가
+    };
+
     try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setSender(parsedUser.nickname); // 로그인된 사용자의 닉네임으로 sender 초기화       
-      }
-      await sendMessageService(selectedChatRoomId, sender, newMessage);
-      setNewMessage(""); // 메시지 입력 필드 초기화
+      const sentMessage = await sendMessageService(selectedChatRoomId, newMessageData);
+      setMessages((prevMessages) => {
+        const messageExists = prevMessages.some(msg => msg.id === sentMessage.id);
+        return messageExists ? prevMessages : [...prevMessages, sentMessage];
+      });
+      setNewMessage("");
     } catch (error) {
       console.error(error);
+      alert('메시지 전송 중 오류가 발생했습니다.'); // 사용자에게 알림
     }
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await sendMessage(); // 메시지 전송 함수 호출
-  };
-
-  useEffect(() => {
-    if (selectedChatRoomId) {
-      // 채팅방이 변경되었을 때 메시지 초기화 및 입력 필드 비우기
-      setMessages([]); // 메시지 초기화
-      setNewMessage(""); // 메시지 입력 필드 초기화
-    }
-  }, [selectedChatRoomId]);
 
   const handleDelete = async () => {
     if (selectChatRooms.length === 0) {
@@ -141,19 +200,12 @@ export default function Home1() {
     }
     if (window.confirm("선택한 채팅방을 삭제하시겠습니까?")) {
       try {
-        await deleteChatRoomsService(selectChatRooms); // 서비스 호출
+        await deleteChatRoomsService(selectChatRooms);
         alert("채팅방이 삭제되었습니다.");
         setChatRooms(prevChatRooms =>
-          prevChatRooms.filter(room => !selectChatRooms.includes(room.id)) // 삭제한 방을 제외
+          prevChatRooms.filter(room => !selectChatRooms.includes(room.id))
         );
-        setSelectChatRooms([]); // 선택 초기화
-
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          fetchData(parsedUser.nickname); // user.nickname으로 파라미터 전달
-        }
-
+        setSelectChatRooms([]);
       } catch (error) {
         console.error('Delete operation failed:', error);
         alert("삭제 중 오류가 발생했습니다.");
@@ -161,11 +213,9 @@ export default function Home1() {
     }
   };
 
-  // 검색어에 따른 필터링
   const filteredChatRooms = chatRooms.filter((room) =>
     room.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
 
   //===========================================여기 까지 serviceInsertReply,api 끝!!!!=============================================
 
@@ -173,7 +223,7 @@ export default function Home1() {
     e.preventDefault(); // 페이지 새로고침 방지
 
     // ChatRoom 객체 생성
-    const newChatRoom: ChatRoomModel = {
+    const newChatRoom: any = {
       name: chatRoomName, // 입력된 채팅방 이름
       participants: [...participantNames, newParticipantName.trim()], // 초기 참가자 목록에 입력된 참가자 추가
     };
@@ -199,8 +249,14 @@ export default function Home1() {
     setNewParticipantName(""); // 입력 필드 초기화
   };
 
-
-
+  const handleCheck = (roomId: string) => {
+    // 선택된 채팅방 ID가 이미 배열에 존재하면 제거, 없으면 추가
+    setSelectChatRooms((prevSelectedRooms) =>
+      prevSelectedRooms.includes(roomId)
+        ? prevSelectedRooms.filter((id) => id !== roomId)
+        : [...prevSelectedRooms, roomId]
+    );
+  };
 
   return (
     <>
@@ -225,7 +281,7 @@ export default function Home1() {
       </Head>
       <main className="page-main">
         <h3 className="uk-text-lead">Chats</h3>
-        {/* 채팅방 생성 폼 */}
+
         <div className="chat-room-create">
           <form onSubmit={handleCreateChatRoom}>
             <div>
@@ -233,25 +289,21 @@ export default function Home1() {
               <input
                 type="text"
                 value={chatRoomName}
-                onChange={(e) => setChatRoomName(e.target.value)} // 입력값 상태 업데이트
+                onChange={(e) => setChatRoomName(e.target.value)}
                 placeholder="채팅방 이름을 입력하세요"
               />
             </div>
-
-            {/* 참가자 닉네임 입력 필드 */}
             <div>
               <label>참가자 닉네임: </label>
               <input
                 type="text"
                 value={newParticipantName}
-                onChange={(e) => setNewParticipantName(e.target.value)} // 입력값 상태 업데이트
+                onChange={(e) => setNewParticipantName(e.target.value)}
                 placeholder="참가자 닉네임을 입력하세요"
               />
             </div>
-            {/* 채팅방 생성 버튼 */}
             <button type="submit">채팅방 생성</button>
           </form>
-          {/* 채팅방 삭제 버튼 */}
           <div style={{ marginBottom: '20px' }}>
             <button
               type="button"
@@ -262,6 +314,7 @@ export default function Home1() {
             </button>
           </div>
         </div>
+
         <div className="uk-grid uk-grid-small" data-uk-grid>
           <div className="uk-width-1-3@l">
             <div className="chat-user-list">
@@ -270,8 +323,6 @@ export default function Home1() {
                   <div className="avatar">
                     <Image src="/assets/img/profile.png" alt="profile" width={40} height={40} />
                   </div>
-                  <a className="ico_edit" href="/06_chats"></a>
-                  <a className="ico_more" href="/06_chats"></a>
                 </div>
                 <div className="chat-user-list__search">
                   <div className="search">
@@ -295,16 +346,13 @@ export default function Home1() {
                           <div className="user-item__avatar">
                             <Image src="/assets/img/user-list-1.png" alt="user" width={40} height={40} />
                           </div>
-
-                          {/* 채팅방 이름과 참가자 목록을 담고 있는 부분 */}
                           <div className="user-item__desc" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                            {/* 채팅방 이름: 2 비율로 넓게 차지하도록 설정 */}
                             <a
                               href="#"
                               onClick={(e) => {
-                                e.preventDefault(); // 기본 동작 방지
-                                if (room && room.id) { // room 객체와 id가 유효한지 확인
-                                  setSelectedChatRoomId(room.id); // 선택된 채팅방 ID 업데이트
+                                e.preventDefault();
+                                if (room && room.id) {
+                                  setSelectedChatRoomId(room.id);
                                 }
                               }}
                               style={{ textDecoration: 'none', color: 'inherit', flexGrow: 2, marginRight: '10px' }}
@@ -313,23 +361,11 @@ export default function Home1() {
                                 {room.name}
                               </div>
                             </a>
-                            {/* 참가자 목록: 1 비율로 출력 */}
                             <div style={{ flexGrow: 1, flexShrink: 1, textAlign: 'right', marginRight: '10px', maxWidth: '150px' }}>
                               {room.participants && room.participants.length > 0 ? (
                                 <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
                                   {room.participants.map((participant: string, index: number) => (
-                                    <li
-                                      key={index}
-                                      style={{
-                                        marginLeft: '10px',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        display: 'inline-block', // inline-block으로 변경
-                                        maxWidth: '100%', // 최대 너비 설정
-                                        width: 'auto' // 자동 너비 설정
-                                      }}
-                                    >
+                                    <li key={index} style={{ marginLeft: '10px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'inline-block', maxWidth: '100%', width: 'auto' }}>
                                       {participant || "No Nickname"}
                                     </li>
                                   ))}
@@ -339,13 +375,14 @@ export default function Home1() {
                               )}
                             </div>
                           </div>
-                          {/* 체크박스: 고정된 크기로 오른쪽에 배치 */}
                           <div className="user-item__info" style={{ marginLeft: 'auto' }}>
                             <input
                               type="checkbox"
                               checked={selectChatRooms.includes(room.id)}
                               onChange={(e) => handleCheck(room.id)}
                             />
+                            {/* 안 읽은 메시지 수 표시 */}
+                            <span style={{ marginLeft: '5px', color: 'red' }}>{room.unreadCount} unread</span>
                           </div>
                         </div>
                       </li>
@@ -355,10 +392,11 @@ export default function Home1() {
               </div>
             </div>
           </div>
+
           <div className="uk-width-2-3@l">
             <div className="chat-messages-box">
               <div className="chat-messages-head">
-                {selectedChatRoomId ? ( // 채팅방이 선택되었는지 확인
+                {selectedChatRoomId ? (
                   <div className="user-item">
                     <div className="user-item__avatar">
                       <Image src="/assets/img/user-list-4.png" alt="user" width={40} height={40} />
@@ -366,14 +404,14 @@ export default function Home1() {
                     <div className="user-item__desc" style={{ width: 'full' }}>
                       <div className="user-item__name" style={{ textAlign: 'center', fontSize: '1.5rem' }}>
                         {filteredChatRooms.find(room => room.id === selectedChatRoomId)?.name || "Unknown Room"}
-                      </div> {/* 선택된 채팅방 이름 표시 */}
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  <h3>선택된 채팅방이 없습니다.</h3> // 채팅방이 선택되지 않은 경우 메시지 표시
+                  <h3>선택된 채팅방이 없습니다.</h3>
                 )}
               </div>
-              {selectedChatRoomId ? ( // 채팅방이 선택되었을 때만 메시지 표시
+              {selectedChatRoomId ? (
                 <>
                   <div className="chat-messages-body flex-1 overflow-y-auto p-4 bg-white shadow-md rounded-lg space-y-4">
                     {messages.map((msg, index) => (
@@ -390,25 +428,26 @@ export default function Home1() {
                         </div>
                         <div className="flex flex-col justify-start">
                           <div className="flex items-center">
-                            <p className="text-sm font-semibold">{msg.sender}</p> {/* 닉네임 표시 */}
+                            <p className="text-sm font-semibold">{msg.sender}</p>
                           </div>
-                          <div className="messages-item__text">{msg.message}</div> {/* 메시지 텍스트 */}
+                          <div className="messages-item__text">{msg.message}</div>
                           {msg.sender !== sender ? (
                             <div className="messages-item__time text-gray-500 text-xs">{new Date(msg.createdAt).toLocaleTimeString()}</div>
                           ) : (
                             <div className="messages-item__time text-gray-500 text-xs ml-auto">{new Date(msg.createdAt).toLocaleTimeString()}</div>
+                          )}
+                          {/* 안 읽은 메시지 수 표시 */}
+                          {countNotReadParticipants(msg) > 0 && (
+                            <span style={{ color: 'red', fontSize: '0.8em' }}>
+                              {countNotReadParticipants(msg)} unread
+                            </span>
                           )}
                         </div>
                       </div>
                     ))}
                   </div>
                   <div className="chat-messages-footer">
-                    <form onSubmit={handleSubmit} className="chat-messages-form flex mt-4">
-                      <div className="chat-messages-form-btns">
-                        <button className="ico_emoji-happy" type="button"></button>
-                        <button className="ico_gallery" type="button"></button>
-                      </div>
-
+                    <form onSubmit={sendMessage} className="chat-messages-form flex mt-4">
                       <div className="chat-messages-form-controls flex-grow">
                         <input
                           type="text"
@@ -419,26 +458,20 @@ export default function Home1() {
                           required
                         />
                       </div>
-
                       <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-r-lg"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg"
                       >
-                        보내기
+                        Send
                       </button>
-
-                      <div className="chat-messages-form-btn">
-                        <button className="ico_microphone" type="button"></button>
-                      </div>
-                    </form>
+                    </form>  
                   </div>
                 </>
-              ) : null} {/* 선택된 채팅방이 없을 경우 메시지 표시 */}
+              ) : null}
             </div>
           </div>
         </div>
       </main>
-
     </>
   );
-}
+};

@@ -1,3 +1,4 @@
+// /src/app/api/chatRoom/chatRoom.api.ts
 // 챗룸 출력(해당 유저가 참여한으로 수정 필요)
 export const fetchChatRooms = async (nickname:any) => {
   const response = await fetch(`http://localhost:8081/api/chatRoom/findAll/${nickname}`, {

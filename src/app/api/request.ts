@@ -13,5 +13,7 @@ export const api = {
     report: "/api/report",
     restaurant: "/api/restaurant",
     tag: "/api/tags",
-    user: "/api/user"
+    user: "/api/user",
+    chatRoom: "/api/chatRoom",
+    chat: "/api/chats"
 }
