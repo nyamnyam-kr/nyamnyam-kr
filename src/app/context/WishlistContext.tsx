@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useReducer, useEffect } fro
 import { ProductType } from '@/type/ProductType';
 
 interface WishlistItem extends ProductType {
+    id: any;
 }
 
 interface WishlistState {
