@@ -2,6 +2,7 @@ package kr.nyamnyam.service.impl;
 
 import com.querydsl.core.Tuple;
 import jakarta.transaction.Transactional;
+import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.*;
@@ -204,6 +205,14 @@ public class PostServiceImpl implements PostService {
 
         return true;
     }
+
+    @Override
+    public List<UserPostModel> findByUserId(Long userId) {
+        List<UserPostModel> userPostModels = repository.findByUserId(userId);
+        System.out.println(userPostModels);
+        return repository.findByUserId(userId);
+    }
+
 
     private void updateTags(List<String> tags, PostEntity postEntity) {
         List<PostTagEntity> existPostTags = postTagRepository.findByPost(postEntity);

@@ -101,4 +101,10 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/list/{id}")
+    public ResponseEntity<List<?>> userPostList(@PathVariable Long id) {
+        System.out.println("PostController.userPostList");
+        return ResponseEntity.ok(service.findByUserId(id));
+    }
 }

@@ -11,8 +11,6 @@ public interface ReceiptService {
 
     RestaurantModel save(ReceiptEntity receipt);
 
-    List<TotalModel> showTotalCount();
-
     List<CostModel> costModelList(Long userId);
 
     List<ReceiptEntity> findByUserId(Long id);

@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QUpvoteEntity;
@@ -12,6 +13,8 @@ import kr.nyamnyam.model.entity.QUsersEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -152,5 +155,46 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<UserPostModel> findByUserId(Long userId) {
+        QPostEntity post = QPostEntity.postEntity;
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QUpvoteEntity upvote = QUpvoteEntity.upvoteEntity;
+
+        List<Tuple> results = jpaQueryFactory
+                .select(restaurant.name, post.content, post.modifyDate, post.id,restaurant.id)
+                .from(post)
+                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                .where(post.userId.eq(userId))
+                .fetch();
+
+        List<Tuple> result = jpaQueryFactory
+                .select(post.id, upvote.postId.count())
+                .from(post)
+                .leftJoin(upvote).on(upvote.postId.eq(post.id))
+                .groupBy(post.id)
+                .fetch();
+
+        Map<Long, Long> upvoteCountMap = result.stream()
+                .collect(Collectors.toMap(tuple -> tuple.get(post.id), tuple -> tuple.get(upvote.postId.count())));
+
+
+        return results.stream()
+                .map(tuple -> {
+                    UserPostModel userPostModel = new UserPostModel();
+                    userPostModel.setName(tuple.get(restaurant.name));
+                    userPostModel.setContent(tuple.get(post.content));
+                    userPostModel.setEntryDate(tuple.get(post.modifyDate));
+                    userPostModel.setRestaurantId(tuple.get(restaurant.id));
+                    Long postId = tuple.get(post.id);
+                    Long upvoteCount = upvoteCountMap.get(postId);
+                    userPostModel.setUpvoteCount(upvoteCount);
+                    userPostModel.setPostId(postId);
+                    return userPostModel;
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }

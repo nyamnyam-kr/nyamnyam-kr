@@ -22,5 +22,5 @@ public interface RestaurantService {
     List<RestaurantModel> getRestaurantsByTag(List<String> tagNames);
     List<RestaurantModel> findByCategory(List<String> categories);
 
-    List<TotalModel> recommendByAge(Long age);
+
 }
