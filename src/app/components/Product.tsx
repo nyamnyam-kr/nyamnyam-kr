@@ -33,7 +33,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                     </div>
                     <div className="product-img w-full h-full aspect-[3/4]">
                         <Image
-                            src={data.thumbnailImageUrl} // 단일 이미지 URL
+                            src={data.thumbnailImageUrl} // 외부 이미지이기 때문에 next.config.mjs파일에 추가필요
                             width={500}
                             height={500}
                             priority={true}
@@ -44,7 +44,7 @@ const Product: React.FC<ProductProps> = ({ data, type }) => {
                 </div>
                 <div className="product-infor mt-4 lg:mb-7">
                     <div className="product-price-block flex items-center gap-2 flex-wrap mt-1 duration-300 relative z-[1]">
-                        {/* 가격 정보 추가 필요 */}
+                        {data.name}
                     </div>
                 </div>
             </div>

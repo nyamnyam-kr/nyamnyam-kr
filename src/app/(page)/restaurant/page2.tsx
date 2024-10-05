@@ -8,6 +8,7 @@ import { getRestaurantsByTag } from '@/app/service/restaurant/restaurant.service
 import ScrollToTop from '@/app/components/ScrollToTop';
 import Product from '@/app/components/Product';
 
+
 interface Props {
     start: number;
     limit: number;
@@ -60,7 +61,8 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
                         ))}
                     </Swiper>
                 </div>
-
+            </div>
+            <div className="container">
                 {/* 데이트 태그 식당 스와이프 */}
                 <div className="heading flex flex-col items-center text-center mb-6 mt-10">
                     <h2 className="text-2xl font-bold">#데이트</h2>
