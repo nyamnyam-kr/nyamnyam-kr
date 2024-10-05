@@ -16,6 +16,8 @@ interface Props {
 const TabFeatures: React.FC<Props> = ({ start, limit }) => {
     const [restaurantsByMeeting, setRestaurantsByMeeting] = useState<RestaurantModel[]>([]);
     const [restaurantsByDate, setRestaurantsByDate] = useState<RestaurantModel[]>([]);
+    const [restaurantsByFriend, setRestaurantsByFriend] = useState<RestaurantModel[]>([]);
+    const [restaurantsByUnique, setRestaurantsByUnique] = useState<RestaurantModel[]>([]);
 
     useEffect(() => {
         const fetchRestaurants = async () => {
@@ -25,6 +27,13 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
 
                 const dateData = await getRestaurantsByTag(['데이트']);
                 setRestaurantsByDate(dateData);
+
+                const withFriendData = await getRestaurantsByTag(['친구 모임']);
+                setRestaurantsByFriend(withFriendData);
+
+                const uniqueData = await getRestaurantsByTag(['유니크함']);
+                setRestaurantsByUnique(uniqueData);
+
             } catch (error) {
                 console.error('Error fetching restaurants by tag:', error);
             }
@@ -34,11 +43,11 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
     }, []);
 
     const renderSwiper = (title: string, restaurants: RestaurantModel[], index: number) => (
-        <div className="container" key={index}>
-            <div className="heading flex flex-col items-center text-center">
-                <h2 className="text-2xl font-bold">{title}</h2>
+        <div className="container mb-10" key={index}> {/* 컨테이너 간의 간격 조정 */}
+            <div className="heading flex flex-col items-start text-left"> {/* 제목 왼쪽 정렬 */}
+                <h2 className="text-2xl font-bold mb-2">{title}</h2>
             </div>
-            <div className="relative list-product hide-product-sold section-swiper-navigation style-outline style-border md:mt-10 mt-6">
+            <div className="relative list-product hide-product-sold section-swiper-navigation style-outline style-border md:mt-6 mt-4">
                 <Swiper
                     spaceBetween={12}
                     slidesPerView={2}
@@ -69,15 +78,21 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
                 <div className={`swiper-button-next swiper-button-next-${index}`} style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', zIndex: 10 }} />
                 <div className={`swiper-button-prev swiper-button-prev-${index}`} style={{ position: 'absolute', top: '50%', left: '10px', transform: 'translateY(-50%)', zIndex: 10 }} />
             </div>
+
         </div>
     );
 
     return (
-        <div className="tab-features-block md:pt-20 pt-10">
-            {renderSwiper('#회식', restaurantsByMeeting, 0)}
-            {renderSwiper('#데이트', restaurantsByDate, 1)}
-            <ScrollToTop />
-        </div>
+        <>
+            {/* <ScrollToTop /> */}
+            <div className="tab-features-block md:pt-20 pt-10">
+                {renderSwiper('#회식', restaurantsByMeeting, 0)}
+                {renderSwiper('#유니크', restaurantsByUnique, 1)}
+                {renderSwiper('#데이트, #기념일', restaurantsByDate, 2)}
+                {renderSwiper('#친구 모임', restaurantsByFriend, 3)}
+            </div>
+
+        </>
     );
 };
 
