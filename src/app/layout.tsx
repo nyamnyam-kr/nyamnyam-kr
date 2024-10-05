@@ -42,7 +42,7 @@ export default function RootLayout({
         {/* <SearchProvider>
           <WishlistProvider>
             <ModalWishlistProvider>
-              <Header />
+              <Header />  
               <ModalWishlist />
               <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
             </ModalWishlistProvider>
@@ -51,7 +51,7 @@ export default function RootLayout({
         <GlobalProvider>
           <Header />
           <main style={{ padding: '5%', overflow: 'hidden' }}>{children}</main>
-          <ModalWishlist />
+          <ModalWishlist /> 
         </GlobalProvider>
       </body>
     </html>

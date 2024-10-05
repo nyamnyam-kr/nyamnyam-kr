@@ -23,7 +23,7 @@ const Page = () => {
 
     return (
         <StoreProvider>
-            {showHome ? <Home /> : <TabFeatures start={0} limit={5}/>} {/* 데이터 전달 */}
+            {showHome ? <Home /> : <TabFeatures start={0} limit={5}/>} 
         </StoreProvider>
     );
 };
