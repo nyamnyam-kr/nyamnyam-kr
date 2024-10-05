@@ -176,6 +176,7 @@ public class PostServiceImpl implements PostService {
         return false;
     }
 
+    @Transactional
     @Override
     public Long createPost(PostModel model) {
         PostEntity entity = convertToEntity(model);
