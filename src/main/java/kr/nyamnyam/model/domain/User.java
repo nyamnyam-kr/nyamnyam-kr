@@ -7,13 +7,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "users") // 컬렉션 이름 설정
+@Document(collection = "users")
 @AllArgsConstructor
 @Builder
 public class User {
 
     @Id
-    private String id; // Long에서 String으로 변경 (MongoDB의 ID 타입)
+    private String id;
     private String username;
     private String password;
     private String nickname;
@@ -24,6 +24,6 @@ public class User {
     private String gender;
     private Boolean enabled;
     private Long imgId;
-    private Long rating;
+    private Double rating;
 
 }

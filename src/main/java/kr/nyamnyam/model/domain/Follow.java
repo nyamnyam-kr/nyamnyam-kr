@@ -6,19 +6,13 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Data
-@Document(collection = "tokens")
+@Document(collection = "follows")
 @AllArgsConstructor
 @Builder
-public class Token {
-
+public class Follow {
     @Id
     private String id;
-    private String userId;
-    private String token;
-    private Date expirationDate;
-    private Boolean isValid;
-
+    private String followerId; // 팔로우하는 사용자 ID
+    private String followeeId; // 팔로우되는 사용자 ID
 }
