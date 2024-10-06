@@ -5,9 +5,8 @@ import kr.nyamnyam.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,46 +15,48 @@ import java.util.Optional;
 public class ParticipantController {
     private final ParticipantService participantService;
 
-
     @PostMapping("")
-    public ResponseEntity<Boolean> save(@RequestBody Participant participant) {
-
-        if (participant.getId() == null) {
-            participantService.save(participant);
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.ok(false);
+    public Mono<ResponseEntity<Boolean>> save(@RequestBody Participant participant) {
+        return participant.getId() == null
+                ? participantService.save(participant)
+                .map(savedParticipant -> ResponseEntity.ok(true))
+                .defaultIfEmpty(ResponseEntity.ok(false))
+                : Mono.just(ResponseEntity.ok(false));
     }
 
     @PutMapping("")
-    public ResponseEntity<Participant> update(@RequestBody Participant participant) {
-        return ResponseEntity.ok(participantService.save(participant));
+    public Mono<ResponseEntity<Participant>> update(@RequestBody Participant participant) {
+        return participantService.save(participant)
+                .map(savedParticipant -> ResponseEntity.ok(savedParticipant));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable String id) {
-
-        return ResponseEntity.ok(participantService.deleteById(id));
+    public Mono<ResponseEntity<Boolean>> deleteById(@PathVariable String id) {
+        return participantService.deleteById(id)
+                .map(deleted -> ResponseEntity.ok(deleted));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Participant>> findAll() {
-        return ResponseEntity.ok(participantService.findAll());
+    public Mono<ResponseEntity<Flux<Participant>>> findAll() {
+        return Mono.just(ResponseEntity.ok(participantService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Participant>> findById(@PathVariable String id) {
-        return ResponseEntity.ok(participantService.findById(id));
+    public Mono<ResponseEntity<Participant>> findById(@PathVariable String id) {
+        return participantService.findById(id)
+                .map(participant -> ResponseEntity.ok(participant))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> existsById(String id) {
-        return ResponseEntity.ok(participantService.existsById(id));
+    public Mono<ResponseEntity<Boolean>> existsById(@RequestParam String id) {
+        return participantService.existsById(id)
+                .map(exists -> ResponseEntity.ok(exists));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Long> count() {
-        return ResponseEntity.ok(participantService.count());
+    public Mono<ResponseEntity<Long>> count() {
+        return participantService.count()
+                .map(count -> ResponseEntity.ok(count));
     }
 }

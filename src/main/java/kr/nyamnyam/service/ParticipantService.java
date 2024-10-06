@@ -1,21 +1,19 @@
 package kr.nyamnyam.service;
 
-
 import kr.nyamnyam.model.domain.Participant;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface ParticipantService {
-    Participant save(Participant participant);
+    Mono<Participant> save(Participant participant);
 
-    List<Participant> findAll();
+    Flux<Participant> findAll();
 
-    Optional<Participant> findById(String id);
+    Mono<Participant> findById(String id);
 
-    boolean deleteById(String id);
+    Mono<Boolean> deleteById(String id);
 
-    boolean existsById(String id);
+    Mono<Boolean> existsById(String id);
 
-    long count();
+    Mono<Long> count();
 }
