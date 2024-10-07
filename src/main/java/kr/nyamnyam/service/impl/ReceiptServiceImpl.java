@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import kr.nyamnyam.config.RestTemplateConfig;
 import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
-import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.ReceiptRepository;
