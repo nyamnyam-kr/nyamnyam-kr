@@ -7,6 +7,7 @@ import 'swiper/css/bundle';
 import { getRestaurantsByTag } from '@/app/service/restaurant/restaurant.service';
 import ScrollToTop from '@/app/components/ScrollToTop';
 import Product from '@/app/components/Product';
+import Link from 'next/link';
 
 interface Props {
     start: number;
@@ -42,6 +43,7 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
         fetchRestaurants();
     }, []);
 
+
     const renderSwiper = (title: string, restaurants: RestaurantModel[], index: number) => (
         <div className="container mb-10" key={index}> {/* 컨테이너 간의 간격 조정 */}
             <div className="heading flex flex-col items-start text-left"> {/* 제목 왼쪽 정렬 */}
@@ -69,11 +71,17 @@ const TabFeatures: React.FC<Props> = ({ start, limit }) => {
                         },
                     }}
                 >
+
                     {restaurants.slice(start, limit).map((restaurant) => (
+
                         <SwiperSlide key={restaurant.id}>
-                            <Product data={restaurant} type='grid' />
+                            <Link href={`/restaurant/${restaurant.id}`}>
+                                <Product data={restaurant} type='grid' />
+                            </Link>
                         </SwiperSlide>
+
                     ))}
+
                 </Swiper>
                 <div className={`swiper-button-next swiper-button-next-${index}`} style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', zIndex: 10 }} />
                 <div className={`swiper-button-prev swiper-button-prev-${index}`} style={{ position: 'absolute', top: '50%', left: '10px', transform: 'translateY(-50%)', zIndex: 10 }} />
