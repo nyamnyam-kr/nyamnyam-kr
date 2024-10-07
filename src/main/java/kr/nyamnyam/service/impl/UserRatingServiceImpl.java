@@ -1,8 +1,8 @@
 package kr.nyamnyam.service.impl;
 
-import kr.nyamnyam.model.domain.Rating;
-import kr.nyamnyam.model.repository.RatingRepository;
-import kr.nyamnyam.service.RatingService;
+import kr.nyamnyam.model.domain.UserRating;
+import kr.nyamnyam.model.repository.UserRatingRepository;
+import kr.nyamnyam.service.UserRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -10,24 +10,24 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class RatingServiceImpl implements RatingService {
+public class UserRatingServiceImpl implements UserRatingService {
 
-    private final RatingRepository ratingRepository;
+    private final UserRatingRepository userRatingRepository;
 
     @Override
-    public Mono<Rating> save(Rating rating) {
-        return ratingRepository.save(rating);
+    public Mono<UserRating> save(UserRating userRating) {
+        return userRatingRepository.save(userRating);
     }
 
     @Override
-    public Flux<Rating> findByRatedUserId(String ratedUserId) {
-        return ratingRepository.findByRatedUserId(ratedUserId);
+    public Flux<UserRating> findByRatedUserId(String ratedUserId) {
+        return userRatingRepository.findByRatedUserId(ratedUserId);
     }
 
     @Override
     public Mono<Double> calculateAverageRating(String ratedUserId) {
         return findByRatedUserId(ratedUserId)
-                .map(Rating::getScore)
+                .map(UserRating::getScore)
                 .collectList()
                 .map(scores -> scores.stream()
                         .mapToDouble(Double::doubleValue)
