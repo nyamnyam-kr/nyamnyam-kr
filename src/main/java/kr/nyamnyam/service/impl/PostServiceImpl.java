@@ -209,7 +209,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<UserPostModel> findByUserId(Long userId) {
         List<UserPostModel> userPostModels = repository.findByUserId(userId);
-        System.out.println(userPostModels);
         return repository.findByUserId(userId);
     }
 

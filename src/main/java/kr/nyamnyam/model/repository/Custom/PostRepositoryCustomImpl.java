@@ -110,13 +110,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     // 가장 많은 추천을 받은 음식점 list
     @Override
-    public List<String> findRestaurantFromUpvote() {
+    public List<TotalModel> findRestaurantFromUpvote() {
 
         QPostEntity postEntity = QPostEntity.postEntity;
         QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
         QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
 
-        return jpaQueryFactory.select(restaurantEntity.name)
+        List<Tuple> results =  jpaQueryFactory.select(restaurantEntity.name,upvoteEntity.postId.count() )
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
                 .join(restaurantEntity).on(restaurantEntity.id.eq(postEntity.id))
@@ -124,6 +124,17 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)
                 .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurantEntity.name));
+                    totalModel.setTotal(tuple.get(upvoteEntity.postId.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+
+
 
     }
 

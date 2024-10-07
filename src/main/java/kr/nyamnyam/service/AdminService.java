@@ -16,7 +16,7 @@ public interface AdminService {
 
     List<String> findNicknameFromUpvote();
 
-    List<String> findRestaurantFromUpvote();
+    List<TotalModel> findRestaurantUpvote();
 
     List<AreaModel> countAreaList();
 

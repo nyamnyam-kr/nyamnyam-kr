@@ -43,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
 
     // 제일 좋아요를 많이 받은 음식점
     @Override
-    public List<String> findRestaurantFromUpvote() {
+    public List<TotalModel> findRestaurantUpvote() {
         return postRepository.findRestaurantFromUpvote();
     }
 

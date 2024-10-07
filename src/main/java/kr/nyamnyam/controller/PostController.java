@@ -102,9 +102,9 @@ public class PostController {
         }
     }
 
+    // 개인 post List
     @GetMapping("/list/{id}")
     public ResponseEntity<List<?>> userPostList(@PathVariable Long id) {
-        System.out.println("PostController.userPostList");
         return ResponseEntity.ok(service.findByUserId(id));
     }
 }

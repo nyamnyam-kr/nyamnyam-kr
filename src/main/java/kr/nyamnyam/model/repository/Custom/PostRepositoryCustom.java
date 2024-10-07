@@ -21,7 +21,7 @@ public interface PostRepositoryCustom {
 
     List<String> findNicknameFromUpvote();
 
-    List<String> findRestaurantFromUpvote();
+    List<TotalModel> findRestaurantFromUpvote();
 
     List<TotalModel> countRestaurantList();
 

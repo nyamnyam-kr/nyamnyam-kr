@@ -23,6 +23,10 @@ public class ReportEntity {
     private Long postId;
     private String reason;
 
+    @Column(columnDefinition = "TIMESTAMP(0)")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDateTime entryDate;
+
 
 
 }
