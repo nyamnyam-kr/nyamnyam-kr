@@ -2,6 +2,7 @@ package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
+import kr.nyamnyam.model.entity.PostEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public interface ImageService {
 
     String getFileName(String fileName);
 
-    List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, Long postId);
+    List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, PostEntity postEntity);
 
     ImageModel insertReceipt(MultipartFile file);
 

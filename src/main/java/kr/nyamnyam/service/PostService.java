@@ -4,6 +4,7 @@ package kr.nyamnyam.service;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,5 +35,7 @@ public interface PostService {
     Boolean updatePost(Long id, PostModel model);
 
     List<UserPostModel> findByUserId(Long userId);
+
+    Long createPostWithImages(PostModel model);
 }
 

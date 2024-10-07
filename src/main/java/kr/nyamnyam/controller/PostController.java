@@ -1,12 +1,14 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.PostModel;
+import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +22,6 @@ import java.util.Map;
 public class PostController {
     private final PostService service;
     private final UpvoteService upvoteService;
-    private final RestaurantService restaurantService;
-    private final ReplyService replyService;
     private final ImageService imageService;
 
     @GetMapping("/{restaurantId}/allAverage")
@@ -93,13 +93,13 @@ public class PostController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Long> createPost(@RequestBody PostModel model) {
-        Long postId = service.createPost(model);
-        if (postId != null) {
-            return ResponseEntity.ok(postId);
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files)  {
+        Long postId = service.createPostWithImages(model);
+        if(files != null && !files.isEmpty()) {
+            PostEntity postEntity = service.findEntityById(postId);
+            imageService.uploadFiles(files, postEntity);
         }
+        return ResponseEntity.ok(postId);
     }
 
     @GetMapping("/list/{id}")

@@ -47,13 +47,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, Long postId) {
+    public List<ImageModel> uploadFiles(List<MultipartFile> multipartFiles, PostEntity postEntity) {
         List<ImageModel> s3files = new ArrayList<>();
-
-        PostEntity postEntity = postService.findEntityById(postId);
-        if (postEntity == null) {
-            throw new IllegalArgumentException("Invalid postId: " + postId);
-        }
 
         for (MultipartFile multipartFile : multipartFiles) {
             String originalFilename = multipartFile.getOriginalFilename();
