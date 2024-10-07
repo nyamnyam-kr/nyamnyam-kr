@@ -18,4 +18,8 @@ public interface ChatRepository extends ReactiveMongoRepository<Chat, String> {
     @Tailable
     @Query("{chatRoomId: ?0}")
     Flux<Chat> mFindByChannelId(String chatRoomId);
+
+    Flux<Chat> findByChatRoomId(String chatRoomId);
+
+
 }

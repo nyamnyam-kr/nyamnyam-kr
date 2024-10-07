@@ -16,4 +16,5 @@ public class Participant {
     @Id
     private String id;
     private String nickname;
+    private String chatRoomName;
 }

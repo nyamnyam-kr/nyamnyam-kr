@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*") // 모든 출처 허용
 @RequestMapping("/api/chatRoom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
@@ -31,11 +31,17 @@ public class ChatRoomController {
     }
 
 
-    @GetMapping("/findAll")
-    public Flux<ChatRoom> findAll() {
-        return chatRoomService.findAll();
+    @GetMapping("/findAll/{nickname}")
+    public Flux<ChatRoom> findAll( @PathVariable String nickname) {
+
+        // Service 레이어로 nickname 전달
+        return chatRoomService.findAllByNickname(nickname);
     }
 
+    @PutMapping("/{id}")
+    public Mono<ChatRoom> updateChatRoom(@PathVariable String id, @RequestBody ChatRoom chatRoom) {
+        return chatRoomService.updateChatRoom(id, chatRoom);
+    }
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<ChatRoom>> findById(@PathVariable String id) {
@@ -72,16 +78,8 @@ public class ChatRoomController {
                 .map(count -> ResponseEntity.ok(count));
     }
 
-    /*// 채팅방별로 총 메시지 수를 반환하는 API
-    @GetMapping("/{chatRoomId}/messageCount")
-    public Mono<Long> getMessageCount(@PathVariable String chatRoomId) {
-        return chatService.getMessageCountByChatRoomId(chatRoomId);
-    }
 
-    // 채팅방별로 새로운 메시지 수를 반환하는 API
-    @GetMapping("/{chatRoomId}/newMessages")
-    public Mono<Long> getNewMessageCount(@PathVariable String chatRoomId, @RequestParam("lastSeenMessageId") String lastSeenMessageId) {
-        return chatService.getNewMessageCountSince(chatRoomId, lastSeenMessageId);
-    }
-*/
+
+
+
 }
