@@ -1,17 +1,19 @@
 package kr.nyamnyam.service.impl;
 
-import kr.nyamnyam.model.domain.Token;
 import kr.nyamnyam.model.domain.User;
 import kr.nyamnyam.model.repository.UserRepository;
 import kr.nyamnyam.service.TokenService;
 import kr.nyamnyam.service.UserService;
+import kr.nyamnyam.service.UserThumbnailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
+    private final UserThumbnailService userThumbnailService;
 
     @Override
     public Mono<Boolean> existsById(String id) {
@@ -53,10 +56,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> update(User user) {
+    public Mono<User> update(User user, List<MultipartFile> thumbnails) {
         return userRepository.findById(user.getId())
                 .flatMap(existingUser -> {
-                    // 각 필드를 업데이트
                     if (user.getUsername() != null) existingUser.setUsername(user.getUsername());
                     if (user.getPassword() != null) existingUser.setPassword(user.getPassword());
                     if (user.getNickname() != null) existingUser.setNickname(user.getNickname());
@@ -67,18 +69,21 @@ public class UserServiceImpl implements UserService {
                     if (user.getGender() != null) existingUser.setGender(user.getGender());
                     if (user.getEnabled() != null) existingUser.setEnabled(user.getEnabled());
 
-                    // 수정된 사용자 정보를 저장
+                    // 썸네일 업데이트 처리
+                    userThumbnailService.uploadThumbnail(existingUser, thumbnails);
+
                     return userRepository.save(existingUser);
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 
+
     @Override
-    public Mono<User> save(User user) {
+    public Mono<User> save(User user, List<MultipartFile> thumbnails) {
         String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
         User newUser = User.builder()
                 .username(user.getUsername())
-                .password(encodedPassword) // 암호화된 비밀번호 저장
+                .password(encodedPassword)
                 .nickname(user.getNickname())
                 .name(user.getName())
                 .age(user.getAge())
@@ -86,15 +91,21 @@ public class UserServiceImpl implements UserService {
                 .tel(user.getTel())
                 .gender(user.getGender())
                 .enabled(user.getEnabled())
+                .rating(36.5)
                 .build();
-        return userRepository.save(newUser);
+
+        return userRepository.save(newUser)
+                .doOnSuccess(savedUser -> {
+                    // 썸네일 저장
+                    userThumbnailService.uploadThumbnail(savedUser, thumbnails);
+                });
     }
 
     @Override
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
-                .flatMap(user -> tokenService.createAndSaveToken(user.getId())); // 사용자 ID로 토큰 생성
+                .flatMap(user -> tokenService.createAndSaveToken(user.getId()));
     }
 
 }
