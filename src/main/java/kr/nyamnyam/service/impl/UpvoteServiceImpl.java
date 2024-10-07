@@ -1,5 +1,6 @@
 package kr.nyamnyam.service.impl;
 
+import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.UpvoteEntity;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.UpvoteRepository;
@@ -15,10 +16,21 @@ public class UpvoteServiceImpl implements UpvoteService {
 
     @Override
     public boolean like(Long postId, Long userId) {
-        UpvoteEntity save = repository.save(postId, userId);
-        System.out.println(save);
-        return true;
+        if(!repository.existsByPostIdAndGiveId(postId, userId)){
 
+            Long haveId = postRepository.findById(postId)
+                    .map(PostEntity::getUserId)
+                    .orElseThrow(() -> new RuntimeException("Post not found"));
+
+            UpvoteEntity upvote = UpvoteEntity.builder()
+                    .postId(postId)
+                    .giveId(userId)
+                    .haveId(haveId)
+                    .build();
+            repository.save(upvote);
+
+            return true;
+        } return false;
     }
 
     @Override

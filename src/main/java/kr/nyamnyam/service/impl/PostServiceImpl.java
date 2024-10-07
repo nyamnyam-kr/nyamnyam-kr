@@ -18,6 +18,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -176,6 +177,19 @@ public class PostServiceImpl implements PostService {
         return false;
     }
 
+    @Transactional
+    @Override
+    public Long createPostWithImages(PostModel model) {
+        PostEntity entity = convertToEntity(model);
+        entity.setEntryDate(LocalDateTime.now());
+        repository.save(entity); // Post 저장
+
+        saveTags(model.getTags(), entity); // Tag 저장
+
+        return entity.getId();
+    }
+
+    @Transactional
     @Override
     public Long createPost(PostModel model) {
         PostEntity entity = convertToEntity(model);

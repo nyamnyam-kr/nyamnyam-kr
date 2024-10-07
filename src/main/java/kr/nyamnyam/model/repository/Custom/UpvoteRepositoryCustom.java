@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.repository.Custom;
 
-import kr.nyamnyam.model.domain.UpvoteModel;
 import kr.nyamnyam.model.entity.UpvoteEntity;
 
 public interface UpvoteRepositoryCustom {

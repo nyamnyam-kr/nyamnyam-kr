@@ -24,11 +24,12 @@ public class ImageController{
         return ResponseEntity.ok(service.getFileName(fileName));
     }
 
-    @PostMapping("/upload/{postId}")
-    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestPart("files") List<MultipartFile> multipartFiles,
-                                                        @PathVariable Long postId) {
-        return ResponseEntity.ok(service.uploadFiles(multipartFiles, postId));
-    }
+//    @PostMapping("/upload/{postId}")
+//    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestPart("files") List<MultipartFile> multipartFiles,
+//                                                        @PathVariable Long postId) {
+//        return ResponseEntity.ok(service.uploadFiles(multipartFiles, postId));
+//    }
+
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findByPostId(postId));
