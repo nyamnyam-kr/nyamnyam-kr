@@ -25,7 +25,7 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
 
 
     @Override
-    public WishListRestaurantEntity addRestaurantToWishList(Long userId, Long wishListId, Long restaurantId) {
+    public WishListRestaurantEntity addRestaurantToWishList(String userId, Long wishListId, Long restaurantId) {
 
 
         if (!wishListRepository.existsByIdAndUserId(wishListId, userId)) {
@@ -46,7 +46,7 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
     }
 
     @Override
-    public List<RestaurantModel> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId) {
+    public List<RestaurantModel> findRestaurantsByUserIdAndWishListId(String userId, Long wishListId) {
         List<RestaurantEntity> restaurants = wishListRestaurantRepository.findRestaurantsByUserIdAndWishListId(userId, wishListId);
         return restaurants.stream()
                 .map(RestaurantModel::toDto)
@@ -56,7 +56,7 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
 
     @Transactional
     @Override
-    public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
+    public boolean deleteRestaurantFromWishList(String userId, Long restaurantId) {
         boolean exists  = wishListRestaurantRepository.deleteRestaurantFromWishList(userId, restaurantId);
         if (!exists) {
             return false; // 레코드가 존재하지 않으면 false 반환
@@ -66,7 +66,7 @@ public class WishListRestaurantServiceImpl implements WishListRestaurantService 
     }
 
     @Override
-    public List<Long> getDistinctRestaurantsByUserId(Long userId) {
+    public List<Long> getDistinctRestaurantsByUserId(String userId) {
         return wishListRestaurantRepository.getDistinctRestaurantIdsByUserId(userId);
     }
 

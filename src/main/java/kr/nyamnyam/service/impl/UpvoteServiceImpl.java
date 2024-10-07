@@ -15,10 +15,10 @@ public class UpvoteServiceImpl implements UpvoteService {
     private final PostRepository postRepository;
 
     @Override
-    public boolean like(Long postId, Long userId) {
+    public boolean like(Long postId, String userId) {
         if(!repository.existsByPostIdAndGiveId(postId, userId)){
 
-            Long haveId = postRepository.findById(postId)
+            String haveId = postRepository.findById(postId)
                     .map(PostEntity::getUserId)
                     .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -34,7 +34,7 @@ public class UpvoteServiceImpl implements UpvoteService {
     }
 
     @Override
-    public boolean unlike(Long postId, Long userId) {
+    public boolean unlike(Long postId, String userId) {
         UpvoteEntity upvote = repository.findByPostIdAndGiveId(postId,userId)
                 .orElse(null);
 
@@ -46,7 +46,7 @@ public class UpvoteServiceImpl implements UpvoteService {
     }
 
     @Override
-    public boolean hasLiked(Long postId, Long userId) {
+    public boolean hasLiked(Long postId, String userId) {
         return repository.existsByPostIdAndGiveId(postId, userId);
     }
 

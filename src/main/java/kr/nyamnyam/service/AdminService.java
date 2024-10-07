@@ -12,8 +12,6 @@ public interface AdminService {
 
     List<CountModel> countUserList();
 
-    List<String> postUpvote();
-
     List<String> findNicknameFromUpvote();
 
     List<String> findRestaurantFromUpvote();
@@ -22,9 +20,9 @@ public interface AdminService {
 
     List<TotalModel> countPostList();
 
-    List<TotalModel> recommendByAge(Long userId);
+   // List<TotalModel> recommendByAge(String userId);
 
-    RestaurantEntity randomRestaurantByUserId(Long userId);
+    RestaurantEntity randomRestaurantByUserId(String userId);
 
     List<CostModel> receiptRestaurant();
 }

@@ -30,10 +30,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
-    @Override
-    public List<String> postUpvote() {
-        return postRepository.postUpvote();
-    }
+
 
     // 제일 좋아요를 많이 USER
     @Override
@@ -60,13 +57,13 @@ public class AdminServiceImpl implements AdminService {
         return postRepository.countRestaurantList();
     }
 
-    @Override
-    public List<TotalModel> recommendByAge(Long userId) {
-        return restaurantRepository.restaurantsByAge(userId);
-    }
+//    @Override
+//    public List<TotalModel> recommendByAge(String userId) {
+//        return restaurantRepository.restaurantsByAge(userId);
+//    }
 
     @Override
-    public RestaurantEntity randomRestaurantByUserId(Long userId) {
+    public RestaurantEntity randomRestaurantByUserId(String userId) {
         return restaurantRepository.randomRestaurant(userId);
     }
 

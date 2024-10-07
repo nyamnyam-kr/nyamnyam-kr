@@ -17,15 +17,13 @@ public interface PostRepositoryCustom {
 
     List<CountModel> findNicknamesWithCounts();
 
-    List<String> postUpvote();
-
     List<String> findNicknameFromUpvote();
 
     List<String> findRestaurantFromUpvote();
 
     List<TotalModel> countRestaurantList();
 
-    List<UserPostModel> findByUserId(Long userId);
+    List<UserPostModel> findByUserId(String userId);
 
 
 }

@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import kr.nyamnyam.config.RestTemplateConfig;
 import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.RestaurantModel;
-import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.ReceiptEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.ReceiptRepository;
@@ -54,12 +53,12 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     @Override
     @Transactional
-    public List<CostModel> costModelList(Long userId) {
+    public List<CostModel> costModelList(String userId) {
         return repository.costList(userId);
     }
 
     @Override
-    public List<ReceiptEntity> findByUserId(Long id) {
+    public List<ReceiptEntity> findByUserId(String id) {
         return repository.findByUserId(id);
     }
 

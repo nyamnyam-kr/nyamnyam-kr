@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
-public interface WishListRepository extends JpaRepository<WishListEntity, Long>, WishListCustomRepository {
+public interface WishListRepository extends JpaRepository<WishListEntity, String>, WishListCustomRepository {
 
     boolean existsByName(String name);
 
-    boolean existsByIdAndUserId(Long wishListId, Long userId);
+    boolean existsByIdAndUserId(Long wishListId, String userId);
 
-    boolean existsByNameAndUserId(String name, Long userId);
+    boolean existsByNameAndUserId(String name, String userId);
 
 
 

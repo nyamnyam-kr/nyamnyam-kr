@@ -21,7 +21,7 @@ public class WishListServiceImpl implements WishListService {
 
 
     @Override
-    public WishListEntity createWishList(String name, Long userId) {
+    public WishListEntity createWishList(String name, String userId) {
         if (wishListRepository.existsByNameAndUserId(name, userId)) {
             return null;
         }
@@ -35,7 +35,7 @@ public class WishListServiceImpl implements WishListService {
 
 
     @Override
-    public List<WishListModel> getWishLists(Long userId) {
+    public List<WishListModel> getWishLists(String userId) {
         List<WishListEntity> wishLists = wishListRepository.getWishLists(userId);
         return wishLists.stream()
                 .map(WishListModel::toDto)
@@ -44,7 +44,7 @@ public class WishListServiceImpl implements WishListService {
 
     @Transactional
     @Override
-    public boolean deleteWishList(Long userId, Long wishListId) {
+    public boolean deleteWishList(String userId, Long wishListId) {
         boolean isDeleted = wishListRepository.deleteWishList(userId, wishListId);
         return isDeleted;
     }

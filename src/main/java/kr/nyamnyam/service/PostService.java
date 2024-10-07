@@ -12,11 +12,11 @@ public interface PostService {
 
     double allAverageRating(Long restaurantId);
 
-    PostModel postWithImage(Long id);
+   // PostModel postWithImage(Long id);
 
     PostEntity findEntityById(Long id);
 
-    List<PostModel> findAllByRestaurant(Long restaurantId);
+    //List<PostModel> findAllByRestaurant(Long restaurantId);
 
     PostModel findById(Long id);
 
@@ -34,7 +34,7 @@ public interface PostService {
 
     Boolean updatePost(Long id, PostModel model);
 
-    List<UserPostModel> findByUserId(Long userId);
+    List<UserPostModel> findByUserId(String userId);
 
     Long createPostWithImages(PostModel model);
 }

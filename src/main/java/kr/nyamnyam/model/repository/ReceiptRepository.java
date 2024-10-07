@@ -10,6 +10,6 @@ public interface ReceiptRepository extends JpaRepository<ReceiptEntity, Long>, R
 
     ReceiptEntity findByDate(String date);
 
-    List<ReceiptEntity> findByUserId(Long id);
+    List<ReceiptEntity> findByUserId(String id);
 
 }

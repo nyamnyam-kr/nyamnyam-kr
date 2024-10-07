@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface WishListCustomRepository {
 
-    List<WishListEntity> getWishLists(Long userId);
+    List<WishListEntity> getWishLists(String userId);
 
-    boolean deleteWishList(Long userId, Long id);
+    boolean deleteWishList(String userId, Long id);
 }

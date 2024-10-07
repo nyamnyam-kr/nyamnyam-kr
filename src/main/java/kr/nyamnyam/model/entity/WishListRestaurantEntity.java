@@ -18,7 +18,7 @@ public class WishListRestaurantEntity {
 
     private Long wishListId;
     private Long restaurantId;
-    private Long userId;
+    private String userId;
 
 
 }

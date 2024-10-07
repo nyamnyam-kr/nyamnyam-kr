@@ -25,13 +25,13 @@ public class NoticeController {
     }
 
    @GetMapping("/{id}")
-    public ResponseEntity<NoticeEntity> findById(@PathVariable Long id) {
+    public ResponseEntity<NoticeEntity> findById(@RequestHeader Long id) {
         return ResponseEntity.ok(noticeService.findById(id));
     }
 
 
    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteById(@RequestHeader Long id) {
         return ResponseEntity.ok(noticeService.deleteById(id));
     }
 
@@ -41,7 +41,7 @@ public class NoticeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NoticeEntity> update(@PathVariable Long id, @RequestBody NoticeModel model) {
+    public ResponseEntity<NoticeEntity> update(@RequestHeader Long id, @RequestBody NoticeModel model) {
         System.out.println(model);
        return ResponseEntity.ok(noticeService.update(model));
     }

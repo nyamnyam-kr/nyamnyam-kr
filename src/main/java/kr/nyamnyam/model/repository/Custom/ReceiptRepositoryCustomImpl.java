@@ -34,7 +34,7 @@ public class ReceiptRepositoryCustomImpl implements ReceiptRepositoryCustom{
 
 
     @Override
-    public List<CostModel> costList(Long userId) {
+    public List<CostModel> costList(String userId) {
         QReceiptEntity receiptEntity = QReceiptEntity.receiptEntity;
 
         List<Tuple> results = jpaQueryFactory
