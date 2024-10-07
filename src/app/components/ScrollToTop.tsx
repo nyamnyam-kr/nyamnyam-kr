@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 interface ScrollToTopProps {}
 
-const ScrollToTop: React.FC<ScrollToTopProps> = () => {
+const   ScrollToTop: React.FC<ScrollToTopProps> = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     const handleScroll = useCallback(() => {

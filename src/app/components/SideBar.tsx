@@ -72,9 +72,14 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         <div className="heading6">카테고리</div>
         <div className="list-size flex items-center flex-wrap gap-3 gap-y-4 mt-4">
           {['한식', '일식', '중식', '양식', '아시아', '해산물', '술집', '카페'].map((item, index) => (
+            // <div
+            //   key={index}
+            //   className={`size-item text-button ${item === '아시아' || item === '해산물' ? 'px-4 py-2' : 'w-[44px] h-[44px]'} flex items-center justify-center rounded-full border border-line ${selectedCategories.includes(item) ? 'active' : ''}`}
+            //   onClick={() => handleCategoryToggle(item)}
+            // >
             <div
               key={index}
-              className={`size-item text-button ${item === '아시아' || item === '해산물' ? 'px-4 py-2' : 'w-[44px] h-[44px]'} flex items-center justify-center rounded-full border border-line ${selectedCategories.includes(item) ? 'active' : ''}`}
+              className={`size-item text-button px-4 py-2 flex items-center justify-center rounded-full border border-line ${selectedCategories.includes(item) ? 'active' : ''}`}
               onClick={() => handleCategoryToggle(item)}
             >
               {item}
@@ -90,11 +95,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
           {['관광', '혼밥', '기념일', '데이트', '회식', '출장', '특별 이벤트', '휴식', '친구 모임', '가족 모임'].map((item, index) => (
             <div
               key={index}
-              className={`size-item text-button ${item === '가족 모임' || item === '기념일' || item === '데이트' || item === '친구 모임' || item === '특별 이벤트'
-                ? 'px-4 py-2'
-                : 'w-[44px] h-[44px]'
-                } flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''} ${item === '특별 이벤트' ? 'w-[150px]' : ''
-                }`}
+              className={`size-item text-button px-4 py-2 flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''}`}
               onClick={() => handleTagToggle(item)}
             >
               {item}
@@ -110,11 +111,7 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
           {['고급스러움', '로맨틱', '소박함', '조용함', '아늑함', '유니크함', '전통적', '캐주얼', '현대적', '활기참'].map((item, index) => (
             <div
               key={index}
-              className={`size-item text-button ${item === '고급스러움' || item === '로맨틱' || item === '소박함' || item === '조용함' || item === '아늑함' || item === '유니크함' || item === '전통적'
-                || item === '캐주얼' || item === '현대적' || item === '활기참'
-                ? 'px-4 py-2'
-                : 'w-[44px] h-[44px]'
-                }           } flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''} ${item === '드라이브 스루' || item === '무료 Wi-Fi' || item === '배달 서비스' || item === '애완동물 출입 가능' || item === '테라스 좌석' || item === '휠체어 접근 가능' ? 'w-[130px]' : ''} ${item === '애완동물 출입 가능' ? 'w-[160px]' : ''}`}
+              className={`size-item text-button px-4 py-2 flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''}`}
               onClick={() => handleTagToggle(item)}
             >
               {item}
@@ -123,19 +120,16 @@ const Sidebar: React.FC<{ onFilterChange: (filters: string[], categories: string
         </div>
       </div>
 
-      
+
       <div className="filter-size">
         <div className="heading6">편의시설</div>
         <div className="list-size flex items-center flex-wrap gap-3 gap-y-4 mt-4">
-          {['바 테이블',  '아동 시설', '주차장','예약 가능', '배달 서비스', '테라스 좌석', '휠체어 접근 가능', '애완동물 출입 가능',
+          {['바 테이블', '아동 시설', '주차장', '예약 가능', '배달 서비스', '테라스 좌석', '휠체어 접근 가능', '애완동물 출입 가능',
             '무료 Wi-Fi', '드라이브 스루'
           ].map((item, index) => (
             <div
               key={index}
-              className={`size-item text-button ${item === '바 테이블' || item === '아동 시설' || item === '예약 가능' || item === '주차장'
-                ? 'px-4 py-2'
-                : 'w-[44px] h-[44px]'
-                }           } flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''} ${item === '드라이브 스루' || item === '무료 Wi-Fi' || item === '배달 서비스' || item === '테라스 좌석'  ? 'w-[250px]' : ''} ${item === '애완동물 출입 가능' || item === '휠체어 접근 가능' ? 'w-[250px]' : ''}`}
+              className={`size-item text-button px-4 py-2 flex items-center justify-center rounded-full border border-line ${selectedTags.includes(item) ? 'active' : ''}`}
               onClick={() => handleTagToggle(item)}
             >
               {item}

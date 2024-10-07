@@ -96,7 +96,7 @@ export default function Home() {
                                                     />
                                                 </Link>
                                                 <div className="absolute top-2 right-2">
-                                                    <HeartButton restaurantId={restaurant.id} />
+                                                    <HeartButton restaurantId={restaurant.id} userId={1} />
                                                 </div>
                                                 <Link href={`/restaurant/${restaurant.id}`}>
                                                     <div className="p-4">
