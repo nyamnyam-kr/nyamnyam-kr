@@ -28,3 +28,10 @@ spring:
       max-request-size: 10MB
 server:
   port: 8081
+naver:
+  storage:
+    accessKey: D5172C7FA5E1DA25C262
+    secretKey: 42FB384E0E984E7CE8808626314BE69D52DAD1FC
+    bucket: nyamnyam
+    upload:
+      path: uploads/chats
