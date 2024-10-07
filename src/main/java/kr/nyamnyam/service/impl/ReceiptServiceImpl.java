@@ -54,12 +54,12 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     @Override
     @Transactional
-    public List<CostModel> costModelList(Long userId) {
+    public List<CostModel> costModelList(String userId) {
         return repository.costList(userId);
     }
 
     @Override
-    public List<ReceiptEntity> findByUserId(Long id) {
+    public List<ReceiptEntity> findByUserId(String id) {
         return repository.findByUserId(id);
     }
 

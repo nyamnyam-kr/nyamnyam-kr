@@ -14,7 +14,7 @@ public class ReceiptModel {
     private Long price;
     private String name;
     private String menu;
-    private Long userId;
+    private String userId;
     private String date;
     private Date entryDate;
 

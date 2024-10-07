@@ -11,9 +11,9 @@ public interface ReceiptService {
 
     RestaurantModel save(ReceiptEntity receipt);
 
-    List<CostModel> costModelList(Long userId);
+    List<CostModel> costModelList(String userId);
 
-    List<ReceiptEntity> findByUserId(Long id);
+    List<ReceiptEntity> findByUserId(String id);
 
     Boolean deleteById(Long id);
 

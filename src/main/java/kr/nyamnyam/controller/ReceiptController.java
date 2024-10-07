@@ -36,19 +36,19 @@ public class ReceiptController {
     private String secretKey;
 
     @GetMapping("/wallet/{id}")
-    public ResponseEntity<List<?>> myWallet(@PathVariable Long id) {
+    public ResponseEntity<List<?>> myWallet(@PathVariable String id) {
         return ResponseEntity.ok(receiptService.findByUserId(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteReceipt(@PathVariable Long id){
-        return ResponseEntity.ok(receiptService.deleteById(id));
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Boolean> deleteReceipt(@PathVariable String id){
+//        return ResponseEntity.ok(receiptService.deleteById(id));
+//    }
 
-    @GetMapping("/wallet/cost/{id}")
-    public ResponseEntity<List<CostModel>> costList(@PathVariable Long id) {
-        return ResponseEntity.ok(receiptService.costModelList(id));
-    }
+//    @GetMapping("/wallet/cost/{id}")
+//    public ResponseEntity<List<CostModel>> costList(@PathVariable String id) {
+//        return ResponseEntity.ok(receiptService.costModelList(id));
+//    }
 
 
     @PostMapping("/insert")
