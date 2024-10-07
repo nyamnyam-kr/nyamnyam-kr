@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -91,7 +90,7 @@ public class UserServiceImpl implements UserService {
                 .tel(user.getTel())
                 .gender(user.getGender())
                 .enabled(user.getEnabled())
-                .rating(36.5)
+                .score(36.5)
                 .build();
 
         return userRepository.save(newUser)
