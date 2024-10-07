@@ -4,23 +4,21 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.nyamnyam.model.domain.Chart.TotalModel;
-import kr.nyamnyam.model.domain.RestaurantModel;
-import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.domain.Chart.AreaModel;
+import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.entity.QPostEntity;
+import kr.nyamnyam.model.entity.QPostTagEntity;
+import kr.nyamnyam.model.entity.QRestaurantEntity;
+import kr.nyamnyam.model.entity.RestaurantEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Objects;
-
+import java.util.stream.Collectors;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
-import static kr.nyamnyam.model.entity.QRestaurantEntity.restaurantEntity;
 
 @RequiredArgsConstructor
 public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCustom {
@@ -170,7 +168,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     // 랜덤레스토랑
     @Override
-    public RestaurantEntity randomRestaurant(Long userId) {
+    public RestaurantEntity randomRestaurant(String userId) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
 
@@ -195,84 +193,44 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     }
 
-    @Override
-    public List<RestaurantEntity> restaurantsByGender(Long userId) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
-        QUsersEntity user = QUsersEntity.usersEntity;
-
-        String gender = jpaQueryFactory
-                .select(user.gender)
-                .from(user)
-                .where(user.id.eq(userId))
-                .fetchOne();
-
-        if (gender == null) {
-            return Collections.emptyList();
-        }
-
-        String topType = jpaQueryFactory
-                .select(restaurant.type)
-                .from(restaurant)
-                .join(post).on(post.restaurant.id.eq(restaurant.id))
-                .join(user).on(user.id.eq(post.userId))
-                .where(user.gender.eq(gender))
-                .groupBy(restaurant.type)
-                .orderBy(restaurant.type.count().desc())
-                .limit(1)
-                .fetchOne();
-
-        if (topType == null) {
-            return Collections.emptyList();
-        }
-
-        return jpaQueryFactory
-                .select(restaurant)
-                .from(restaurant)
-                .where(restaurant.type.eq(topType))
-                .fetch();
-
-    }
 
 
-    @Override
-    public List<TotalModel> restaurantsByAge(Long userId) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
-        QUsersEntity user = QUsersEntity.usersEntity;
-
-        Long age = jpaQueryFactory
-                .select(user.age)
-                .from(user)
-                .where(user.id.eq(userId))
-                .fetchOne();
-
-        List<Tuple> results = null;
-
-        if (age != null) {
-            results = jpaQueryFactory
-                    .select(restaurant.name, post.restaurant.id.count())
-                    .from(restaurant)
-                    .join(post).on(post.restaurant.id.eq(restaurant.id))
-                    .join(user).on(user.id.eq(post.userId))
-                    .where(user.age.between(age < 20 ? 10 : (age < 30 ? 20 : (age < 40 ? 30 : 40)),
-                            age < 20 ? 19 : (age < 30 ? 29 : (age < 40 ? 39 : 49)))) // 나이에 따라 범위 설정
-                    .groupBy(restaurant.id)
-                    .orderBy(post.restaurant.id.count().desc())
-                    .limit(5)
-                    .fetch();
-        }
-
-        return  results.stream()
-                .map(tuple -> {
-                    TotalModel totalModel = new TotalModel();
-                    totalModel.setRestaurantName(tuple.get(restaurant.name));
-                    totalModel.setTotal(tuple.get(post.restaurant.id.count()));
-                    return totalModel;
-                })
-                .collect(Collectors.toList());
-
-    }
+//    @Override
+//    public List<TotalModel> restaurantsByAge(String age) {
+//        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+//        QPostEntity post = QPostEntity.postEntity;
+//        QUsersEntity user = QUsersEntity.usersEntity;
+//
+//        Long age = jpaQueryFactory
+//                .select(user.age)
+//                .from(user)
+//                .fetchOne();
+//
+//        List<Tuple> results = null;
+//
+//        if (age != null) {
+//            results = jpaQueryFactory
+//                    .select(restaurant.name, post.restaurant.id.count())
+//                    .from(restaurant)
+//                    .join(post).on(post.restaurant.id.eq(restaurant.id))
+//                    .where(user.age.between(age < 20 ? 10 : (age < 30 ? 20 : (age < 40 ? 30 : 40)),
+//                            age < 20 ? 19 : (age < 30 ? 29 : (age < 40 ? 39 : 49)))) // 나이에 따라 범위 설정
+//                    .groupBy(restaurant.id)
+//                    .orderBy(post.restaurant.id.count().desc())
+//                    .limit(5)
+//                    .fetch();
+//        }
+//
+//        return  results.stream()
+//                .map(tuple -> {
+//                    TotalModel totalModel = new TotalModel();
+//                    totalModel.setRestaurantName(tuple.get(restaurant.name));
+//                    totalModel.setTotal(tuple.get(post.restaurant.id.count()));
+//                    return totalModel;
+//                })
+//                .collect(Collectors.toList());
+//
+//    }
 
 
 

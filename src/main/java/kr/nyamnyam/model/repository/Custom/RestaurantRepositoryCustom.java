@@ -18,11 +18,9 @@ public interface RestaurantRepositoryCustom {
 
     List<AreaModel> countAreaList();
 
-    RestaurantEntity randomRestaurant(Long userId);
+    RestaurantEntity randomRestaurant(String userId);
 
-    List<RestaurantEntity> restaurantsByGender(Long userId);
-
-    List<TotalModel> restaurantsByAge(Long userId);
+   // List<TotalModel> restaurantsByAge(String userId);
 
 
 

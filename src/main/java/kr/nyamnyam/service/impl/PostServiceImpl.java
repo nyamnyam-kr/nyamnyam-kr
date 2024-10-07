@@ -52,29 +52,29 @@ public class PostServiceImpl implements PostService {
         return totalRating / posts.size();
     }
 
-    @Override
-    public PostModel postWithImage(Long postId) {
-        PostEntity postEntity = repository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
-
-        List<ImageEntity> images = postEntity.getImages();
-        Tuple postWithNickname = repository.findPostWithNicknameById(postId);
-        String nickname = postWithNickname != null ? postWithNickname.get(QUsersEntity.usersEntity.nickname) : "닉네임 없음";
-
-        PostModel postModel = convertToModelWithNickname(postEntity, nickname);
-        postModel.setImages(postEntity.getImages().stream()
-                .map(image -> ImageModel.builder()
-                        .id(image.getId())
-                        .originalFilename(image.getOriginalFileName())
-                        .storedFileName(image.getStoredFileName())
-                        .extension(image.getExtension())
-                        .uploadURL(image.getUploadURL())
-                        .build())
-                .collect(Collectors.toList()));
-
-        return postModel;
-    }
-
+//    @Override
+//    public PostModel postWithImage(Long postId) {
+//        PostEntity postEntity = repository.findById(postId)
+//                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+//
+//        List<ImageEntity> images = postEntity.getImages();
+//        Tuple postWithNickname = repository.findPostWithNicknameById(postId);
+//        String nickname = postWithNickname != null ? postWithNickname.get(QUsersEntity.usersEntity.nickname) : "닉네임 없음";
+//
+//        PostModel postModel = convertToModelWithNickname(postEntity, nickname);
+//        postModel.setImages(postEntity.getImages().stream()
+//                .map(image -> ImageModel.builder()
+//                        .id(image.getId())
+//                        .originalFilename(image.getOriginalFileName())
+//                        .storedFileName(image.getStoredFileName())
+//                        .extension(image.getExtension())
+//                        .uploadURL(image.getUploadURL())
+//                        .build())
+//                .collect(Collectors.toList()));
+//
+//        return postModel;
+//    }
+//
     @Override
     public PostEntity findEntityById(Long id) {
         return repository.findById(id)
@@ -131,16 +131,16 @@ public class PostServiceImpl implements PostService {
         }
         return repository.findAll().isEmpty();
     }
-
-    @Override
-    public List<PostModel> findAllByRestaurant(Long restaurantId) {
-        List<Tuple> posts = repository.findAllByRestaurantWithNickname(restaurantId);
-
-        return posts.stream()
-                .map(tuple -> convertToModelWithNickname(tuple.get(QPostEntity.postEntity),
-                        tuple.get(QUsersEntity.usersEntity.nickname)))
-                .collect(Collectors.toList());
-    }
+//
+//    @Override
+//    public List<PostModel> findAllByRestaurant(Long restaurantId) {
+//        List<Tuple> posts = repository.findAllByRestaurantWithNickname(restaurantId);
+//
+//        return posts.stream()
+//                .map(tuple -> convertToModelWithNickname(tuple.get(QPostEntity.postEntity),
+//                        tuple.get(QUsersEntity.usersEntity.nickname)))
+//                .collect(Collectors.toList());
+//    }
 
     private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
         PostModel postModel = convertToModel(postEntity, nickname);
@@ -221,7 +221,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<UserPostModel> findByUserId(Long userId) {
+    public List<UserPostModel> findByUserId(String userId) {
         List<UserPostModel> userPostModels = repository.findByUserId(userId);
         System.out.println(userPostModels);
         return repository.findByUserId(userId);

@@ -30,7 +30,8 @@ public class PostEntity {
     private LocalDateTime modifyDate;
 
     // nyamnyam-admin부분에서 추가된 부분
-    private Long userId;
+    private String userId;
+    private String nickname;
 
 
     @PrePersist

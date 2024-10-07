@@ -16,7 +16,7 @@ import java.util.Optional;
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/images")
-public class ImageController{
+public class ImageController {
     private final ImageService service;
 
     @GetMapping("/fileName")
@@ -34,13 +34,14 @@ public class ImageController{
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findByPostId(postId));
     }
+
     @GetMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<List<String>> findImageByRestaurantId(@PathVariable Long restaurantId){
+    public ResponseEntity<List<String>> findImageByRestaurantId(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(service.findImagesByRestaurantId(restaurantId));
     }
 
     @GetMapping("/post/{postId}/imageIds")
-    public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId){
+    public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findImageIdsByPostId(postId));
     }
 
@@ -48,21 +49,24 @@ public class ImageController{
     public ResponseEntity<Optional<ImageEntity>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
+
     @GetMapping("/exists/{postId}")
     public ResponseEntity<Boolean> existsById(@PathVariable Long postId) {
         return ResponseEntity.ok(service.existsById(postId));
     }
+
     @DeleteMapping("/{imageId}")
     public ResponseEntity<Boolean> deleteById(@PathVariable Long imageId) {
         return ResponseEntity.ok(service.deleteById(imageId));
     }
+
     @GetMapping("/group")
     public ResponseEntity<List<ImageEntity>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
+    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId, @RequestPart("files") List<MultipartFile> multipartFiles) {
         return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
     }
 }

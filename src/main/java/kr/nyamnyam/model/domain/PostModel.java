@@ -27,7 +27,7 @@ public class PostModel {
     private LocalDateTime modifyDate;
 
     // 임시로 1값 설정
-    private Long userId = 1L;
+    private String userId;
     private String nickname;
     private Long restaurantId;
 

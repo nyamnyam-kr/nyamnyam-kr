@@ -22,7 +22,7 @@ import java.util.Map;
 public class PostController {
     private final PostService service;
     private final UpvoteService upvoteService;
-    private final ImageService imageService;
+   // private final ImageService imageService;
 
     @GetMapping("/{restaurantId}/allAverage")
     public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
@@ -31,17 +31,17 @@ public class PostController {
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.like(postId,userId));
     }
 
     @PostMapping("/{postId}/unlike")
-    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.unlike(postId,userId));
     }
 
     @GetMapping("/{postId}/hasLiked")
-    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.hasLiked(postId, userId));
     }
 
@@ -60,17 +60,17 @@ public class PostController {
         return ResponseEntity.ok(service.findAllPerPage(page));
     }
 
-    @GetMapping("/{restaurantId}/group")
-    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
-        log.info("restaurantId: {}", restaurantId);
-        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PostModel> getPostId(@PathVariable Long id) {
-        PostModel postModel = service.postWithImage(id);
-        return ResponseEntity.ok(postModel);
-    }
+//    @GetMapping("/{restaurantId}/group")
+//    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
+//        log.info("restaurantId: {}", restaurantId);
+//        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<PostModel> getPostId(@PathVariable Long id) {
+//        PostModel postModel = service.postWithImage(id);
+//        return ResponseEntity.ok(postModel);
+//    }
 
     @GetMapping("/exist/{id}")
     public ResponseEntity<Boolean> existsPostById(@PathVariable Long id) {
@@ -92,18 +92,18 @@ public class PostController {
         return ResponseEntity.ok(service.updatePost(id, model));
     }
 
-    @PostMapping("")
-    public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files)  {
-        Long postId = service.createPostWithImages(model);
-        if(files != null && !files.isEmpty()) {
-            PostEntity postEntity = service.findEntityById(postId);
-            imageService.uploadFiles(files, postEntity);
-        }
-        return ResponseEntity.ok(postId);
-    }
+//    @PostMapping("")
+//    public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files)  {
+//        Long postId = service.createPostWithImages(model);
+//        if(files != null && !files.isEmpty()) {
+//            PostEntity postEntity = service.findEntityById(postId);
+//            imageService.uploadFiles(files, postEntity);
+//        }
+//        return ResponseEntity.ok(postId);
+//    }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<List<?>> userPostList(@PathVariable Long id) {
+    public ResponseEntity<List<?>> userPostList(@PathVariable String id) {
         System.out.println("PostController.userPostList");
         return ResponseEntity.ok(service.findByUserId(id));
     }
