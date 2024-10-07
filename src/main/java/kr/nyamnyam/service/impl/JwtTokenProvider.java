@@ -38,7 +38,7 @@ public class JwtTokenProvider {
                 claims.put("gender", user.getGender());
                 claims.put("enabled", user.getEnabled());
                 claims.put("imgId", user.getImgId());
-                claims.put("rating", user.getRating());
+                claims.put("rating", user.getScore());
 
                 Date now = new Date();
                 Date validity = new Date(now.getTime() + validityInMilliseconds);
