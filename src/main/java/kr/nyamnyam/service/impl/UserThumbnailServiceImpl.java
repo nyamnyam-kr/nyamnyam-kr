@@ -7,10 +7,13 @@ import kr.nyamnyam.service.UserThumbnailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,27 +23,41 @@ public class UserThumbnailServiceImpl implements UserThumbnailService {
     private final UserThumbnailRepository userThumbnailRepository;
 
     @Override
-    public Mono<Void> uploadThumbnail(User user, List<MultipartFile> images) {
-        return Mono.fromRunnable(() -> {
-            try {
-                String uploadsDir = "src/main/resources/static/uploads/thumbnails/";
+    public Mono<List<String>> uploadThumbnail(User user, List<MultipartFile> images) {
+        List<String> thumbnailIds = new ArrayList<>();
 
-                for (MultipartFile image : images) {
-                    String filePath = uploadsDir + image.getOriginalFilename();
-                    File dest = new File(filePath);
-                    image.transferTo(dest);
+        return Flux.fromIterable(images)
+                .flatMap(image -> {
+                    try {
+                        String uploadsDir = "src/main/resources/static/uploads/thumbnails/";
+                        String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                        String filePath = uploadsDir + fileName;
 
-                    UsersThumbnail thumbnail = UsersThumbnail.builder()
-                            .userId(user.getId())
-                            .thumbnailUrl(filePath)
-                            .createdAt(LocalDateTime.now().toEpochSecond(null))
-                            .build();
+                        File dest = new File(filePath);
+                        image.transferTo(dest);
 
-                    userThumbnailRepository.save(thumbnail).subscribe();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+                        UsersThumbnail thumbnail = UsersThumbnail.builder()
+                                .userId(user.getId())
+                                .thumbnailUrl(filePath)
+                                .createdAt(LocalDateTime.now().toEpochSecond(null))
+                                .build();
+
+
+                        return userThumbnailRepository.save(thumbnail)
+                                .map(savedThumbnail -> {
+                                    thumbnailIds.add(savedThumbnail.getId());
+                                    return savedThumbnail.getId();
+                                });
+                    } catch (Exception e) {
+
+                        return Mono.error(new RuntimeException("Failed to save thumbnail: " + e.getMessage()));
+                    }
+                })
+                .then(Mono.just(thumbnailIds))
+                .onErrorResume(e -> {
+                    return Mono.just(Collections.emptyList());
+                });
     }
+
 }
+

@@ -23,7 +23,7 @@ public class User {
     private String tel;
     private String gender;
     private Boolean enabled;
-    private Long imgId;
+    private String imgId;
     private Double score;
 
 }

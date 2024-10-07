@@ -32,7 +32,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     private WebClient.Builder webClientBuilder;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider; // JwtTokenProvider 주입
+    private JwtTokenProvider jwtTokenProvider;
 
     // 액세스 토큰 받기
     @Override

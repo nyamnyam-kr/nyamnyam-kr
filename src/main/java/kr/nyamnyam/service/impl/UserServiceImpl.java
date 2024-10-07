@@ -86,19 +86,25 @@ public class UserServiceImpl implements UserService {
                 .nickname(user.getNickname())
                 .name(user.getName())
                 .age(user.getAge())
-                .role(user.getRole())
+                .role("USER")
                 .tel(user.getTel())
                 .gender(user.getGender())
-                .enabled(user.getEnabled())
+                .enabled(true)
                 .score(36.5)
                 .build();
 
         return userRepository.save(newUser)
-                .doOnSuccess(savedUser -> {
-                    // 썸네일 저장
-                    userThumbnailService.uploadThumbnail(savedUser, thumbnails);
-                });
+                .flatMap(savedUser ->
+                        userThumbnailService.uploadThumbnail(savedUser, thumbnails)
+                                .doOnSuccess(thumbnailIds -> {
+                                    String imgId = thumbnailIds.isEmpty() ? null : thumbnailIds.get(0).toString();
+                                    savedUser.setImgId(imgId);
+                                })
+                                .then(Mono.just(savedUser))
+                );
     }
+
+
 
     @Override
     public Mono<String> authenticate(String username, String password) {

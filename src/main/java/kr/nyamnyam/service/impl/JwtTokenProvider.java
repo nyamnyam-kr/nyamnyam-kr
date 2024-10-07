@@ -29,16 +29,8 @@ public class JwtTokenProvider {
         return Mono.fromCallable(() -> {
             try {
                 Claims claims = Jwts.claims().setSubject(user.getId());
-                claims.put("username", user.getUsername());
                 claims.put("role", user.getRole());
                 claims.put("nickname", user.getNickname());
-                claims.put("name", user.getName());
-                claims.put("age", user.getAge());
-                claims.put("tel", user.getTel());
-                claims.put("gender", user.getGender());
-                claims.put("enabled", user.getEnabled());
-                claims.put("imgId", user.getImgId());
-                claims.put("rating", user.getScore());
 
                 Date now = new Date();
                 Date validity = new Date(now.getTime() + validityInMilliseconds);
