@@ -1,6 +1,6 @@
 package kr.nyamnyam.service;
 
-import kr.nyamnyam.model.domain.User; // User로 변경
+import kr.nyamnyam.model.domain.User;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
