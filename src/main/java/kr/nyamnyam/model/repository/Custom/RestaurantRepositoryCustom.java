@@ -9,13 +9,8 @@ import kr.nyamnyam.model.repository.RestaurantRepository;
 import java.util.List;
 
 public interface RestaurantRepositoryCustom {
-    List<RestaurantEntity> findByName(String name);
 
     List<RestaurantEntity> searchRestaurant(String keyword);
-
-    List<RestaurantEntity> restaurantsByGender(String gender);
-
-    List<TotalModel> restaurantsByAge(Long userId);
 
     List<RestaurantEntity> findByTagName(List<String> tagNames);
 
@@ -24,6 +19,11 @@ public interface RestaurantRepositoryCustom {
     List<AreaModel> countAreaList();
 
     RestaurantEntity randomRestaurant(Long userId);
+
+    List<RestaurantEntity> restaurantsByGender(Long userId);
+
+    List<TotalModel> restaurantsByAge(Long userId);
+
 
 
 }

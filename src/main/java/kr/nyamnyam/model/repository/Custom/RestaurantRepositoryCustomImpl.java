@@ -29,13 +29,6 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
 
     @Override
-    public List<RestaurantEntity> findByName(String name) {
-        return jpaQueryFactory.selectFrom(restaurantEntity)
-                .where(restaurantEntity.name.eq(name))
-                .fetch();
-    }
-
-    @Override
     public List<RestaurantEntity> searchRestaurant(String keyword) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
 
@@ -47,130 +40,6 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         return jpaQueryFactory.selectFrom(restaurant)
                 .where(nameContains.or(addressContains).or(typeContains).or(menuContains))
                 .fetch();
-
-    }
-
-    @Override
-    public List<AreaModel> countAreaList() {
-        QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
-
-        List<Tuple> results = jpaQueryFactory.select(
-                        Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address).as("district"),
-                        restaurantEntity.address.count()
-                )
-                .from(restaurantEntity)
-                .groupBy(Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address))
-                .orderBy(restaurantEntity.address.count().desc())
-                .limit(5)
-                .fetch();
-
-        return results.stream()
-                .map(tuple -> {
-                    AreaModel areaModel = new AreaModel();
-                    areaModel.setArea(tuple.get(0, String.class));
-                    areaModel.setTotal(tuple.get(1, Long.class));
-                    return areaModel;
-                })
-                .collect(Collectors.toList());
-    }
-
-    // 랜덤레스토랑
-    @Override
-    public RestaurantEntity randomRestaurant(Long userId) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
-
-         String type = jpaQueryFactory
-                 .select(restaurant.type)
-                 .from(post)
-                 .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
-                 .where(post.userId.eq(userId))
-                 .groupBy(restaurant.type)
-                 .orderBy(post.count().desc())
-                 .limit(1)
-                 .fetchOne();
-
-        RestaurantEntity randomRestaurant = jpaQueryFactory
-                .selectFrom(restaurant)
-                .where(restaurant.type.eq(type))
-                .orderBy(numberTemplate(Double.class, "function('RAND')").asc())
-                .limit(1)
-                .fetchOne();
-
-        return randomRestaurant;
-
-    }
-
-    @Override
-    public List<RestaurantEntity> restaurantsByGender(String gender) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
-        QUsersEntity user = QUsersEntity.usersEntity;
-
-        JPAQuery<String> subQuery = new JPAQuery<>();
-
-        String topType = subQuery.select(restaurant.type)
-                .from(restaurant)
-                .join(post).on(post.restaurant.id.eq(restaurant.id))
-                .join(user).on(user.id.eq(post.userId))
-                .where(user.gender.eq(gender))
-                .groupBy(restaurant.type)
-                .orderBy(restaurant.type.count().desc())
-                .limit(1)
-                .fetchOne();
-
-        if (topType == null) {
-            return Collections.emptyList();
-        }
-
-        return jpaQueryFactory
-                .select(restaurant)
-                .from(restaurant)
-                .where(restaurant.type.eq(topType))
-                .fetch();
-
-    }
-
-
-
-
-    @Override
-    public List<TotalModel> restaurantsByAge(Long userId) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
-        QUsersEntity user = QUsersEntity.usersEntity;
-
-        Long age = jpaQueryFactory
-                .select(user.age)
-                .from(user)
-                .where(user.id.eq(userId))
-                .fetchOne();
-
-        List<Tuple> results = null;
-
-        if (age != null) {
-            // 10대, 20대, 30대 또는 40대에 따라 쿼리 실행
-            results = jpaQueryFactory
-                    .select(restaurant.name, post.restaurant.id.count())
-                    .from(restaurant)
-                    .join(post).on(post.restaurant.id.eq(restaurant.id))
-                    .join(user).on(user.id.eq(post.userId))
-                    .where(user.age.between(age < 20 ? 10 : (age < 30 ? 20 : (age < 40 ? 30 : 40)),
-                            age < 20 ? 19 : (age < 30 ? 29 : (age < 40 ? 39 : 49)))) // 나이에 따라 범위 설정
-                    .groupBy(restaurant.id)
-                    .orderBy(post.restaurant.id.count().desc())
-                    .limit(5)
-                    .fetch();
-        }
-
-        return  results.stream()
-                .map(tuple -> {
-                    TotalModel totalModel = new TotalModel();
-                    totalModel.setRestaurantName(tuple.get(restaurant.name));
-                    totalModel.setTotal(tuple.get(post.restaurant.id.count()));
-                    return totalModel;
-                })
-                .collect(Collectors.toList());
 
     }
 
@@ -273,5 +142,141 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
         } else
             return null;
     }
+
+
+    @Override
+    public List<AreaModel> countAreaList() {
+        QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
+
+        List<Tuple> results = jpaQueryFactory.select(
+                        Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address).as("district"),
+                        restaurantEntity.address.count()
+                )
+                .from(restaurantEntity)
+                .groupBy(Expressions.stringTemplate("regexp_substr({0}, '([^ ]+구)', 1, 1)", restaurantEntity.address))
+                .orderBy(restaurantEntity.address.count().desc())
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    AreaModel areaModel = new AreaModel();
+                    areaModel.setArea(tuple.get(0, String.class));
+                    areaModel.setTotal(tuple.get(1, Long.class));
+                    return areaModel;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 랜덤레스토랑
+    @Override
+    public RestaurantEntity randomRestaurant(Long userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+
+        String type = jpaQueryFactory
+                .select(restaurant.type)
+                .from(post)
+                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                .where(post.userId.eq(userId))
+                .groupBy(restaurant.type)
+                .orderBy(post.count().desc())
+                .limit(1)
+                .fetchOne();
+
+        RestaurantEntity randomRestaurant = jpaQueryFactory
+                .selectFrom(restaurant)
+                .where(restaurant.type.eq(type))
+                .orderBy(numberTemplate(Double.class, "function('RAND')").asc())
+                .limit(1)
+                .fetchOne();
+
+        return randomRestaurant;
+
+    }
+
+    @Override
+    public List<RestaurantEntity> restaurantsByGender(Long userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+        QUsersEntity user = QUsersEntity.usersEntity;
+
+        String gender = jpaQueryFactory
+                .select(user.gender)
+                .from(user)
+                .where(user.id.eq(userId))
+                .fetchOne();
+
+        if (gender == null) {
+            return Collections.emptyList();
+        }
+
+        String topType = jpaQueryFactory
+                .select(restaurant.type)
+                .from(restaurant)
+                .join(post).on(post.restaurant.id.eq(restaurant.id))
+                .join(user).on(user.id.eq(post.userId))
+                .where(user.gender.eq(gender))
+                .groupBy(restaurant.type)
+                .orderBy(restaurant.type.count().desc())
+                .limit(1)
+                .fetchOne();
+
+        if (topType == null) {
+            return Collections.emptyList();
+        }
+
+        return jpaQueryFactory
+                .select(restaurant)
+                .from(restaurant)
+                .where(restaurant.type.eq(topType))
+                .fetch();
+
+    }
+
+
+    @Override
+    public List<TotalModel> restaurantsByAge(Long userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+        QUsersEntity user = QUsersEntity.usersEntity;
+
+        Long age = jpaQueryFactory
+                .select(user.age)
+                .from(user)
+                .where(user.id.eq(userId))
+                .fetchOne();
+
+        List<Tuple> results = null;
+
+        if (age != null) {
+            results = jpaQueryFactory
+                    .select(restaurant.name, post.restaurant.id.count())
+                    .from(restaurant)
+                    .join(post).on(post.restaurant.id.eq(restaurant.id))
+                    .join(user).on(user.id.eq(post.userId))
+                    .where(user.age.between(age < 20 ? 10 : (age < 30 ? 20 : (age < 40 ? 30 : 40)),
+                            age < 20 ? 19 : (age < 30 ? 29 : (age < 40 ? 39 : 49)))) // 나이에 따라 범위 설정
+                    .groupBy(restaurant.id)
+                    .orderBy(post.restaurant.id.count().desc())
+                    .limit(5)
+                    .fetch();
+        }
+
+        return  results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurant.name));
+                    totalModel.setTotal(tuple.get(post.restaurant.id.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+
+    }
+
+
+
+
+
 
 }
