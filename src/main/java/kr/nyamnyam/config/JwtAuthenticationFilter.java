@@ -21,8 +21,7 @@ public class JwtAuthenticationFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String requestPath = exchange.getRequest().getPath().value();
-
-        // join 경로와 login 경로에서는 인증을 skip
+        
         if (requestPath.equals("/api/user/join") || requestPath.equals("/api/user/login")) {
             return chain.filter(exchange);
         }
