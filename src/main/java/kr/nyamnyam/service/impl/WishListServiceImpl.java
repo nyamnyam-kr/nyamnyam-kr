@@ -4,9 +4,11 @@ package kr.nyamnyam.service.impl;
 import kr.nyamnyam.model.domain.WishListModel;
 import kr.nyamnyam.model.entity.WishListEntity;
 import kr.nyamnyam.model.repository.WishListRepository;
+import kr.nyamnyam.model.repository.WishListRestaurantRepository;
 import kr.nyamnyam.service.WishListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishListServiceImpl implements WishListService {
     private final WishListRepository wishListRepository;
+    private final WishListRestaurantRepository wishListRestaurantRepository;
 
 
     @Override
@@ -38,6 +41,16 @@ public class WishListServiceImpl implements WishListService {
                 .map(WishListModel::toDto)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    @Override
+    public boolean deleteWishList(Long userId, Long wishListId) {
+        boolean isDeleted = wishListRepository.deleteWishList(userId, wishListId);
+        return isDeleted;
+    }
+
+
+
 
 
 }

@@ -73,6 +73,11 @@ public class WishListController {
         return wishListRestaurantService.getDistinctRestaurantsByUserId(userId);
     }
 
-
+    // 위시 항목 삭제하기
+    @DeleteMapping("/delete/wishList")
+    public ResponseEntity<Boolean> deleteWish(@RequestHeader Long userId, @RequestParam Long id) {
+        boolean deleted = wishListService.deleteWishList(userId, id);
+        return ResponseEntity.ok(deleted);
+    }
 
 }

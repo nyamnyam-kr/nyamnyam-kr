@@ -8,6 +8,7 @@ import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.openqa.selenium.devtools.Reply;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +38,6 @@ public class ReplyServiceImpl implements ReplyService {
                     return convertToModelWithNickname(replyEntity, nickname);
                 })
                 .collect(Collectors.toList());
-    }
-
-    private ReplyModel convertToModelWithNickname(ReplyEntity replyEntity, String nickname) {
-        ReplyModel replyModel = convertToModel(replyEntity);
-        replyModel.setNickname(nickname);
-
-        return replyModel;
     }
 
     @Override
@@ -88,16 +82,32 @@ public class ReplyServiceImpl implements ReplyService {
         existingEntity.setContent(model.getContent());
         existingEntity.setModifyDate(LocalDateTime.now());
 
-        repository.save(existingEntity);
-        return model;
+        ReplyEntity updatedEntity = repository.save(existingEntity);
+        Tuple replyWithNickname = repository.findByIdWithNickname(updatedEntity.getId());
+        ReplyEntity updatedReplyEntity = replyWithNickname.get(QReplyEntity.replyEntity);
+        String nickname = replyWithNickname.get(QUsersEntity.usersEntity.nickname);
+
+        return convertToModelWithNickname(updatedReplyEntity, nickname);
     }
 
     @Override
     public ReplyModel save(ReplyModel model) {
         ReplyEntity entity = convertToEntity(model);
         entity.setEntryDate(LocalDateTime.now());
-        repository.save(entity);
-        return model;
+
+        ReplyEntity savedEntity = repository.save(entity);
+        Tuple replyWithNickname = repository.findByIdWithNickname(savedEntity.getId());
+        ReplyEntity savedReplyEntity = replyWithNickname.get(QReplyEntity.replyEntity);
+        String nickname = replyWithNickname.get(QUsersEntity.usersEntity.nickname);
+
+        return convertToModelWithNickname(savedReplyEntity, nickname);
+    }
+
+    private ReplyModel convertToModelWithNickname(ReplyEntity replyEntity, String nickname) {
+        ReplyModel replyModel = convertToModel(replyEntity);
+        replyModel.setNickname(nickname);
+
+        return replyModel;
     }
 
     private ReplyModel convertToModel(ReplyEntity entity) {
@@ -113,10 +123,11 @@ public class ReplyServiceImpl implements ReplyService {
 
     public ReplyEntity convertToEntity(ReplyModel model) {
         return ReplyEntity.builder()
-                .id(model.getId())
                 .content(model.getContent())
                 .postId(model.getPostId())
                 .userId(model.getUserId())
+                .entryDate(model.getEntryDate())
+                .modifyDate(model.getModifyDate())
                 .build();
     }
 }

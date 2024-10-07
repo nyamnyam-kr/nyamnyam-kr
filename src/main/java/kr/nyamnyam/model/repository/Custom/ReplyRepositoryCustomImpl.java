@@ -7,7 +7,6 @@ import kr.nyamnyam.model.entity.QUsersEntity;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,5 +37,18 @@ public class ReplyRepositoryCustomImpl implements ReplyRepositoryCustom{
             String userNickname = tuple.get(usersEntity.nickname);
         });
         return result;
+    }
+
+    @Override
+    public Tuple findByIdWithNickname(Long replyId){
+        QReplyEntity replyEntity = QReplyEntity.replyEntity;
+        QUsersEntity usersEntity = QUsersEntity.usersEntity;
+
+        return jpaQueryFactory
+                .select(replyEntity, usersEntity.nickname)
+                .from(replyEntity)
+                .leftJoin(usersEntity).on(replyEntity.userId.eq(usersEntity.id))
+                .where(replyEntity.id.eq(replyId))
+                .fetchOne();
     }
 }
