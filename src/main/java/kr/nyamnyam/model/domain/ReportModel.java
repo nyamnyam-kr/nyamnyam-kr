@@ -6,6 +6,8 @@ import kr.nyamnyam.model.entity.ReportReason;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Data
 @Component
 public class ReportModel {
@@ -14,5 +16,6 @@ public class ReportModel {
     private Long userId;
     private Long postId;
     private String reason;
+    private Date entryDate;
 
 }
