@@ -15,8 +15,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter {
 
-    private final JwtTokenProvider  jwtTokenProvider; // JwtTokenProvider 주입
-    private final UserService userService; // UserService 주입
+    private final JwtTokenProvider  jwtTokenProvider;
+    private final UserService userService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
         // join 경로와 login 경로에서는 인증을 skip
         if (requestPath.equals("/api/user/join") || requestPath.equals("/api/user/login")) {
-            return chain.filter(exchange); // 다음 필터로 요청 전달
+            return chain.filter(exchange);
         }
 
         String token = resolveToken(exchange.getRequest());

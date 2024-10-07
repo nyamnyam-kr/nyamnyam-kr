@@ -7,5 +7,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface UserThumbnailService {
-    Mono<Void> uploadThumbnail(User user, List<MultipartFile> images);
+    Mono<List<String>> uploadThumbnail(User user, List<MultipartFile> images);
 }
+

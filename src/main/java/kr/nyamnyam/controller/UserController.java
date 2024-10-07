@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -47,11 +48,13 @@ public class UserController {
         return userService.update(user, thumbnails);
     }
 
-
     @PostMapping("/join")
-    public Mono<User> join(@RequestPart("user") User user, @RequestPart("thumbnails") List<MultipartFile> thumbnails) {
-        return userService.save(user, thumbnails);
+    public Mono<User> join(@RequestPart("user") User user,
+                           @RequestPart(name = "thumbnails", required = false) List<MultipartFile> thumbnails) {
+        // 'user'는 JSON 데이터로부터 변환된 객체, 'thumbnails'는 업로드된 파일 리스트
+        return userService.save(user, thumbnails != null ? thumbnails : Collections.emptyList());
     }
+
 
     @PostMapping("/login")
     public Mono<String> login(@RequestParam String username, @RequestParam String password) {
