@@ -29,12 +29,6 @@ public class AdminController {
         return ResponseEntity.ok(opinionService.findAll());
     }
 
-    @GetMapping("/upvote")
-    public ResponseEntity<List<?>> upvote() {
-        return ResponseEntity.ok(adminService.postUpvote());
-    }
-
-
     @GetMapping("/countUserList")
     public ResponseEntity<List<?>> countUserList() {
         return ResponseEntity.ok(adminService.countUserList());

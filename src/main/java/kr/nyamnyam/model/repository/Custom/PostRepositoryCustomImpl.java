@@ -73,21 +73,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
 
-    // 가장 많은 추천을 받은 postlist
-    @Override
-    public List<String> postUpvote() {
-
-        QPostEntity postEntity = QPostEntity.postEntity;
-        QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
-
-        return jpaQueryFactory.select(postEntity.content)
-                .from(upvoteEntity)
-                .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .groupBy(upvoteEntity.postId)
-                .orderBy(upvoteEntity.postId.asc())
-                .limit(5)
-                .fetch();
-    }
 
     // 가장 많은 추천을 받은 post의 nickname list
     @Override

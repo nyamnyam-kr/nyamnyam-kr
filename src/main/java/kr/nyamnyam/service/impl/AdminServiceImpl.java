@@ -30,10 +30,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
-    @Override
-    public List<String> postUpvote() {
-        return postRepository.postUpvote();
-    }
+
 
     // 제일 좋아요를 많이 USER
     @Override
