@@ -20,7 +20,7 @@ public class WishListEntity {
     private Long id;
 
     private String name;
-    private Long userId;
+    private String userId;
 
 
 }

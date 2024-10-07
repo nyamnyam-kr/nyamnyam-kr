@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface WishListRestaurantService {
 
-    WishListRestaurantEntity addRestaurantToWishList(Long userId, Long wishListId, Long restaurantId);
+    WishListRestaurantEntity addRestaurantToWishList(String userId, Long wishListId, Long restaurantId);
 
-    List<RestaurantModel> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId);
+    List<RestaurantModel> findRestaurantsByUserIdAndWishListId(String userId, Long wishListId);
 
     @Transactional
-    boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
+    boolean deleteRestaurantFromWishList(String userId, Long restaurantId);
 
-    List<Long> getDistinctRestaurantsByUserId(Long userId);
+    List<Long> getDistinctRestaurantsByUserId(String userId);
 }

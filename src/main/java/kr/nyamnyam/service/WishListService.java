@@ -12,11 +12,11 @@ import java.util.List;
 public interface WishListService {
 
 
-    WishListEntity createWishList(String name, Long userId);
+    WishListEntity createWishList(String name, String userId);
 
-    List<WishListModel> getWishLists(Long userId);
+    List<WishListModel> getWishLists(String userId);
 
 
     @Transactional
-    boolean deleteWishList(Long userId, Long wishListId);
+    boolean deleteWishList(String userId, Long wishListId);
 }
