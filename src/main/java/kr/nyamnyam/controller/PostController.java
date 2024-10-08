@@ -60,17 +60,17 @@ public class PostController {
         return ResponseEntity.ok(service.findAllPerPage(page));
     }
 
-//    @GetMapping("/{restaurantId}/group")
-//    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
-//        log.info("restaurantId: {}", restaurantId);
-//        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<PostModel> getPostId(@PathVariable Long id) {
-//        PostModel postModel = service.postWithImage(id);
-//        return ResponseEntity.ok(postModel);
-//    }
+    @GetMapping("/{restaurantId}/group")
+    public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
+        log.info("restaurantId: {}", restaurantId);
+        return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostModel> getPostId(@PathVariable Long id) {
+        PostModel postModel = service.postWithImage(id);
+        return ResponseEntity.ok(postModel);
+    }
 
     @GetMapping("/exist/{id}")
     public ResponseEntity<Boolean> existsPostById(@PathVariable Long id) {

@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
+import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.QPostEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import kr.nyamnyam.model.entity.QUpvoteEntity;
@@ -22,11 +23,11 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     // 레스토랑ID 기반으로 여러 개의 post에 nickname 불러오기
     @Override
-    public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
+    public List<PostEntity> findAllByRestaurantWithNickname(Long restaurantId) {
         QPostEntity postEntity = QPostEntity.postEntity;
 
         return jpaQueryFactory
-                .select(postEntity, postEntity.nickname)
+                .select(postEntity)
                 .from(postEntity)
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
