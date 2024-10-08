@@ -24,7 +24,7 @@ public class ReplyModel {
 
     private Long postId;
 
-    private Long userId;
+    private String userId;
     private String nickname;
 
     // 릴리즈 0.01에서 넘어온 부분
