@@ -40,8 +40,8 @@ public class NoticeController {
         return ResponseEntity.ok(noticeService.save(model));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<NoticeEntity> update(@PathVariable Long id, @RequestBody NoticeModel model) {
+    @PutMapping("")
+    public ResponseEntity<NoticeEntity> update(@RequestBody NoticeModel model) {
         System.out.println(model);
        return ResponseEntity.ok(noticeService.update(model));
     }
