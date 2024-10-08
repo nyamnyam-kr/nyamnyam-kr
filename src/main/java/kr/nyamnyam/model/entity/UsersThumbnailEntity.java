@@ -21,7 +21,7 @@ public class UsersThumbnailEntity {
 
     // userId 필드를 사용하여 유저를 참조
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     private String imagePath;
 

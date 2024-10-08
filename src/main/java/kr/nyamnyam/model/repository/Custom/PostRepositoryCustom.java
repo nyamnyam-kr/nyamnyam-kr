@@ -25,7 +25,7 @@ public interface PostRepositoryCustom {
 
     List<TotalModel> countRestaurantList();
 
-    List<UserPostModel> findByUserId(Long userId);
+    List<UserPostModel> findByUserId(String userId);
 
 
 }

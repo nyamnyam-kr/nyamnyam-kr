@@ -61,12 +61,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<TotalModel> recommendByAge(Long userId) {
+    public List<TotalModel> recommendByAge(String userId) {
         return restaurantRepository.restaurantsByAge(userId);
     }
 
     @Override
-    public RestaurantEntity randomRestaurantByUserId(Long userId) {
+    public RestaurantEntity randomRestaurantByUserId(String userId) {
         return restaurantRepository.randomRestaurant(userId);
     }
 

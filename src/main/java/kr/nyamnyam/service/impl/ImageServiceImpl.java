@@ -122,58 +122,60 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Boolean updateImages(Long postId, List<MultipartFile> multipartFiles) {
-        List<ImageEntity> existImages = repository.findByPostId(postId);
-        for (ImageEntity image : existImages) {
-            try {
-                String keyName = image.getUploadURL().replace("https://kr.object.ncloudstorage.com/" + bucketName + "/", "");
-                amazonS3.deleteObject(bucketName, keyName);
-                repository.delete(image);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to delete image: " + image.getStoredFileName());
+    public Boolean updateImages(Long postId, List<MultipartFile> multipartFiles, List<Long> imagesToDelete) {
+        if(imagesToDelete != null && !imagesToDelete.isEmpty()) {
+            List<ImageEntity> existImages = repository.findByPostId(postId);
+
+            for (ImageEntity image : existImages) {
+                if(imagesToDelete.contains(image.getId())) {
+                    try {
+                        String keyName = image.getUploadURL().replace("https://kr.object.ncloudstorage.com/" + bucketName + "/", "");
+                        amazonS3.deleteObject(bucketName, keyName);
+                        repository.delete(image);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to delete image: " + image.getStoredFileName());
+                    }
+                }
             }
         }
-        PostEntity postEntity = postService.findEntityById(postId);
-        if (postEntity == null) {
-            throw new IllegalArgumentException("Invalid postId: " + postId);
-        }
+        if(multipartFiles != null && !multipartFiles.isEmpty()) {
+            PostEntity postEntity = postService.findEntityById(postId);
+            for (MultipartFile multipartFile : multipartFiles) {
+                String originalFilename = multipartFile.getOriginalFilename();
+                String storedFileName = getFileName(originalFilename);
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                }
+                String uploadURL = "";
 
-        for (MultipartFile multipartFile : multipartFiles) {
-            String originalFilename = multipartFile.getOriginalFilename();
-            String storedFileName = getFileName(originalFilename);
-            String extension = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentLength(multipartFile.getSize());
+                objectMetadata.setContentType(multipartFile.getContentType());
+
+                try (InputStream inputStream = multipartFile.getInputStream()) {
+                    String keyName = uploadPath + storedFileName;
+
+                    amazonS3.putObject(
+                            new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata)
+                                    .withCannedAcl(CannedAccessControlList.PublicRead)
+                    );
+                    uploadURL = "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
+                } catch (IOException e) {
+                    throw new RuntimeException("파일 업로드 실패: " + e.getMessage());
+                }
+                ImageEntity imageEntity = ImageEntity.builder()
+                        .originalFileName(originalFilename)
+                        .storedFileName(storedFileName)
+                        .extension(extension)
+                        .uploadPath(uploadPath)
+                        .uploadURL(uploadURL)
+                        .post(postEntity)
+                        .build();
+
+                repository.save(imageEntity);
             }
-            String uploadURL = "";
-
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(multipartFile.getSize());
-            objectMetadata.setContentType(multipartFile.getContentType());
-
-            try (InputStream inputStream = multipartFile.getInputStream()) {
-                String keyName = uploadPath + storedFileName;
-
-                amazonS3.putObject(
-                        new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata)
-                                .withCannedAcl(CannedAccessControlList.PublicRead)
-                );
-                uploadURL = "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
-            } catch (IOException e) {
-                throw new RuntimeException("파일 업로드 실패: " + e.getMessage());
-            }
-            ImageEntity imageEntity = ImageEntity.builder()
-                    .originalFileName(originalFilename)
-                    .storedFileName(storedFileName)
-                    .extension(extension)
-                    .uploadPath(uploadPath)
-                    .uploadURL(uploadURL)
-                    .post(postEntity)
-                    .build();
-
-            repository.save(imageEntity);
         }
-
         return true;
     }
 

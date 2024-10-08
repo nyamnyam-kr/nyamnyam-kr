@@ -18,7 +18,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -200,28 +199,26 @@ public class PostServiceImpl implements PostService {
 
         return entity.getId();
     }
-
+    @Transactional
     @Override
-    public Boolean updatePost(Long id, PostModel model) {
-        PostEntity existingEntity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    public Long updatePost(PostModel model) {
+        PostEntity existingEntity = repository.findById(model.getId())
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + model.getId()));
 
-        PostEntity updatedEntity = existingEntity.toBuilder()
-                .content(model.getContent())
-                .taste(model.getTaste())
-                .clean(model.getClean())
-                .service(model.getService())
-                .modifyDate(LocalDateTime.now())
-                .build();
+        existingEntity.setContent(model.getContent());
+        existingEntity.setTaste(model.getTaste());
+        existingEntity.setClean(model.getClean());
+        existingEntity.setService(model.getService());
+        existingEntity.setModifyDate(LocalDateTime.now());
 
-        repository.save(updatedEntity);
-        updateTags(model.getTags(), updatedEntity);
+        updateTags(model.getTags(), existingEntity);
+        PostEntity updatedEntity = repository.save(existingEntity);
 
-        return true;
+        return updatedEntity.getId();
     }
 
     @Override
-    public List<UserPostModel> findByUserId(Long userId) {
+    public List<UserPostModel> findByUserId(String userId) {
         List<UserPostModel> userPostModels = repository.findByUserId(userId);
         System.out.println(userPostModels);
         return repository.findByUserId(userId);

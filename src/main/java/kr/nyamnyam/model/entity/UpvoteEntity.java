@@ -16,7 +16,7 @@ public class UpvoteEntity {
     private Long id;
 
     private Long postId;
-    private Long giveId; // 좋아요 누른 사용자 ID
-    private Long haveId; // 좋아요 받은 사용자 ID
+    private String giveId; // 좋아요 누른 사용자 ID
+    private String haveId; // 좋아요 받은 사용자 ID
 
 }

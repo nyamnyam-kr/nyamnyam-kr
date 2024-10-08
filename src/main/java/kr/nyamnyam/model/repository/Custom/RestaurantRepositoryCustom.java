@@ -15,7 +15,7 @@ public interface RestaurantRepositoryCustom {
 
     List<RestaurantEntity> restaurantsByGender(String gender);
 
-    List<TotalModel> restaurantsByAge(Long userId);
+    List<TotalModel> restaurantsByAge(String userId);
 
     List<RestaurantEntity> findByTagName(List<String> tagNames);
 
@@ -23,7 +23,7 @@ public interface RestaurantRepositoryCustom {
 
     List<AreaModel> countAreaList();
 
-    RestaurantEntity randomRestaurant(Long userId);
+    RestaurantEntity randomRestaurant(String userId);
 
 
 }

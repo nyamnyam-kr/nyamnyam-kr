@@ -55,12 +55,12 @@ public class AdminController {
 
     // user 연령별 추천
     @GetMapping("/recommendByAge/{id}")
-    public ResponseEntity<List<?>> recommendByAge(@PathVariable Long id) {
+    public ResponseEntity<List<?>> recommendByAge(@PathVariable String id) {
         return ResponseEntity.ok(adminService.recommendByAge(id));
     }
 
     @GetMapping("/randomByUserId/{id}")
-    public ResponseEntity<RestaurantEntity> randomByUserId(@PathVariable Long id) {
+    public ResponseEntity<RestaurantEntity> randomByUserId(@PathVariable String id) {
         return ResponseEntity.ok(adminService.randomRestaurantByUserId(id));
     }
 

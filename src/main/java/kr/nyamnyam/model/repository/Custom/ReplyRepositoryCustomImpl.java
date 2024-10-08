@@ -21,14 +21,14 @@ public class ReplyRepositoryCustomImpl implements ReplyRepositoryCustom{
         List<Tuple> result = jpaQueryFactory
                 .select(replyEntity, usersEntity.nickname)
                 .from(replyEntity)
-                .leftJoin(usersEntity).on(replyEntity.userId.eq(usersEntity.id))
+                .leftJoin(usersEntity).on(replyEntity.userId.stringValue().eq(usersEntity.id))
                 .where(replyEntity.postId.eq(postId))
                 .fetch();
 
         String queryString = jpaQueryFactory
                 .select(replyEntity, usersEntity.nickname)
                 .from(replyEntity)
-                .leftJoin(usersEntity).on(replyEntity.userId.eq(usersEntity.id))
+                .leftJoin(usersEntity).on(replyEntity.userId.stringValue().eq(usersEntity.id))
                 .where(replyEntity.postId.eq(postId))
                 .toString();
 
@@ -47,7 +47,7 @@ public class ReplyRepositoryCustomImpl implements ReplyRepositoryCustom{
         return jpaQueryFactory
                 .select(replyEntity, usersEntity.nickname)
                 .from(replyEntity)
-                .leftJoin(usersEntity).on(replyEntity.userId.eq(usersEntity.id))
+                .leftJoin(usersEntity).on(replyEntity.userId.stringValue().eq(usersEntity.id))
                 .where(replyEntity.id.eq(replyId))
                 .fetchOne();
     }

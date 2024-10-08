@@ -14,7 +14,7 @@ public class UpvoteRepositoryCustomImpl implements UpvoteRepositoryCustom {
 
 
     @Override
-    public UpvoteEntity save(Long postId, Long giveId) {
+    public UpvoteEntity save(Long postId, String giveId) {
         QPostEntity postEntity = QPostEntity.postEntity;
         QUsersEntity userEntity = QUsersEntity.usersEntity;
 

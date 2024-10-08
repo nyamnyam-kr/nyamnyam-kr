@@ -61,8 +61,8 @@ public class ImageController{
         return ResponseEntity.ok(service.findAll());
     }
 
-    @PutMapping("/{postId}")
-    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
-        return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
-    }
+//    @PutMapping("/{postId}")
+//    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
+//        return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
+//    }
 }

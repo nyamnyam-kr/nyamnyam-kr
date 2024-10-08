@@ -4,11 +4,9 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
-import kr.nyamnyam.model.domain.RestaurantModel;
 import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.domain.Chart.AreaModel;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +74,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     // 랜덤레스토랑
     @Override
-    public RestaurantEntity randomRestaurant(Long userId) {
+    public RestaurantEntity randomRestaurant(String userId) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
 
@@ -135,7 +133,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
 
     @Override
-    public List<TotalModel> restaurantsByAge(Long userId) {
+    public List<TotalModel> restaurantsByAge(String userId) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QPostEntity post = QPostEntity.postEntity;
         QUsersEntity user = QUsersEntity.usersEntity;

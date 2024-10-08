@@ -2,17 +2,16 @@ package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
-import kr.nyamnyam.service.*;
+import kr.nyamnyam.service.ImageService;
+import kr.nyamnyam.service.PostService;
+import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,17 +30,17 @@ public class PostController {
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.like(postId,userId));
     }
 
     @PostMapping("/{postId}/unlike")
-    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.unlike(postId,userId));
     }
 
     @GetMapping("/{postId}/hasLiked")
-    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam Long userId){
+    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam String userId){
         return ResponseEntity.ok(upvoteService.hasLiked(postId, userId));
     }
 
@@ -87,10 +86,12 @@ public class PostController {
         return ResponseEntity.ok(service.deleteById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Boolean> updatePost(@PathVariable Long id, @RequestBody PostModel model) {
-        return ResponseEntity.ok(service.updatePost(id, model));
-    }
+    /*@PutMapping("")
+    public ResponseEntity<Boolean> updatePost( @RequestPart("postData") PostModel model,
+                                               @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
+                                               @RequestPart(value = "imagesToDelete", required = false) List<Long> imagesToDelete ) {
+        return ResponseEntity.ok(service.updatePost(model, multipartFiles, imagesToDelete));
+    }*/
 
     @PostMapping("")
     public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files)  {
@@ -101,9 +102,18 @@ public class PostController {
         }
         return ResponseEntity.ok(postId);
     }
+    @PutMapping("")
+    public ResponseEntity<Long> updatePost( @RequestPart("postData") PostModel model,
+                                               @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
+                                               @RequestPart(value = "imagesToDelete", required = false) List<Long> imagesToDelete ) {
+        Long postId = service.createPost(model);
+        imageService.updateImages(postId, multipartFiles, imagesToDelete);
+
+        return ResponseEntity.ok(postId);
+    }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<List<?>> userPostList(@PathVariable Long id) {
+    public ResponseEntity<List<?>> userPostList(@PathVariable String id) {
         System.out.println("PostController.userPostList");
         return ResponseEntity.ok(service.findByUserId(id));
     }

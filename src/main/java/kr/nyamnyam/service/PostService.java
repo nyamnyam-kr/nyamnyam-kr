@@ -32,9 +32,9 @@ public interface PostService {
 
     Long createPost(PostModel model);
 
-    Boolean updatePost(Long id, PostModel model);
+    Long updatePost(PostModel model);
 
-    List<UserPostModel> findByUserId(Long userId);
+    List<UserPostModel> findByUserId(String userId);
 
     Long createPostWithImages(PostModel model);
 }

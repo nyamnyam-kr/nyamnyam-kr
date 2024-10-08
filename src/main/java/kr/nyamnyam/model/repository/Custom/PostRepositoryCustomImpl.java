@@ -31,7 +31,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return jpaQueryFactory
                 .select(postEntity, usersEntity.nickname)
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
     }
@@ -44,7 +44,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return jpaQueryFactory
                 .select(postEntity, usersEntity.nickname)
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .where(postEntity.id.eq(postId))
                 .fetchOne();
     }
@@ -58,7 +58,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         JPAQuery<Tuple> query = jpaQueryFactory
                 .select(usersEntity.nickname, postEntity.count())
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .groupBy(usersEntity.nickname)
                 .orderBy(postEntity.count().desc());
 
@@ -100,7 +100,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return jpaQueryFactory.select(usersEntity.nickname)
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .join(usersEntity).on(postEntity.userId.eq(usersEntity.id))
+                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .groupBy(upvoteEntity.postId)
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)
@@ -157,7 +157,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<UserPostModel> findByUserId(Long userId) {
+    public List<UserPostModel> findByUserId(String userId) {
         QPostEntity post = QPostEntity.postEntity;
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
         QUpvoteEntity upvote = QUpvoteEntity.upvoteEntity;
@@ -166,7 +166,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(restaurant.name, post.content, post.modifyDate, post.id,restaurant.id)
                 .from(post)
                 .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
-                .where(post.userId.eq(userId))
+                .where(post.userId.stringValue().eq(userId))
                 .fetch();
 
         List<Tuple> result = jpaQueryFactory
