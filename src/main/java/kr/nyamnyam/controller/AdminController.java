@@ -58,6 +58,11 @@ public class AdminController {
         return ResponseEntity.ok(adminService.receiptRestaurant());
     }
 
+    @GetMapping("/upvoteRestaurant")
+    public ResponseEntity<List<?>> upvoteRestaurant() {
+        return ResponseEntity.ok(adminService.findRestaurantFromUpvote());
+    }
+
 
 
 
