@@ -14,7 +14,7 @@ public interface AdminService {
 
     List<String> findNicknameFromUpvote();
 
-    List<String> findRestaurantFromUpvote();
+    List<TotalModel> findRestaurantFromUpvote();
 
     List<AreaModel> countAreaList();
 
@@ -25,4 +25,5 @@ public interface AdminService {
     RestaurantEntity randomRestaurantByUserId(String userId);
 
     List<CostModel> receiptRestaurant();
+
 }
