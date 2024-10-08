@@ -31,7 +31,7 @@ public interface ImageService {
 
     List<ImageEntity> findByPostId(Long postId);
 
-    Boolean updateImages(Long postId, List<MultipartFile> multipartFiles);
+    Boolean updateImages(Long postId, List<MultipartFile> multipartFiles, List<Long> imagesToDelete);
 
     List<String> findImagesByRestaurantId(Long restaurantId);
 }

@@ -1,10 +1,8 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.ReplyModel;
-import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

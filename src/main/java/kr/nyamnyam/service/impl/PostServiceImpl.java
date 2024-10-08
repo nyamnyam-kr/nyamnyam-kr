@@ -18,7 +18,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,7 +58,9 @@ public class PostServiceImpl implements PostService {
 
         List<ImageEntity> images = postEntity.getImages();
         Tuple postWithNickname = repository.findPostWithNicknameById(postId);
-        PostModel postModel = convertToModel(postEntity);
+        String nickname = postEntity.getNickname() != null ? postEntity.getNickname() : "닉네임 없음";
+
+        PostModel postModel = convertToModelWithNickname(postEntity, nickname);
         postModel.setImages(postEntity.getImages().stream()
                 .map(image -> ImageModel.builder()
                         .id(image.getId())
@@ -138,7 +139,12 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-
+    private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
+        PostModel postModel = convertToModel(postEntity, nickname);
+        //postModel.setNickname(nickname);
+        postModel.setRestaurantId(postEntity.getRestaurant().getId());
+        return postModel;
+    }
 
     @Override
     public PostModel findById(Long id) {
@@ -191,24 +197,22 @@ public class PostServiceImpl implements PostService {
 
         return entity.getId();
     }
-
+    @Transactional
     @Override
-    public Boolean updatePost(Long id, PostModel model) {
-        PostEntity existingEntity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+    public Long updatePost(PostModel model) {
+        PostEntity existingEntity = repository.findById(model.getId())
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + model.getId()));
 
-        PostEntity updatedEntity = existingEntity.toBuilder()
-                .content(model.getContent())
-                .taste(model.getTaste())
-                .clean(model.getClean())
-                .service(model.getService())
-                .modifyDate(LocalDateTime.now())
-                .build();
+        existingEntity.setContent(model.getContent());
+        existingEntity.setTaste(model.getTaste());
+        existingEntity.setClean(model.getClean());
+        existingEntity.setService(model.getService());
+        existingEntity.setModifyDate(LocalDateTime.now());
 
-        repository.save(updatedEntity);
-        updateTags(model.getTags(), updatedEntity);
+        updateTags(model.getTags(), existingEntity);
+        PostEntity updatedEntity = repository.save(existingEntity);
 
-        return true;
+        return updatedEntity.getId();
     }
 
     @Override
@@ -261,9 +265,12 @@ public class PostServiceImpl implements PostService {
             postTagRepository.saveAll(postTags);
         }
     }
+    // convertToModel 오버로딩
+    private PostModel convertToModel(PostEntity entity){
+        return convertToModel(entity, null);
+    }
 
-
-    private PostModel convertToModel(PostEntity entity) {
+    private PostModel convertToModel(PostEntity entity, String nickname) {
         return PostModel.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
@@ -273,7 +280,7 @@ public class PostServiceImpl implements PostService {
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
                 .userId(entity.getUserId())
-                .nickname(entity.getNickname())
+                .nickname(entity.getNickname()) // 닉네임 추가
                 .restaurantId(entity.getRestaurant().getId()) // restaurantId 추가
                 .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()
@@ -301,6 +308,7 @@ public class PostServiceImpl implements PostService {
                 .clean(model.getClean())
                 .service(model.getService())
                 .userId(model.getUserId())
+                .nickname(model.getNickname())
                 .restaurant(restaurant)
                 .build();
     }

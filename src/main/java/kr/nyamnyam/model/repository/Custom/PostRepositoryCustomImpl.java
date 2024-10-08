@@ -7,9 +7,7 @@ import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.entity.PostEntity;
-import kr.nyamnyam.model.entity.QPostEntity;
-import kr.nyamnyam.model.entity.QRestaurantEntity;
-import kr.nyamnyam.model.entity.QUpvoteEntity;
+import kr.nyamnyam.model.entity.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.repository.Custom;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import kr.nyamnyam.model.entity.*;

@@ -20,7 +20,7 @@ public interface RestaurantRepositoryCustom {
 
     RestaurantEntity randomRestaurant(String userId);
 
-   // List<TotalModel> restaurantsByAge(String userId);
+    // List<TotalModel> restaurantsByAge(String userId);
 
 
 
