@@ -19,7 +19,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*") // 모든 출처 허용
 @RequestMapping("/api/chats")
 public class ChatController {
 
@@ -52,10 +51,14 @@ public class ChatController {
 
     //얘는 보낸 메세지를 바로 채널에다가  뿌려주는 친구
     @GetMapping(value = "/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId) {
+    public Flux<Chat> getMessageByChannel(
+            @PathVariable String chatRoomId,
+            @RequestParam String token) {
+        // token을 사용하여 필요한 로직 처리
+        // 예: token을 검증하거나, 사용자 정보를 가져오는 등
+
         return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
-
 
 
     // 채팅방 별 읽지 않은 메시지 수
