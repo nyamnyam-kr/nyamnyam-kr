@@ -36,7 +36,7 @@ public class ReceiptController {
     private String secretKey;
 
     @GetMapping("/wallet/{id}")
-    public ResponseEntity<List<?>> myWallet(@PathVariable Long id) {
+    public ResponseEntity<List<?>> myWallet(@PathVariable String id) {
         return ResponseEntity.ok(receiptService.findByUserId(id));
     }
 
@@ -46,13 +46,13 @@ public class ReceiptController {
     }
 
     @GetMapping("/wallet/cost/{id}")
-    public ResponseEntity<List<CostModel>> costList(@PathVariable Long id) {
+    public ResponseEntity<List<CostModel>> costList(@PathVariable String id) {
         return ResponseEntity.ok(receiptService.costModelList(id));
     }
 
 
-    @PostMapping("/insert")
-    public ResponseEntity<?> insertReceipt(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping("/insert/{id}")
+    public ResponseEntity<?> insertReceipt(@RequestParam("file") MultipartFile file, @PathVariable String id) throws IOException {
         ImageModel imageModel = imageService.insertReceipt(file);
         String storedFileName = imageModel.getStoredFileName();
 
@@ -112,6 +112,7 @@ public class ReceiptController {
                 .price(price)
                 .date(date)
                 .entryDate(LocalDateTime.now())
+                .userId(id)
                 .build();
 
 

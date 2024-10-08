@@ -6,10 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
-import kr.nyamnyam.model.entity.QPostEntity;
-import kr.nyamnyam.model.entity.QRestaurantEntity;
-import kr.nyamnyam.model.entity.QUpvoteEntity;
-import kr.nyamnyam.model.entity.QUsersEntity;
+import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.model.entity.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,11 +21,11 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     // 레스토랑ID 기반으로 여러 개의 post에 nickname 불러오기
     @Override
-    public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
+    public List<PostEntity> findAllByRestaurantWithNickname(Long restaurantId) {
         QPostEntity postEntity = QPostEntity.postEntity;
 
         return jpaQueryFactory
-                .select(postEntity, postEntity.nickname)
+                .select(postEntity)
                 .from(postEntity)
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
@@ -36,12 +34,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public Tuple findPostWithNicknameById(Long postId){
         QPostEntity postEntity = QPostEntity.postEntity;
-        QUsersEntity usersEntity = QUsersEntity.usersEntity;
 
         return jpaQueryFactory
-                .select(postEntity, usersEntity.nickname)
+                .select(postEntity, postEntity.nickname)
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .where(postEntity.id.eq(postId))
                 .fetchOne();
     }
@@ -50,13 +46,11 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<CountModel> findNicknamesWithCounts() {
         QPostEntity postEntity = QPostEntity.postEntity;
-        QUsersEntity usersEntity = QUsersEntity.usersEntity;
 
         JPAQuery<Tuple> query = jpaQueryFactory
-                .select(usersEntity.nickname, postEntity.count())
+                .select(postEntity.nickname, postEntity.count())
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
-                .groupBy(usersEntity.nickname)
+                .groupBy(postEntity.nickname)
                 .orderBy(postEntity.count().desc());
 
         List<Tuple> result = query.fetch();
@@ -64,56 +58,26 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
         return result.stream()
                 .map(tuple -> new CountModel(
-                        tuple.get(usersEntity.nickname),
+                        tuple.get(postEntity.nickname),
                         tuple.get(postEntity.count())))
                 .collect(Collectors.toList());
     }
 
-
-    // 가장 많은 추천을 받은 postlist
-    @Override
-    public List<String> postUpvote() {
-
-        QPostEntity postEntity = QPostEntity.postEntity;
-        QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
-
-        return jpaQueryFactory.select(postEntity.content)
-                .from(upvoteEntity)
-                .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .groupBy(upvoteEntity.postId)
-                .orderBy(upvoteEntity.postId.asc())
-                .limit(5)
-                .fetch();
-    }
-
-    // 가장 많은 추천을 받은 post의 nickname list
     @Override
     public List<String> findNicknameFromUpvote() {
-
-        QPostEntity postEntity = QPostEntity.postEntity;
-        QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
-        QUsersEntity usersEntity = QUsersEntity.usersEntity;
-
-        return jpaQueryFactory.select(usersEntity.nickname)
-                .from(upvoteEntity)
-                .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
-                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
-                .groupBy(upvoteEntity.postId)
-                .orderBy(upvoteEntity.postId.asc())
-                .limit(5)
-                .fetch();
+        return List.of();
     }
 
 
     // 가장 많은 추천을 받은 음식점 list
     @Override
-    public List<String> findRestaurantFromUpvote() {
+    public List<TotalModel> findRestaurantFromUpvote() {
 
         QPostEntity postEntity = QPostEntity.postEntity;
         QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
         QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
 
-        return jpaQueryFactory.select(restaurantEntity.name)
+        List<Tuple> results =  jpaQueryFactory.select(restaurantEntity.name,upvoteEntity.postId.count() )
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
                 .join(restaurantEntity).on(restaurantEntity.id.eq(postEntity.id))
@@ -121,6 +85,17 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)
                 .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurantEntity.name));
+                    totalModel.setTotal(tuple.get(upvoteEntity.postId.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+
+
 
     }
 
@@ -163,7 +138,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(restaurant.name, post.content, post.modifyDate, post.id,restaurant.id)
                 .from(post)
                 .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
-                .where(post.userId.stringValue().eq(userId))
+                .where(post.userId.eq(userId))
                 .fetch();
 
         List<Tuple> result = jpaQueryFactory

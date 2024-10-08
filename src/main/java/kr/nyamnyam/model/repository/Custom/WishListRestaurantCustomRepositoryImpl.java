@@ -15,7 +15,7 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<RestaurantEntity> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId) {
+    public List<RestaurantEntity> findRestaurantsByUserIdAndWishListId(String userId, Long wishListId) {
         QWishListRestaurantEntity qWishListRestaurantEntity = QWishListRestaurantEntity.wishListRestaurantEntity;
         QRestaurantEntity qRestaurantEntity = QRestaurantEntity.restaurantEntity;
 
@@ -29,7 +29,7 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
 
     @Transactional
     @Override
-    public boolean deleteRestaurantFromWishList(Long userId, Long restaurantId) {
+    public boolean deleteRestaurantFromWishList(String userId, Long restaurantId) {
         QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
 
         long deletedCount = jpaQueryFactory.delete(wishListRestaurant)
@@ -41,7 +41,7 @@ public class WishListRestaurantCustomRepositoryImpl implements WishListRestauran
     }
 
     @Override
-    public List<Long> getDistinctRestaurantIdsByUserId(Long userId) {
+    public List<Long> getDistinctRestaurantIdsByUserId(String userId) {
         QWishListRestaurantEntity wishListRestaurant = QWishListRestaurantEntity.wishListRestaurantEntity;
 
         return jpaQueryFactory

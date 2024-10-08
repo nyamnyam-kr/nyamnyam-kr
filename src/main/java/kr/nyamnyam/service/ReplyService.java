@@ -26,4 +26,3 @@ public interface ReplyService {
 
     ReplyEntity convertToEntity(ReplyModel model);
 }
-

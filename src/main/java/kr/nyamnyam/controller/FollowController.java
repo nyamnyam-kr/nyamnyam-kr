@@ -13,14 +13,12 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/{followerId}/{followingId}")
-    public ResponseEntity<String> follow(@PathVariable Long followerId, @PathVariable Long followingId) {
-        followService.follow(followerId, followingId);
-        return ResponseEntity.ok("팔로우 성공");
+    public ResponseEntity<?> follow(@PathVariable Long followerId, @PathVariable Long followingId) {
+        return ResponseEntity.ok(followService.follow(followerId, followingId));
     }
 
     @DeleteMapping("/{followerId}/{followingId}")
-    public ResponseEntity<String> unfollow(@PathVariable Long followerId, @PathVariable Long followingId) {
-        followService.unfollow(followerId, followingId);
-        return ResponseEntity.ok("언팔로우 성공");
+    public ResponseEntity<?> unfollow(@PathVariable Long followerId, @PathVariable Long followingId) {
+        return ResponseEntity.ok(followService.unfollow(followerId, followingId));
     }
 }

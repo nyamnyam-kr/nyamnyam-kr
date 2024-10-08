@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
 
         List<ImageEntity> images = postEntity.getImages();
         Tuple postWithNickname = repository.findPostWithNicknameById(postId);
-        String nickname = postWithNickname != null ? postWithNickname.get(QUsersEntity.usersEntity.nickname) : "닉네임 없음";
+        String nickname = postEntity.getNickname() != null ? postEntity.getNickname() : "닉네임 없음";
 
         PostModel postModel = convertToModelWithNickname(postEntity, nickname);
         postModel.setImages(postEntity.getImages().stream()
@@ -133,11 +133,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostModel> findAllByRestaurant(Long restaurantId) {
-        List<Tuple> posts = repository.findAllByRestaurantWithNickname(restaurantId);
-
-        return posts.stream()
-                .map(tuple -> convertToModelWithNickname(tuple.get(QPostEntity.postEntity),
-                        tuple.get(QUsersEntity.usersEntity.nickname)))
+        List<PostEntity> allByRestaurantWithNickname = repository.findAllByRestaurantWithNickname(restaurantId);
+        return allByRestaurantWithNickname.stream()
+                .map(this::convertToModel)
                 .collect(Collectors.toList());
     }
 

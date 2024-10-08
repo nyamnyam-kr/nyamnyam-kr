@@ -14,10 +14,10 @@ public class WishListModel {
     private Long id;
 
     private String name;
-    private Long userId;
+    private String userId;
 
     @Builder
-    public WishListModel(Long id, String name, Long userId) {
+    public WishListModel(Long id, String name, String userId) {
         this.id = id;
         this.name = name;
         this.userId = userId;

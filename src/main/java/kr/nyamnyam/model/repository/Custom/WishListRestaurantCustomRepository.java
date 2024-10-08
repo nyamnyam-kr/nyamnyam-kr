@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface WishListRestaurantCustomRepository {
 
-    List<RestaurantEntity> findRestaurantsByUserIdAndWishListId(Long userId, Long wishListId);
+    List<RestaurantEntity> findRestaurantsByUserIdAndWishListId(String userId, Long wishListId);
 
 
     @Transactional
-    boolean deleteRestaurantFromWishList(Long userId, Long restaurantId);
+    boolean deleteRestaurantFromWishList(String userId, Long restaurantId);
 
-    List<Long> getDistinctRestaurantIdsByUserId(Long userId);
+    List<Long> getDistinctRestaurantIdsByUserId(String userId);
 }

@@ -1,7 +1,7 @@
 package kr.nyamnyam.model.repository.Custom;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityNotFoundException;
 import kr.nyamnyam.model.entity.*;
 import kr.nyamnyam.model.repository.UpvoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,28 +14,23 @@ public class UpvoteRepositoryCustomImpl implements UpvoteRepositoryCustom {
 
 
     @Override
-    public UpvoteEntity save(Long postId, String giveId) {
+    public UpvoteEntity save(Long postId, String giveId, String haveId) {
         QPostEntity postEntity = QPostEntity.postEntity;
-        QUsersEntity userEntity = QUsersEntity.usersEntity;
 
-        Tuple result = jpaQueryFactory
-                .select(postEntity, userEntity)
+        PostEntity post = jpaQueryFactory
+                .select(postEntity)
                 .from(postEntity)
-                .join(userEntity).on(userEntity.id.eq(postEntity.userId))
                 .where(postEntity.id.eq(postId))
                 .fetchOne();
 
-        if (result == null) {
-            throw new IllegalArgumentException("특정 포스트나 사용자가 없습니다");
+        if (post == null) {
+            throw new EntityNotFoundException("Post not found for ID: " + postId);
         }
-
-        PostEntity post = result.get(postEntity);
 
         UpvoteEntity newUpvote = new UpvoteEntity();
         newUpvote.setPostId(post.getId());
         newUpvote.setGiveId(giveId);
-        newUpvote.setHaveId(post.getUserId());
-
+        newUpvote.setHaveId(haveId);
 
         return upvoteRepository.save(newUpvote);
     }

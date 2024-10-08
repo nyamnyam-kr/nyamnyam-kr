@@ -12,19 +12,18 @@ public interface AdminService {
 
     List<CountModel> countUserList();
 
-    List<String> postUpvote();
-
     List<String> findNicknameFromUpvote();
 
-    List<String> findRestaurantFromUpvote();
+    List<TotalModel> findRestaurantFromUpvote();
 
     List<AreaModel> countAreaList();
 
     List<TotalModel> countPostList();
 
-    List<TotalModel> recommendByAge(String userId);
+   // List<TotalModel> recommendByAge(String userId);
 
     RestaurantEntity randomRestaurantByUserId(String userId);
 
     List<CostModel> receiptRestaurant();
+
 }

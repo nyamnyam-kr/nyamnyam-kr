@@ -1,11 +1,11 @@
 package kr.nyamnyam.controller;
 
+
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 @CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/images")
-public class ImageController{
+public class ImageController {
     private final ImageService service;
 
     @GetMapping("/fileName")
@@ -26,12 +26,12 @@ public class ImageController{
         return ResponseEntity.ok(service.findByPostId(postId));
     }
     @GetMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<List<String>> findImageByRestaurantId(@PathVariable Long restaurantId){
+    public ResponseEntity<List<String>> findImageByRestaurantId(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(service.findImagesByRestaurantId(restaurantId));
     }
 
     @GetMapping("/post/{postId}/imageIds")
-    public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId){
+    public ResponseEntity<List<Long>> findImageIdsByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.findImageIdsByPostId(postId));
     }
 

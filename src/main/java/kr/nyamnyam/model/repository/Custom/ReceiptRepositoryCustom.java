@@ -9,7 +9,7 @@ public interface ReceiptRepositoryCustom {
 
     Long findRestaurantId(String name);
 
-    List<CostModel> costList(Long userId);
+    List<CostModel> costList(String userId);
 
     List<CostModel> receiptCount();
 

@@ -25,7 +25,7 @@ public class ReceiptEntity {
 
     private String menu;
 
-    private Long userId;
+    private String userId;
 
 
     private String date;

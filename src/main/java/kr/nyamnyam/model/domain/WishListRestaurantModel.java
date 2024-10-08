@@ -15,10 +15,10 @@ public class WishListRestaurantModel {
 
     private Long wishListId;
     private Long restaurantId;
-    private Long userId;
+    private String userId;
 
     @Builder
-    public WishListRestaurantModel(Long id,Long wishListId, Long restaurantId, Long userId) {
+    public WishListRestaurantModel(Long id,Long wishListId, Long restaurantId, String userId) {
         this.id = id;
         this.wishListId = wishListId;
         this.restaurantId = restaurantId;

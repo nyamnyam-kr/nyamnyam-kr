@@ -15,7 +15,7 @@ public class WishListCustomRepositoryImpl implements WishListCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<WishListEntity> getWishLists(Long userId) {
+    public List<WishListEntity> getWishLists(String userId) {
         QWishListEntity qWishListEntity = QWishListEntity.wishListEntity;
 
         return jpaQueryFactory.selectFrom(qWishListEntity)
@@ -24,7 +24,7 @@ public class WishListCustomRepositoryImpl implements WishListCustomRepository {
                 .fetch();
     }
 
-    public boolean deleteWishList(Long userId, Long id) {
+    public boolean deleteWishList(String userId, Long id) {
         QWishListEntity wishList = QWishListEntity.wishListEntity;
         QWishListRestaurantEntity wishListRestaurants = QWishListRestaurantEntity.wishListRestaurantEntity;
 

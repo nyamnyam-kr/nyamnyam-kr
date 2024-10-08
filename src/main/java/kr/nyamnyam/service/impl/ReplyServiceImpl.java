@@ -9,7 +9,6 @@ import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +24,8 @@ public class ReplyServiceImpl implements ReplyService {
         List<Tuple> results = repository.findAllByPostWithNickname(postId);
 
         results.forEach(tuple -> {
-         ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
-         String nickname = tuple.get(QReplyEntity.replyEntity.nickname);
+            ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
+            String nickname = tuple.get(QReplyEntity.replyEntity.nickname);
         });
 
         return results.stream()
