@@ -310,6 +310,7 @@ public class PostServiceImpl implements PostService {
                 .clean(model.getClean())
                 .service(model.getService())
                 .userId(model.getUserId())
+                .nickname(model.getNickname())
                 .restaurant(restaurant)
                 .build();
     }
