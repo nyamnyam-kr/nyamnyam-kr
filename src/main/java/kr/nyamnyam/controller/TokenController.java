@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/token")
 @RequiredArgsConstructor
@@ -23,7 +25,8 @@ public class TokenController {
     }
 
     @PostMapping("/logout")
-    public Mono<Void> logout(@RequestParam String token) {
+    public Mono<Void> logout(@RequestBody Map<String, String> request) {
+        String token = request.get("token"); // POST 바디에서 토큰 추출
         return tokenService.logout(token);
     }
 

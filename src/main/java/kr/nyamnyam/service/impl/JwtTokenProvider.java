@@ -21,43 +21,48 @@ public class JwtTokenProvider {
     @Value("${jwt.validity.in.milliseconds}")
     private long validityInMilliseconds;
 
-    private SecretKey generateKey() {
+    public SecretKey generateKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public Mono<String> createToken(User user) {
         return Mono.fromCallable(() -> {
-            try {
-                Claims claims = Jwts.claims().setSubject(user.getId());
-                claims.put("role", user.getRole());
-                claims.put("nickname", user.getNickname());
-                claims.put("username", user.getUsername());
+            Claims claims = Jwts.claims().setSubject(user.getId());
+            claims.put("role", user.getRole());
+            claims.put("nickname", user.getNickname());
+            claims.put("username", user.getUsername());
 
-                Date now = new Date();
-                Date validity = new Date(now.getTime() + validityInMilliseconds);
+            Date now = new Date();
+            Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-                SecretKey key = generateKey();
+            SecretKey key = generateKey();
 
-                return Jwts.builder()
-                        .setClaims(claims)
-                        .setIssuedAt(now)
-                        .setExpiration(validity)
-                        .signWith(key)
-                        .compact();
-            } catch (Exception e) {
-                throw new RuntimeException("Error generating JWT key", e);
-            }
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(validity)
+                    .signWith(key)
+                    .compact();
         });
     }
 
-
+    // JWT 서명 및 구조 검증 메서드 (실제 검증)
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(generateKey()).parseClaimsJws(token);
+            return true; // 서명 및 구조 검증 성공 시 true 반환
+        } catch (Exception e) {
+            System.err.println("Token validation failed: " + e.getMessage());
+            return false; // 검증 실패 시 false 반환
+        }
+    }
 
     public String getUsername(String token) {
-        return Jwts.parser()
+        Claims claims = Jwts.parser()
                 .setSigningKey(generateKey())
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+        return claims.getSubject();
     }
 
     public String getRole(String token) {
@@ -68,7 +73,6 @@ public class JwtTokenProvider {
                 .get("role");
     }
 
-
     public String getUserId(String token) {
         return (String) Jwts.parser()
                 .setSigningKey(generateKey())
@@ -76,16 +80,4 @@ public class JwtTokenProvider {
                 .getBody()
                 .get("userId");
     }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .setSigningKey(generateKey())
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
 }

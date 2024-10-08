@@ -1,8 +1,9 @@
 package kr.nyamnyam.config;
 
-import kr.nyamnyam.service.impl.JwtTokenProvider;
+import kr.nyamnyam.service.impl.TokenServiceImpl;
 import kr.nyamnyam.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -15,42 +16,48 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter {
 
-    private final JwtTokenProvider  jwtTokenProvider;
+    private final TokenServiceImpl tokenService;  // TokenService로 변경
     private final UserService userService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String requestPath = exchange.getRequest().getPath().value();
-
-        // join 경로와 login 경로에서는 인증을 skip
-        if (requestPath.equals("/api/user/join") || requestPath.equals("/api/user/login")) {
+        // OPTIONS 요청일 경우 바로 다음 필터로 넘기기
+        if (exchange.getRequest().getMethod().equals(HttpMethod.OPTIONS)) {
             return chain.filter(exchange);
         }
 
-        String token = resolveToken(exchange.getRequest());
+        String requestPath = exchange.getRequest().getPath().value();
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsername(token);
-            return userService.findByUsername(username)
-                    .flatMap(user -> {
-                        exchange.getAttributes().put("userDetails", user);
-                        return chain.filter(exchange);
-                    })
-                    .switchIfEmpty(Mono.defer(() -> {
+        // 회원 가입 및 로그인 경로는 인증 없이 처리
+        return ("/api/user/join".equals(requestPath) || "/api/user/login".equals(requestPath))
+                ? chain.filter(exchange)
+                : Mono.justOrEmpty(resolveToken(exchange.getRequest()))
+                .flatMap(tokenService::validateToken)  // 변경된 validateToken 메서드 사용
+                .flatMap(isValid -> {
+                    if (!isValid) {
                         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                         return Mono.empty();
-                    }));
-        } else {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return Mono.empty();
-        }
+                    }
+
+                    String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest())); // 토큰에서 사용자 ID 가져오기
+                    System.out.println("Extracted Username: " + username);
+
+                    return userService.findById(username) // username은 실제로 ID이므로 findById 사용
+                            .flatMap(user -> {
+                                if (user == null) {
+                                    System.out.println("User not found for ID: " + username);
+                                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                                    return Mono.empty();
+                                }
+                                System.out.println("User found: " + user.getUsername());
+                                exchange.getAttributes().put("userDetails", user);
+                                return chain.filter(exchange);
+                            });
+                });
     }
 
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
 }

@@ -1,5 +1,7 @@
 package kr.nyamnyam.service.impl;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import kr.nyamnyam.model.domain.Token;
 import kr.nyamnyam.model.repository.TokenRepository;
 import kr.nyamnyam.model.repository.UserRepository;
@@ -20,14 +22,13 @@ public class TokenServiceImpl implements TokenService {
     private final UserRepository userRepository;
 
     @Value("${jwt.validity.in.milliseconds}")
-    private long validityInMilliseconds; // 유효 기간 주입
+    private long validityInMilliseconds;
 
     @Override
     public Mono<String> createAndSaveToken(String userId) {
         return userRepository.findById(userId)
                 .flatMap(user -> {
-                    // 사용자 정보를 가져와서 토큰 생성
-                    return jwtTokenProvider.createToken(user) // User 객체 전체를 사용
+                    return jwtTokenProvider.createToken(user)
                             .flatMap(token -> {
                                 Token tokenEntity = Token.builder()
                                         .userId(userId)
@@ -35,7 +36,7 @@ public class TokenServiceImpl implements TokenService {
                                         .expirationDate(new Date(System.currentTimeMillis() + validityInMilliseconds))
                                         .isValid(true)
                                         .build();
-                                return tokenRepository.save(tokenEntity).then(Mono.just(token)); // 토큰 저장 후, 저장된 토큰 반환
+                                return tokenRepository.save(tokenEntity).then(Mono.just(token));
                             });
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
@@ -46,7 +47,6 @@ public class TokenServiceImpl implements TokenService {
     public Mono<Boolean> validateToken(String token) {
         return tokenRepository.findByToken(token)
                 .map(storedToken -> {
-                    // 추가적인 유효성 검사 (예: 만료 여부)
                     return storedToken.getIsValid() && !storedToken.getExpirationDate().before(new Date());
                 })
                 .defaultIfEmpty(false);
@@ -56,10 +56,10 @@ public class TokenServiceImpl implements TokenService {
     public Mono<Void> logout(String token) {
         return tokenRepository.findByToken(token)
                 .flatMap(storedToken -> {
-                    storedToken.setIsValid(false); // 무효화 처리
+                    storedToken.setIsValid(false);
                     return tokenRepository.save(storedToken);
                 })
-                .then(); // Mono<Void> 반환
+                .then();
     }
 
     @Override
@@ -67,11 +67,10 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.findByToken(oldToken)
                 .flatMap(storedToken -> {
                     if (storedToken.getIsValid() && !storedToken.getExpirationDate().before(new Date())) {
-                        // 사용자 정보를 UserRepository에서 조회
                         return userRepository.findById(storedToken.getUserId())
-                                .flatMap(user -> jwtTokenProvider.createToken(user) // User 객체 전달
+                                .flatMap(user -> jwtTokenProvider.createToken(user)
                                         .flatMap(newToken -> {
-                                            storedToken.setIsValid(false); // 기존 토큰 무효화
+                                            storedToken.setIsValid(false);
                                             return tokenRepository.save(storedToken)
                                                     .then(tokenRepository.save(Token.builder()
                                                             .userId(storedToken.getUserId())
@@ -79,12 +78,21 @@ public class TokenServiceImpl implements TokenService {
                                                             .expirationDate(new Date(System.currentTimeMillis() + validityInMilliseconds))
                                                             .isValid(true)
                                                             .build()))
-                                                    .then(Mono.just(newToken)); // 새 토큰 반환
+                                                    .then(Mono.just(newToken));
                                         }));
                     } else {
                         return Mono.error(new RuntimeException("Invalid token for refresh"));
                     }
                 });
+    }
+
+    // 토큰에서 사용자 ID(username)를 추출하는 메서드
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtTokenProvider.generateKey())  // 서명 키를 사용해 JWT 파싱
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject(); // JWT의 'sub' 필드에서 사용자 ID 추출
     }
 
 }
