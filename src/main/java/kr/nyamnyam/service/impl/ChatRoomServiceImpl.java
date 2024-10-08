@@ -24,7 +24,7 @@ import java.util.*;
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatServiceImpl chatService;
+
 
     @Override
     public Mono<ChatRoom> save(ChatRoom chatRoom) {
