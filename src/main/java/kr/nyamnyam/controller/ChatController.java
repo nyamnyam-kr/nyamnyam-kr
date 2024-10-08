@@ -8,11 +8,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -77,6 +80,24 @@ public class ChatController {
         return chatService.updateReadBy(chatId, nickname)
                 .map(updatedChat -> ResponseEntity.ok(updatedChat))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    // 파일 업로드 엔드포인트
+    @PostMapping("/uploads")
+    public Mono<Map<String, Object>> uploadFile(@RequestParam("upload") MultipartFile file) {
+        return chatService.uploadFile(file)
+                .map(url -> {
+                    Map<String, Object> resultMap = new HashMap<>();
+                    resultMap.put("uploaded", true);
+                    resultMap.put("url", url);
+                    return resultMap;
+                })
+                .onErrorResume(e -> {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("uploaded", false);
+                    errorResponse.put("error", e.getMessage());
+                    return Mono.just(errorResponse);
+                });
     }
 
 

@@ -3,12 +3,15 @@ package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.Chat;
 import kr.nyamnyam.model.domain.ChatRoom;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 public interface ChatService {
+    Mono<String> uploadFile(MultipartFile file);
+
     Flux<Chat> mFindBySender(String sender, String chatRoomId);
 
     Flux<Chat> mFindByChatRoomId(String chatRoomId);
