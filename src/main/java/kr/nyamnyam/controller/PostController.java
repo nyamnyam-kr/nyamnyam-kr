@@ -1,5 +1,7 @@
 package kr.nyamnyam.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.service.ImageService;
@@ -7,6 +9,7 @@ import kr.nyamnyam.service.PostService;
 import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,29 +27,29 @@ public class PostController {
     private final ImageService imageService;
 
     @GetMapping("/{restaurantId}/allAverage")
-    public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId){
+    public ResponseEntity<Double> getAllAverageRating(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(service.allAverageRating(restaurantId));
     }
 
     // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam String userId){
-        return ResponseEntity.ok(upvoteService.like(postId,userId));
+    public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam String userId) {
+        return ResponseEntity.ok(upvoteService.like(postId, userId));
     }
 
     @PostMapping("/{postId}/unlike")
-    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam String userId){
-        return ResponseEntity.ok(upvoteService.unlike(postId,userId));
+    public ResponseEntity<Boolean> unlike(@PathVariable Long postId, @RequestParam String userId) {
+        return ResponseEntity.ok(upvoteService.unlike(postId, userId));
     }
 
     @GetMapping("/{postId}/hasLiked")
-    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam String userId){
+    public ResponseEntity<Boolean> hasLiked(@PathVariable Long postId, @RequestParam String userId) {
         return ResponseEntity.ok(upvoteService.hasLiked(postId, userId));
     }
 
     @GetMapping("/{postId}/like-count")
-    public ResponseEntity<Integer> getLikeCount(@PathVariable Long postId){
-        return ResponseEntity.ok( upvoteService.getLikeCount(postId));
+    public ResponseEntity<Integer> getLikeCount(@PathVariable Long postId) {
+        return ResponseEntity.ok(upvoteService.getLikeCount(postId));
     }
 
     @GetMapping("/crawling")
@@ -94,22 +97,32 @@ public class PostController {
     }*/
 
     @PostMapping("")
-    public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files)  {
+    public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         Long postId = service.createPostWithImages(model);
-        if(files != null && !files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
             PostEntity postEntity = service.findEntityById(postId);
             imageService.uploadFiles(files, postEntity);
         }
         return ResponseEntity.ok(postId);
     }
-    @PutMapping("")
-    public ResponseEntity<Long> updatePost( @RequestPart("postData") PostModel model,
-                                               @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
-                                               @RequestPart(value = "imagesToDelete", required = false) List<Long> imagesToDelete ) {
-        Long postId = service.createPost(model);
-        imageService.updateImages(postId, multipartFiles, imagesToDelete);
 
+    @PutMapping("")
+    public ResponseEntity<Long> updatePost(@RequestPart("postData") String postData,
+                                           @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
+                                           @RequestPart(value = "imagesToDelete", required = false) List<Long> imagesToDelete) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        PostModel postModel;
+        try {
+            postModel = objectMapper.readValue(postData, PostModel.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Long postId = service.updatePost(postModel);
+        imageService.updateImages(postId, multipartFiles, imagesToDelete);
         return ResponseEntity.ok(postId);
+
     }
 
     @GetMapping("/list/{id}")
