@@ -282,7 +282,7 @@ public class PostServiceImpl implements PostService {
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
                 .userId(entity.getUserId())
-                .nickname(nickname) // 닉네임 추가
+                .nickname(entity.getNickname()) // 닉네임 추가
                 .restaurantId(entity.getRestaurant().getId()) // restaurantId 추가
                 .averageRating((entity.getTaste() + entity.getClean() + entity.getService()) / 3.0)
                 .tags(postTagRepository.findByPostId(entity.getId()).stream()

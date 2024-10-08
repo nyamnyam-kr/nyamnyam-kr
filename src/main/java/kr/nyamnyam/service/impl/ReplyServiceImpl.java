@@ -116,6 +116,7 @@ public class ReplyServiceImpl implements ReplyService {
                 .content(entity.getContent())
                 .postId(entity.getPostId())
                 .userId(entity.getUserId())
+                .nickname(entity.getNickname())
                 .entryDate(entity.getEntryDate())
                 .modifyDate(entity.getModifyDate())
                 .build();
@@ -126,6 +127,7 @@ public class ReplyServiceImpl implements ReplyService {
                 .content(model.getContent())
                 .postId(model.getPostId())
                 .userId(model.getUserId())
+                .nickname(model.getNickname())
                 .entryDate(model.getEntryDate())
                 .modifyDate(model.getModifyDate())
                 .build();

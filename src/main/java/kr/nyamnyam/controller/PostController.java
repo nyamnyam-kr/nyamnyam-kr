@@ -9,7 +9,6 @@ import kr.nyamnyam.service.PostService;
 import kr.nyamnyam.service.UpvoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,7 +63,6 @@ public class PostController {
 
     @GetMapping("/{restaurantId}/group")
     public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
-        log.info("restaurantId: {}", restaurantId);
         return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
     }
 
@@ -88,13 +86,6 @@ public class PostController {
     public ResponseEntity<Boolean> deletePostById(@PathVariable Long id) {
         return ResponseEntity.ok(service.deleteById(id));
     }
-
-    /*@PutMapping("")
-    public ResponseEntity<Boolean> updatePost( @RequestPart("postData") PostModel model,
-                                               @RequestPart(value = "files", required = false) List<MultipartFile> multipartFiles,
-                                               @RequestPart(value = "imagesToDelete", required = false) List<Long> imagesToDelete ) {
-        return ResponseEntity.ok(service.updatePost(model, multipartFiles, imagesToDelete));
-    }*/
 
     @PostMapping("")
     public ResponseEntity<Long> createPostWithImg(@RequestPart("model") PostModel model, @RequestPart(value = "files", required = false) List<MultipartFile> files) {

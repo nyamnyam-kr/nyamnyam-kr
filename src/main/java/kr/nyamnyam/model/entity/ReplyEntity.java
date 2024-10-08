@@ -22,6 +22,7 @@ public class ReplyEntity {
     //private Long upvoteId;
     @Column(name = "user_id")
     private Long userId;
+    private String nickname;
 
     @Column(name = "post_id")
     private Long postId;

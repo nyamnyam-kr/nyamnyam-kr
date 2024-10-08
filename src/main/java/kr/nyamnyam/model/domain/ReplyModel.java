@@ -27,11 +27,5 @@ public class ReplyModel {
     private Long userId;
     private String nickname;
 
-    // 릴리즈 0.01에서 넘어온 부분
-//    private Long upvoteId;
-//    private Long userId;
-//    private Long taste;
-//    private Long clean;
-//    private Long service;
 }
 

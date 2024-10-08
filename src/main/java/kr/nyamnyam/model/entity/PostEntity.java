@@ -30,6 +30,7 @@ public class PostEntity {
     private LocalDateTime modifyDate;
 
     private String userId;
+    private String nickname;
 
     @PrePersist
     protected void onCreate() {

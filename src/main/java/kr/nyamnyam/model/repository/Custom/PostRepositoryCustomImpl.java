@@ -26,12 +26,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
         QPostEntity postEntity = QPostEntity.postEntity;
-        QUsersEntity usersEntity = QUsersEntity.usersEntity;
 
         return jpaQueryFactory
-                .select(postEntity, usersEntity.nickname)
+                .select(postEntity, postEntity.nickname)
                 .from(postEntity)
-                .join(usersEntity).on(postEntity.userId.stringValue().eq(usersEntity.id))
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
     }
