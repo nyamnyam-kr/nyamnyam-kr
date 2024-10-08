@@ -21,7 +21,7 @@ public class ReplyEntity {
     private String content;
     //private Long upvoteId;
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
     private String nickname;
 
     @Column(name = "post_id")

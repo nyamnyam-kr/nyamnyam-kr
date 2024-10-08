@@ -15,6 +15,7 @@ public class ReplyRepositoryCustomImpl implements ReplyRepositoryCustom{
     @Override
     public List<Tuple> findAllByPostWithNickname(Long postId) {
         QReplyEntity replyEntity = QReplyEntity.replyEntity;
+
         List<Tuple> result = jpaQueryFactory
                 .select(replyEntity, replyEntity.nickname)
                 .from(replyEntity)

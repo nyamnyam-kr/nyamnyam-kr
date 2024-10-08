@@ -3,12 +3,10 @@ package kr.nyamnyam.service.impl;
 import com.querydsl.core.Tuple;
 import kr.nyamnyam.model.domain.ReplyModel;
 import kr.nyamnyam.model.entity.QReplyEntity;
-import kr.nyamnyam.model.entity.QUsersEntity;
 import kr.nyamnyam.model.entity.ReplyEntity;
 import kr.nyamnyam.model.repository.ReplyRepository;
 import kr.nyamnyam.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.openqa.selenium.devtools.Reply;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +26,13 @@ public class ReplyServiceImpl implements ReplyService {
 
         results.forEach(tuple -> {
          ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
-         String nickname = tuple.get(QUsersEntity.usersEntity.nickname);
+         String nickname = tuple.get(QReplyEntity.replyEntity.nickname);
         });
 
         return results.stream()
                 .map(tuple -> {
                     ReplyEntity replyEntity = tuple.get(QReplyEntity.replyEntity);
-                    String nickname = tuple.get(QUsersEntity.usersEntity.nickname);
+                    String nickname = tuple.get(QReplyEntity.replyEntity.nickname);
                     return convertToModelWithNickname(replyEntity, nickname);
                 })
                 .collect(Collectors.toList());
@@ -85,7 +83,7 @@ public class ReplyServiceImpl implements ReplyService {
         ReplyEntity updatedEntity = repository.save(existingEntity);
         Tuple replyWithNickname = repository.findByIdWithNickname(updatedEntity.getId());
         ReplyEntity updatedReplyEntity = replyWithNickname.get(QReplyEntity.replyEntity);
-        String nickname = replyWithNickname.get(QUsersEntity.usersEntity.nickname);
+        String nickname = replyWithNickname.get(QReplyEntity.replyEntity.nickname);
 
         return convertToModelWithNickname(updatedReplyEntity, nickname);
     }
@@ -98,7 +96,7 @@ public class ReplyServiceImpl implements ReplyService {
         ReplyEntity savedEntity = repository.save(entity);
         Tuple replyWithNickname = repository.findByIdWithNickname(savedEntity.getId());
         ReplyEntity savedReplyEntity = replyWithNickname.get(QReplyEntity.replyEntity);
-        String nickname = replyWithNickname.get(QUsersEntity.usersEntity.nickname);
+        String nickname = replyWithNickname.get(QReplyEntity.replyEntity.nickname);
 
         return convertToModelWithNickname(savedReplyEntity, nickname);
     }
