@@ -16,6 +16,7 @@ public class WebConfig implements WebFluxConfigurer {
                 .allowedOrigins("http://localhost:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders("Authorization") // 노출할 응답 헤더
                 .allowCredentials(true);
     }
 
