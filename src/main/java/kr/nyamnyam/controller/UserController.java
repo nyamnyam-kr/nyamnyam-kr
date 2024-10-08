@@ -51,14 +51,19 @@ public class UserController {
     @PostMapping("/join")
     public Mono<User> join(@RequestPart("user") User user,
                            @RequestPart(name = "thumbnails", required = false) List<MultipartFile> thumbnails) {
-        // 'user'는 JSON 데이터로부터 변환된 객체, 'thumbnails'는 업로드된 파일 리스트
-        return userService.save(user, thumbnails != null ? thumbnails : Collections.emptyList());
+        return userService.save(user, thumbnails     != null ? thumbnails : Collections.emptyList());
     }
 
 
     @PostMapping("/login")
     public Mono<String> login(@RequestParam String username, @RequestParam String password) {
         return userService.authenticate(username, password);
+    }
+
+    @GetMapping("/check-username")
+    public Mono<Boolean> checkUsername(@RequestParam String username) {
+        return userService.findByUsername(username)
+                .hasElement();
     }
 
 }
