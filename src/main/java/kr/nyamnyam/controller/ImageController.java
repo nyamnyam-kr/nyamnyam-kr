@@ -1,14 +1,11 @@
 package kr.nyamnyam.controller;
 
-import kr.nyamnyam.model.domain.ImageModel;
 import kr.nyamnyam.model.entity.ImageEntity;
 import kr.nyamnyam.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +20,6 @@ public class ImageController{
     public ResponseEntity<String> getFileName(@RequestParam String fileName) {
         return ResponseEntity.ok(service.getFileName(fileName));
     }
-
-//    @PostMapping("/upload/{postId}")
-//    public ResponseEntity<List<ImageModel>> uploadFiles(@RequestPart("files") List<MultipartFile> multipartFiles,
-//                                                        @PathVariable Long postId) {
-//        return ResponseEntity.ok(service.uploadFiles(multipartFiles, postId));
-//    }
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<ImageEntity>> findByPostId(@PathVariable Long postId) {
@@ -61,8 +52,4 @@ public class ImageController{
         return ResponseEntity.ok(service.findAll());
     }
 
-//    @PutMapping("/{postId}")
-//    public ResponseEntity<Boolean> updateImages(@PathVariable Long postId,@RequestPart("files") List<MultipartFile> multipartFiles) {
-//        return ResponseEntity.ok(service.updateImages(postId, multipartFiles));
-//    }
 }

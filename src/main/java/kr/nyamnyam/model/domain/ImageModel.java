@@ -16,7 +16,7 @@ public class ImageModel {
     private String originalFilename;
     private String storedFileName;
     private String extension;
-    private String uploadPath; // storage 내에 파일이 저장된 경로
-    private String uploadURL; // storage에서 파일에 접근할 수 있는 URL
+    private String uploadPath;
+    private String uploadURL;
     private Long postId;
 }
