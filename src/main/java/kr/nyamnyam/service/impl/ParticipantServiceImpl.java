@@ -5,9 +5,8 @@ import kr.nyamnyam.model.repository.ParticipantRepository;
 import kr.nyamnyam.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -15,36 +14,38 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final ParticipantRepository participantRepository;
 
     @Override
-    public Participant save(Participant participant) {
+    public Mono<Participant> save(Participant participant) {
         return participantRepository.save(participant);
     }
 
     @Override
-    public List<Participant> findAll() {
+    public Flux<Participant> findAll() {
         return participantRepository.findAll();
     }
 
     @Override
-    public Optional<Participant> findById(String id) {
+    public Mono<Participant> findById(String id) {
         return participantRepository.findById(id);
     }
 
     @Override
-    public boolean deleteById(String id) {
-        if (existsById(id)) {
-            participantRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public Mono<Boolean> deleteById(String id) {
+        return existsById(id)
+                .flatMap(exists -> {
+                    if (exists) {
+                        return participantRepository.deleteById(id).then(Mono.just(true));
+                    }
+                    return Mono.just(false);
+                });
     }
 
     @Override
-    public boolean existsById(String id) {
+    public Mono<Boolean> existsById(String id) {
         return participantRepository.existsById(id);
     }
 
     @Override
-    public long count() {
+    public Mono<Long> count() {
         return participantRepository.count();
     }
 }
