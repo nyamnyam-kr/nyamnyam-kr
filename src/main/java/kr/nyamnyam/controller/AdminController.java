@@ -42,11 +42,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.countPostList());
     }
 
-//    // user 연령별 추천
-//    @GetMapping("/recommendByAge/{id}")
-//    public ResponseEntity<List<?>> recommendByAge(@RequestHeader String id) {
-//        return ResponseEntity.ok(adminService.recommendByAge(id));
-//    }
+    @GetMapping("/typeList/{id}")
+    public ResponseEntity<List<?>> typeList(@PathVariable String id) {
+        return ResponseEntity.ok(adminService.typeList(id));
+    }
 
     @GetMapping("/randomByUserId/{id}")
     public ResponseEntity<RestaurantEntity> randomByUserId(@PathVariable String id) {

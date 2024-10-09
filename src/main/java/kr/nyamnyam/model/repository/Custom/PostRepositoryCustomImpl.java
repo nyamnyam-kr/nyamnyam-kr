@@ -1,6 +1,7 @@
 package kr.nyamnyam.model.repository.Custom;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CountModel;
@@ -167,6 +168,57 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CountModel> typeList(String userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+
+        List<Tuple> results = jpaQueryFactory
+                .select(restaurant.type, restaurant.type.count())
+                .from(post)
+                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                .where(post.userId.eq(userId))
+                .groupBy(restaurant.type)
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> new CountModel(
+                        tuple.get(restaurant.type),
+                        tuple.get(restaurant.type.count())
+                ))
+                .collect(Collectors.toList());
+
+    }
+
+
+    public List<RestaurantEntity> typeRestaurant(String userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+
+        String type = jpaQueryFactory
+                .select(restaurant.type)
+                .from(post)
+                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                .where(post.userId.eq(userId))
+                .groupBy(restaurant.type)
+                .fetchOne();
+
+
+        String address = jpaQueryFactory
+                .select(restaurant.address)
+                .from(restaurant)
+                .groupBy(Expressions.stringTemplate("REGEXP_SUBSTR({0}, '([^ ]+구)', 1, 1)", restaurant.address))
+                .orderBy(Expressions.stringTemplate("REGEXP_SUBSTR({0}, '([^ ]+구)', 1, 1)", restaurant.address).count().desc())
+                .limit(1)
+                .fetchOne();
+
+
+
+
+    }
+
 
 
 }

@@ -26,4 +26,5 @@ public interface AdminService {
 
     List<CostModel> receiptRestaurant();
 
+    List<CountModel> typeList(String userId);
 }

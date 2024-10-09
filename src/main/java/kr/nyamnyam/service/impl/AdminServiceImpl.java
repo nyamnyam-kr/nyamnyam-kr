@@ -76,6 +76,10 @@ public class AdminServiceImpl implements AdminService {
         return receiptRepository.receiptCount();
     }
 
+    @Override
+    public List<CountModel> typeList(String userId) {
+        return postRepository.typeList(userId);
+    }
 
 
 }

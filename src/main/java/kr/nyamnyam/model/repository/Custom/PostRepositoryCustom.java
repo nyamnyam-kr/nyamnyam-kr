@@ -26,5 +26,7 @@ public interface PostRepositoryCustom {
 
     List<UserPostModel> findByUserId(String userId);
 
+    List<CountModel> typeList(String userId);
+
 
 }
