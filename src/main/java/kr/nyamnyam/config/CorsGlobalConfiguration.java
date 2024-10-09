@@ -17,8 +17,9 @@ public class CorsGlobalConfiguration {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 Origin 설정
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(Arrays.asList("*")); // 모든 헤더 허용
+        config.setExposedHeaders(Arrays.asList("*")); // 클라이언트에서 접근할 수 있는 응답 헤더
         config.setAllowCredentials(true); // 인증 관련 정보 허용
 
         source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 CORS 정책 적용
