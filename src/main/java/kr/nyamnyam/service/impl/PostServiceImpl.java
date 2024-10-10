@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
         Tuple postWithNickname = repository.findPostWithNicknameById(postId);
         String nickname = postEntity.getNickname() != null ? postEntity.getNickname() : "닉네임 없음";
 
-        PostModel postModel = convertToModelWithNickname(postEntity, nickname);
+        PostModel postModel = convertToModelWithNickname(postEntity);
         postModel.setImages(postEntity.getImages().stream()
                 .map(image -> ImageModel.builder()
                         .id(image.getId())
@@ -139,8 +139,8 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-    private PostModel convertToModelWithNickname(PostEntity postEntity, String nickname) {
-        PostModel postModel = convertToModel(postEntity, nickname);
+    private PostModel convertToModelWithNickname(PostEntity postEntity) {
+        PostModel postModel = convertToModel(postEntity);
         //postModel.setNickname(nickname);
         postModel.setRestaurantId(postEntity.getRestaurant().getId());
         return postModel;
@@ -265,12 +265,8 @@ public class PostServiceImpl implements PostService {
             postTagRepository.saveAll(postTags);
         }
     }
-    // convertToModel 오버로딩
-    private PostModel convertToModel(PostEntity entity){
-        return convertToModel(entity, null);
-    }
 
-    private PostModel convertToModel(PostEntity entity, String nickname) {
+    public PostModel convertToModel(PostEntity entity) {
         return PostModel.builder()
                 .id(entity.getId())
                 .content(entity.getContent())
