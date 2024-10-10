@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagModel {
-    private Long id;
     private String name;
-    private Long postId;
     private TagCategory tagCategory;
 }
