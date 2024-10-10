@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,13 +7,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "participants")
+@Document(collection = "usersThumbnails")
 @AllArgsConstructor
 @Builder
-public class Participant {
+public class UsersThumbnail {
 
     @Id
     private String id;
-    private String nickname;
-    private String chatRoomName;
+    private String userId;
+    private String thumbnailUrl;
+    private Long createdAt;
 }

@@ -3,14 +3,13 @@ package kr.nyamnyam.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import kr.nyamnyam.model.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 @Component
@@ -22,57 +21,63 @@ public class JwtTokenProvider {
     @Value("${jwt.validity.in.milliseconds}")
     private long validityInMilliseconds;
 
-    // 비밀 키 생성
-    private SecretKey generateKey() throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] key = digest.digest(secretKey.getBytes(StandardCharsets.UTF_8));
-        return Keys.hmacShaKeyFor(key);
+    public SecretKey generateKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    // JWT 토큰 생성 (비동기)
-    public Mono<String> createToken(String username, String role) {
+    public Mono<String> createToken(User user) {
         return Mono.fromCallable(() -> {
-            try {
-                Claims claims = Jwts.claims().setSubject(username);
-                claims.put("role", role);
+            Claims claims = Jwts.claims().setSubject(user.getId());
+            claims.put("role", user.getRole());
+            claims.put("nickname", user.getNickname());
+            claims.put("username", user.getUsername());
 
-                Date now = new Date();
-                Date validity = new Date(now.getTime() + validityInMilliseconds);
+            Date now = new Date();
+            Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-                SecretKey key = generateKey();
+            SecretKey key = generateKey();
 
-                return Jwts.builder()
-                        .setClaims(claims)
-                        .setIssuedAt(now)
-                        .setExpiration(validity)
-                        .signWith(key)
-                        .compact();
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("Error generating JWT key", e);
-            }
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(validity)
+                    .signWith(key)
+                    .compact();
         });
     }
 
-    // JWT 토큰에서 사용자 정보 추출
-    public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    // JWT 토큰에서 사용자 권한 추출
-    public String getRole(String token) {
-        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role");
-    }
-
-    // JWT 토큰의 유효성 및 만료 확인
-    public boolean validateToken(String token) {
+    // JWT 서명 및 구조 검증 메서드 (실제 검증)
+    public boolean isTokenValid(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.SignatureException | io.jsonwebtoken.ExpiredJwtException e) {
-            return false;
+            Jwts.parser().setSigningKey(generateKey()).parseClaimsJws(token);
+            return true; // 서명 및 구조 검증 성공 시 true 반환
         } catch (Exception e) {
-            return false;
+            System.err.println("Token validation failed: " + e.getMessage());
+            return false; // 검증 실패 시 false 반환
         }
     }
-}
 
+    public String getUsername(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(generateKey())
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
+    public String getRole(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(generateKey())
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role");
+    }
+
+    public String getUserId(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(generateKey())
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId");
+    }
+}

@@ -12,9 +12,11 @@ public interface ChatRoomService {
 
     Mono<ChatRoom> save(ChatRoom chatRoom);
 
-    Flux<ChatRoom> findAll();
+    Flux<ChatRoom> findAllByNickname(String nickname);
 
     Mono<ChatRoom> findById(String id);
+
+    Mono<ChatRoom> updateChatRoom(String id, ChatRoom chatRoom);
 
     Mono<Void> deleteById(String id);
 
@@ -24,5 +26,7 @@ public interface ChatRoomService {
 
 
     Flux<ChatRoom> crawling();
+
+
 
 }

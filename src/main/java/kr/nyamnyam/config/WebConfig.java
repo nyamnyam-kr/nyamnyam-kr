@@ -13,10 +13,11 @@ public class WebConfig implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOrigins("http://localhost:3000") // 허용할 클라이언트의 주소
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .exposedHeaders("*")
+                .allowCredentials(true); // withCredentials 설정을 true로
     }
 
     @Override

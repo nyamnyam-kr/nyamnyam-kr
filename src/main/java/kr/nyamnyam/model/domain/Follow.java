@@ -1,6 +1,5 @@
 package kr.nyamnyam.model.domain;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,13 +7,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "participants")
+@Document(collection = "follows")
 @AllArgsConstructor
 @Builder
-public class Participant {
-
+public class Follow {
     @Id
     private String id;
-    private String nickname;
-    private String chatRoomName;
+    private String followerId; // 팔로우하는 사용자 ID
+    private String followeeId; // 팔로우되는 사용자 ID
 }

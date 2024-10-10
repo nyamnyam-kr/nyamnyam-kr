@@ -1,46 +1,61 @@
-//package kr.nyamnyam.service.impl;
-//
-//import kr.nyamnyam.model.entity.UsersEntity;
-//import kr.nyamnyam.model.entity.UsersThumbnailEntity;
-//import kr.nyamnyam.model.repository.UserThumbnailRepository;
-//import kr.nyamnyam.service.UserThumbnailService;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.io.File;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//
-//@Service
-//@RequiredArgsConstructor
-//public class UserThumbnailServiceImpl implements UserThumbnailService {
-//
-//    private final UserThumbnailRepository userThumbnailRepository;
-//
-//    @Override
-//    public void uploadThumbnail(UsersEntity user, List<MultipartFile> images) {
-//        try {
-//            String uploadsDir = "src/main/resources/static/uploads/thumbnails/";
-//
-//            for (MultipartFile image : images) {
-//                // 파일 저장 로직 추가
-//                String filePath = uploadsDir + image.getOriginalFilename();
-//                File dest = new File(filePath);
-//                image.transferTo(dest);
-//
-//                // 저장된 파일 경로를 UserThumbnailEntity로 저장
-//                UsersThumbnailEntity thumbnail = UsersThumbnailEntity.builder()
-//                        .userId(user.getId())  // userId로 저장
-//                        .imagePath(filePath)
-//                        .createdAt(LocalDateTime.now())
-//                        .build();
-//
-//                userThumbnailRepository.save(thumbnail);
-//            }
-//        } catch (Exception e) {
-//            // 예외 처리
-//            e.printStackTrace();
-//        }
-//    }
-//}
+package kr.nyamnyam.service.impl;
+
+import kr.nyamnyam.model.domain.User;
+import kr.nyamnyam.model.domain.UsersThumbnail;
+import kr.nyamnyam.model.repository.UserThumbnailRepository;
+import kr.nyamnyam.service.UserThumbnailService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+@Service
+@RequiredArgsConstructor
+public class UserThumbnailServiceImpl implements UserThumbnailService {
+
+    private final UserThumbnailRepository userThumbnailRepository;
+
+    @Override
+    public Mono<List<String>> uploadThumbnail(User user, List<MultipartFile> images) {
+        List<String> thumbnailIds = new ArrayList<>();
+
+        return Flux.fromIterable(images)
+                .flatMap(image -> {
+                    return Mono.fromCallable(() -> {
+                                String uploadsDir = "src/main/resources/static/uploads/thumbnails/";
+                                String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                                String filePath = uploadsDir + fileName;
+
+                                File dest = new File(filePath);
+                                image.transferTo(dest);
+
+                                UsersThumbnail thumbnail = UsersThumbnail.builder()
+                                        .userId(user.getId())
+                                        .thumbnailUrl(filePath)
+                                        .createdAt(LocalDateTime.now().toEpochSecond(null))
+                                        .build();
+
+                                return thumbnail;
+                            })
+                            .flatMap(thumbnail ->
+                                    userThumbnailRepository.save(thumbnail)
+                                            .map(savedThumbnail -> {
+                                                thumbnailIds.add(savedThumbnail.getId());
+                                                return savedThumbnail.getId();
+                                            })
+                            )
+                            .onErrorResume(e -> Mono.error(new RuntimeException("Failed to save thumbnail: " + e.getMessage())));
+                })
+                .then(Mono.just(thumbnailIds))
+                .onErrorResume(e -> Mono.just(Collections.emptyList()));
+    }
+
+}
+
+
