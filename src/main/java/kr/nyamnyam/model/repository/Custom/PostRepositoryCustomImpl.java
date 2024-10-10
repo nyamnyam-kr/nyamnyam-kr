@@ -193,31 +193,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
 
-    public List<RestaurantEntity> typeRestaurant(String userId) {
-        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
-        QPostEntity post = QPostEntity.postEntity;
 
-        String type = jpaQueryFactory
-                .select(restaurant.type)
-                .from(post)
-                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
-                .where(post.userId.eq(userId))
-                .groupBy(restaurant.type)
-                .fetchOne();
-
-
-        String address = jpaQueryFactory
-                .select(restaurant.address)
-                .from(restaurant)
-                .groupBy(Expressions.stringTemplate("REGEXP_SUBSTR({0}, '([^ ]+구)', 1, 1)", restaurant.address))
-                .orderBy(Expressions.stringTemplate("REGEXP_SUBSTR({0}, '([^ ]+구)', 1, 1)", restaurant.address).count().desc())
-                .limit(1)
-                .fetchOne();
-
-
-
-
-    }
 
 
 
