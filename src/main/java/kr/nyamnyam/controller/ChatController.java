@@ -7,10 +7,17 @@ import kr.nyamnyam.model.domain.Chat;
 import kr.nyamnyam.service.ChatRoomService;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -19,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/chats")
@@ -27,6 +35,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private static final String SECRET_KEY = "JWT_SECRET_KEY=bywm4zC5-vR36j_mZPsd4jmNFUuny0XuYoln59AStsI="; // 실제 비밀 키로 변경하세요
+
 
     // 1대1??
     @GetMapping(value = "/sender/{sender}/chatroom/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -52,13 +61,10 @@ public class ChatController {
     }
 
     //얘는 보낸 메세지를 바로 채널에다가  뿌려주는 친구
-    @GetMapping(value = "/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId, @RequestParam String token) {
+    @GetMapping(value = "/{chatRoomId}")
+    public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId) {
         // token을 사용하여 필요한 로직 처리
-        // 예: token을 검증하거나, 사용자 정보를 가져오는 등
-
-
-
+        System.out.println("chatRoomId: " + chatRoomId);
         return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
 

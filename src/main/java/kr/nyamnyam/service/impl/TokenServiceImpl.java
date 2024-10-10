@@ -94,6 +94,7 @@ public class TokenServiceImpl implements TokenService {
                 .setSigningKey(jwtTokenProvider.generateKey())  // 서명 키를 사용해 JWT 파싱
                 .parseClaimsJws(token)
                 .getBody();
+        System.out.println("3. 토큰에서 사용자 ID(username)를 추출하는 메서드 : "+ claims.getSubject());
         return claims.getSubject(); // JWT의 'sub' 필드에서 사용자 ID 추출
     }
 

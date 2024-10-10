@@ -40,16 +40,16 @@ public class JwtAuthenticationFilter implements WebFilter {
                     }
 
                     String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest())); // 토큰에서 사용자 ID 가져오기
-                    System.out.println("Extracted Username: " + username);
+                    System.out.println("4. 토큰에서 추출한 아이디 : " + username);
 
                     return userService.findById(username) // username은 실제로 ID이므로 findById 사용
                             .flatMap(user -> {
                                 if (user == null) {
-                                    System.out.println("User not found for ID: " + username);
+                                    System.out.println("5. DB 에서 사용자 찾기 실패 : " + username);
                                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                                     return Mono.empty();
                                 }
-                                System.out.println("User found: " + user.getUsername());
+                                System.out.println("5. DB 에서 사용자 찾기 성공 : " + user);
                                 exchange.getAttributes().put("userDetails", user);
                                 return chain.filter(exchange);
                             });
@@ -58,6 +58,10 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst("Authorization");
+
+        System.out.println("2. 토큰 읽기 : " + bearerToken);
         return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
+
+
 }

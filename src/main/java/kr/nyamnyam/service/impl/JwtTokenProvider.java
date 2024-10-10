@@ -37,12 +37,16 @@ public class JwtTokenProvider {
 
             SecretKey key = generateKey();
 
-            return Jwts.builder()
+            String jwt = Jwts.builder()
                     .setClaims(claims)
                     .setIssuedAt(now)
                     .setExpiration(validity)
                     .signWith(key)
                     .compact();
+
+            System.out.println(" 토큰 발급 : "+ jwt);
+
+            return jwt;
         });
     }
 

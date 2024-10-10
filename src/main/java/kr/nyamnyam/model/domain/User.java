@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 @Data
 @Document(collection = "users")
@@ -25,5 +28,6 @@ public class User {
     private Boolean enabled;
     private String imgId;
     private Double score;
+
 
 }
