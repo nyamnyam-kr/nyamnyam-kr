@@ -32,7 +32,7 @@ public class ChatRoomController {
 
 
     @GetMapping("/findAll/{nickname}")
-    public Flux<ChatRoom> findAll( @PathVariable String nickname) {
+    public Flux<ChatRoom> findAll(@PathVariable String nickname) {
 
         // Service 레이어로 nickname 전달
         return chatRoomService.findAllByNickname(nickname);
@@ -71,15 +71,10 @@ public class ChatRoomController {
                 .map(exists -> ResponseEntity.ok(exists));
     }
 
-
     @GetMapping("/count")
     public Mono<ResponseEntity<Long>> count() {
         return chatRoomService.count()
                 .map(count -> ResponseEntity.ok(count));
     }
-
-
-
-
 
 }
