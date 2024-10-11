@@ -2,7 +2,6 @@ package kr.nyamnyam.service.impl;
 
 
 import kr.nyamnyam.model.domain.RestaurantModel;
-import kr.nyamnyam.model.domain.WishListRestaurantModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.entity.WishListRestaurantEntity;
 import kr.nyamnyam.model.repository.RestaurantRepository;

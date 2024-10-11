@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishListServiceImpl implements WishListService {
     private final WishListRepository wishListRepository;
-    private final WishListRestaurantRepository wishListRestaurantRepository;
 
 
     @Override
