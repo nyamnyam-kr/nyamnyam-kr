@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.google.protobuf' version '0.8.18'
 }
 
 group = 'kr'
@@ -93,6 +94,14 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.19.1'
     implementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 
+
+	// Google Protobuf 및 gRPC
+	implementation 'com.google.protobuf:protobuf-java:3.21.9'
+	implementation 'io.grpc:grpc-netty:1.45.1'
+	implementation 'io.grpc:grpc-protobuf:1.45.1'
+	implementation 'io.grpc:grpc-stub:1.45.1'
+
+
 	//영수증 인식 OCR을 위한 JSON 파싱
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
@@ -110,7 +119,51 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'*/
 
 	implementation 'org.json:json:20211205'
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+
 }
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.21.9" // 필요한 버전으로 변경
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:1.45.1" // gRPC 플러그인
+		}
+	}
+	generateProtoTasks {
+		all().each { task ->
+			task.builtins {
+				java {}
+			}
+			task.plugins {
+				grpc {}
+			}
+		}
+	}
+}
+
+clean {
+	delete file(generated)
+}
+
+tasks {
+	processResources {
+		duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+	}
+}
+
+
+sourceSets {
+	main {
+		proto {
+			srcDir 'src/main/proto'
+		}
+	}
+}
+
+
 
 tasks.named('test') {
     useJUnitPlatform()
