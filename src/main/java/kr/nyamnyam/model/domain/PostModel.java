@@ -1,15 +1,12 @@
 package kr.nyamnyam.model.domain;
 
-import kr.nyamnyam.model.entity.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -26,7 +23,6 @@ public class PostModel {
     private LocalDateTime entryDate;
     private LocalDateTime modifyDate;
 
-    // 임시로 1값 설정
     private String userId;
     private String nickname;
     private Long restaurantId;

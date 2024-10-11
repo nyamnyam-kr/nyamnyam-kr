@@ -29,10 +29,8 @@ public class PostEntity {
     private LocalDateTime entryDate;
     private LocalDateTime modifyDate;
 
-    // nyamnyam-admin부분에서 추가된 부분
     private String userId;
     private String nickname;
-
 
     @PrePersist
     protected void onCreate() {
@@ -53,8 +51,18 @@ public class PostEntity {
     @JsonManagedReference
     private List<ImageEntity> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ReportEntity> reportEntities = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")  // FK 설정
     private RestaurantEntity restaurant;
+
+
+
+
+
+
 
 }

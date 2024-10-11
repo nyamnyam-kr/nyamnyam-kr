@@ -17,10 +17,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    /*@Override
+   /* @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("classpath:/static/uploads/posts");
     }*/
-    // 노트북 : ("file:///C:/Users/user/Documents/nyamnyam/uploads/");
+
 }

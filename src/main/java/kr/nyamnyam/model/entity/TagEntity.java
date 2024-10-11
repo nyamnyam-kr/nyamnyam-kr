@@ -31,5 +31,4 @@ public class TagEntity {
         this.tagCategory = tagCategory;
     }
 
-    private Long postId;
 }

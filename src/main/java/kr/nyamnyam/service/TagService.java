@@ -1,7 +1,6 @@
 package kr.nyamnyam.service;
 
 import kr.nyamnyam.model.domain.TagModel;
-import kr.nyamnyam.model.entity.TagEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -26,5 +25,4 @@ public interface TagService {
 
     List<String> getTagCategory();
 
-    Boolean updateTag(String name, TagModel model);
 }

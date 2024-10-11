@@ -26,4 +26,10 @@ public class ReportController {
     public ResponseEntity<List<?>> reportList() {
         return ResponseEntity.ok(reportService.findAll());
     }
+
+    @GetMapping("/reportAll")
+    public ResponseEntity<List<?>> reportAll () {
+        return ResponseEntity.ok(reportService.reportAll());
+    }
+
 }

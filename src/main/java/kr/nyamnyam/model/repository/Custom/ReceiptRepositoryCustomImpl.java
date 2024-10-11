@@ -3,7 +3,6 @@ package kr.nyamnyam.model.repository.Custom;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CostModel;
-import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.entity.QReceiptEntity;
 import kr.nyamnyam.model.entity.QRestaurantEntity;
 import lombok.RequiredArgsConstructor;

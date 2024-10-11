@@ -51,11 +51,6 @@ public class TagController {
         return ResponseEntity.ok(service.deleteByName(name));
     }
 
-    @PutMapping("/{name}")
-    public ResponseEntity<Boolean> update(@PathVariable String name, @RequestBody TagModel model) {
-        return ResponseEntity.ok(service.updateTag(name,model));
-    }
-
     @PostMapping("")
     public ResponseEntity<Boolean> save(@RequestBody TagModel model) {
         return ResponseEntity.ok(service.save(model));

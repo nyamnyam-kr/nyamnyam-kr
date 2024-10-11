@@ -1,5 +1,6 @@
 package kr.nyamnyam.service;
 
+import kr.nyamnyam.model.domain.Chart.ReportCountModel;
 import kr.nyamnyam.model.domain.ReportModel;
 import kr.nyamnyam.model.entity.ReportEntity;
 
@@ -9,5 +10,7 @@ public interface ReportService {
 
     Boolean save(ReportModel model);
 
-    List<ReportEntity> findAll();
+    List<ReportModel> findAll();
+
+    List<ReportCountModel> reportAll();
 }

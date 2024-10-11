@@ -22,6 +22,10 @@ public class UpvoteServiceImpl implements UpvoteService {
                     .map(PostEntity::getUserId)
                     .orElseThrow(() -> new RuntimeException("Post not found"));
 
+            if(userId.equals(haveId)){
+                throw new RuntimeException("본인의 리뷰에는 좋아요를 누를 수 없어요.");
+            }
+
             UpvoteEntity upvote = UpvoteEntity.builder()
                     .postId(postId)
                     .giveId(userId)

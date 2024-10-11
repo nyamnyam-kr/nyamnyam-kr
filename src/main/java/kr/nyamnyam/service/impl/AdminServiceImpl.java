@@ -4,6 +4,8 @@ import kr.nyamnyam.model.domain.Chart.AreaModel;
 import kr.nyamnyam.model.domain.Chart.CostModel;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
+import kr.nyamnyam.model.domain.PostModel;
+import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.model.repository.PostRepository;
 import kr.nyamnyam.model.repository.ReceiptRepository;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class AdminServiceImpl implements AdminService {
     private final PostRepository postRepository;
     private final RestaurantRepository restaurantRepository;
     private final ReceiptRepository receiptRepository;
+    private final PostServiceImpl postServiceImpl;
 
 
     //
@@ -29,10 +33,7 @@ public class AdminServiceImpl implements AdminService {
         return postRepository.findNicknamesWithCounts();
     }
 
-
-
-
-    // 제일 좋아요를 많이 USER
+    // 제일 좋아요를 많이 받은 USER
     @Override
     public List<String> findNicknameFromUpvote() {
         return postRepository.findNicknameFromUpvote();
@@ -40,7 +41,11 @@ public class AdminServiceImpl implements AdminService {
 
     // 제일 좋아요를 많이 받은 음식점
     @Override
-    public List<String> findRestaurantFromUpvote() {
+    public List<TotalModel> findRestaurantFromUpvote() {
+        List<TotalModel> restaurantFromUpvote = postRepository.findRestaurantFromUpvote();
+        System.out.println(restaurantFromUpvote);
+
+
         return postRepository.findRestaurantFromUpvote();
     }
 
@@ -57,10 +62,6 @@ public class AdminServiceImpl implements AdminService {
         return postRepository.countRestaurantList();
     }
 
-//    @Override
-//    public List<TotalModel> recommendByAge(String userId) {
-//        return restaurantRepository.restaurantsByAge(userId);
-//    }
 
     @Override
     public RestaurantEntity randomRestaurantByUserId(String userId) {
@@ -71,5 +72,25 @@ public class AdminServiceImpl implements AdminService {
     public List<CostModel> receiptRestaurant() {
         return receiptRepository.receiptCount();
     }
+
+    @Override
+    public List<CountModel> typeList(String userId) {
+        return postRepository.typeList(userId);
+    }
+
+    @Override
+    public List<AreaModel> userAreaList(String id) {
+        return restaurantRepository.userAreaList(id);
+    }
+
+    @Override
+    public List<PostModel> findPostsByToday() {
+        List<PostEntity> postsByToday = postRepository.findPostsByToday();
+
+        return postsByToday.stream()
+                .map(postServiceImpl::convertToModel)
+                .collect(Collectors.toList());
+    }
+
 
 }

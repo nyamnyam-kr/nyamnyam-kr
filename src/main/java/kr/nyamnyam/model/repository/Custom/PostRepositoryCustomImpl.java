@@ -1,14 +1,14 @@
 package kr.nyamnyam.model.repository.Custom;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
-import kr.nyamnyam.model.entity.QPostEntity;
-import kr.nyamnyam.model.entity.QRestaurantEntity;
-import kr.nyamnyam.model.entity.QUpvoteEntity;
+import kr.nyamnyam.model.entity.PostEntity;
+import kr.nyamnyam.model.entity.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,11 +22,11 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     // 레스토랑ID 기반으로 여러 개의 post에 nickname 불러오기
     @Override
-    public List<Tuple> findAllByRestaurantWithNickname(Long restaurantId) {
+    public List<PostEntity> findAllByRestaurantWithNickname(Long restaurantId) {
         QPostEntity postEntity = QPostEntity.postEntity;
 
         return jpaQueryFactory
-                .select(postEntity, postEntity.nickname)
+                .select(postEntity)
                 .from(postEntity)
                 .where(postEntity.restaurant.id.eq(restaurantId))
                 .fetch();
@@ -72,13 +72,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     // 가장 많은 추천을 받은 음식점 list
     @Override
-    public List<String> findRestaurantFromUpvote() {
+    public List<TotalModel> findRestaurantFromUpvote() {
 
         QPostEntity postEntity = QPostEntity.postEntity;
         QUpvoteEntity upvoteEntity = QUpvoteEntity.upvoteEntity;
         QRestaurantEntity restaurantEntity = QRestaurantEntity.restaurantEntity;
 
-        return jpaQueryFactory.select(restaurantEntity.name)
+        List<Tuple> results =  jpaQueryFactory.select(restaurantEntity.name,upvoteEntity.postId.count() )
                 .from(upvoteEntity)
                 .join(postEntity).on(postEntity.id.eq(upvoteEntity.postId))
                 .join(restaurantEntity).on(restaurantEntity.id.eq(postEntity.id))
@@ -86,6 +86,17 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .orderBy(upvoteEntity.postId.asc())
                 .limit(5)
                 .fetch();
+
+        return results.stream()
+                .map(tuple -> {
+                    TotalModel totalModel = new TotalModel();
+                    totalModel.setRestaurantName(tuple.get(restaurantEntity.name));
+                    totalModel.setTotal(tuple.get(upvoteEntity.postId.count()));
+                    return totalModel;
+                })
+                .collect(Collectors.toList());
+
+
 
     }
 
@@ -157,6 +168,33 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<CountModel> typeList(String userId) {
+        QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity;
+        QPostEntity post = QPostEntity.postEntity;
+
+        List<Tuple> results = jpaQueryFactory
+                .select(restaurant.type, restaurant.type.count())
+                .from(post)
+                .join(restaurant).on(restaurant.id.eq(post.restaurant.id))
+                .where(post.userId.eq(userId))
+                .groupBy(restaurant.type)
+                .limit(5)
+                .fetch();
+
+        return results.stream()
+                .map(tuple -> new CountModel(
+                        tuple.get(restaurant.type),
+                        tuple.get(restaurant.type.count())
+                ))
+                .collect(Collectors.toList());
+
+    }
+
+
+
+
 
 
 }
