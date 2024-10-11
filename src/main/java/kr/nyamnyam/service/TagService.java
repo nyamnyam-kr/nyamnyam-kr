@@ -25,5 +25,4 @@ public interface TagService {
 
     List<String> getTagCategory();
 
-    Boolean updateTag(String name, TagModel model);
 }

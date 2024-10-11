@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import kr.nyamnyam.model.domain.TagModel;
 import kr.nyamnyam.model.entity.PostEntity;
 import kr.nyamnyam.model.entity.PostTagEntity;
@@ -12,6 +13,7 @@ import kr.nyamnyam.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.HTML;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,20 +86,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Boolean updateTag(String name, TagModel model) {
-        Optional<TagEntity> existingTagOpt = repository.findByName(name);
-        if(existingTagOpt.isEmpty()) {
-            return false;
-        }
-        TagEntity existingTag = existingTagOpt.get();
-        existingTag.setTagCategory(model.getTagCategory());
-        existingTag.setName(model.getName());
-
-        repository.save(existingTag);
-        return null;
-    }
-
-    @Override
     public Boolean save(TagModel model) {
         TagEntity entity = convertToEntity(model);
         return repository.save(entity) != null;
@@ -105,7 +93,6 @@ public class TagServiceImpl implements TagService {
 
     private TagModel convertToModel(TagEntity entity){
         return TagModel.builder()
-                .id(null)
                 .name(entity.getName())
                 .tagCategory(entity.getTagCategory())
                 .build();
