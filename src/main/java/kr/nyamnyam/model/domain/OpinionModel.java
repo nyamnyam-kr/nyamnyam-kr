@@ -9,7 +9,7 @@ import java.util.Date;
 @Component
 public class OpinionModel {
     private Long id;
-    private Long userId;
+    private String userId;
     private String content;
     private Date entryDate;
 
