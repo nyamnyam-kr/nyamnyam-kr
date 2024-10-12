@@ -91,46 +91,6 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    @Override
-    public Boolean crawling() {
-        String url = "http://www.cgv.co.kr/movies/";
-        Document doc = null;
-        List<PostEntity> posts = new ArrayList<>();
-
-        try {
-            doc = Jsoup.connect(url).timeout(5000).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (doc == null) {
-            System.out.println("문서를 로드할 수 없습니다.");
-        }
-
-        Elements elements = doc.select("div.sect-movie-chart");
-        Iterator<Element> rank = elements.select("strong.rank").iterator();
-        Iterator<Element> title = elements.select("strong.title").iterator();
-
-        while (rank.hasNext() && title.hasNext()) {
-            String movieRank = rank.next().text().replaceAll("[^0-9]", "");
-            String movieTitle = title.next().text();
-            System.out.println(movieRank + ": " + movieTitle);
-
-            PostEntity post = PostEntity.builder()
-                    .content("Rank: " + movieRank + ", Title: " + movieTitle)
-                    .taste(Long.parseLong(movieRank)) // 맛을 순위로 대체, 예시로 사용
-                    .clean(5L) // 예시 값
-                    .service(5L) // 예시 값
-                    .build();
-
-            posts.add(post);
-            repository.saveAll(posts);
-            repository.findAll();
-        }
-        return repository.findAll().isEmpty();
-    }
-
     @Override
     public List<PostModel> findAllByRestaurant(Long restaurantId) {
         List<PostEntity> allByRestaurantWithNickname = repository.findAllByRestaurantWithNickname(restaurantId);

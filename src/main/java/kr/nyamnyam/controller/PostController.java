@@ -51,11 +51,6 @@ public class PostController {
         return ResponseEntity.ok(upvoteService.getLikeCount(postId));
     }
 
-    @GetMapping("/crawling")
-    public ResponseEntity<Boolean> crawl() {
-        return ResponseEntity.ok(service.crawling());
-    }
-
     @GetMapping("/group/{page}")
     public ResponseEntity<List<PostModel>> getPostPage(@PathVariable int page) {
         return ResponseEntity.ok(service.findAllPerPage(page));
