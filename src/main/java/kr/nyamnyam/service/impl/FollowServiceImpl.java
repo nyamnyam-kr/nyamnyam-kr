@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FollowServiceImpl implements FollowService {
@@ -15,14 +17,14 @@ public class FollowServiceImpl implements FollowService {
 
     @Transactional
     @Override
-    public Boolean follow(Long followerId, Long followingId) {
-        if (followRepository.findByFollowerIdAndFollowingId(followerId, followingId).isPresent()) {
+    public Boolean follow(String follower, String following) {
+        if (followRepository.findByFollowerAndFollowing(follower, following).isPresent()) {
             throw new IllegalArgumentException("이미 팔로우 관계가 존재합니다.");
         }
 
         FollowsEntity followsEntity = FollowsEntity.builder()
-                .followerId(followerId)
-                .followingId(followingId)
+                .follower(follower)
+                .following(following)
                 .build();
 
         followRepository.save(followsEntity);
@@ -31,11 +33,23 @@ public class FollowServiceImpl implements FollowService {
 
     @Transactional
     @Override
-    public Boolean unfollow(Long followerId, Long followingId) {
-        FollowsEntity followsEntity = followRepository.findByFollowerIdAndFollowingId(followerId, followingId)
+    public Boolean unfollow(String follower, String following) {
+        FollowsEntity followsEntity = followRepository.findByFollowerAndFollowing(follower, following)
                 .orElseThrow(() -> new IllegalArgumentException("팔로우 관계가 존재하지 않습니다."));
 
         followRepository.delete(followsEntity);
         return true;
     }
+
+    @Override
+    public List<FollowsEntity> findMyFollower(String nickname) {
+        return followRepository.findByFollower(nickname);
+    }
+
+    @Override
+    public List<FollowsEntity> findMyFollowing(String nickname) {
+        return followRepository.findByFollowing(nickname);
+    }
+
+
 }
