@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*") // 모든 출처 허용
 @RequestMapping("/api/chats")
 public class ChatController {
 

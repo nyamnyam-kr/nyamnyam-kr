@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // 모든 출처 허용
 @RequestMapping("/api/chatRoom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
