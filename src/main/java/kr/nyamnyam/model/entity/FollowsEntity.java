@@ -17,10 +17,10 @@ public class FollowsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 나를 팔로우하는 사람
+    //(haveId)
     private String follower;
 
-    // 내가 팔로우하는 사람
+    //(giveId)
     private String following;
 
 

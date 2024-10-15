@@ -1,5 +1,6 @@
 package kr.nyamnyam.controller;
 
+import kr.nyamnyam.model.domain.FollowModel;
 import kr.nyamnyam.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,18 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping("/{follower}/{following}")
-    public ResponseEntity<?> follow(@PathVariable String follower, @PathVariable String following) {
-        return ResponseEntity.ok(followService.follow(follower, following));
+    @GetMapping("/{follower}/{following}/isFollow")
+    public ResponseEntity<Boolean> isFollow(@PathVariable String follower, @PathVariable String following) {
+        return ResponseEntity.ok(followService.findFollowingByFollower(follower,following));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> follow(@RequestBody FollowModel follow) {
+        return ResponseEntity.ok(followService.follow(follow));
     }
 
     @DeleteMapping("/{follower}/{following}")
-    public ResponseEntity<?> unfollow(@PathVariable String follower, @PathVariable String following) {
+    public ResponseEntity<Boolean> unfollow(@PathVariable String follower, @PathVariable String following) {
         return ResponseEntity.ok(followService.unfollow(follower, following));
     }
 
