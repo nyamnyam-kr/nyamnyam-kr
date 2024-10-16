@@ -36,12 +36,12 @@ public class NoticeController {
     }
 
    @PostMapping("")
-    public ResponseEntity<NoticeEntity> save(@RequestBody NoticeModel model) {
+    public ResponseEntity<?> save(@RequestBody NoticeModel model) {
         return ResponseEntity.ok(noticeService.save(model));
     }
 
     @PutMapping("")
-    public ResponseEntity<NoticeEntity> update(@RequestBody NoticeModel model) {
+    public ResponseEntity<?> update(@RequestBody NoticeModel model) {
         System.out.println(model);
        return ResponseEntity.ok(noticeService.update(model));
     }
