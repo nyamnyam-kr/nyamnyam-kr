@@ -1,12 +1,10 @@
 package kr.nyamnyam.model.repository.Custom;
 
 import com.querydsl.core.Tuple;
-
 import kr.nyamnyam.model.domain.Chart.CountModel;
 import kr.nyamnyam.model.domain.Chart.TotalModel;
 import kr.nyamnyam.model.domain.Chart.UserPostModel;
 import kr.nyamnyam.model.entity.PostEntity;
-import kr.nyamnyam.model.entity.RestaurantEntity;
 
 import java.util.List;
 
