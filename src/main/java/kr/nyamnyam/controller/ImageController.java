@@ -47,9 +47,9 @@ public class ImageController {
     public ResponseEntity<Boolean> deleteById(@PathVariable Long imageId) {
         return ResponseEntity.ok(service.deleteById(imageId));
     }
-    @GetMapping("/group")
-    public ResponseEntity<List<ImageEntity>> findAll() {
-        return ResponseEntity.ok(service.findAll());
-    }
+//    @GetMapping("/group")
+//    public ResponseEntity<List<ImageEntity>> findAll() {
+//        return ResponseEntity.ok(service.findAll());
+//    }
 
 }
