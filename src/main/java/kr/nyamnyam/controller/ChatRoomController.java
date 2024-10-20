@@ -37,10 +37,6 @@ public class ChatRoomController {
         return chatRoomService.findAllByNickname(nickname);
     }
 
-    @PutMapping("/{id}")
-    public Mono<ChatRoom> updateChatRoom(@PathVariable String id, @RequestBody ChatRoom chatRoom) {
-        return chatRoomService.updateChatRoom(id, chatRoom);
-    }
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<ChatRoom>> findById(@PathVariable String id) {
@@ -50,12 +46,13 @@ public class ChatRoomController {
     }
 
 
-    @DeleteMapping("/deleteById/{id}")
-    public Mono<ResponseEntity<Void>> deleteById(@PathVariable String id) {
+    @DeleteMapping("/leaveChatRoom/{id}/{nickname}")
+    public Mono<ResponseEntity<Void>> leaveChatRoom(@PathVariable String id, @PathVariable String nickname) {
         return chatRoomService.existsById(id)
                 .flatMap(exists -> {
                     if (exists) {
-                        return chatRoomService.deleteById(id)
+                        // 참가자 나가기 로직 호출
+                        return chatRoomService.updateChatRoom(id, nickname)
                                 .then(Mono.just(ResponseEntity.ok().<Void>build()));
                     } else {
                         return Mono.just(ResponseEntity.notFound().build());

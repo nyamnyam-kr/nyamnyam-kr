@@ -18,13 +18,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatServiceImpl chatService;
+
 
     @Override
     public Mono<ChatRoom> save(ChatRoom chatRoom) {
@@ -47,13 +48,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Mono<ChatRoom> updateChatRoom(String id, ChatRoom chatRoom) {
+    public Mono<ChatRoom> updateChatRoom(String id, String nickname) {
         return chatRoomRepository.findById(id)
                 .flatMap(existingChatRoom -> {
-                    existingChatRoom.setName(chatRoom.getName());
-                    existingChatRoom.setParticipants(chatRoom.getParticipants());
-                    existingChatRoom.setMessages(chatRoom.getMessages());
-                    return chatRoomRepository.save(existingChatRoom);
+                    // 해당 참가자를 participants에서 제거
+                    existingChatRoom.setParticipants(
+                            existingChatRoom.getParticipants().stream()
+                                    .filter(participant -> !participant.equals(nickname))
+                                    .collect(Collectors.toList())
+                    );
+
+                    // 참가자가 1명 이하로 남으면 채팅방 삭제
+                    if (existingChatRoom.getParticipants().size() <= 1) {
+                        return chatRoomRepository.deleteById(id).then(Mono.empty());
+                    } else {
+                        return chatRoomRepository.save(existingChatRoom);
+                    }
                 });
     }
 

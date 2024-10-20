@@ -16,7 +16,7 @@ public interface ChatRoomService {
 
     Mono<ChatRoom> findById(String id);
 
-    Mono<ChatRoom> updateChatRoom(String id, ChatRoom chatRoom);
+    public Mono<ChatRoom> updateChatRoom(String id, String nickname);
 
     Mono<Void> deleteById(String id);
 
