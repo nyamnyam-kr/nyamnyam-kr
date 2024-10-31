@@ -29,6 +29,23 @@ public class ChatRoomController {
                 .defaultIfEmpty(ResponseEntity.badRequest().build());
     }
 
+    @PostMapping("/check")
+    public Mono<ResponseEntity<ChatRoom>> check(@RequestBody ChatRoom chatRoom) {
+        // 참가자 목록 정렬
+        List<String> sortedParticipants = chatRoom.getParticipants().stream().sorted().toList();
+        chatRoom.setParticipants(sortedParticipants);
+
+        return chatRoomService.findByParticipants(sortedParticipants)
+                .flatMap(existingRoom -> {
+                    // 동일한 참가자가 있는 채팅방이 이미 존재하는 경우, 해당 채팅방 반환
+                    return Mono.just(ResponseEntity.ok(existingRoom));
+                })
+                .switchIfEmpty(
+                        // 동일한 참가자가 있는 채팅방이 없을 경우 204 No Content 반환
+                        Mono.just(ResponseEntity.noContent().build())
+                );
+    }
+
 
     @GetMapping("/findAll/{nickname}")
     public Flux<ChatRoom> findAll( @PathVariable String nickname) {

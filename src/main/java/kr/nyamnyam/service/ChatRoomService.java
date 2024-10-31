@@ -27,6 +27,6 @@ public interface ChatRoomService {
 
     Flux<ChatRoom> crawling();
 
-
+    Mono<ChatRoom> findByParticipants(List<String> sortedParticipants);
 
 }
