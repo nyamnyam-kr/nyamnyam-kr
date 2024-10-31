@@ -294,7 +294,7 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
-    private PostEntity convertToEntity(PostModel model) {
+    public PostEntity convertToEntity(PostModel model) {
         RestaurantEntity restaurant = restaurantRepository.findById(model.getRestaurantId())
                 .orElseThrow(() -> new RuntimeException("Restaurant not found with id: " + model.getRestaurantId()));
 

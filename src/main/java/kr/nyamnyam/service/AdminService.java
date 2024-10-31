@@ -34,4 +34,8 @@ public interface AdminService {
     List<AreaModel> userAreaList(String id);
 
     List<PostModel> findPostsByToday();
+
+    //Boolean postUpdateDisabled(Long postId);
+
+    //Boolean postAble(Long postId);
 }

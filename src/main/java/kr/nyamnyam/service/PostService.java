@@ -36,5 +36,6 @@ public interface PostService {
     List<UserPostModel> findByUserId(String userId);
 
     Long createPostWithImages(PostModel model);
+
 }
 

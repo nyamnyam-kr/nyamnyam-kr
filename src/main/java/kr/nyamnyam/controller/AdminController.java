@@ -1,9 +1,11 @@
 package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.Chart.CostModel;
+import kr.nyamnyam.model.domain.PostModel;
 import kr.nyamnyam.model.entity.RestaurantEntity;
 import kr.nyamnyam.service.AdminService;
 import kr.nyamnyam.service.OpinionService;
+import kr.nyamnyam.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,5 +71,17 @@ public class AdminController {
     public ResponseEntity<List<?>> todayList() {
         return ResponseEntity.ok(adminService.findPostsByToday());
     }
+
+//    @PostMapping("/{postId}/disabled")
+//    public ResponseEntity<Boolean> postUnacceptable(@PathVariable Long postId) {
+//        return ResponseEntity.ok(adminService.postUpdateDisabled(postId));
+//    }
+
+/*    @PostMapping("/{postId}/able")
+    public ResponseEntity<Boolean> postAble(@PathVariable Long postId) {
+        return ResponseEntity.ok(adminService.postAble(postId));
+    }*/
+
+
 
 }

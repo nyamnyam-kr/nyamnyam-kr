@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,6 +92,22 @@ public class AdminServiceImpl implements AdminService {
                 .map(postServiceImpl::convertToModel)
                 .collect(Collectors.toList());
     }
+
+//    @Override
+//    public Boolean postUpdateDisabled(Long postId) {
+//        PostEntity post = postRepository.findById(postId).orElse(null);
+//        if (!post.getEnabled().equals(true)) {
+//            return false;
+//        } else {
+//            post.setEnabled(false);
+//            return true;
+//        }
+//    }
+//
+//    @Override
+//    public Boolean postAble(Long postId) {
+//        return null;
+//    }
 
 
 }
