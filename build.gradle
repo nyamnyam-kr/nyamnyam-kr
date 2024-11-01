@@ -102,6 +102,8 @@ dependencies {
 	implementation 'io.grpc:grpc-stub:1.45.1'
 
 
+
+
 	//영수증 인식 OCR을 위한 JSON 파싱
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
@@ -110,6 +112,7 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.json:json:20211205'
 	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+
 
 }
 

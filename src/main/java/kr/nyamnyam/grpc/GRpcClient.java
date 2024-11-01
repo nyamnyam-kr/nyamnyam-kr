@@ -25,7 +25,7 @@ public class GRpcClient {
     public static void main(String[] args) throws Exception {
         String secretKey = "a96bb236202946589043a9c64562f9c5";
 
-        
+
         CountDownLatch latch = new CountDownLatch(1);
         ManagedChannel channel = NettyChannelBuilder
                 .forTarget("clovaspeech-gw.ncloud.com:50051")
@@ -34,7 +34,7 @@ public class GRpcClient {
         NestServiceGrpc.NestServiceStub client = NestServiceGrpc.newStub(channel);
         Metadata metadata = new Metadata();
         metadata.put(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER),
-                "Bearer " +  secretKey );
+                "Bearer " + secretKey);
         client = MetadataUtils.attachHeaders(client, metadata);
 
         StreamObserver<NestResponse> responseObserver = new StreamObserver<NestResponse>() {
@@ -45,8 +45,8 @@ public class GRpcClient {
 
             @Override
             public void onError(Throwable t) {
-                if(t instanceof StatusRuntimeException) {
-                    StatusRuntimeException error = (StatusRuntimeException)t;
+                if (t instanceof StatusRuntimeException) {
+                    StatusRuntimeException error = (StatusRuntimeException) t;
                     System.out.println(error.getStatus().getDescription());
                 }
                 latch.countDown();
@@ -68,7 +68,7 @@ public class GRpcClient {
                         .build())
                 .build());
 
-        java.io.File file = new java.io.File("src/main/resources/audio/KakaoTalk_Audio_20241010_2101_01_573.m4a");
+        java.io.File file = new java.io.File("src/main/resources/audio/음성-241101_164933.wav");
         byte[] buffer = new byte[32000];
         int bytesRead;
         FileInputStream inputStream = new FileInputStream(file);
