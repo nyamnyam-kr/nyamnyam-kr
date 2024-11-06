@@ -36,3 +36,11 @@ jwt:
   validity:
     in:
       milliseconds: 3600000  # 유효성 기간을 설정하세요 (1시간).
+
+naver:
+  storage:
+    accessKey: ncp_iam_BPASKR4hDZEqhZxoJTU0  # Naver Cloud Storage 접근 키
+    secretKey: ncp_iam_BPKSKRW7EiCKxGGi0L9AODsJCwtJ8wcZ9a  # Naver Cloud Storage 비밀 키
+    bucket: nyamnyam  # Naver Cloud Storage 버킷 이름
+    upload:
+      path: uploads/user  # 업로드 경로

@@ -14,19 +14,19 @@ public class UserScoreController {
 
     private final UserScoreService userScoreService;
 
-    @PostMapping("/score")
-    public Mono<UserScore> score(@RequestBody UserScore userScore) {
-        return userScoreService.save(userScore);
+    @PostMapping("/scoreUp")
+    public Mono<Void> increaseScore(@RequestParam String userId) {
+        return userScoreService.scoreUp(userId);
     }
 
-    @GetMapping("/user/{scoreUserId}")
-    public Flux<UserScore> getUserScores(@PathVariable String scoreUserId) {
-        return userScoreService.findByScoreUserId(scoreUserId);
+    @GetMapping("/user/{userId}")
+    public Flux<UserScore> getUserScores(@PathVariable String userId) {
+        return userScoreService.findByUserId(userId);
     }
 
-    @GetMapping("/average/{scoreUserId}")
-    public Mono<Double> getUserAverageScore(@PathVariable String scoreUserId) {
-        return userScoreService.calculateUserAverageScore(scoreUserId);
+    @GetMapping("/average/{userId}")
+    public Mono<Double> getUserAverageScore(@PathVariable String userId) {
+        return userScoreService.calculateUserAverageScore(userId);
     }
 }
 

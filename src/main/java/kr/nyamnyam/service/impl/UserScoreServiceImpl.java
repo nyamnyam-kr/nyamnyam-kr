@@ -1,6 +1,7 @@
 package kr.nyamnyam.service.impl;
 
 import kr.nyamnyam.model.domain.UserScore;
+import kr.nyamnyam.model.repository.UserRepository;
 import kr.nyamnyam.model.repository.UserScoreRepository;
 import kr.nyamnyam.service.UserScoreService;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +14,30 @@ import reactor.core.publisher.Mono;
 public class UserScoreServiceImpl implements UserScoreService {
 
     private final UserScoreRepository userScoreRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public Mono<UserScore> save(UserScore userScore) {
-        return userScoreRepository.save(userScore);
+    public Mono<Void> scoreUp(String userId) {
+        return userScoreRepository.save(UserScore.builder()
+                        .userId(userId)
+                        .score(0.1)
+                        .build())
+                .then(userRepository.findById(userId)
+                        .flatMap(user -> {
+                            user.setScore(user.getScore() + 0.1);
+                            return userRepository.save(user);
+                        }))
+                .then();
     }
 
     @Override
-    public Flux<UserScore> findByScoreUserId(String scoreUserId) {
-        return userScoreRepository.findByScoreUserId(scoreUserId);
+    public Flux<UserScore> findByUserId(String userId) {
+        return userScoreRepository.findByUserId(userId);
     }
 
     @Override
     public Mono<Double> calculateUserAverageScore(String scoreUserId) {
-        return findByScoreUserId(scoreUserId)
+        return findByUserId(scoreUserId)
                 .map(UserScore::getScore)
                 .collectList()
                 .map(scores -> scores.stream()

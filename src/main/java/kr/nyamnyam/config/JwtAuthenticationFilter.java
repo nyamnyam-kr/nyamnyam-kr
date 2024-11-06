@@ -16,30 +16,28 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter {
 
-    private final TokenServiceImpl tokenService;  // TokenService로 변경
+    private final TokenServiceImpl tokenService;
     private final UserService userService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        // OPTIONS 요청일 경우 바로 다음 필터로 넘기기
         if (exchange.getRequest().getMethod().equals(HttpMethod.OPTIONS)) {
             return chain.filter(exchange);
         }
 
         String requestPath = exchange.getRequest().getPath().value();
 
-        // 회원 가입 및 로그인 경로는 인증 없이 처리
         return ("/api/user/join".equals(requestPath) || "/api/user/login".equals(requestPath))
                 ? chain.filter(exchange)
                 : Mono.justOrEmpty(resolveToken(exchange.getRequest()))
-                .flatMap(tokenService::validateToken)  // 변경된 validateToken 메서드 사용
+                .flatMap(tokenService::validateToken)
                 .flatMap(isValid -> {
                     if (!isValid) {
                         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                         return Mono.empty();
                     }
 
-                    String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest())); // 토큰에서 사용자 ID 가져오기
+                    String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest()));
                     System.out.println("Extracted Username: " + username);
 
                     return userService.findById(username) // username은 실제로 ID이므로 findById 사용
