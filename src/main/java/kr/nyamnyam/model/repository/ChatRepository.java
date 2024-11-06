@@ -1,6 +1,7 @@
 package kr.nyamnyam.model.repository;
 
 import kr.nyamnyam.model.domain.Chat;
+import kr.nyamnyam.model.domain.ChatRoom;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.mongodb.repository.Tailable;

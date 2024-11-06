@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("*")
 @RequestMapping("/api/chatRoom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
@@ -30,18 +29,31 @@ public class ChatRoomController {
                 .defaultIfEmpty(ResponseEntity.badRequest().build());
     }
 
+    @PostMapping("/check")
+    public Mono<ResponseEntity<ChatRoom>> check(@RequestBody ChatRoom chatRoom) {
+        // 참가자 목록 정렬
+        List<String> sortedParticipants = chatRoom.getParticipants().stream().sorted().toList();
+        chatRoom.setParticipants(sortedParticipants);
+
+        return chatRoomService.findByParticipants(sortedParticipants)
+                .flatMap(existingRoom -> {
+                    // 동일한 참가자가 있는 채팅방이 이미 존재하는 경우, 해당 채팅방 반환
+                    return Mono.just(ResponseEntity.ok(existingRoom));
+                })
+                .switchIfEmpty(
+                        // 동일한 참가자가 있는 채팅방이 없을 경우 204 No Content 반환
+                        Mono.just(ResponseEntity.noContent().build())
+                );
+    }
+
 
     @GetMapping("/findAll/{nickname}")
-    public Flux<ChatRoom> findAll(@PathVariable String nickname) {
+    public Flux<ChatRoom> findAll( @PathVariable String nickname) {
 
         // Service 레이어로 nickname 전달
         return chatRoomService.findAllByNickname(nickname);
     }
 
-    @PutMapping("/{id}")
-    public Mono<ChatRoom> updateChatRoom(@PathVariable String id, @RequestBody ChatRoom chatRoom) {
-        return chatRoomService.updateChatRoom(id, chatRoom);
-    }
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<ChatRoom>> findById(@PathVariable String id) {
@@ -51,12 +63,13 @@ public class ChatRoomController {
     }
 
 
-    @DeleteMapping("/deleteById/{id}")
-    public Mono<ResponseEntity<Void>> deleteById(@PathVariable String id) {
+    @DeleteMapping("/leaveChatRoom/{id}/{nickname}")
+    public Mono<ResponseEntity<Void>> leaveChatRoom(@PathVariable String id, @PathVariable String nickname) {
         return chatRoomService.existsById(id)
                 .flatMap(exists -> {
                     if (exists) {
-                        return chatRoomService.deleteById(id)
+                        // 참가자 나가기 로직 호출
+                        return chatRoomService.updateChatRoom(id, nickname)
                                 .then(Mono.just(ResponseEntity.ok().<Void>build()));
                     } else {
                         return Mono.just(ResponseEntity.notFound().build());
@@ -71,10 +84,15 @@ public class ChatRoomController {
                 .map(exists -> ResponseEntity.ok(exists));
     }
 
+
     @GetMapping("/count")
     public Mono<ResponseEntity<Long>> count() {
         return chatRoomService.count()
                 .map(count -> ResponseEntity.ok(count));
     }
+
+
+
+
 
 }

@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Optional;
 
 public interface ChatRoomService {
 
@@ -14,7 +16,7 @@ public interface ChatRoomService {
 
     Mono<ChatRoom> findById(String id);
 
-    Mono<ChatRoom> updateChatRoom(String id, ChatRoom chatRoom);
+    public Mono<ChatRoom> updateChatRoom(String id, String nickname);
 
     Mono<Void> deleteById(String id);
 
@@ -25,6 +27,6 @@ public interface ChatRoomService {
 
     Flux<ChatRoom> crawling();
 
-
+    Mono<ChatRoom> findByParticipants(List<String> sortedParticipants);
 
 }

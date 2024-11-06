@@ -1,53 +1,29 @@
 package kr.nyamnyam.service.impl;
 
 
-import com.amazonaws.services.s3.AmazonS3;
 import kr.nyamnyam.model.domain.Chat;
+import kr.nyamnyam.model.domain.ChatFile;
+import kr.nyamnyam.model.domain.ChatRoom;
+import kr.nyamnyam.model.repository.ChatFileRepository;
 import kr.nyamnyam.model.repository.ChatRepository;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
-    private final AmazonS3 amazonS3;
-    @Value("${naver.storage.bucket}")
-    private String bucketName;
-
-    @Value("${naver.storage.upload.path}")
-    private String uploadPath;
-
-    // 파일 업로드 메서드
-    public Mono<String> uploadFile(MultipartFile file) {
-        return Mono.fromCallable(() -> {
-            String fileName = file.getOriginalFilename();
-            String extension = fileName.substring(fileName.lastIndexOf("."));
-            String uploadName = UUID.randomUUID() + extension;
-
-            // 파일을 네이버 클라우드 스토리지에 업로드
-            try {
-                amazonS3.putObject(bucketName, uploadPath + "/" + uploadName, file.getInputStream(), null);
-            } catch (IOException e) {
-                throw new RuntimeException("파일 업로드 중 오류 발생", e);
-            }
-
-            // 업로드된 파일의 URL 반환
-            return String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s/%s", bucketName, uploadPath, uploadName);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
+    private final ChatFileRepository chatFileRepository;
 
     @Override
     public Flux<Chat> mFindBySender(String sender, String chatRoomId) {
@@ -67,6 +43,14 @@ public class ChatServiceImpl implements ChatService {
         return chatRepository.save(chat);
     }
 
+    @Override
+    public Mono<Chat> uploadFileAndSaveMessage(Chat chat) {
+        // 파일들을 저장하고 메시지를 저장하는 로직
+        List<ChatFile> files = chat.getFiles();
+        return Flux.fromIterable(files)
+                .flatMap(chatFileRepository::save) // 각 파일을 저장
+                .then(chatRepository.save(chat)); // 파일 저장이 완료되면 메시지 저장
+    }
 
     @Override
     public Mono<Long> getUnreadMessageCountByChatRoomId(String chatRoomId, String nickname) {

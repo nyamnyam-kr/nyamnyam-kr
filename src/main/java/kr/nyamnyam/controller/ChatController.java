@@ -1,30 +1,44 @@
 package kr.nyamnyam.controller;
 
 
-
 import kr.nyamnyam.model.domain.Chat;
+import kr.nyamnyam.model.domain.ChatFile;
+import kr.nyamnyam.model.repository.ChatRepository;
+import kr.nyamnyam.model.repository.ChatRoomRepository;
 import kr.nyamnyam.service.ChatRoomService;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-
-
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/chats")
 public class ChatController {
 
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
 
+
+    // 1대1??
+    @GetMapping(value = "/sender/{sender}/chatroom/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Chat> getMessage(@PathVariable String sender, @PathVariable String chatRoomId) {
+
+        return chatService.mFindBySender(sender, chatRoomId).subscribeOn(Schedulers.boundedElastic());
+    }
 
     // 채팅 방에서 메세지를 보내면 저장하는 친구
     @PostMapping("/{chatRoomId}")
@@ -43,13 +57,19 @@ public class ChatController {
     }
 
     //얘는 보낸 메세지를 바로 채널에다가  뿌려주는 친구
-    @CrossOrigin("*")
-    @GetMapping(value = "/{chatRoomId}")
+    @GetMapping(value = "/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Chat> getMessageByChannel(@PathVariable String chatRoomId) {
-
         return chatService.mFindByChatRoomId(chatRoomId).subscribeOn(Schedulers.boundedElastic());
     }
 
+
+
+    @PostMapping(value = "/{chatRoomId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<Chat> uploadFileAndPostMessage(@RequestBody Chat chat, @PathVariable String chatRoomId) {
+        chat.setChatRoomId(chatRoomId);
+        chat.setCreatedAt(LocalDateTime.now());
+        return chatService.uploadFileAndSaveMessage(chat);
+    }
 
     // 채팅방 별 읽지 않은 메시지 수
     @GetMapping("/{chatRoomId}/unreadCount/{nickname}")
@@ -74,24 +94,6 @@ public class ChatController {
                 .map(updatedChat -> ResponseEntity.ok(updatedChat))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
-
-    // 파일 업로드 엔드포인트
- /*   @PostMapping("/uploads")
-    public Mono<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
-        return chatService.uploadFile(file)
-                .map(url -> {
-                    Map<String, Object> resultMap = new HashMap<>();
-                    resultMap.put("file", true);
-                    resultMap.put("url", url);
-                    return resultMap;
-                })
-                .onErrorResume(e -> {
-                    Map<String, Object> errorResponse = new HashMap<>();
-                    errorResponse.put("file", false);
-                    errorResponse.put("error", e.getMessage());
-                    return Mono.just(errorResponse);
-                });
-    }*/
 
 
 }
