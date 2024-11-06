@@ -27,6 +27,6 @@ public interface UserService {
 
     Mono<String> authenticate(String username, String password);
 
-    Mono<User> enable(String targetUserId);
+    Mono<User> setEnableStatus(String userId, Boolean enabled);
 
 }

@@ -117,10 +117,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Mono<User> enable(String targetUserId) {
-        return userRepository.findById(targetUserId)
+    public Mono<User> setEnableStatus(String userId, Boolean enabled) {
+        return userRepository.findById(userId)
                 .flatMap(user -> {
-                    user.setEnabled(!user.getEnabled());
+                    user.setEnabled(enabled);
                     return userRepository.save(user);
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));

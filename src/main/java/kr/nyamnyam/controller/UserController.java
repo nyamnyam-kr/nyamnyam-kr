@@ -66,9 +66,10 @@ public class UserController {
                 .hasElement();
     }
 
-    @PutMapping("/enable")
-    public Mono<User> enableUser(@RequestParam String targetUserId) {
-        return userService.enable(targetUserId);
+    @PutMapping("/toggleEnable")
+    public Mono<User> toggleEnable(@RequestParam String userId, @RequestParam Boolean enabled) {
+        return userService.setEnableStatus(userId, enabled);
     }
+
 
 }
