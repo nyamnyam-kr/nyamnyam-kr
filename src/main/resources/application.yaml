@@ -2,9 +2,9 @@ spring:
   application:
     name: nyamnyam_kr
   datasource:
-    url: jdbc:mysql://211.188.50.33:3306/nyamnyamdb
+    url: jdbc:mysql://223.130.161.186:3306/nyamnyamdb
     username: root
-    password: 1234
+    password: P6%Rfcb!6Ry*m
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     defer-datasource-initialization: true
