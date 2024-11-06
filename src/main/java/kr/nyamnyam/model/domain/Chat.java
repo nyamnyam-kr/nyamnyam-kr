@@ -1,5 +1,6 @@
 package kr.nyamnyam.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class Chat {
     private String id;
 
     private String message; // 채팅 내용
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // ISO 8601 형식
     private LocalDateTime createdAt;
     private String sender;  // 발신자 nickname
     private String chatRoomId;

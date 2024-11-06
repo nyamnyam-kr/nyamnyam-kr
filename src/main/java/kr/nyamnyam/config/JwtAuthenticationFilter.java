@@ -40,16 +40,16 @@ public class JwtAuthenticationFilter implements WebFilter {
                     }
 
                     String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest())); // 토큰에서 사용자 ID 가져오기
-                    System.out.println("Extracted Username: " + username);
+
 
                     return userService.findById(username) // username은 실제로 ID이므로 findById 사용
                             .flatMap(user -> {
                                 if (user == null) {
-                                    System.out.println("User not found for ID: " + username);
+
                                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                                     return Mono.empty();
                                 }
-                                System.out.println("User found: " + user.getUsername());
+
                                 exchange.getAttributes().put("userDetails", user);
                                 return chain.filter(exchange);
                             });
