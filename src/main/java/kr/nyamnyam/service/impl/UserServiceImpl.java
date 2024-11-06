@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
     private final UserThumbnailService userThumbnailService;
 
+
     @Override
     public Mono<Boolean> existsById(String id) {
         return userRepository.existsById(id);
@@ -66,14 +67,16 @@ public class UserServiceImpl implements UserService {
                     existingUser.setGender(user.getGender() != null ? user.getGender() : existingUser.getGender());
                     existingUser.setEnabled(user.getEnabled() != null ? user.getEnabled() : existingUser.getEnabled());
 
-                    return userThumbnailService.uploadThumbnail(existingUser, thumbnails)
+                    // 사용자 ID를 사용하여 썸네일 업로드
+                    return userThumbnailService.uploadThumbnail(existingUser.getId(), thumbnails)
                             .then(userRepository.save(existingUser));
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 
+
     @Override
-    public Mono<User> save(User user, List<MultipartFile> thumbnails) {
+    public Mono<User> save(User user) {
         return userRepository.findByUsername(user.getUsername())
                 .flatMap(existingUser -> Mono.<User>error(new RuntimeException("Username is already taken.")))
                 .switchIfEmpty(Mono.defer(() -> {
@@ -89,15 +92,20 @@ public class UserServiceImpl implements UserService {
                             .gender(user.getGender())
                             .enabled(true)
                             .score(36.5)
+                            .imgId(null)
                             .build();
 
-                    return userRepository.save(newUser)
-                            .flatMap(savedUser -> userThumbnailService.uploadThumbnail(savedUser, thumbnails)
-                                    .flatMap(thumbnailIds -> {
-                                        savedUser.setImgId(thumbnailIds.isEmpty() ? null : thumbnailIds.get(0));
-                                        return userRepository.save(savedUser); // Mono<User> 반환이 기대됨
-                                    }));
+                    return userRepository.save(newUser);
                 }));
+    }
+
+    @Override
+    public Mono<User> updateImgIdOnly(User user) {
+        return userRepository.findById(user.getId())
+                .flatMap(existingUser -> {
+                    existingUser.setImgId(user.getImgId());
+                    return userRepository.save(existingUser);
+                });
     }
 
     @Override
@@ -113,8 +121,6 @@ public class UserServiceImpl implements UserService {
                     return tokenService.createAndSaveToken(user.getId());
                 });
     }
-
-
 
     @Override
     public Mono<User> setEnableStatus(String userId, Boolean enabled) {

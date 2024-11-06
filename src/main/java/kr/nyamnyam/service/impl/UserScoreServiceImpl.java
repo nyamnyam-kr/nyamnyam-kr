@@ -18,15 +18,21 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     @Override
     public Mono<Void> scoreUp(String userId) {
-        return userScoreRepository.save(UserScore.builder()
-                        .userId(userId)
-                        .score(0.1)
-                        .build())
-                .then(userRepository.findById(userId)
-                        .flatMap(user -> {
-                            user.setScore(user.getScore() + 0.1);
-                            return userRepository.save(user);
-                        }))
+        return userRepository.findById(userId)
+                .flatMap(user -> {
+                    user.setScore(user.getScore() + 0.1);
+                    return userRepository.save(user);
+                })
+                .then();
+    }
+
+    @Override
+    public Mono<Void> scoreDown(String userId) {
+        return userRepository.findById(userId)
+                .flatMap(user -> {
+                    user.setScore(user.getScore() - 0.1);
+                    return userRepository.save(user);
+                })
                 .then();
     }
 

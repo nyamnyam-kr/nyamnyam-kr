@@ -21,13 +21,18 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        System.out.println("Request Method: " + exchange.getRequest().getMethod());
+        System.out.println("Request Path: " + exchange.getRequest().getPath().value());
+
         if (exchange.getRequest().getMethod().equals(HttpMethod.OPTIONS)) {
             return chain.filter(exchange);
         }
 
         String requestPath = exchange.getRequest().getPath().value();
 
-        return ("/api/user/join".equals(requestPath) || "/api/user/login".equals(requestPath))
+        return ("/api/user/register".equals(requestPath) ||
+                "/api/user/login".equals(requestPath) ||
+                "/api/thumbnails/upload".equals(requestPath))
                 ? chain.filter(exchange)
                 : Mono.justOrEmpty(resolveToken(exchange.getRequest()))
                 .flatMap(tokenService::validateToken)
@@ -40,7 +45,7 @@ public class JwtAuthenticationFilter implements WebFilter {
                     String username = tokenService.getUsernameFromToken(resolveToken(exchange.getRequest()));
                     System.out.println("Extracted Username: " + username);
 
-                    return userService.findById(username) // username은 실제로 ID이므로 findById 사용
+                    return userService.findById(username)
                             .flatMap(user -> {
                                 if (user == null) {
                                     System.out.println("User not found for ID: " + username);

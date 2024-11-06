@@ -35,10 +35,9 @@ public class UserThumbnailServiceImpl implements UserThumbnailService {
     private String uploadPath;
 
     @Override
-    public Mono<List<String>> uploadThumbnail(User user, List<MultipartFile> images) {
-        List<String> thumbnailIds = new ArrayList<>();
-
+    public Mono<String> uploadThumbnail(String userId, List<MultipartFile> images) {
         return Flux.fromIterable(images)
+                .next() // 첫 번째 이미지에 대해서만 작업
                 .flatMap(image -> Mono.fromCallable(() -> {
                             String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
                             String keyName = uploadPath + "/" + fileName;
@@ -52,24 +51,24 @@ public class UserThumbnailServiceImpl implements UserThumbnailService {
                             try (InputStream inputStream = image.getInputStream()) {
                                 amazonS3.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata)
                                         .withCannedAcl(CannedAccessControlList.PublicRead));
+                            } catch (Exception e) {
+                                throw new RuntimeException("S3 업로드 실패: " + e.getMessage());
                             }
 
                             // 업로드된 파일의 URL 생성
-                            String uploadURL = "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
-
-                            // 썸네일 정보 생성
-                            return UsersThumbnail.builder()
-                                    .userId(user.getId())
-                                    .thumbnailUrl(uploadURL)
-                                    .createdAt(LocalDateTime.now().toEpochSecond(null))
-                                    .build();
+                            return "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
                         })
-                        .flatMap(thumbnail -> userThumbnailRepository.save(thumbnail)
-                                .doOnNext(savedThumbnail -> thumbnailIds.add(savedThumbnail.getId()))
-                                .thenReturn(thumbnail.getId()))
+                        .flatMap(url -> userThumbnailRepository.save(
+                                        UsersThumbnail.builder()
+                                                .userId(userId)
+                                                .thumbnailUrl(url)
+                                                .createdAt(LocalDateTime.now().toEpochSecond(null))
+                                                .build())
+                                .thenReturn(url))
                         .onErrorResume(e -> Mono.error(new RuntimeException("Failed to save thumbnail: " + e.getMessage()))))
-                .then(Mono.just(thumbnailIds))
-                .onErrorResume(e -> Mono.just(Collections.emptyList()));
+                .switchIfEmpty(Mono.error(new RuntimeException("No thumbnail provided")));
     }
 
+
 }
+

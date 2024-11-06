@@ -23,7 +23,9 @@ public interface UserService {
 
     Mono<User> update(User user, List<MultipartFile> thumbnails);
 
-    Mono<User> save(User user, List<MultipartFile> thumbnails);
+    Mono<User> save(User user);
+
+    Mono<User> updateImgIdOnly(User user); // imgId만 업데이트하는 메서드 추가
 
     Mono<String> authenticate(String username, String password);
 

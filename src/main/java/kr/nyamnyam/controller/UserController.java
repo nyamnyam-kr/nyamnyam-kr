@@ -2,6 +2,7 @@ package kr.nyamnyam.controller;
 
 import kr.nyamnyam.model.domain.User;
 import kr.nyamnyam.service.UserService;
+import kr.nyamnyam.service.UserThumbnailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserThumbnailService userThumbnailService;
 
     @GetMapping("/existsById")
     public Mono<Boolean> existsById(@RequestParam String id) {
@@ -49,10 +51,24 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Mono<User> register(@RequestPart("user") User user,
-                           @RequestPart(name = "thumbnails", required = false) List<MultipartFile> thumbnails) {
-        return userService.save(user, thumbnails     != null ? thumbnails : Collections.emptyList());
+    public Mono<User> register(
+            @RequestPart("user") User user,
+            @RequestPart(name = "thumbnails", required = false) List<MultipartFile> thumbnails) {
+
+        return userService.save(user)
+                .flatMap(savedUser -> {
+                    if (thumbnails != null && !thumbnails.isEmpty()) {
+                        return userThumbnailService.uploadThumbnail(savedUser.getId(), thumbnails)
+                                .flatMap(thumbnailUrl -> { // thumbnailUrl이 단일 String
+                                    savedUser.setImgId(thumbnailUrl);
+                                    return userService.updateImgIdOnly(savedUser);
+                                });
+                    }
+                    return Mono.just(savedUser);
+                });
     }
+
+
 
 
     @PostMapping("/login")
@@ -70,6 +86,5 @@ public class UserController {
     public Mono<User> toggleEnable(@RequestParam String userId, @RequestParam Boolean enabled) {
         return userService.setEnableStatus(userId, enabled);
     }
-
 
 }

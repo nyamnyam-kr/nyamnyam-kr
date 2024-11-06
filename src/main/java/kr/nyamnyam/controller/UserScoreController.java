@@ -19,6 +19,11 @@ public class UserScoreController {
         return userScoreService.scoreUp(userId);
     }
 
+    @PostMapping("/scoreDown")
+    public Mono<Void> decreaseScore(@RequestParam String userId) {
+        return userScoreService.scoreDown(userId);
+    }
+
     @GetMapping("/user/{userId}")
     public Flux<UserScore> getUserScores(@PathVariable String userId) {
         return userScoreService.findByUserId(userId);
@@ -29,4 +34,3 @@ public class UserScoreController {
         return userScoreService.calculateUserAverageScore(userId);
     }
 }
-
