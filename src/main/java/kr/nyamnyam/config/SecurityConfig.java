@@ -16,20 +16,20 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenServiceImpl tokenService; // JwtTokenProvider 대신 TokenServiceImpl 주입
+    private final TokenServiceImpl tokenService;
     private final UserService userService;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(tokenService, userService); // JwtTokenProvider 대신 TokenServiceImpl 사용
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(tokenService, userService);
 
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(HttpMethod.OPTIONS).permitAll() // OPTIONS 요청 인증 제외
-                        .anyExchange().permitAll() // 다른 모든 요청도 인증 없이 허용
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                        .anyExchange().permitAll()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION); // JWT 필터 등록
+                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION);
 
         return http.build();
     }

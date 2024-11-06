@@ -5,7 +5,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserScoreService {
-    Mono<UserScore> save(UserScore userScore);
-    Flux<UserScore> findByScoreUserId(String scoreUserId);
+    Mono<Void> scoreUp(String userId);
+
+    Flux<UserScore> findByUserId(String userId);
+
     Mono<Double> calculateUserAverageScore(String scoreUserId);
 }

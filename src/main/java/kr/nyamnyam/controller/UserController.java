@@ -48,8 +48,8 @@ public class UserController {
         return userService.update(user, thumbnails);
     }
 
-    @PostMapping("/join")
-    public Mono<User> join(@RequestPart("user") User user,
+    @PostMapping("/register")
+    public Mono<User> register(@RequestPart("user") User user,
                            @RequestPart(name = "thumbnails", required = false) List<MultipartFile> thumbnails) {
         return userService.save(user, thumbnails     != null ? thumbnails : Collections.emptyList());
     }
@@ -64,6 +64,11 @@ public class UserController {
     public Mono<Boolean> checkUsername(@RequestParam String username) {
         return userService.findByUsername(username)
                 .hasElement();
+    }
+
+    @PutMapping("/enable")
+    public Mono<User> enableUser(@RequestParam String targetUserId) {
+        return userService.enable(targetUserId);
     }
 
 }

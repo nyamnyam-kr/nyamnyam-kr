@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService {
                     existingUser.setGender(user.getGender() != null ? user.getGender() : existingUser.getGender());
                     existingUser.setEnabled(user.getEnabled() != null ? user.getEnabled() : existingUser.getEnabled());
 
-                    // 썸네일 업데이트 처리
                     return userThumbnailService.uploadThumbnail(existingUser, thumbnails)
                             .then(userRepository.save(existingUser));
                 })
@@ -77,44 +76,50 @@ public class UserServiceImpl implements UserService {
     public Mono<User> save(User user, List<MultipartFile> thumbnails) {
         return userRepository.findByUsername(user.getUsername())
                 .flatMap(existingUser -> Mono.<User>error(new RuntimeException("Username is already taken.")))
-                .switchIfEmpty(
-                        Mono.defer(() -> {
-                            String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
-                            User newUser = User.builder()
-                                    .username(user.getUsername())
-                                    .password(encodedPassword)
-                                    .nickname(user.getNickname())
-                                    .name(user.getName())
-                                    .age(user.getAge())
-                                    .role("USER")
-                                    .tel(user.getTel())
-                                    .gender(user.getGender())
-                                    .enabled(true)
-                                    .score(36.5)
-                                    .build();
+                .switchIfEmpty(Mono.defer(() -> {
+                    String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+                    User newUser = User.builder()
+                            .username(user.getUsername())
+                            .password(encodedPassword)
+                            .nickname(user.getNickname())
+                            .name(user.getName())
+                            .age(user.getAge())
+                            .role("USER")
+                            .tel(user.getTel())
+                            .gender(user.getGender())
+                            .enabled(true)
+                            .score(36.5)
+                            .build();
 
-                            return userRepository.save(newUser)
-                                    .flatMap(savedUser ->
-                                            userThumbnailService.uploadThumbnail(savedUser, thumbnails)
-                                                    .flatMap(thumbnailIds -> {
-                                                        String imgId = thumbnailIds.isEmpty() ? null : thumbnailIds.get(0);
-                                                        savedUser.setImgId(imgId);
-
-                                                        return userRepository.save(savedUser);
-                                                    })
-                                    );
-                        })
-                );
+                    return userRepository.save(newUser)
+                            .flatMap(savedUser -> userThumbnailService.uploadThumbnail(savedUser, thumbnails)
+                                    .flatMap(thumbnailIds -> {
+                                        savedUser.setImgId(thumbnailIds.isEmpty() ? null : thumbnailIds.get(0));
+                                        return userRepository.save(savedUser); // Mono<User> 반환이 기대됨
+                                    }));
+                }));
     }
-
-
-
 
     @Override
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
-                .flatMap(user -> tokenService.createAndSaveToken(user.getId()));
+                .flatMap(user -> {
+                    if (Boolean.FALSE.equals(user.getEnabled())) {
+                        return Mono.error(new RuntimeException("Your account is disabled."));
+                    }
+                    return tokenService.createAndSaveToken(user.getId());
+                });
+    }
+
+
+    @Override
+    public Mono<User> enable(String targetUserId) {
+        return userRepository.findById(targetUserId)
+                .flatMap(user -> {
+                    user.setEnabled(!user.getEnabled());
+                    return userRepository.save(user);
+                })
+                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 }
-
