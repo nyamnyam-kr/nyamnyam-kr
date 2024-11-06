@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
                 .flatMap(user -> {
                     if (Boolean.FALSE.equals(user.getEnabled())) {
-                        return Mono.error(new RuntimeException("Your account is disabled."));
+                        return Mono.just("Error: 해당 계정은 차단되었습니다. 관리자에게 문의해 주시기 바랍니다.");
                     }
                     return tokenService.createAndSaveToken(user.getId());
                 });
