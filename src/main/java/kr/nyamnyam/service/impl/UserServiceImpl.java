@@ -103,14 +103,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(new RuntimeException("Invalid username or password."))) // username이 없는 경우
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
+                .switchIfEmpty(Mono.error(new RuntimeException("Invalid username or password."))) // password가 틀린 경우
                 .flatMap(user -> {
                     if (Boolean.FALSE.equals(user.getEnabled())) {
-                        return Mono.just("Error: 해당 계정은 차단되었습니다. 관리자에게 문의해 주시기 바랍니다.");
+                        return Mono.error(new RuntimeException("Account is disabled"));
                     }
                     return tokenService.createAndSaveToken(user.getId());
                 });
     }
+
 
 
     @Override
