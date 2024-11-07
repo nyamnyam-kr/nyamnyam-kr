@@ -6,9 +6,11 @@ import kr.nyamnyam.service.TokenService;
 import kr.nyamnyam.service.UserService;
 import kr.nyamnyam.service.UserThumbnailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,20 +24,22 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
     private final UserThumbnailService userThumbnailService;
 
-
     @Override
     public Mono<Boolean> existsById(String id) {
-        return userRepository.existsById(id);
+        return userRepository.existsById(id)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))); // 404
     }
 
     @Override
     public Mono<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))); // 404
     }
 
     @Override
     public Mono<User> findById(String id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))); // 404
     }
 
     @Override
@@ -50,12 +54,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Void> deleteById(String id) {
-        return userRepository.deleteById(id);
+        return userRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))) // 404
+                .flatMap(existingUser -> userRepository.deleteById(id));
     }
 
     @Override
     public Mono<User> update(User user, List<MultipartFile> thumbnails) {
         return userRepository.findById(user.getId())
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))) // 404
                 .flatMap(existingUser -> {
                     existingUser.setUsername(user.getUsername() != null ? user.getUsername() : existingUser.getUsername());
                     existingUser.setPassword(user.getPassword() != null ? user.getPassword() : existingUser.getPassword());
@@ -67,18 +74,15 @@ public class UserServiceImpl implements UserService {
                     existingUser.setGender(user.getGender() != null ? user.getGender() : existingUser.getGender());
                     existingUser.setEnabled(user.getEnabled() != null ? user.getEnabled() : existingUser.getEnabled());
 
-                    // 사용자 ID를 사용하여 썸네일 업로드
                     return userThumbnailService.uploadThumbnail(existingUser.getId(), thumbnails)
                             .then(userRepository.save(existingUser));
-                })
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+                });
     }
-
 
     @Override
     public Mono<User> save(User user) {
         return userRepository.findByUsername(user.getUsername())
-                .flatMap(existingUser -> Mono.<User>error(new RuntimeException("Username is already taken.")))
+                .flatMap(existingUser -> Mono.<User>error(new ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken."))) // 409 Conflict
                 .switchIfEmpty(Mono.defer(() -> {
                     String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
                     User newUser = User.builder()
@@ -102,6 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<User> updateImgIdOnly(User user) {
         return userRepository.findById(user.getId())
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))) // 404
                 .flatMap(existingUser -> {
                     existingUser.setImgId(user.getImgId());
                     return userRepository.save(existingUser);
@@ -111,24 +116,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<String> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid username or password."))) // username이 없는 경우
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password"))) // 401 Unauthorized
                 .filter(user -> new BCryptPasswordEncoder().matches(password, user.getPassword()))
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid username or password."))) // password가 틀린 경우
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password"))) // 401 Unauthorized
                 .flatMap(user -> {
                     if (Boolean.FALSE.equals(user.getEnabled())) {
-                        return Mono.error(new RuntimeException("Account is disabled"));
+                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is disabled")); // 403 Forbidden
                     }
-                    return tokenService.createAndSaveToken(user.getId());
+                    return tokenService.createAndSaveToken(user.getId()); // 인증 성공 시 토큰 생성
                 });
     }
 
     @Override
     public Mono<User> setEnableStatus(String userId, Boolean enabled) {
         return userRepository.findById(userId)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))) // 404
                 .flatMap(user -> {
                     user.setEnabled(enabled);
                     return userRepository.save(user);
-                })
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+                });
     }
 }

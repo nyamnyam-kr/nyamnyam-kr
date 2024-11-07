@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import kr.nyamnyam.model.domain.User;
 import kr.nyamnyam.model.domain.UsersThumbnail;
 import kr.nyamnyam.model.repository.UserThumbnailRepository;
 import kr.nyamnyam.service.UserThumbnailService;
@@ -17,8 +16,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -36,39 +33,50 @@ public class UserThumbnailServiceImpl implements UserThumbnailService {
 
     @Override
     public Mono<String> uploadThumbnail(String userId, List<MultipartFile> images) {
+        System.out.println("Starting thumbnail upload for userId: " + userId);
+
+        // images가 null이거나 비어있을 경우 즉시 빈 Mono 반환
+        if (images == null || images.isEmpty()) {
+            System.out.println("No thumbnail provided. Skipping upload.");
+            return Mono.empty();
+        }
+
         return Flux.fromIterable(images)
-                .next() // 첫 번째 이미지에 대해서만 작업
+                .next()
                 .flatMap(image -> Mono.fromCallable(() -> {
-                            String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-                            String keyName = uploadPath + "/" + fileName;
+                                    String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                                    String keyName = uploadPath + "/" + fileName;
 
-                            // 메타데이터 설정
-                            ObjectMetadata metadata = new ObjectMetadata();
-                            metadata.setContentLength(image.getSize());
-                            metadata.setContentType(image.getContentType());
+                                    System.out.println("Uploading to S3 - Key: " + keyName);
 
-                            // S3에 파일 업로드
-                            try (InputStream inputStream = image.getInputStream()) {
-                                amazonS3.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata)
-                                        .withCannedAcl(CannedAccessControlList.PublicRead));
-                            } catch (Exception e) {
-                                throw new RuntimeException("S3 업로드 실패: " + e.getMessage());
-                            }
+                                    ObjectMetadata metadata = new ObjectMetadata();
+                                    metadata.setContentLength(image.getSize());
+                                    metadata.setContentType(image.getContentType());
 
-                            // 업로드된 파일의 URL 생성
-                            return "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
-                        })
-                        .flatMap(url -> userThumbnailRepository.save(
-                                        UsersThumbnail.builder()
-                                                .userId(userId)
-                                                .thumbnailUrl(url)
-                                                .createdAt(LocalDateTime.now().toEpochSecond(null))
-                                                .build())
-                                .thenReturn(url))
-                        .onErrorResume(e -> Mono.error(new RuntimeException("Failed to save thumbnail: " + e.getMessage()))))
-                .switchIfEmpty(Mono.error(new RuntimeException("No thumbnail provided")));
+                                    try (InputStream inputStream = image.getInputStream()) {
+                                        amazonS3.putObject(new PutObjectRequest(bucketName, keyName, inputStream, metadata)
+                                                .withCannedAcl(CannedAccessControlList.PublicRead));
+                                        System.out.println("Upload to S3 successful - Key: " + keyName);
+                                    } catch (Exception e) {
+                                        System.err.println("S3 upload failed: " + e.getMessage());
+                                        throw new RuntimeException("S3 업로드 실패: " + e.getMessage());
+                                    }
+
+                                    return "https://kr.object.ncloudstorage.com/" + bucketName + "/" + keyName;
+                                })
+                                .flatMap(url -> {
+                                    System.out.println("Saving thumbnail URL to database - URL: " + url);
+                                    return userThumbnailRepository.save(
+                                            UsersThumbnail.builder()
+                                                    .userId(userId)
+                                                    .thumbnailUrl(url)
+                                                    .createdAt(LocalDateTime.now().toEpochSecond(null))
+                                                    .build()
+                                    ).thenReturn(url);
+                                })
+                                .doOnError(e -> System.err.println("Error saving thumbnail: " + e.getMessage()))
+                                .onErrorResume(e -> Mono.error(new RuntimeException("Failed to save thumbnail: " + e.getMessage())))
+                );
     }
 
-
 }
-

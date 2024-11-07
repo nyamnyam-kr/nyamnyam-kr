@@ -20,7 +20,8 @@ public class UserScoreServiceImpl implements UserScoreService {
     public Mono<Void> scoreUp(String userId) {
         return userRepository.findById(userId)
                 .flatMap(user -> {
-                    user.setScore(user.getScore() + 0.1);
+                    double newScore = Math.round((user.getScore() + 0.1) * 10) / 10.0;
+                    user.setScore(newScore);
                     return userRepository.save(user);
                 })
                 .then();
@@ -30,11 +31,13 @@ public class UserScoreServiceImpl implements UserScoreService {
     public Mono<Void> scoreDown(String userId) {
         return userRepository.findById(userId)
                 .flatMap(user -> {
-                    user.setScore(user.getScore() - 0.1);
+                    double newScore = Math.round((user.getScore() - 0.1) * 10) / 10.0;
+                    user.setScore(newScore);
                     return userRepository.save(user);
                 })
                 .then();
     }
+
 
     @Override
     public Flux<UserScore> findByUserId(String userId) {

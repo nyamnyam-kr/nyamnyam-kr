@@ -44,3 +44,10 @@ naver:
     bucket: nyamnyam  # Naver Cloud Storage 버킷 이름
     upload:
       path: uploads/user  # 업로드 경로
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    kr.nyamnyam: DEBUG
+
+

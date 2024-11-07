@@ -46,9 +46,11 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public Mono<User> update(@RequestPart("user") User user, @RequestPart(value = "thumbnails", required = false) List<MultipartFile> thumbnails) {
+    public Mono<User> update(@RequestPart("user") User user,
+                             @RequestPart(value = "thumbnails", required = false) List<MultipartFile> thumbnails) {
         return userService.update(user, thumbnails);
     }
+
 
     @PostMapping("/register")
     public Mono<User> register(
@@ -67,8 +69,6 @@ public class UserController {
                     return Mono.just(savedUser);
                 });
     }
-
-
 
 
     @PostMapping("/login")
