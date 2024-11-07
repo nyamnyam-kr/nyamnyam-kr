@@ -6,6 +6,7 @@ import kr.nyamnyam.model.domain.ChatFile;
 import kr.nyamnyam.model.domain.ChatRoom;
 import kr.nyamnyam.model.repository.ChatFileRepository;
 import kr.nyamnyam.model.repository.ChatRepository;
+import kr.nyamnyam.model.repository.ChatRoomRepository;
 import kr.nyamnyam.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final ChatFileRepository chatFileRepository;
 
     @Override
@@ -39,8 +42,16 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Mono<Chat> saveMessage(Chat chat) {
-
-        return chatRepository.save(chat);
+        return chatRepository.save(chat)
+                .flatMap(savedChat -> {
+                    String chatRoomId = savedChat.getChatRoomId();
+                    return chatRoomRepository.findById(chatRoomId)
+                            .flatMap(chatRoom -> {
+                                chatRoom.setUpdateAt(savedChat.getCreatedAt());
+                                return chatRoomRepository.save(chatRoom)
+                                        .thenReturn(savedChat);
+                            });
+                });
     }
 
     @Override

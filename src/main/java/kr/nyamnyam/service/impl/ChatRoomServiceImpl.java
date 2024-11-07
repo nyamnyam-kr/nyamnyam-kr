@@ -12,11 +12,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,11 +52,20 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public Flux<ChatRoom> findAllByNickname(String nickname) {
-        // nickname이 null이면 전체 ChatRoom 조회, 아니면 nickname으로 필터링하여 조회
+        // nickname이 null이거나 빈 문자열이면 빈 Flux 반환
         if (nickname == null || nickname.isEmpty()) {
-            return chatRoomRepository.findAll();
+            return Flux.empty(); // 빈 Flux 반환
         }
-        return chatRoomRepository.findByParticipantsContains(nickname);
+
+        // nickname으로 필터링하여 ChatRoom 조회
+        Flux<ChatRoom> chatRooms = chatRoomRepository.findByParticipantsContains(nickname);
+
+        // updateAt 기준으로 내림차순 정렬
+        return chatRooms.sort((room1, room2) -> {
+            LocalDateTime updateAt1 = room1.getUpdateAt() != null ? room1.getUpdateAt() : LocalDateTime.MIN;
+            LocalDateTime updateAt2 = room2.getUpdateAt() != null ? room2.getUpdateAt() : LocalDateTime.MIN;
+            return updateAt2.compareTo(updateAt1);
+        });
     }
 
 
