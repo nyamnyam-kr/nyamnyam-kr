@@ -65,7 +65,10 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))) // 404
                 .flatMap(existingUser -> {
                     existingUser.setUsername(user.getUsername() != null ? user.getUsername() : existingUser.getUsername());
-                    existingUser.setPassword(user.getPassword() != null ? user.getPassword() : existingUser.getPassword());
+                    if (user.getPassword() != null) {
+                        String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+                        existingUser.setPassword(encodedPassword);
+                    }
                     existingUser.setNickname(user.getNickname() != null ? user.getNickname() : existingUser.getNickname());
                     existingUser.setName(user.getName() != null ? user.getName() : existingUser.getName());
                     existingUser.setAge(user.getAge() != null ? user.getAge() : existingUser.getAge());
@@ -78,6 +81,7 @@ public class UserServiceImpl implements UserService {
                             .then(userRepository.save(existingUser));
                 });
     }
+
 
     @Override
     public Mono<User> save(User user) {
