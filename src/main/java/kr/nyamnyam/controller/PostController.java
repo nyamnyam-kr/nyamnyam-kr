@@ -51,11 +51,6 @@ public class PostController {
         return ResponseEntity.ok(upvoteService.getLikeCount(postId));
     }
 
-//    @GetMapping("/group/{page}")
-//    public ResponseEntity<List<PostModel>> getPostPage(@PathVariable int page) {
-//        return ResponseEntity.ok(service.findAllPerPage(page));
-//    }
-
     @GetMapping("/{restaurantId}/group")
     public ResponseEntity<List<PostModel>> getListByRestaurant(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(service.findAllByRestaurant(restaurantId));
