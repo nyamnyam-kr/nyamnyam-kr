@@ -30,7 +30,7 @@ public class PostController {
         return ResponseEntity.ok(service.allAverageRating(restaurantId));
     }
 
-    // 좋아요 관련 : like, unlike, hasLiked, getLikeCount
+    // 좋아요 관련: like, unlike, hasLiked, getLikeCount
     @PostMapping("/{postId}/like")
     public ResponseEntity<Boolean> like(@PathVariable Long postId, @RequestParam String userId) {
         return ResponseEntity.ok(upvoteService.like(postId, userId));
